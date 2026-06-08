@@ -123,7 +123,7 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 
 ## 任务产出
 
-本任务形成首批审核点选择基线，并记录到 `decisions/ADR-005-first-review-points-selection.md`。ADR 状态为 `Proposed`，最终仍待人工确认。
+本任务形成首批审核点选择基线，并记录到 `decisions/ADR-005-first-review-points-selection.md`。ADR 状态已确认为 `Accepted`。
 
 ### MVP 第一批必须实现的审核点
 
@@ -132,7 +132,7 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 | `PARTY_FIELDS` | `PARTY_A_NAME_CONSISTENCY` | 是 | 结构化甲方名称与合同候选一致性 |
 | `PARTY_FIELDS` | `PARTY_B_NAME_CONSISTENCY` | 是 | 结构化乙方名称与合同候选一致性 |
 | `AMOUNT_TAX` | `CONTRACT_TOTAL_AMOUNT_CONSISTENCY` | 是 | 结构化合同总金额与合同金额候选一致性 |
-| `AMOUNT_TAX` | `TAX_AMOUNT_FORMULA_CONSISTENCY` | 否 | 含税、不含税、税额公式关系；是否保留在 MVP 仍待人工确认 |
+| `AMOUNT_TAX` | `TAX_AMOUNT_FORMULA_CONSISTENCY` | 是 | 含税、不含税、税额公式关系；已确认纳入 MVP |
 | `PAYMENT_TERMS` | `PREPAYMENT_RATIO_CONSISTENCY` | 是 | 结构化预付款比例与付款条款候选一致性 |
 | `PAYMENT_TERMS` | `PROGRESS_PAYMENT_RATIO_CONSISTENCY` | 是 | 结构化累计进度款比例与付款条款候选一致性 |
 | `PAYMENT_TERMS` | `COMPLETION_PAYMENT_RATIO_CONSISTENCY` | 是 | 结构化累计竣工款比例与付款条款候选一致性 |
@@ -237,7 +237,7 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 - 首批合同类型是否只选一个类型试点。
 - 首批结构化字段由外部系统、简易管理台人工录入还是两者都支持。
 - 首批样本集数量、数据 owner、脱敏流程和验收阈值。
-- `TAX_AMOUNT_FORMULA_CONSISTENCY` 是否保留为 MVP 非 core，还是推迟到 Pilot。
+- 税率是否需要新增固定 CandidateRole，或仅作为 optional raw candidate 进入诊断。
 - 税率是否需要新增固定 CandidateRole，或仅作为 optional raw candidate 进入诊断。
 - `requiresHigherBudget` 和 `recommendedBudgetProfile` 是否进入第一轮 MVP 普通结果页。
 
@@ -253,5 +253,5 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 - 完成日期：2026-06-07。
 - 变更文件：`CURRENT_CONTEXT.md`、`ROADMAP.md`、`docs/ai-review.md`、`changelog/2026-06.md`、`decisions/ADR-005-first-review-points-selection.md`、本任务包。
 - 测试结果：规划任务，未运行代码测试；已按 2-3 个合成场景口径人工检查首批点可覆盖一致、冲突、缺证据/歧义降级三类场景。
-- 遗留问题：首批合同类型、结构化字段来源、样本集 owner、税额公式点是否进入 MVP、税率 role、`requiresHigherBudget` 可见性仍待人工确认。
+- 遗留问题：首批合同类型、结构化字段来源、样本集 owner、税率 role、`requiresHigherBudget` 可见性仍待人工确认。
 - 备注：本任务未创建业务代码，未创建脚手架，未安装依赖，未修改数据库。

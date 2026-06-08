@@ -62,7 +62,8 @@ MVP 重点：
 - MVP 币种固定为人民币 `CNY`，管理台金额单位显示“元”，外币合同延后。
 - 节点付款其他节点信息仅在按节点付款时使用必填多行文本，仅记录和展示，暂不参与审核点裁判。
 - 最小 Word 解析、候选索引和证据定位能力。
-- 首批少量审核点族，优先从 `PARTY_FIELDS`、`AMOUNT_TAX`、`PAYMENT_TERMS` 中选择。`TASK-003-first-review-points-selection` 已形成首批选择基线，并记录到 `ADR-005-first-review-points-selection.md`，状态为 `Proposed`，最终仍待人工确认。
+- 首批少量审核点族，优先从 `PARTY_FIELDS`、`AMOUNT_TAX`、`PAYMENT_TERMS` 中选择。`TASK-003-first-review-points-selection` 已形成首批选择基线，并记录到 `ADR-005-first-review-points-selection.md`，状态为 `Accepted`。
+- MVP 首批合同类型只做“工程采购合同”。材料供货合同、费用合同、杂项合同延后到 Pilot 或后续阶段；MVP 保留合同类型扩展结构，但不做复杂合同类型路由。
 - 规则/正则优先；Gemma/A30 只做局部抽取、证据选择或复杂语义辅助。
 - 后端统一合成 `PASS / WARNING / ERROR / NOT_CONCLUDED / SKIPPED`，并保持 `SYS-*` 与业务 finding 分流。
 - 生成 `Task`、`Execution`、`ReviewResultSnapshot` 和结果 URL。
@@ -71,7 +72,7 @@ MVP 重点：
 MVP 首批审核点基线：
 
 - `PARTY_FIELDS`: `PARTY_A_NAME_CONSISTENCY`、`PARTY_B_NAME_CONSISTENCY`，均为 core review point。
-- `AMOUNT_TAX`: `CONTRACT_TOTAL_AMOUNT_CONSISTENCY` 为 core review point；`TAX_AMOUNT_FORMULA_CONSISTENCY` 为非 core，是否保留在 MVP 仍待人工确认。
+- `AMOUNT_TAX`: `CONTRACT_TOTAL_AMOUNT_CONSISTENCY`、`TAX_AMOUNT_FORMULA_CONSISTENCY`，均为 core review point。
 - `PAYMENT_TERMS`: 月度付款的预付款、进度款、竣工款、结算款和质保款比例均纳入独立一致性审核，五点全部为 core review point。
 - 首批审核点均以结构化字段、候选索引、EvidenceSlot、后端确定性裁判为主；Gemma/A30 只处理主体或付款比例候选归属歧义，不直接生成最终业务 finding。
 
@@ -201,10 +202,7 @@ Production Readiness 可纳入：
 ## 待确认
 
 - V1 内部里程碑拆分。
-- 首批审核点是否按 `ADR-005` 确认，以及首批合同类型优先级。
 - 试点样本集数量、来源和授权。
 - SAP/OA 联调是否进入 V1 末尾或 V2。
-- V1 是否先以单一合同类型试点，还是四类粗分类同时进入。
-- 普通结果 URL 是内网公开令牌访问，还是必须登录。
 - 最小任务创建 API 的请求字段、错误码和访问控制。
 - 首批结构化字段的最终英文 key、数值精度、枚举编码、校验错误码和自定义字段权限。

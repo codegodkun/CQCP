@@ -73,7 +73,7 @@
 6. 人工审批人：在 SAP/OA/线下审批流程中参考审核结果，但不把平台输出视为审批决定。
 7. 集成运维联系人：处理 SAP/OA caller policy、错误码、队列过载、规则集不可用和接口兼容问题。
 
-待确认：正式组织角色名称、账号体系、权限矩阵和人员归属。
+待确认：Pilot / Production Readiness 的正式组织角色名称、账号体系、权限矩阵和人员归属；MVP 管理台暂不做平台内登录和权限矩阵。
 
 ## 5. Scope
 
@@ -113,19 +113,21 @@ MVP 当前基线：
 - 生成 Task、Execution、ReviewResultSnapshot 和 Result URL。
 - 普通结果页能解释审核点、证据和原文定位。
 
-MVP 首批审核点基线来自 `ADR-005`，状态仍为 Proposed：
+MVP 首批审核点基线来自已 Accepted 的 `ADR-005`。MVP 固定采用以下 9 个 core review point：
 
 | ReviewPointFamily | 审核点 | core | MVP 状态 |
 | --- | --- | --- | --- |
-| `PARTY_FIELDS` | `PARTY_A_NAME_CONSISTENCY` | 是 | 待人工确认 |
-| `PARTY_FIELDS` | `PARTY_B_NAME_CONSISTENCY` | 是 | 待人工确认 |
-| `AMOUNT_TAX` | `CONTRACT_TOTAL_AMOUNT_CONSISTENCY` | 是 | 待人工确认 |
-| `AMOUNT_TAX` | `TAX_AMOUNT_FORMULA_CONSISTENCY` | 否 | 是否保留在 MVP 待确认 |
-| `PAYMENT_TERMS` | `PREPAYMENT_RATIO_CONSISTENCY` | 是 | 待人工确认 |
+| `PARTY_FIELDS` | `PARTY_A_NAME_CONSISTENCY` | 是 | 已确认纳入 MVP |
+| `PARTY_FIELDS` | `PARTY_B_NAME_CONSISTENCY` | 是 | 已确认纳入 MVP |
+| `AMOUNT_TAX` | `CONTRACT_TOTAL_AMOUNT_CONSISTENCY` | 是 | 已确认纳入 MVP |
+| `AMOUNT_TAX` | `TAX_AMOUNT_FORMULA_CONSISTENCY` | 是 | 已确认纳入 MVP |
+| `PAYMENT_TERMS` | `PREPAYMENT_RATIO_CONSISTENCY` | 是 | 已确认纳入 MVP |
 | `PAYMENT_TERMS` | `PROGRESS_PAYMENT_RATIO_CONSISTENCY` | 是 | 已确认纳入 MVP |
 | `PAYMENT_TERMS` | `COMPLETION_PAYMENT_RATIO_CONSISTENCY` | 是 | 已确认纳入 MVP |
 | `PAYMENT_TERMS` | `SETTLEMENT_PAYMENT_RATIO_CONSISTENCY` | 是 | 已确认纳入 MVP |
 | `PAYMENT_TERMS` | `WARRANTY_RETENTION_RATIO_CONSISTENCY` | 是 | 已确认纳入 MVP |
+
+MVP 首批合同类型只做“工程采购合同”。管理台合同类型字段 MVP 仅展示“工程采购合同”，作为后续多合同分类预留字段；首批 9 个审核点默认适用于工程采购合同。材料供货合同、费用合同、杂项合同延后到 Pilot 或后续阶段。系统可保留合同类型扩展结构，但 MVP 不做复杂合同类型路由。
 
 MVP 首批结构化字段已确认如下，采用“通用字段必填 + 按付款方式条件必填”。管理台可以直接录入这些字段，SAP/API 传入字段与管理台字段定义保持一致，并使用同一字段配置。后台支持自定义新增字段；新增字段可用于合同录入、SAP/API 传入、展示和后续规则配置，但不得自动成为审核点、EvidenceSlot 或业务裁判逻辑。
 
@@ -256,6 +258,8 @@ V1 / MVP 不包含：
 - 简易管理台不得拥有独立审核链路。
 - 任务创建必须异步返回 `taskId`、`executionId`、`status=QUEUED` 和 `resultUrl`。
 - Result URL 可以提前生成，但正式结果快照必须在审核完成、部分完成或失败后生成。
+- MVP 普通结果 URL 不做平台侧登录、公开令牌或独立访问控制。外围系统负责对 URL 进行编码、加密、分发和访问控制，平台暂不在该方向投入额外能力。
+- 平台仍必须保证普通结果 URL 不暴露 prompt、raw output、endpoint、stack trace、admin logs、secret 或管理台诊断详情。
 - 同一 `taskId` 下同时只能有一个 non-terminal execution。
 - MVP 任务创建输入必须能承载首批结构化字段清单。
 - 通用字段始终必填；SAP/API 传入的结构化字段必须与管理台字段配置使用同一字段 key、类型、条件必填规则、枚举和启用状态。
@@ -416,6 +420,15 @@ V1 / MVP 不包含：
 ### 8.10 Admin Console
 
 - 管理台一期必要能力包括创建审核任务、任务列表、任务详情、阶段日志、ParseQualityReport、审核执行计划、EvidencePacket 摘要、Gemma 调用状态。
+- 任务详情页顶部概览区必须展示本次 execution 实际使用的“审核模型”，包括 `modelProfileCode`、模型展示名、provider 类型、模型名称和配置版本摘要，例如 `DeepSeek V4 Flash（公网兼容 OpenAI 接口）` 或 `Gemma 4 26B via vLLM`。
+- 管理台支持维护多个 `Model Profile`，包括本地模型、公网兼容 OpenAI API 模型和 mock fallback。管理员可通过启用状态、密钥配置状态、默认模型和 `usageScope` 控制新任务可选模型。
+- `Model Profile` 最小字段包括 `profileCode`、`displayName`、`providerType`、`endpointAlias`、`modelName`、`enabled`、`secretConfigured`、`timeoutSeconds`、`retryCount`、`usageScope`、`isDefaultForNewTask` 和 `configVersion`。
+- 管理台创建任务时可以选择模型 profile；如果未指定模型，系统使用当前启用的默认 `Model Profile`。管理台只能选择已启用且密钥已配置的 profile。
+- 外部 API MVP 不允许调用方直接指定 `modelProfileCode`，避免 SAP/OA/采购系统把模型选择变成业务接口依赖。外部 API 创建任务时使用平台当前默认启用的 `Model Profile`。
+- 如果后续需要允许外部 caller 指定模型，必须通过 caller policy 白名单和独立 API 契约扩展，不进入第一版 MVP。
+- 每个 execution 固定绑定当次模型 profile 和配置版本，历史快照不随后续模型配置切换变化。外部系统可查看本次实际使用的审核模型摘要，但不能控制它。
+- 平台允许管理员启用公网模型 profile，并在业务允许的场景下用于审核链路验证、演示、评测或内部审核任务。公网模型能否用于真实合同，由业务方、管理员和部署环境共同承担配置责任。
+- 无论使用本地 Gemma4 还是公网 DeepSeek，模型仍只做局部抽取、候选归属、证据选择或语义辅助；最终 `PASS / ERROR / WARNING / NOT_CONCLUDED` 仍由后端裁判与结果合成模块决定。
 - `任务日志` 属于任务列表/任务详情层级能力，不属于“配置审核规则”页面标签页。
 - MVP 任务日志只记录阶段级事件，不记录每个内部函数调用。阶段级事件至少覆盖 `QUEUED`、`PARSING`、`INDEXING`、`PLANNING`、`BUILDING_EVIDENCE`、`REVIEWING_RULES`、`REVIEWING_MODEL`、`COMPOSING` 等 stage 的开始、完成、失败、重试、超时和跳过。
 - 每条任务日志事件应记录 `taskId`、`executionId`、`stageName`、`attempt`、事件类型、发生时间、耗时、摘要状态和业务化原因；如存在内部诊断，可关联摘要级 `SYS-*` code，但不得要求前端展示内部函数名或调用栈。
@@ -426,16 +439,17 @@ V1 / MVP 不包含：
 - 合同字段被启用审核点依赖时，不允许直接停用或删除。必须先调整依赖它的审核点配置，或停用相关审核点。
 - 字段停用/删除操作应提示依赖该字段的审核点清单，避免产生不可执行配置。
 - 自定义字段只进入结构化字段池和后续规则配置候选，不自动生成审核点，不自动绑定 EvidenceSlot，不自动参与业务裁判。
-- 管理台可展示完整内部诊断码、EvidenceSlot、CandidateResolver、Gemma artifact 摘要、token 预算、schema validation errors 和 artifact anchors；MVP 不展示完整模型原始输出。
+- 管理台可展示完整内部诊断码、EvidenceSlot、CandidateResolver、Gemma artifact 摘要、token 预算、schema validation errors 和 artifact anchors；MVP 常规页面只展示摘要级诊断信息，不展示完整模型原始输出、完整 prompt、endpoint secret、stack trace 或完整合同敏感调试包。
 - “配置审核规则”页面标签页 MVP 范围：
   - `审核点`：支持列表、详情展开和有限编辑。
   - `模型配置`：只读展示当前模型版本和 endpoint 状态，不支持编辑。
   - `提示词模板`：不支持编辑，仅可展示业务摘要或延后。
   - `最终提示词预览`：不展示完整 prompt，延后到后续治理/技术视图。
 - `任务日志` 不放在“配置审核规则”页面；应放在任务列表/任务详情相关位置。
-- 管理台至少需要登录保护。
-- Admin API 必须后端保护。
-- 规则、prompt、pattern 发布需要管理员确认。
+- MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。
+- MVP Admin API 暂不设计细粒度角色权限，但仍必须限制常规接口输出范围，不返回完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。
+- MVP 配置变更仍应记录配置版本、变更时间和操作者占位信息；操作者可暂记为 `SYSTEM`、`ADMIN_PLACEHOLDER` 或环境账号。Pilot / Production Readiness 再补登录、角色、审批、审计和敏感诊断导出。
+- 规则、prompt、pattern 发布治理延后到 Pilot / Production Readiness；MVP 不支持自动发布，也不支持 AI 建议直接改生产配置。
 
 ### 8.11 Versioning And Snapshot
 
@@ -451,6 +465,66 @@ V1 / MVP 不包含：
 - 候选发布流程为 DRAFT -> EVALUATING -> READY_FOR_REVIEW -> APPROVED / REJECTED -> PUBLISHED。
 - 失败样本进入质量工作台前必须满足脱敏和最小化裁剪。
 - 样本集过期和生产保护必须有明确状态、审批和恢复流程。
+
+### 8.13 AI 调优治理
+
+项目主定位保持为 Contract Quality Control Platform / 合同质量控制中台，不改为 AI 合同审核平台。模型可以从 Gemma4 切换到 Gemma5、DeepSeek、Qwen、Claude 或 GPT，但 EvidenceSlot、CandidateResolver、ReviewPointFamily 和 Tuning Governance 是长期资产。
+
+平台必须隔离两条链路：
+
+生产审核链路：
+
+```text
+Contract -> Parser -> CandidateResolver -> EvidenceSlot -> Review Engine -> Finding -> ReviewResultSnapshot
+```
+
+调优治理链路：
+
+```text
+ReviewResultSnapshot -> TuningPacket -> CrossModelDiagnostic -> AITuningAdvice -> Candidate Change -> Regression Validation -> Human Approval -> Release
+```
+
+生产审核链路追求稳定、可解释和可审计。调优治理链路追求实验、诊断、优化和治理。两条链路不得混用。
+
+核心红线：
+
+```text
+AI Advice != Production Change
+```
+
+任何 AI 建议不得直接修改 prompt、rule、CandidateResolver、EvidenceSlot、ModelProfile 或后端确定性裁判，不得影响当前正式 `ReviewResultSnapshot`。AI 建议只能作为候选建议，必须经过 Regression Validation、Human Approval 和 Version Release 后，才可能影响后续新建任务。
+
+MVP 基础能力：
+
+- 生成 `TuningPacket`、`PointDiagnostic`、`ExecutionSummary` 和 `ExportConfig`。
+- 任务详情页新增 `AI 调优包` tab，用于导出和复制 `TuningPacket`。
+- 支持 `SINGLE_POINT` 和 `FOCUSED` 两级导出，供内部人员复制给 DeepSeek、ChatGPT、Claude 或其他 AI 辅助分析。
+- 支持保存外部 AI 返回的建议文本，作为调优线索记录，不作为结构化 `AITuningAdvice`。
+- 不自动调用公网 AI。
+- 不自动调优。
+- 不自动生成正式 `AITuningAdvice`。
+- 不自动执行 `CrossModelDiagnostic`。
+- 不自动改 prompt、rule、pattern、field lexicon、CandidateResolver、EvidenceSlot、ModelProfile 或 ReviewPointDefinition。
+- 不自动影响当前 `ReviewResultSnapshot`。
+
+Pilot 核心能力：
+
+- 新增 `CrossModelDiagnostic`、`CrossModelComparison` 和结构化 `AITuningAdvice`。
+- 支持用同一份局部 EvidencePacket / ModelCallIntent 调用另一个 Model Profile 做诊断对比。
+- 必须记录输入等价性：`STRICT / EXPANDED_WITH_POLICY / DIFFERENT_INPUT`。
+- 只生成候选建议，不自动生效。
+
+Production Readiness 能力：
+
+- 新增 Regression Center、Release Governance、Rollback、Audit 和 OptimizationEffect。
+- AI 建议上线后必须定期评估效果。
+- 回归变差时可自动告警或冻结；自动回滚策略需独立治理确认。
+
+Tuning Packet 是调优治理链路的数据底座，不是普通日志，也不是生产审核结果。它只包含最小必要、结构化、可复制、可追溯的诊断信息，不默认导出整份合同、完整 prompt、完整 raw output、endpoint secret、stack trace 或全部上下文。
+
+`AI 调优包` tab 的目的，是帮助人和外部 AI 分析问题，不是自动调优系统。MVP 只允许生成 TuningPacket、导出 TuningPacket、复制到外部 AI、保存外部 AI 建议文本；不允许自动调用公网 AI、自动生成 AITuningAdvice、自动执行 CrossModelDiagnostic 或自动修改任何生产审核配置。
+
+DefinitionTermIndex 是索引层能力，不属于 Parser。Parser 产出结构化 blocks 后，DefinitionTermIndex 与 CandidateIndex 并行构建，用于识别“本合同所称……”“以下简称……”等定义条款，并按审核点或 ReviewPointFamily 需要注入 compact definition context；不得默认注入每个 EvidenceBundle。
 
 ## 9. Non-functional Requirements
 
@@ -473,10 +547,10 @@ V1 / MVP 不包含：
 ### 9.3 Security And Privacy
 
 - 普通结果 URL 不暴露 prompt、raw output、endpoint、stack trace、admin logs。
-- 管理台至少登录保护。
-- 查看 encrypted raw output 需要额外审批。
-- MVP 不保存完整模型原始输出；受控保存完整 redacted raw output、TTL 和审计展开延后到 Pilot / Production Readiness。
-- encryptedRawOutput 默认仅 admin/evaluation tasks 启用，TTL 7 days。
+- MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。
+- 管理台常规页面和常规 API 不展示或返回完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。
+- MVP 不保存完整模型原始输出；受控保存完整 redacted raw output、TTL、审批、脱敏和审计展开延后到 Pilot / Production Readiness。
+- encryptedRawOutput 默认仅 admin/evaluation tasks 启用，TTL 7 days；该能力不进入 MVP 常规管理台。
 - 脱敏规则必须版本化并测试。
 - 评测报告不得导出原始合同内容。
 
@@ -507,7 +581,7 @@ V1 / MVP 不包含：
 - 技术栈、仓库目录、测试策略和数据库迁移工具仍由 `ADR-001` 待确认。
 - V1 结果和诊断契约仍由 `ADR-002` 待确认。
 - Task / Execution / ReviewResultSnapshot 模型仍由 `ADR-003` 待确认。
-- 首批审核点基线由 `ADR-005` 提出，仍待人工确认。
+- 首批审核点基线由 `ADR-005` 确认，状态为 `Accepted`。
 
 ### 10.3 Deep Modules To Build
 
@@ -603,9 +677,11 @@ V1 / MVP 不包含：
 - 首批审核点过多会拖垮 MVP；过少会不足以验证结果页和证据模型。
 - 首批结构化字段和必填性虽然已确认，但字段 key、数值精度、枚举编码、禁用/删除后的历史兼容规则仍会影响 API 契约和管理台输入设计。
 - 本地 A30/Gemma endpoint、模型版本和容量边界未定，会影响模型网关和预算基线。
-- 普通结果 URL 访问控制未定，会影响前端、API 和安全设计。
+- MVP 普通结果 URL 访问控制已确认由外围系统编码加密和访问控制承担，平台侧暂不做登录、公开令牌或独立访问控制。
+- MVP 管理台访问控制同样由部署环境、内网、VPN、反向代理或外围系统承担，平台内暂不做登录、账号体系和权限矩阵。
+- MVP 管理台常规页面和常规 API 默认只展示摘要级诊断信息，不展示或返回完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。完整敏感诊断导出如后续需要，应作为 Pilot / Production Readiness 的受控能力单独设计。
 - 数据库 ERD 和迁移策略未定，会影响 scaffold。
-- `ADR-001`、`ADR-002`、`ADR-003`、`ADR-005` 尚未全部 Accepted，当前仍不建议开始业务功能开发或 scaffold。
+- `ADR-001`、`ADR-002`、`ADR-003` 尚未全部 Accepted，当前仍不建议开始业务功能开发或 scaffold。
 
 ## 14. Open Questions
 
@@ -614,13 +690,10 @@ V1 / MVP 不包含：
 - 外币合同进入哪个后续阶段，以及需要支持哪些币种和汇率语义？
 - 数据库实体最终 ERD 和迁移策略是什么？
 - API OpenAPI 契约、错误码和认证方式是什么？
-- 管理台登录方案和权限矩阵是什么？
-- 首批审核点、core 标记、EvidenceSlot 和税额公式点是否按 `ADR-005` 确认？
+- Pilot / Production Readiness 的管理台登录、角色权限、敏感诊断导出审批和审计矩阵是什么？
 - 首批结构化字段的最终英文 key、数值精度、枚举编码和校验错误码是什么？
 - 自定义新增字段的权限、字段类型集合、编码唯一性、禁用/删除规则和审计要求是什么？
-- 首批合同类型是否只选一个类型试点？
 - 样本集来源、脱敏流程、评测环境和数据 owner 是谁？
-- 普通结果 URL 是内网公开令牌访问，还是必须登录？
 - 税率是否需要新增固定 CandidateRole？
 - `requiresHigherBudget` 和 `recommendedBudgetProfile` 是否进入第一轮 MVP 普通结果页？
 - 本地 A30/Gemma endpoint、模型版本、部署形态和容量边界是什么？
@@ -660,6 +733,10 @@ V1 / MVP 不包含：
 - Gemma 不可用或超时时，不阻断所有审核点；规则和候选已可靠的点继续由后端确定性裁判执行，依赖 Gemma 消歧且无法完成的点输出 `NOT_CONCLUDED`。
 - MVP 不保存完整模型原始输出，也不在管理台展示完整模型原始输出。
 - “任务日志”不属于“配置审核规则”页面，应放在任务列表/任务详情层级。
+- 任务详情页顶部需要展示当次 execution 实际绑定的“审核模型”；模型来源通过 `Model Profile` 管理，可包括本地 Gemma4、公网 DeepSeek 兼容 OpenAI API 和 mock fallback。
+- 管理台可启用多个模型 profile，并通过默认模型和使用范围控制新任务使用哪个模型。公网模型在业务允许的场景下可用于链路验证、演示、评测或内部审核任务；能否用于真实合同由业务方、管理员和部署环境承担配置责任。
+- 每个 execution 必须绑定当次 `modelProfileCode`、provider 类型、模型名称和配置版本；历史快照不随后续模型切换变化。
+- 模型不论来自本地还是公网，都不得直接决定最终业务 finding；最终点级状态仍由后端裁判合成。
 - MVP 任务日志记录粒度已确认：只记录阶段级事件，不记录每个内部函数调用；用于判断任务卡在解析、索引、计划、证据构建、规则审核、模型辅助或结果合成等阶段。
 - 阶段日志可包含摘要级 `SYS-*` 诊断、attempt、耗时、重试和超时信息；模型阶段只展示调用状态、token、耗时、模型版本、schema 校验和诊断摘要，不展示完整 prompt、完整 raw output、endpoint secret、stack trace 或逐函数调试日志。
 
@@ -668,9 +745,9 @@ V1 / MVP 不包含：
 - 正式技术栈、框架、工程目录和测试策略。
 - 数据库最终 ERD、迁移策略和字段版本化落地方式。
 - API OpenAPI 契约、错误码、认证方式和外部系统调用策略。
-- 管理台登录方案、权限矩阵和配置变更审计要求。
+- Pilot / Production Readiness 的管理台登录、角色权限、敏感诊断导出审批和审计矩阵。
 - 本地 A30/Gemma endpoint、模型版本、部署形态、容量边界和超时预算。
-- 普通结果 URL 的访问控制方式：内网公开令牌访问，还是必须登录访问。
+- `usageScope=PRODUCTION_REVIEW` 的公网模型 profile 审批角色、默认关闭策略和审计字段。
 - 首批结构化字段的最终英文 key、枚举编码、校验错误码和自定义字段权限细节。
 - 税率是否需要新增固定 CandidateRole，或仅作为 optional raw candidate 进入诊断。
 - 样本集来源、脱敏流程、评测环境和数据 owner。
@@ -686,13 +763,17 @@ V1 / MVP 不包含：
 - `docs/database.md`：同步结构化字段、配置、快照、比例/税率存储口径和版本化方向。
 - `docs/sap.md`：同步 SAP/API 与管理台字段一致、币种和结构化字段输入口径。
 - `docs/ai-review.md`：同步 Gemma 辅助边界、EvidenceSlot、NOT_CONCLUDED、模型原始输出保存限制和技术治理延后项。
-- `ADR-005-first-review-points-selection.md`：记录首批审核点选择基线，状态仍为 `Proposed`。
+- `ADR-006-model-profile-switching-and-public-provider-scope.md`：记录 Model Profile 切换和公网模型使用边界。
+- `ADR-007-tuning-packet-architecture.md`：记录 Tuning Packet 架构和导出边界。
+- `ADR-008-definition-term-index.md`：记录 DefinitionTermIndex 作为索引层能力。
+- `ADR-009-ai-tuning-governance.md`：记录 AI 调优治理链路和 `AI Advice != Production Change` 红线。
+- `ADR-005-first-review-points-selection.md`：记录首批 9 个 core 审核点选择基线，状态为 `Accepted`。
 - `tasks/active/TASK-003-first-review-points-selection.md`：记录首批审核点选择任务结果。
 - `changelog/2026-06.md`：记录 2026-06 的项目记忆变更。
 
 ### 15.4 未完成讨论
 
-- “配置审核规则”之外的任务详情页信息架构仍需确认，包括任务日志、解析质量、EvidencePacket 摘要、模型辅助状态和结果快照入口如何组织。
+- “配置审核规则”之外的任务详情页信息架构仍需继续确认，包括任务日志、解析质量、EvidencePacket 摘要、模型辅助状态和结果快照入口如何组织；顶部概览区已确认需要展示审核模型。
 - 首批 `ReviewPointDefinition` 的具体草稿尚未生成，包括每个点的 required structured fields、EvidenceSlot、executionStrategy、降级规则和业务文案。
 - 最小 OpenAPI 契约尚未生成，包括任务创建、状态查询、结果 URL、字段录入、错误码和认证边界。
 - Word parser baseline plan 尚未完成，包括 DOCX 解析库选择、证据模型、表格/控件/附件处理和 SourceAnchor 产物。

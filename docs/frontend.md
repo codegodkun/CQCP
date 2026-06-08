@@ -8,6 +8,10 @@
 
 ## 普通结果页
 
+MVP 普通结果 URL 不做平台侧登录、公开令牌或独立访问控制。外围系统负责对 URL 进行编码、加密、分发和访问控制，平台暂不在该方向投入额外能力。
+
+普通结果页仍必须遵守展示安全边界：不暴露 prompt、raw output、endpoint、stack trace、admin logs、secret 或管理台诊断详情。
+
 布局：
 
 - 左侧：合同原文全文/预览。
@@ -97,6 +101,7 @@
 - 审核执行计划。
 - EvidencePacket 摘要。
 - Gemma 调用状态。
+- 模型配置列表和审核模型展示。
 - 审核点/规则集配置。
 - 字段词库/正则库版本管理。
 - 失败样本与候选优化。
@@ -109,6 +114,54 @@
 - 人工反馈入口；若一期提供该入口，至少支持对核心审核点标记误报并记录反馈来源。
 
 管理台可以展示中间诊断和部分 point result；普通结果 URL 不展示半成品审核结果。
+
+MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。前端不得因为 MVP 不做登录而扩大敏感信息展示范围。
+
+管理台常规页面默认只展示摘要级诊断信息。完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包和密钥不在常规页面展示；如后续需要查看或导出，应作为 Pilot / Production Readiness 的受控诊断能力单独设计，纳入权限、脱敏、审批和审计。
+
+### 任务详情页顶部概览
+
+任务详情页顶部概览区采用分层双视图的第一层，面向快速判断任务状态。MVP 至少展示：
+
+- 任务基础信息：`taskId`、`executionId`、合同名称、创建来源、创建时间。
+- 当前执行状态：任务状态、当前 stage、耗时。
+- 审核模型：本次 execution 绑定的 `Model Profile`，包括模型展示名、provider 类型、模型名称和配置版本摘要。
+- 审核点摘要：`plannedPointCount`、`passCount`、`errorCount`、`warningCount`、`notConcludedCount`、`skippedCount`。
+- 关键异常摘要：解析低置信、模型不可用、证据不足、结果合成失败等业务化摘要和必要诊断。
+- 结果入口：普通结果 URL 和 `ReviewResultSnapshot` 入口。
+
+审核模型示例：
+
+```text
+DeepSeek V4 Flash（公网兼容 OpenAI 接口）
+Gemma 4 26B via vLLM
+Local mock fallback
+```
+
+公网模型是否可用于真实合同由业务方、管理员和部署环境承担配置责任。前端必须展示当次实际使用模型，避免用户误以为所有任务都使用同一模型。
+
+管理台创建任务时可以选择已启用且密钥已配置的模型 profile；不选择时使用当前默认模型。外部 API MVP 不允许调用方指定 `modelProfileCode`，因此管理台模型选择能力不得被理解为 SAP/OA/采购系统的第一版接口能力。
+
+### AI 调优包
+
+任务详情页 MVP 新增 `AI 调优包` tab。该 tab 面向内部人员生成和复制 TuningPacket，用于辅助人和外部 AI 分析问题，不是自动调优系统。
+
+允许能力：
+
+- 生成 TuningPacket。
+- 按 `SINGLE_POINT` 或 `FOCUSED` 导出 TuningPacket。
+- 复制结构化文本或 JSON 到外部 AI。
+- 保存外部 AI 返回的建议文本，作为调优线索记录。
+
+不允许能力：
+
+- 自动调用公网 AI。
+- 自动生成正式 `AITuningAdvice`。
+- 自动执行 `CrossModelDiagnostic`。
+- 自动修改 prompt、rule、pattern、field lexicon、CandidateResolver、EvidenceSlot、ModelProfile 或 ReviewPointDefinition。
+- 自动影响当前 `ReviewResultSnapshot`。
+
+`AI 调优包` tab 不展示完整合同、完整 prompt、完整模型 raw output、endpoint secret、stack trace 或全部内部日志。
 
 ### 合同字段配置
 
@@ -270,15 +323,14 @@ MVP 不保存也不提供 `redactedRawOutput` 展开；受控保存完整 redact
 ## 权限边界
 
 - 普通结果 URL 不暴露 prompt、raw output、endpoint、stack trace、admin logs。
-- 管理台至少登录保护。
-- Admin API 必须后端保护。
-- 规则/prompt/pattern 发布需要管理员确认。
-- 普通业务管理员不可访问 `/api/admin/caller-policies/**`。
-- 查看 `encryptedRawOutput` 需要额外审批。
+- MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。
+- 管理台常规页面不展示完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。
+- 规则/prompt/pattern 发布治理延后到 Pilot / Production Readiness；MVP 不支持自动发布，也不支持 AI 建议直接改生产配置。
+- 受控敏感诊断导出、`encryptedRawOutput` 展开、角色权限和审批审计延后到 Pilot / Production Readiness。
 
 ## 待确认
 
-- 前端框架、路由、组件库、设计系统、登录方案。
-- 普通结果页是否需要独立公开访问令牌或只允许内网访问。
+- 前端框架、路由、组件库和设计系统。
+- Pilot / Production Readiness 的登录方案、角色权限、敏感诊断导出审批和审计矩阵。
 - “申请深度审核”入口是否进入 V1 MVP。
 - 人工反馈入口是否进入 V1 MVP。

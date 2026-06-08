@@ -23,6 +23,10 @@
 
 结果 URL 可以提前生成，但 `ReviewResultSnapshot` 必须等审核完成、部分完成或失败后生成。
 
+MVP 普通结果 URL 不做平台侧登录、公开令牌或独立访问控制。外围系统负责对 URL 进行编码、加密、分发和访问控制。平台侧暂不在结果 URL 权限方向投入额外能力，但普通结果页不得暴露 prompt、raw output、endpoint、stack trace、admin logs、secret 或管理台诊断详情。
+
+外部 API MVP 不允许调用方指定 `modelProfileCode`。SAP/OA/采购系统创建任务时使用平台当前默认启用的 `Model Profile`，避免外部集成契约过早绑定模型配置细节。状态查询或结果摘要可展示本次 execution 实际使用的审核模型摘要，但外部系统不能控制模型选择。后续若需要开放 caller 指定模型，必须通过 caller policy 白名单和独立 API 契约扩展。
+
 外部 API 顶层状态：
 
 - `QUEUED`

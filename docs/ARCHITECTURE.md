@@ -100,6 +100,7 @@ flowchart TD
 核心原则：
 
 - 一次解析、一套索引、多审核点共享证据。
+- 项目主定位保持为 Contract Quality Control Platform / 合同质量控制中台，不改为 AI 合同审核平台。模型会变化，但 EvidenceSlot、CandidateResolver、ReviewPointFamily 和 Tuning Governance 是长期资产。
 - `contextType`、`sourceOrigin`、`sourceExtractionMode` 和区域置信度从解析产物进入 CandidateIndex，并继续参与 EvidenceRankScore、exclusion policy、CandidateResolver 和 EvidenceSlot coverage；不得在索引层丢弃这些 provenance 元数据。
 - 图中的 `审核执行计划` 即 `ReviewExecutionPlan`，执行顺序固定为 `CandidateIndex -> ReviewExecutionPlan -> CandidateResolver`；`FamilyModelCallPlan` 在 `FamilyEvidencePlan` 汇总跨 shard 模型需求后生成，不反向影响静态审核计划。
 - 合同类型画像在 CandidateIndex 前确定为“路由 profile”；外部或人工类型优先，系统自动建议只作为 hint。CandidateIndex 可以使用 `ContractTypeProfile` 的词库和 profile boost，但仍保持高召回，不因合同类型过滤掉通用候选。
@@ -109,6 +110,65 @@ flowchart TD
 - 不能确定的交给 Gemma 做局部抽取或语义辅助。
 - 最终 `PASS`、`WARNING`、`ERROR`、`SYS-*` 由后端统一合成。
 - 所有规则、正则、prompt、模型、合同类型画像和 EvidenceSelector 必须版本化。
+
+### 4.1 双链路隔离
+
+平台必须将正式生产审核链路和调优治理链路彻底隔离。
+
+生产审核链路：
+
+```text
+Contract
+-> Parser
+-> CandidateResolver
+-> EvidenceSlot
+-> Review Engine
+-> Finding
+-> ReviewResultSnapshot
+```
+
+生产审核链路原则：
+
+- 稳定。
+- 可解释。
+- 可审计。
+- 证据不足不生成业务 finding。
+- 后端负责最终点级裁判。
+- 模型只做局部抽取、证据选择、候选归属或语义辅助。
+
+调优治理链路：
+
+```text
+ReviewResultSnapshot
+-> TuningPacket
+-> CrossModelDiagnostic
+-> AITuningAdvice
+-> Candidate Change
+-> Regression Validation
+-> Human Approval
+-> Release
+```
+
+调优治理链路原则：
+
+- 实验。
+- 诊断。
+- 优化。
+- 治理。
+
+核心红线：
+
+```text
+AI Advice != Production Change
+```
+
+任何 AI 建议不得直接修改 prompt、rule、CandidateResolver、EvidenceSlot、ModelProfile 或后端确定性裁判，不得影响当前正式 `ReviewResultSnapshot`。AI 建议必须先进入候选变更，经过回归验证、人工批准和版本发布后，才可能影响后续新建任务。
+
+MVP 只建设 Tuning Packet、PointDiagnostic、ExecutionSummary 和导出配置，支持人工复制诊断包给 DeepSeek、ChatGPT、Claude 或其他 AI 辅助分析；不自动调用公网 AI，不自动调优，不自动改规则。
+
+Pilot 再建设 CrossModelDiagnostic、CrossModelComparison 和结构化 AITuningAdvice，但仍只生成候选建议，不自动生效。
+
+Production Readiness 再建设 Regression Center、Release Governance、Rollback、Audit 和 OptimizationEffect。
 
 ## 5. Word-first 文档解析
 
