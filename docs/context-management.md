@@ -22,7 +22,7 @@
 ## 写入哪个文件
 
 - `PROJECT_BRIEF.md`：写项目目标、用户角色、业务边界、核心流程和成功标准。只写稳定、已确认、跨阶段有效的内容。
-- `CURRENT_CONTEXT.md`：写当前阶段、当前判断、正在关注的问题、待确认事项、下一步任务和当前禁止推进事项。
+- `CURRENT_CONTEXT.md`：只写当前阶段、当前判断摘要、活跃任务、已完成任务、已接受 ADR、当前阻塞项、待确认事项、下一步任务和当前禁止推进事项。不得复制 PRD、ADR、TASK、OpenAPI、领域模型、审核点规则或 `docs/*` 的详细内容；详细内容只保留引用路径。
 - `ROADMAP.md`：写 V1/V2/V3 阶段拆分、里程碑、阶段边界和阶段性验证目标。
 - `docs/*.md`：写模块级长期知识。前端写 `docs/frontend.md`，后端写 `docs/backend.md`，数据库写 `docs/database.md`，AI 审核写 `docs/ai-review.md`，SAP/OA 写 `docs/sap.md`，部署写 `docs/deployment.md`。
 - `docs/context-management.md`：写项目记忆写入规则、文件分工、人工确认标准和 Memory Writeback 输出格式。

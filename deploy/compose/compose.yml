@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${CQCP_DB_NAME:-cqcp}
+      POSTGRES_USER: ${CQCP_DB_USERNAME:-cqcp}
+      POSTGRES_PASSWORD: ${CQCP_DB_PASSWORD:-cqcp}
+    ports:
+      - "${CQCP_DB_PORT:-5432}:5432"
+
+  api-server:
+    build:
+      context: ../../apps/api-server
+    environment:
+      CQCP_DB_URL: jdbc:postgresql://postgres:5432/${CQCP_DB_NAME:-cqcp}
+      CQCP_DB_USERNAME: ${CQCP_DB_USERNAME:-cqcp}
+      CQCP_DB_PASSWORD: ${CQCP_DB_PASSWORD:-cqcp}
+    depends_on:
+      - postgres
+
+  admin-web:
+    build:
+      context: ../../apps/admin-web
+    depends_on:
+      - api-server
+

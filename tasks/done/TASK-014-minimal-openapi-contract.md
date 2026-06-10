@@ -1,6 +1,6 @@
 # TASK-014：最小 OpenAPI 契约
 
-状态：待开始
+状态：已完成
 类型：接口契约 / 文档冻结 / scaffold 前置
 
 优先级：P0
@@ -135,8 +135,20 @@
 
 ## 完成记录
 
-- 完成日期：待填写
-- 变更文件：待填写
-- 测试结果：待填写
-- 遗留问题：待填写
-- 备注：待填写
+- 完成日期：2026-06-10
+- 变更文件：
+  - `packages/api-contracts/README.md`
+  - `packages/api-contracts/openapi.yaml`
+  - `packages/api-contracts/openapi.json`
+  - `CURRENT_CONTEXT.md`
+  - `changelog/2026-06.md`
+  - `tasks/done/TASK-014-minimal-openapi-contract.md`
+- 测试结果：
+  - 已完成人工边界核对，确认契约与 `TASK-004`、`TASK-005`、`ADR-008`、`ADR-012`、`docs/backend.md`、`docs/sap.md` 一致
+  - 已完成 `openapi.json` 结构校验
+  - 已尝试执行 `openapi.yaml` 解析校验；若运行环境支持 `ConvertFrom-Yaml` 则可通过同一命令复核
+- 遗留问题：
+  - `ADR-002-v1-result-and-diagnostic-contract` 仍为 `Proposed`，本次按现有冻结边界落公开契约，未在当前任务内推进状态变更
+  - correction execution、历史 execution 列表、Admin API、预算诊断与 `DefinitionTermIndex` 公开可见性仍留给后续任务
+- 备注：
+  - 本次只冻结最小公开 API，不实现 Controller、Service、数据库迁移或脚手架

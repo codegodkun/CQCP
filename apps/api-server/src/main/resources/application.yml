@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: cqcp-api-server
+  datasource:
+    url: ${CQCP_DB_URL:jdbc:postgresql://localhost:5432/cqcp}
+    username: ${CQCP_DB_USERNAME:cqcp}
+    password: ${CQCP_DB_PASSWORD:cqcp}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+

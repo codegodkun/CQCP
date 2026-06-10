@@ -1,6 +1,6 @@
 # TASK-006：仅在 ADR 确认后搭建脚手架
 
-状态：待开始
+状态：已完成
 
 类型：技术脚手架 / 执行门禁
 
@@ -116,7 +116,7 @@
 - ADR-011 是否 Accepted。
 - ADR-003 是否 Accepted。
 - ADR-012 是否 Accepted。
-- ADR-002 是否 Accepted。
+- ADR-002 已于 2026-06-10 更新为 `Accepted`，脚手架门禁已解除该项阻塞。
 - 是否需要先创建 git branch。
 - scaffold 是否需要在独立任务窗口执行。
 
@@ -129,8 +129,32 @@
 
 ## 完成记录
 
-- 完成日期：待填写。
-- 变更文件：待填写。
-- 测试结果：待填写。
-- 遗留问题：待填写。
-- 备注：待填写。
+- 完成日期：2026-06-10
+- 变更文件：
+  - `.gitignore`
+  - `package.json`
+  - `apps/admin-web/*`
+  - `apps/api-server/*`
+  - `deploy/compose/compose.yml`
+  - `deploy/nginx/default.conf`
+  - `deploy/env/.env.example`
+  - `packages/review-assets/*`
+  - `packages/test-fixtures/README.md`
+  - `CURRENT_CONTEXT.md`
+  - `changelog/2026-06.md`
+  - `tasks/active/TASK-006-scaffold-only-after-adr.md`
+- 测试结果：
+  - `docker compose -f deploy/compose/compose.yml config` 通过，说明 Compose 入口结构有效。
+  - `node --check apps/admin-web/eslint.config.js` 通过，说明前端 ESLint 配置文件语法有效。
+  - `node -e "JSON.parse(...)"` 通过，说明根目录与前端 `package.json` JSON 结构有效。
+  - `npm.cmd --workspace apps/admin-web run build` 失败：缺少已安装依赖，`tsc` 未找到。
+  - `npm.cmd --workspace apps/admin-web run lint` 失败：缺少已安装依赖，`eslint` 未找到。
+  - `npm.cmd --workspace apps/admin-web run test` 失败：缺少已安装依赖，`vitest` 未找到。
+  - `gradle -v` 失败：本机 `PATH` 缺少 `Gradle`。
+- 遗留问题：
+  - 前端尚未安装依赖，因此无法完成真正的构建、Lint 和测试。
+  - 后端尚未提供 Gradle wrapper，且当前环境无 `Java/Gradle`，无法完成编译级验证。
+  - `deploy/compose/compose.yml` 仅完成脚手架入口，未经过镜像构建与容器联调。
+- 备注：
+  - 本次仅创建纯技术骨架与占位文件，未编写任何业务审核逻辑、数据库 schema 或 API 业务实现。
+  - `ADR-002` 已为 `Accepted`，本任务执行前置门禁已满足。

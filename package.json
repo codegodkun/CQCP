@@ -1,0 +1,14 @@
+{
+  "name": "cqcp",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/admin-web"
+  ],
+  "scripts": {
+    "build:admin-web": "npm --workspace apps/admin-web run build",
+    "lint:admin-web": "npm --workspace apps/admin-web run lint",
+    "test:admin-web": "npm --workspace apps/admin-web run test"
+  }
+}
+
