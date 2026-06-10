@@ -92,6 +92,7 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 
 - 本任务为规划任务，不运行代码测试。
 - 验证方式是用 2-3 个脱敏或合成合同场景人工检查审核点是否可执行。
+- MVP 验收样本由业务方提供脱敏或合成中文 `.docx` 工程采购合同。平台不负责自动识别样本是否已脱敏，也不在 MVP 中提供脱敏检测或自动脱敏能力；样本进入仓库或评测环境的前提，是业务方/data owner 已确认其可用于项目验证。
 
 ## 文档更新要求
 
@@ -183,7 +184,7 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
   - `taxIncludedAmountCandidate`：required，acceptedRoles=`TAX_INCLUDED_AMOUNT`，minCandidates=1，maxCandidates=5，confidenceRequired=`HIGH`，resolverPolicy=`deterministicOnly`。
   - `taxExcludedAmountCandidate`：required，acceptedRoles=`TAX_EXCLUDED_AMOUNT`，minCandidates=1，maxCandidates=5，confidenceRequired=`HIGH`，resolverPolicy=`deterministicOnly`。
   - `taxAmountCandidate`：required，acceptedRoles=`TAX_AMOUNT`，minCandidates=1，maxCandidates=5，confidenceRequired=`HIGH`，resolverPolicy=`deterministicOnly`。
-  - `taxRateCandidate`：optional；税率是否新增固定 CandidateRole 仍待确认，MVP 不为此临时扩展 role。
+  - `taxRateCandidate`：optional，acceptedRoles=`TAX_RATE`，来源为经 CandidateResolver 可靠归属的 `CandidateRole=taxRate`；不得把其他比例候选按同值直接复用为税率。
 - 策略：后端 `FORMULA_RULE`，校验含税金额、不含税金额、税额之间的公式关系。
 - Gemma/A30：不需要，公式和数值裁判不得交给模型。
 - 降级：结构化税额字段未提供时 `SKIPPED`；合同税额 slot 缺失输出 `SYS-INDEX-INCOMPLETE`；角色冲突输出 `SYS-ROLE-CONFLICT`；规则异常输出 `SYS-RULE-ERROR`。
@@ -234,18 +235,13 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 
 ### 待确认
 
-- 首批合同类型是否只选一个类型试点。
-- 首批结构化字段由外部系统、简易管理台人工录入还是两者都支持。
-- 首批样本集数量、数据 owner、脱敏流程和验收阈值。
-- 税率是否需要新增固定 CandidateRole，或仅作为 optional raw candidate 进入诊断。
-- 税率是否需要新增固定 CandidateRole，或仅作为 optional raw candidate 进入诊断。
-- `requiresHigherBudget` 和 `recommendedBudgetProfile` 是否进入第一轮 MVP 普通结果页。
+- 评测环境、样本文件命名规范、保存目录和预期结果文件格式。
 
 ### 后续任务线索
 
 - 创建首批 `ReviewPointDefinition` 草案任务。
 - 创建首批字段词库、ValueGrammar 和正则边界任务。
-- 创建首批合成/脱敏样本场景任务。
+- 创建首批样本场景任务，明确样本命名、保存目录、预期结果文件格式和业务方/data owner 确认记录。
 - 在 `ADR-002` 中继续固化普通结果页、管理台和外部 API 的状态/诊断可见性。
 
 ## 完成记录
@@ -253,5 +249,5 @@ V1 文档描述了多个审核点族和完整混合路由能力。第一轮 MVP 
 - 完成日期：2026-06-07。
 - 变更文件：`CURRENT_CONTEXT.md`、`ROADMAP.md`、`docs/ai-review.md`、`changelog/2026-06.md`、`decisions/ADR-005-first-review-points-selection.md`、本任务包。
 - 测试结果：规划任务，未运行代码测试；已按 2-3 个合成场景口径人工检查首批点可覆盖一致、冲突、缺证据/歧义降级三类场景。
-- 遗留问题：首批合同类型、结构化字段来源、样本集 owner、税率 role、`requiresHigherBudget` 可见性仍待人工确认。
+- 遗留问题：评测环境、样本文件命名规范、保存目录和预期结果文件格式仍待确认。
 - 备注：本任务未创建业务代码，未创建脚手架，未安装依赖，未修改数据库。

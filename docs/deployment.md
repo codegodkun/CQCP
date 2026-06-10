@@ -2,6 +2,14 @@
 
 ## 一期执行与运维边界
 
+MVP 部署基线冻结如下：
+
+- 使用 Docker Compose 作为本地开发与 MVP 部署编排入口
+- 前端以静态资源形式交付，由 Nginx 承载
+- 后端以 Spring Boot API 服务运行
+- 健康检查与最小 metrics 通过 Spring Boot Actuator 暴露
+- LibreOffice headless 以容器化转换服务方式提供文档转换能力
+
 一期不做复杂并行，但必须异步。
 
 一期单 worker 不承诺高并发 SLA。默认运营边界：
@@ -169,6 +177,11 @@ operatorActionRequired=true
 - record queue wait estimate under STANDARD and DEEP_REVIEW。
 
 若预算相关 `SYS-*` 在核心审核点上高频出现，不得直接进入生产试点。
+
+## 基线冻结文档
+
+- 运行时的模型 timeout、retry 和 circuit breaker 基线以 `docs/model-gateway-budget-baseline.md` 为准
+- Word parser 的 `.docx/.doc` MVP 边界和 preview 定位口径以 `docs/word-parser-mvp-boundary.md` 为准
 
 ## 待确认
 

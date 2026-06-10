@@ -46,6 +46,7 @@ V2 的产品定位是：
 一期支持：
 
 - 中文 `.docx` / `.doc` 合同。
+- `.doc` 支持：一期技术能力已设计（LibreOffice headless 转换链路），但 MVP 阶段暂不对外开放；管理台上传界面必须标注“当前仅支持 DOCX”；`.doc` 能力在 Pilot 或之后阶段激活。
 - 6 万字左右长合同。
 - 合同正文、附件、表格、标题、目录、Word 控件、复选框、单选框。
 - 外部系统或管理台提供的结构化字段。
@@ -419,6 +420,47 @@ UNKNOWN
 - `AttachmentIndex`：附件、附表、承诺函、工程量清单等区域。
 - `SensitiveInfoIndex`：手机号、身份证、银行卡、邮箱、统一社会信用代码等。
 - `ControlIndex`：复选框、单选框、content controls 的候选值。
+- `DefinitionTermIndex`：合同内定义术语，识别“本合同所称……”等定义性条款，按需注入相关审核点的 EvidenceBundle。
+
+`DefinitionTermIndex` 构建时机：解析阶段，与 CandidateIndex 并行完成。
+
+`DefinitionTermIndex` 条目字段：
+
+```text
+DefinitionTermEntry
+- term
+- normalizedTerm
+- definitionText
+- sourceAnchor
+- applicableScope: GLOBAL / SECTION / APPENDIX / TABLE
+- scopeReference
+- confidence
+- conflictsWith[]
+```
+
+Parser 触发模式：
+
+```text
+本合同所称 / 本协议所称 / 以下简称
+本条所称 / 前款所称 / 统称为 / 合称为
+```
+
+注入规则：
+
+- 审核点涉及术语解释、付款节点、合同角色、金额口径或税费口径时，查询 DefinitionTermIndex。
+- 触发条件在 `ContractTypeProfile` 里预定义，不靠人工判断。
+- 命中定义作为 compact definition context 注入 PointEvidenceOverlay，不默认注入每个 EvidenceBundle。
+- `GLOBAL` scope 定义可作为 shared context 注入相关 family。
+
+未命中处理：
+
+- `suspectedFailureClasses[]` 加入 `DEFINITION_TERM_MISSING_NO_INDEX`。
+- 进入 `NOT_CONCLUDED`，不得猜测。
+
+冲突处理：
+
+- `suspectedFailureClasses[]` 加入 `DEFINITION_TERM_CONFLICT`。
+- 上报 `WARNING`，进入 `NOT_CONCLUDED`，不得静默选一个。
 
 索引构建应使用稳定规则、字段词库、正则和值语法，不应依赖 Gemma 作为原始解析主力。
 
@@ -619,6 +661,11 @@ maxInstructionAndSchemaTokens = 1000
 maxOutputTokens = 1500
 maxModelCallsPerTask = 4
 maxModelCallsPerFamily = 1
+// 含义：family primary call 次数上限为 1
+// second pass（PointSupplementArtifact）不计入此限制
+// second pass 受 ReviewBudgetProfile 独立控制
+// 如需显式管理 supplement 上限，可扩展为
+// maxSupplementCallsPerPoint（一期默认 1）
 ```
 
 这些值是启动基线，不是质量承诺。上线前必须用目标样本集记录 token 分布、模型调用次数、`SYS-EVIDENCE-BUDGET-EXCEEDED` 和 `SYS-MODEL-BUDGET-EXCEEDED` 触发率，作为首次启用依据。
@@ -835,7 +882,10 @@ CandidateRole
 - PARTY_B
 - PREPAYMENT_RATIO
 - PROGRESS_PAYMENT_RATIO
+- TAX_RATE
+- COMPLETION_PAYMENT_RATIO
 - SETTLEMENT_PAYMENT_RATIO
+- WARRANTY_RETENTION_RATIO
 - PENALTY_RATIO
 - UNKNOWN
 ```
@@ -873,6 +923,13 @@ GemmaAssistedRoleResolution
 - 产出 GemmaExtractionArtifact
 - 不能回写改变 CandidateIndex，只能作为该 execution 的辅助 artifact
 ```
+
+GemmaAssistedRoleResolution 禁止行为：
+
+- 不得回写或修改 CandidateIndex。
+- 不得覆盖 DeterministicRoleResolution 已输出的 `HIGH` 结论。
+- 只能作为当次 execution 的辅助 artifact。
+- 不得影响当前正式 ReviewResultSnapshot。
 
 本节的 `RoleDisambiguationPolicy` 定义与限制以第 22.7 节为准。
 
@@ -1105,6 +1162,12 @@ GemmaExtractionArtifact
 - Artifact 存储 `HIGH/MEDIUM/LOW/CONFLICTED` 即可；一期不要求概率分布。
 - 不同审核点可声明各自 `confidenceRequired`，不满足则该点降级或触发补充调用。
 - 不允许管理台开启跨任务 artifact 复用；相似合同批量优化属于二期能力。
+
+复用边界限制：
+
+- 同一 task、同一 execution 内可复用，前提是满足版本和 hash 条件。
+- 同一 `taskId` 下不同 `executionId` 之间不得复用；不同 execution 可能绑定不同规则集版本、模型版本或预算 profile。
+- 跨 `taskId` 不得复用，一期明确禁止。
 
 ### 10.7 全局冲突检查一期范围
 
@@ -1408,7 +1471,7 @@ Single Review Worker
 - 不同审核点按类型展示不同字段，不再统一显示“结构化值 / 合同原文值”。
 - 普通用户不直接看到 `SYS-INDEX-INCOMPLETE`、`SYS-ROLE-CONFLICT` 等技术码。
 - 受影响审核点显示业务化提示，例如“证据不足，未形成可靠结论”或“证据存在冲突，请人工结合原文判断”。
-- 当 `requiresHigherBudget=true` 时，显示“该审核点在当前审核深度下未完成可靠判断”，并在管理台展示 `recommendedBudgetProfile`。
+- 第一轮 MVP 普通结果页不展示 `requiresHigherBudget` 或 `recommendedBudgetProfile`，也不提供“申请深度审核”入口；只展示业务化 `NOT_CONCLUDED` 原因和人工核对提示。管理台任务详情、评测报告和 AI 调优包可展示预算诊断。
 - 当存在 `reviewCompleteness` 时，顶部摘要展示审核完整度、未结论点数量和低置信影响摘要。
 - 当存在合同类型歧义时，普通结果页仅显示“合同类型可能不匹配，部分审核点未完成可靠判断”；管理台展示 `suggestedTypes[]` 和 `suggestionConfidence`。
 - 当 `pointCoverageStatus=PARTIAL` 但审核点仍可执行时，卡片显示“部分依赖证据未覆盖”，并允许展开查看缺失的 optional secondary evidence；不得把该提示显示成确定性业务风险。
@@ -1424,7 +1487,6 @@ concludedPointCount / executablePointCount
 notConcludedPointCount
 corePointNotConcludedCount
 criticalSlotCoverageRate
-requiresHigherBudgetCount
 lowConfidenceRegionImpact summary
 ```
 
@@ -1438,9 +1500,7 @@ lowConfidenceRegionImpact summary
 
 “关键证据覆盖”必须提供 tooltip：“关键证据是该审核点形成可靠判断所必需的核心信息；覆盖越高，表示系统找到的可用依据越完整。”该提示解释覆盖完整度，不承诺结论正确率。
 
-当 `requiresHigherBudget=true` 且 caller policy 允许 correction execution 时，结果页可提供“申请深度审核”命令入口；该入口仍由后端审批 budget profile，不保证自动升级。
-
-同一 task 已存在 non-terminal execution 时，“申请深度审核”按钮必须禁用并显示“已有审核进行中，请等待完成”。服务端仍以 `409 TASK_EXECUTION_IN_PROGRESS` 作为幂等保护，前端不得通过重复点击创建多个 execution。
+“申请深度审核”入口不进入第一轮 MVP 普通结果页。后续若进入 Pilot，应与 correction execution、caller policy、预算审批和幂等保护一起设计，不在普通结果页提前放置不可执行入口。
 
 对于 `PROVEN_REQUIRED_CLAUSE_ABSENT`，结果卡必须展示“覆盖证明摘要”，至少包括已检查的正文/附件范围、相关 section、解析状态和索引版本；不得伪造一份“未找到证据列表”作为正向证据。
 
@@ -1549,6 +1609,104 @@ ReviewResultSnapshot
 - ruleSetDatasetStatus
 - createdAt
 ```
+
+`PointDiagnostic` 新增字段：
+
+```text
+PointDiagnostic
+- definitionTermsQueried[]
+- definitionTermsHit[]
+- definitionTermsMissed_noIndex[]
+- definitionTermsMissed_truncated[]
+- definitionConflictDetected
+- evidenceBundleTokenCount
+- evidenceBundleTruncated
+- truncatedSlots[]
+- preflightFailedReason
+- modelWasCalled
+- localModelPromptTokensActual
+- suspectedFailureClasses[]
+```
+
+字段含义：
+
+- `definitionTermsQueried[]`：本审核点查询了哪些 DefinitionTermIndex 条目。
+- `definitionTermsHit[]`：命中了哪些定义。
+- `definitionTermsMissed_noIndex[]`：未命中，索引本身不存在；修复方向是 Parser / DefinitionTermIndex 覆盖。
+- `definitionTermsMissed_truncated[]`：定义存在但因 token budget 截断未注入；修复方向是 token budget 分配。
+- `definitionConflictDetected`：是否检测到定义冲突。
+- `evidenceBundleTokenCount`：实际送入模型的 token 数。
+- `evidenceBundleTruncated`：EvidenceBundle 是否发生截断。
+- `truncatedSlots[]`：哪些 EvidenceSlot 因截断被丢弃。
+- `preflightFailedReason`：preflight 阶段失败原因。
+- `modelWasCalled`：本点是否实际调用模型。
+- `localModelPromptTokensActual`：推理框架实际处理的 prompt token 数。
+- `suspectedFailureClasses[]`：失败分类数组，主因排首位。
+
+`ExecutionSummary` 新增字段：
+
+```text
+ExecutionSummary
+- preflightFailCount
+- modelCalledCount
+- definitionMissCount
+- truncationOccurredCount
+- candidateConflictCount
+- backendRuleGapCount
+- topFailureClasses[]
+- tuningReadinessScore: EVIDENCE_LAYER_FIRST / DEFINITION_INDEX_FIRST / READY_FOR_AI_TUNING / MIXED_ISSUES
+```
+
+`tuningReadinessScore` 说明：
+
+- `EVIDENCE_LAYER_FIRST`：`preflightFailCount / total > 40%`，先补证据层。
+- `DEFINITION_INDEX_FIRST`：`definitionMissCount` 占 `NOT_CONCLUDED` 主要部分。
+- `READY_FOR_AI_TUNING`：`NOT_CONCLUDED` 主因是 `MODEL_OUTPUT` 类。
+- `MIXED_ISSUES`：多类问题并存，需人工判断。
+
+`suspectedFailureClass` 枚举：
+
+```text
+EVIDENCE_INSUFFICIENT
+DEFINITION_TERM_MISSING_NO_INDEX
+DEFINITION_TERM_MISSING_TRUNCATED
+DEFINITION_TERM_CONFLICT
+CANDIDATE_AMBIGUOUS
+CANDIDATE_ATTRIBUTION_UNCLEAR
+DETERMINISTIC_RULE_MISSING
+MODEL_OUTPUT_INVALID
+MODEL_OUTPUT_LOW_CONFIDENCE
+TOKEN_BUDGET_TRUNCATION
+PARSING_LOW_CONFIDENCE
+EVIDENCE_SLOT_GAP
+SCOPE_CONFLICT
+OTHER
+```
+
+使用约定：
+
+- `suspectedFailureClasses[]` 为数组，主因排首位。
+- 不设 `MIXED` 枚举值；多因素情况用数组顺序表达。
+- `DEFINITION_TERM_MISSING_NO_INDEX` 与 `DEFINITION_TERM_MISSING_TRUNCATED` 的修复方向不同，不得合并为一个值。
+
+`AITuningAdvice.targetType` 在已有枚举基础上新增：
+
+```text
+CHUNK_STRATEGY
+DEFINITION_INDEX
+EVIDENCE_BUNDLE_BUDGET
+MODEL_CALL_BUDGET
+EVIDENCE_SLOT_COVERAGE
+```
+
+补充约束：
+
+- `CHUNK_STRATEGY` 用于 EvidenceBundle 构造策略、slot 优先级和 overlap 设计。
+- `DEFINITION_INDEX` 用于 DefinitionTermIndex 识别规则和注入策略。
+- `EVIDENCE_BUNDLE_BUDGET` 用于 EvidenceBundle 层 token 分配，`suggestedChange` 必须包含 `slotName / currentWeight / suggestedWeight / rationale`。
+- `MODEL_CALL_BUDGET` 用于模型调用策略，`suggestedChange` 必须包含 `reviewPointCode / currentRoute / suggestedRoute / rationale`。
+- `EVIDENCE_SLOT_COVERAGE` 用于 EvidenceSlot 定义的覆盖范围。
+- MVP 阶段不自动调用公网 AI，但人工复制诊断包时需要完整枚举支持结构化记录，确保后续 Pilot 阶段可对接。
 
 `supersededReason` 枚举：
 
@@ -1796,7 +1954,7 @@ GET /api/review/tasks/{taskId}/executions/{executionId}/snapshot
 - EvidenceSlot Preflight 能防止缺证据规则硬判。
 - 无证据不生成业务 finding。
 - 任务级 `reviewCompleteness` 能保存并展示 `FULL_REVIEWED / PARTIAL_REVIEWED / LOW_CONFIDENCE_REVIEW`。
-- 结果页和管理台能展示 `requiresHigherBudget` / `recommendedBudgetProfile`。
+- 管理台、评测报告和 AI 调优包能展示 `requiresHigherBudget` / `recommendedBudgetProfile`；第一轮 MVP 普通结果页不展示预算诊断。
 - 同一 `taskId` 支持合同类型修正后生成新的 `executionId`，并保留 superseded execution。
 - Gemma artifact 支持 schema validation、受控脱敏诊断、同 execution 内 exact/subset 复用和 bounded retry。
 - 预算 profile 允许 second pass 时，能生成 `PointSupplementArtifact`；primary/supplement 矛盾时输出 `SYS-MODEL-CONFLICT` 且不生成业务 finding。
@@ -1823,7 +1981,7 @@ FamilyEvidencePlan:
 requiresHigherBudget:
 - 构造 STANDARD 预算下关键 slot 被截断的样本
 - 验证 point NOT_CONCLUDED、requiresHigherBudget=true、recommendedBudgetProfile=DEEP_REVIEW
-- 验证已有 non-terminal execution 时前端禁用命令且 API 返回 409
+- 验证第一轮 MVP 普通结果页不展示预算诊断或深度审核入口；管理台/评测报告可展示预算诊断
 
 SYS-MODEL-CONFLICT:
 - 使用 mock Gemma primary/supplement artifact 输出矛盾 role

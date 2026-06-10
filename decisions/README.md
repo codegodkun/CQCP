@@ -1,0 +1,15 @@
+# ADR 索引
+
+- [ADR-000 决策模板](/C:/Users/1/Documents/CQCP/decisions/ADR-000-template.md)
+- [ADR-001 Technical Stack and Repository Layout](/C:/Users/1/Documents/CQCP/decisions/ADR-001-technical-stack-and-repo-layout.md)
+- [ADR-002 V1 Result and Diagnostic Contract](/C:/Users/1/Documents/CQCP/decisions/ADR-002-v1-result-and-diagnostic-contract.md)
+- [ADR-003 Task Execution Snapshot Model](/C:/Users/1/Documents/CQCP/decisions/ADR-003-task-execution-snapshot-model.md)
+- [ADR-004 MVP Entry Order](/C:/Users/1/Documents/CQCP/decisions/ADR-004-mvp-entry-order.md)
+- [ADR-005 First Review Points Selection](/C:/Users/1/Documents/CQCP/decisions/ADR-005-first-review-points-selection.md)
+- [ADR-006 Model Profile 切换与公网模型使用边界](/C:/Users/1/Documents/CQCP/decisions/ADR-006-model-profile-switching-and-public-provider-scope.md)
+- [ADR-007 Tuning Packet Architecture](/C:/Users/1/Documents/CQCP/decisions/ADR-007-tuning-packet-architecture.md)
+- [ADR-008 DefinitionTermIndex](/C:/Users/1/Documents/CQCP/decisions/ADR-008-definition-term-index.md)
+- [ADR-009 AI Tuning Governance](/C:/Users/1/Documents/CQCP/decisions/ADR-009-ai-tuning-governance.md)
+- [ADR-010 技术栈冻结](/C:/Users/1/Documents/CQCP/decisions/ADR-010-technology-stack-freeze.md)
+- [ADR-011 仓库结构冻结](/C:/Users/1/Documents/CQCP/decisions/ADR-011-repository-structure-freeze.md)
+- [ADR-012 领域模型冻结](/C:/Users/1/Documents/CQCP/decisions/ADR-012-domain-model-freeze.md)

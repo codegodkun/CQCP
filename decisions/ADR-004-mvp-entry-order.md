@@ -83,7 +83,7 @@ API-first + 简易管理台
 ## 后续动作
 
 - 创建最小 OpenAPI 契约任务。
-- 在 `ADR-001` 中选择支持 API-first + 简易管理台的技术栈和目录结构。
+- 在 `ADR-010` 中冻结支持 API-first + 简易管理台的技术栈基线。
 - 在 `ADR-002` 中固化普通结果页、管理台和外部 API 的诊断可见性。
 - 在 `ADR-003` 中固化 Task / Execution / ReviewResultSnapshot 最小模型。
 

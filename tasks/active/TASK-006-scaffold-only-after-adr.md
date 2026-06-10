@@ -35,7 +35,7 @@
 
 - 相关文档：`AGENTS.md`、`CURRENT_CONTEXT.md`、`ROADMAP.md`
 - 相关架构章节：项目基础、接口边界、部署边界。
-- 相关 ADR：`ADR-001-technical-stack-and-repo-layout`、`ADR-002-v1-result-and-diagnostic-contract`、`ADR-003-task-execution-snapshot-model`
+- 相关 ADR：`ADR-010-technology-stack-freeze`、`ADR-011-repository-structure-freeze`、`ADR-003-task-execution-snapshot-model`、`ADR-012-domain-model-freeze`、`ADR-002-v1-result-and-diagnostic-contract`
 - 上游任务：`TASK-001-v1-mvp-scope-gate`、`TASK-002-entry-order-decision`
 
 ## 范围
@@ -68,9 +68,11 @@
 - 必读：`AGENTS.md`
 - 必读：`CURRENT_CONTEXT.md`
 - 必读：本任务包
-- 必读：`ADR-001-technical-stack-and-repo-layout.md`
-- 必读：`ADR-002-v1-result-and-diagnostic-contract.md`
+- 必读：`ADR-010-technology-stack-freeze.md`
+- 必读：`ADR-011-repository-structure-freeze.md`
 - 必读：`ADR-003-task-execution-snapshot-model.md`
+- 必读：`ADR-012-domain-model-freeze.md`
+- 必读：`ADR-002-v1-result-and-diagnostic-contract.md`
 - 按需：`docs/backend.md`
 - 按需：`docs/frontend.md`
 - 按需：`docs/database.md`
@@ -110,9 +112,11 @@
 
 ## 待确认
 
-- ADR-001 是否 Accepted。
-- ADR-002 是否 Accepted。
+- ADR-010 是否 Accepted。
+- ADR-011 是否 Accepted。
 - ADR-003 是否 Accepted。
+- ADR-012 是否 Accepted。
+- ADR-002 是否 Accepted。
 - 是否需要先创建 git branch。
 - scaffold 是否需要在独立任务窗口执行。
 

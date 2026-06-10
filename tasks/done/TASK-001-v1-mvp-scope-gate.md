@@ -85,7 +85,7 @@
 
 ## 范围门禁结果
 
-本任务形成当前规划基线，最终仍待人工确认。
+本任务当时形成 MVP / Pilot / Production Readiness 规划基线；后续冻结状态见本文末尾的 `2026-06-09 追加范围冻结说明`。
 
 ### MVP
 
@@ -157,7 +157,7 @@ Production Readiness 用于生产前治理、审计、发布和保护，包含 Q
 - `TASK-002-entry-order-decision`
 - `TASK-003-first-review-points-selection`
 - `TASK-004-word-parser-baseline-plan`
-- `ADR-001-technical-stack-and-repo-layout`
+- `ADR-010-technology-stack-freeze`
 
 ## 完成记录
 
@@ -174,3 +174,15 @@ Production Readiness 用于生产前治理、审计、发布和保护，包含 Q
 - 确认该限制不影响 AI 调优治理链路；MVP 调优治理依赖结构化、最小必要的 TuningPacket。
 - 完整敏感诊断导出、登录、角色、审批和审计矩阵延后到 Pilot / Production Readiness。
 - 本次仍为规划范围确认，未创建业务代码、未搭建脚手架、未安装依赖。
+
+## 2026-06-09 追加范围冻结说明
+
+`TASK-009-mvp-scope-freeze` 已将本任务早期遗留的 MVP 范围待确认项收口为第一轮 MVP 冻结基线：
+
+- MVP 入口顺序已由 `TASK-002` 和 `ADR-004` 确认为 API-first + 简易管理台。
+- `.doc` 不进入第一轮 MVP，第一轮仅支持单份中文 `.docx`。
+- MVP 首批合同类型只做“工程采购合同”。
+- MVP 首批审核点已由 `TASK-003` 和 `ADR-005` 确认为 9 个 core review point。
+- 首批 `ReviewPointDefinition` 草案已由 `TASK-007` 生成到 `docs/review-point-definitions.md`。
+
+冻结后，`项目目录结构`、`数据库迁移策略细节`、`本地模型服务接入方式`、`最小 OpenAPI 契约` 和 `ADR-002`、`ADR-003` 仍是 scaffold 前置待确认事项；但 `V1 MVP 范围`、`第一批任务包`、`首批审核点基线` 和 `ADR-010` 不再作为范围层面的阻塞项。
