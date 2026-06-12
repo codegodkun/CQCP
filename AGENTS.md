@@ -82,6 +82,16 @@
 
 不得默认全量读取项目文档。
 
+## 任务模板选择规则
+
+* Codex 创建任务前，必须先判断任务类型与边界是否已经冻结。
+* 项目主任务、父任务和需要 Codex 主控的任务，使用 `tasks/TASK-000-template.md`。
+* 派发给 Claude Code + DeepSeek 的局部执行子任务，使用 `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`。
+* 每个 `TASK_SPEC` 必须关联一个已存在的父 `TASK`；`TASK_SPEC` 不是项目主任务模板。
+* Claude Code + DeepSeek 不得直接执行父 `TASK`，只能执行 Codex 已拆解并定界的 `TASK_SPEC`。
+* Codex 必须审查 `TASK_SPEC` 的实现报告和 `git diff` 后，才能接受执行结果。
+* 如不确定使用哪个模板，先查看 `tasks/TEMPLATE_ROUTER.md` 和 `tasks/MVP_TASK_MAP.md`。
+
 ## 每个任务的执行流程
 
 ### 任务开始前
@@ -131,6 +141,9 @@
 * 不确定内容统一标记为“待确认”。
 * 不得补全架构文档未明确的信息。
 * 涉及架构、数据库、审核链路、模型职责、SAP/OA 集成、权限或治理流程的重大变化，必须先记录 ADR。
+* 如后续父 TASK 拆解、to-issues 草案、TASK_SPEC 派发、人工确认或 ADR 结论影响 MVP 任务顺序、任务分类、当前状态、依赖关系或协作边界，Codex 必须同步更新 `tasks/MVP_TASK_MAP.md`。
+* `tasks/MVP_TASK_MAP.md` 只记录任务地图层面的变化，不记录具体实现细节。
+* 具体实现结果仍写入父 TASK、`CURRENT_CONTEXT.md` 和 `changelog/当前月份.md`。
 * 详细规则见 docs/context-management.md。
 
 ## 文件职责
@@ -139,8 +152,12 @@
 * PRD.md：产品需求定义。
 * CURRENT\_CONTEXT.md：当前阶段、约束和关注事项。
 * ROADMAP.md：版本规划和阶段拆分。
-* tasks/：可执行任务包。
+* tasks/：可执行任务包、任务模板和任务协作规则。
 
+  * `TASK-000-template.md`：Codex 项目主任务 / 父任务模板。
+  * `TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`：Claude Code + DeepSeek 执行子任务模板。
+  * `TEMPLATE_ROUTER.md`：任务模板选择和协作路由说明。
+  * `MVP_TASK_MAP.md`：MVP 后续任务地图、任务分类和协作边界。
   * active/：进行中任务。
   * done/：已完成任务。
 * docs/：模块级长期知识和架构文档。
@@ -153,4 +170,3 @@
 * 不把公网模型用于真实生产合同主链路或直接决定生产 Finding。
 * 不把 PDF/OCR 作为一期用户输入主能力。
 * 不在一期引入 RabbitMQ、Kafka、分布式 Worker、多租户、复杂 IAM、开放式聊天审合同、复杂 BI 或全文向量 RAG 主链路。
-
