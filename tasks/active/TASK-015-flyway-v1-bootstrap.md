@@ -1,6 +1,6 @@
 # TASK-015：Flyway V1 数据库初始化
 
-状态：待开始
+状态：已完成
 类型：数据库迁移 / scaffold 后置 / MVP 基础设施
 
 优先级：P0
@@ -110,8 +110,8 @@ MVP 已冻结 PostgreSQL + Flyway + MyBatis 技术栈，以及 `Task / Execution
 - 必须更新 `CURRENT_CONTEXT.md`
 - 必须更新 `changelog/2026-06.md`
 - 必须更新本任务完成记录
-- 是否需要更新 `docs/database.md`：待确认
-- 是否需要新增或更新 ADR：待确认
+- 是否需要更新 `docs/database.md`：需要，已更新
+- 是否需要新增或更新 ADR：需要，已新增 `ADR-013-v1-core-schema-bootstrap`
 
 ## 风险
 
@@ -122,13 +122,44 @@ MVP 已冻结 PostgreSQL + Flyway + MyBatis 技术栈，以及 `Task / Execution
 ## 待确认
 
 - 核心表是否全部放在单 schema 下，或后续再做 schema 分层。
-- `PointDiagnostic` 是独立表还是作为 `TuningPacket` 关联表的最终实现细节。
-- 初始索引策略是否仅覆盖 `taskId`、`executionId` 和 latest non-superseded 查询。
+- `review_result_snapshot` 中哪些热点字段后续需要关系化拆表。
+- Docker PostgreSQL 15 容器回放验证何时补跑。
 
 ## 完成记录
 
-- 完成日期：待填写
-- 变更文件：待填写
-- 测试结果：待填写
-- 遗留问题：待填写
-- 备注：待填写
+- 完成日期：2026-06-11
+- 变更文件：
+  - `apps/api-server/src/main/resources/db/migration/V1__cqcp_mvp_core_schema.sql`
+  - `apps/api-server/src/main/resources/db/migration/README.md`
+  - `docs/database.md`
+  - `decisions/ADR-013-v1-core-schema-bootstrap.md`
+  - `CURRENT_CONTEXT.md`
+  - `changelog/2026-06.md`
+  - `tasks/active/TASK-015-flyway-v1-bootstrap.md`
+- 测试结果：
+  - `node -e "...tables check..."` 通过，确认迁移文件包含 6 个核心表定义。
+  - `rg -n ...` 通过，确认 migration README、`docs/database.md` 和 `ADR-013` 已同步引用 V1 核心迁移与索引边界。
+  - `docker exec cqcp-postgres-test psql -U postgres -d cqcp_test -v ON_ERROR_STOP=1` 通过：已在真实 `postgres:15` 容器中成功执行 `V1__cqcp_mvp_core_schema.sql`。
+  - `docker exec cqcp-postgres-test psql -U postgres -d cqcp_test -At -c "select tablename ..."` 通过：确认 `task / execution / task_stage_log / review_result_snapshot / tuning_packet / point_diagnostic` 6 张核心表均已建成。
+  - `docker exec cqcp-postgres-test psql -U postgres -d cqcp_test -At -c "select indexname ..."` 通过：确认 `uq_execution_single_non_terminal` 和 6 组最小查询索引均已落地。
+- 遗留问题：
+  - 本轮未补 `Gradle/Java` 运行环境，未进行应用层 Flyway 启动验证。
+  - V1 只冻结核心表，样本治理、权限审计矩阵、规则发布和 BI 表仍延后。
+- 备注：
+  - 本任务已把 `PointDiagnostic` 落为 `tuning_packet` 从属明细表，并通过 `ADR-013` 正式冻结该 V1 选择。
+  - `maxExecutionsPerTask = 3` 继续由应用层约束，不在数据库层实现计数限制。
+
+## 补充验证记录（2026-06-11）
+
+- 验证环境：
+  - 复用本机现有 `cqcp-postgres-test` 容器。
+  - PostgreSQL 版本核验结果为 `PostgreSQL 15.18`。
+  - 容器数据库名为 `cqcp_test`，用户为 `postgres`。
+- 本次验证结果：
+  - 执行前查询 `public` schema，确认目标库初始无业务表。
+  - 通过 `Get-Content -Raw ... | docker exec -i cqcp-postgres-test psql -U postgres -d cqcp_test -v ON_ERROR_STOP=1` 成功回放迁移文件。
+  - 回放后查询确认 6 张核心表全部建成。
+  - 回放后查询确认主键、`uq_execution_task_execution`、`uq_execution_single_non_terminal` 以及 6 组最小读取索引全部存在。
+- 结论：
+  - `ADR-013` 所定义的 V1 核心 schema 已通过真实 PostgreSQL 15 容器语法与建表验证。
+  - `TASK-015` 当前剩余未完成项仅为应用层 `Gradle/Java/Flyway` 启动验证，不再阻塞数据库基线本身。

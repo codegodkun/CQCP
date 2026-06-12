@@ -1,0 +1,281 @@
+{
+  "schemaVersion": "v1",
+  "sampleId": "CQCP-MVP-DOCX-003",
+  "sourceDocx": "docx/3、星辰建设集团南山科技园项目二标段土建总承包工程合同_缩减版.docx",
+  "matrixWorkbook": "cqcp-mvp-sample-matrix.xlsx",
+  "matrixSheet": "合同清单",
+  "currency": "CNY",
+  "goldenExpected": {
+    "matrixRowId": "3.1",
+    "notes": [
+      "1、结构化信息 正确",
+      "2、上下文信息正确"
+    ],
+    "structuredFields": {
+      "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+      "partyAName": "星辰建设集团",
+      "partyBName": "远航建筑工程有限公司",
+      "projectName": "南山科技园",
+      "contractTotalAmount": 12800,
+      "taxExcludedAmount": 11327.43,
+      "taxAmount": 1472.57,
+      "taxRate": 13,
+      "pricingMode": "FIXED_TOTAL_PRICE",
+      "paymentMethod": "MONTHLY",
+      "prepaymentRatio": 0,
+      "progressPaymentRatio": 70,
+      "completionPaymentRatio": 80,
+      "settlementPaymentRatio": 97,
+      "warrantyRetentionRatio": 3,
+      "invoiceType": "VAT_SPECIAL",
+      "currency": "CNY"
+    },
+    "displayValues": {
+      "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+      "partyAName": "星辰建设集团",
+      "partyBName": "远航建筑工程有限公司",
+      "projectName": "南山科技园",
+      "contractTotalAmount": 12800,
+      "taxExcludedAmount": 11327.43,
+      "taxAmount": 1472.57,
+      "taxRate": 13,
+      "pricingMode": "固定总价",
+      "paymentMethod": "月度付款",
+      "prepaymentRatio": 0,
+      "progressPaymentRatio": 70,
+      "completionPaymentRatio": 80,
+      "settlementPaymentRatio": 97,
+      "warrantyRetentionRatio": 3,
+      "invoiceType": "增值税专用发票",
+      "currency": "CNY"
+    }
+  },
+  "negativeCandidates": [
+    {
+      "matrixRowId": "3.2",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 甲方名称不对",
+        "1.2 税率不对(同时导致税额公式不一致）"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "partyAName",
+          "expected": "星辰建设集团",
+          "candidate": "星辰建设工程有限公司"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "partyAName",
+          "expected": "星辰建设集团",
+          "candidate": "星辰建设工程有限公司"
+        },
+        {
+          "field": "taxRate",
+          "expected": 13,
+          "candidate": 9
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.2 税率不对(同时导致税额公式不一致）",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+        "partyAName": "星辰建设工程有限公司",
+        "partyBName": "远航建筑工程有限公司",
+        "projectName": "南山科技园",
+        "contractTotalAmount": 12800,
+        "taxExcludedAmount": 11327.43,
+        "taxAmount": 1472.57,
+        "taxRate": 9,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+        "partyAName": "星辰建设工程有限公司",
+        "partyBName": "远航建筑工程有限公司",
+        "projectName": "南山科技园",
+        "contractTotalAmount": 12800,
+        "taxExcludedAmount": 11327.43,
+        "taxAmount": 1472.57,
+        "taxRate": 9,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "3.3",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 含税总金额不对",
+        "1.2 不含税金额不对",
+        "1.3 税额不对，并导致税额公式不一致"
+      ],
+      "singlePointDiffs": [],
+      "allDiffs": [
+        {
+          "field": "contractTotalAmount",
+          "expected": 12800,
+          "candidate": 15000
+        },
+        {
+          "field": "taxExcludedAmount",
+          "expected": 11327.43,
+          "candidate": 13200
+        },
+        {
+          "field": "taxAmount",
+          "expected": 1472.57,
+          "candidate": 1800
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.3 税额不对，并导致税额公式不一致",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+        "partyAName": "星辰建设集团",
+        "partyBName": "远航建筑工程有限公司",
+        "projectName": "南山科技园",
+        "contractTotalAmount": 15000,
+        "taxExcludedAmount": 13200,
+        "taxAmount": 1800,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+        "partyAName": "星辰建设集团",
+        "partyBName": "远航建筑工程有限公司",
+        "projectName": "南山科技园",
+        "contractTotalAmount": 15000,
+        "taxExcludedAmount": 13200,
+        "taxAmount": 1800,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "3.4",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 预付款比例不对",
+        "1.2 竣工款比例不对",
+        "1.3 发票类型不对"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "prepaymentRatio",
+          "expected": 0,
+          "candidate": 10
+        },
+        {
+          "field": "completionPaymentRatio",
+          "expected": 80,
+          "candidate": 90
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "prepaymentRatio",
+          "expected": 0,
+          "candidate": 10
+        },
+        {
+          "field": "completionPaymentRatio",
+          "expected": 80,
+          "candidate": 90
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "formulaLinkedEffects": [],
+      "structuredFields": {
+        "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+        "partyAName": "星辰建设集团",
+        "partyBName": "远航建筑工程有限公司",
+        "projectName": "南山科技园",
+        "contractTotalAmount": 12800,
+        "taxExcludedAmount": 11327.43,
+        "taxAmount": 1472.57,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 10,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 90,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_GENERAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+        "partyAName": "星辰建设集团",
+        "partyBName": "远航建筑工程有限公司",
+        "projectName": "南山科技园",
+        "contractTotalAmount": 12800,
+        "taxExcludedAmount": 11327.43,
+        "taxAmount": 1472.57,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 10,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 90,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税普通发票",
+        "currency": "CNY"
+      }
+    }
+  ]
+}

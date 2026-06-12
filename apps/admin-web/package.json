@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "vitest run",
+    "test": "vitest run --environment jsdom",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -36,4 +36,3 @@
     "vitest": "^2.1.9"
   }
 }
-

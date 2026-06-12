@@ -1,0 +1,340 @@
+{
+  "schemaVersion": "v1",
+  "sampleId": "CQCP-MVP-DOCX-002",
+  "sourceDocx": "docx/2、达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同_缩减版.docx",
+  "matrixWorkbook": "cqcp-mvp-sample-matrix.xlsx",
+  "matrixSheet": "合同清单",
+  "currency": "CNY",
+  "goldenExpected": {
+    "matrixRowId": "2.1",
+    "notes": [
+      "1、结构化信息 正确",
+      "2、上下文信息正确"
+    ],
+    "structuredFields": {
+      "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+      "partyAName": "达利安造船厂",
+      "partyBName": "天下会装饰工程有限公司",
+      "projectName": "四方城市四方城翡翠大道项目",
+      "contractTotalAmount": 884800,
+      "taxExcludedAmount": 783008.85,
+      "taxAmount": 101791.15,
+      "taxRate": 13,
+      "pricingMode": "FIXED_TOTAL_PRICE",
+      "paymentMethod": "MONTHLY",
+      "prepaymentRatio": 0,
+      "progressPaymentRatio": 80,
+      "completionPaymentRatio": 95,
+      "settlementPaymentRatio": 95,
+      "warrantyRetentionRatio": 5,
+      "invoiceType": "VAT_SPECIAL",
+      "currency": "CNY"
+    },
+    "displayValues": {
+      "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+      "partyAName": "达利安造船厂",
+      "partyBName": "天下会装饰工程有限公司",
+      "projectName": "四方城市四方城翡翠大道项目",
+      "contractTotalAmount": 884800,
+      "taxExcludedAmount": 783008.85,
+      "taxAmount": 101791.15,
+      "taxRate": 13,
+      "pricingMode": "固定总价",
+      "paymentMethod": "月度付款",
+      "prepaymentRatio": 0,
+      "progressPaymentRatio": 80,
+      "completionPaymentRatio": 95,
+      "settlementPaymentRatio": 95,
+      "warrantyRetentionRatio": 5,
+      "invoiceType": "增值税专用发票",
+      "currency": "CNY"
+    }
+  },
+  "negativeCandidates": [
+    {
+      "matrixRowId": "2.2",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1预付款比例不对",
+        "1.2税率不对(同时导致税额公式不一致）"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "prepaymentRatio",
+          "expected": 0,
+          "candidate": 12
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "taxRate",
+          "expected": 13,
+          "candidate": 15
+        },
+        {
+          "field": "prepaymentRatio",
+          "expected": 0,
+          "candidate": 12
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.2税率不对(同时导致税额公式不一致）",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下会装饰工程有限公司",
+        "projectName": "四方城市四方城翡翠大道项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 15,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 12,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下会装饰工程有限公司",
+        "projectName": "四方城市四方城翡翠大道项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 15,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 12,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "2.3",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 乙方名称不对"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "partyBName",
+          "expected": "天下会装饰工程有限公司",
+          "candidate": "天下装饰工程有限公司"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "partyBName",
+          "expected": "天下会装饰工程有限公司",
+          "candidate": "天下装饰工程有限公司"
+        }
+      ],
+      "formulaLinkedEffects": [],
+      "structuredFields": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下装饰工程有限公司",
+        "projectName": "四方城市四方城翡翠大道项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下装饰工程有限公司",
+        "projectName": "四方城市四方城翡翠大道项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "2.4",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 项目名称不对",
+        "1.2 计价方式不对",
+        "1.3 结算款比例不对"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "projectName",
+          "expected": "四方城市四方城翡翠大道项目",
+          "candidate": "四方城市翡翠湾项目"
+        },
+        {
+          "field": "pricingMode",
+          "expected": "FIXED_TOTAL_PRICE",
+          "candidate": "PROVISIONAL_TOTAL_PRICE"
+        },
+        {
+          "field": "settlementPaymentRatio",
+          "expected": 95,
+          "candidate": 97
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "projectName",
+          "expected": "四方城市四方城翡翠大道项目",
+          "candidate": "四方城市翡翠湾项目"
+        },
+        {
+          "field": "pricingMode",
+          "expected": "FIXED_TOTAL_PRICE",
+          "candidate": "PROVISIONAL_TOTAL_PRICE"
+        },
+        {
+          "field": "settlementPaymentRatio",
+          "expected": 95,
+          "candidate": 97
+        }
+      ],
+      "formulaLinkedEffects": [],
+      "structuredFields": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下会装饰工程有限公司",
+        "projectName": "四方城市翡翠湾项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 13,
+        "pricingMode": "PROVISIONAL_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下会装饰工程有限公司",
+        "projectName": "四方城市翡翠湾项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 13,
+        "pricingMode": "暂定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "2.5",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 安装完工款比例不对",
+        "1.2 发票类型不对"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "completionPaymentRatio",
+          "expected": 95,
+          "candidate": 90
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "completionPaymentRatio",
+          "expected": 95,
+          "candidate": 90
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "formulaLinkedEffects": [],
+      "structuredFields": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下会装饰工程有限公司",
+        "projectName": "四方城市四方城翡翠大道项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 90,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "VAT_GENERAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "达利安造船厂",
+        "partyBName": "天下会装饰工程有限公司",
+        "projectName": "四方城市四方城翡翠大道项目",
+        "contractTotalAmount": 884800,
+        "taxExcludedAmount": 783008.85,
+        "taxAmount": 101791.15,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 90,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "增值税普通发票",
+        "currency": "CNY"
+      }
+    }
+  ]
+}

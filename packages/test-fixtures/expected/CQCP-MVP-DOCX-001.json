@@ -1,0 +1,374 @@
+{
+  "schemaVersion": "v1",
+  "sampleId": "CQCP-MVP-DOCX-001",
+  "sourceDocx": "docx/1、奔腾公司企鹅岛项目三标段土建总承包工程合同_缩减版.docx",
+  "matrixWorkbook": "cqcp-mvp-sample-matrix.xlsx",
+  "matrixSheet": "合同清单",
+  "currency": "CNY",
+  "goldenExpected": {
+    "matrixRowId": "1.1",
+    "notes": [
+      "1、结构化信息 正确",
+      "2、上下文信息正确"
+    ],
+    "structuredFields": {
+      "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+      "partyAName": "奔腾公司",
+      "partyBName": "前水公司",
+      "projectName": "企鹅岛",
+      "contractTotalAmount": 8848,
+      "taxExcludedAmount": 7830.09,
+      "taxAmount": 1017.91,
+      "taxRate": 13,
+      "pricingMode": "FIXED_TOTAL_PRICE",
+      "paymentMethod": "MONTHLY",
+      "prepaymentRatio": 0,
+      "progressPaymentRatio": 70,
+      "completionPaymentRatio": 80,
+      "settlementPaymentRatio": 97,
+      "warrantyRetentionRatio": 3,
+      "invoiceType": "VAT_SPECIAL",
+      "currency": "CNY"
+    },
+    "displayValues": {
+      "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+      "partyAName": "奔腾公司",
+      "partyBName": "前水公司",
+      "projectName": "企鹅岛",
+      "contractTotalAmount": 8848,
+      "taxExcludedAmount": 7830.09,
+      "taxAmount": 1017.91,
+      "taxRate": 13,
+      "pricingMode": "固定总价",
+      "paymentMethod": "月度付款",
+      "prepaymentRatio": 0,
+      "progressPaymentRatio": 70,
+      "completionPaymentRatio": 80,
+      "settlementPaymentRatio": 97,
+      "warrantyRetentionRatio": 3,
+      "invoiceType": "增值税专用发票",
+      "currency": "CNY"
+    }
+  },
+  "negativeCandidates": [
+    {
+      "matrixRowId": "1.2",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1发票类型不对",
+        "1.2税额不对(同时导致税额公式不一致）"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "taxAmount",
+          "expected": 1017.91,
+          "candidate": 1234
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.2税额不对(同时导致税额公式不一致）",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 8848,
+        "taxExcludedAmount": 7830.09,
+        "taxAmount": 1234,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_GENERAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 8848,
+        "taxExcludedAmount": 7830.09,
+        "taxAmount": 1234,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税普通发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "1.3",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 甲方名称不对",
+        "1.2 税率不对(同时导致税额公式不一致）"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "partyAName",
+          "expected": "奔腾公司",
+          "candidate": "奔腾科技有限公司"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "partyAName",
+          "expected": "奔腾公司",
+          "candidate": "奔腾科技有限公司"
+        },
+        {
+          "field": "taxRate",
+          "expected": 13,
+          "candidate": 9
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.2 税率不对(同时导致税额公式不一致）",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾科技有限公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 8848,
+        "taxExcludedAmount": 7830.09,
+        "taxAmount": 1017.91,
+        "taxRate": 9,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾科技有限公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 8848,
+        "taxExcludedAmount": 7830.09,
+        "taxAmount": 1017.91,
+        "taxRate": 9,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "1.4",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 计价方式不对",
+        "1.2 质保金比例不对",
+        "1.3 金额数据连环错误(含税/不含税/税额均不一致)"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "pricingMode",
+          "expected": "FIXED_TOTAL_PRICE",
+          "candidate": "PROVISIONAL_TOTAL_PRICE"
+        },
+        {
+          "field": "warrantyRetentionRatio",
+          "expected": 3,
+          "candidate": 5
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "contractTotalAmount",
+          "expected": 8848,
+          "candidate": 9040
+        },
+        {
+          "field": "taxExcludedAmount",
+          "expected": 7830.09,
+          "candidate": 8000
+        },
+        {
+          "field": "taxAmount",
+          "expected": 1017.91,
+          "candidate": 1040
+        },
+        {
+          "field": "pricingMode",
+          "expected": "FIXED_TOTAL_PRICE",
+          "candidate": "PROVISIONAL_TOTAL_PRICE"
+        },
+        {
+          "field": "warrantyRetentionRatio",
+          "expected": 3,
+          "candidate": 5
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "DATA_CASCADE",
+          "description": "1.3 金额数据连环错误(含税/不含税/税额均不一致)",
+          "target": null
+        }
+      ],
+      "structuredFields": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 9040,
+        "taxExcludedAmount": 8000,
+        "taxAmount": 1040,
+        "taxRate": 13,
+        "pricingMode": "PROVISIONAL_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 9040,
+        "taxExcludedAmount": 8000,
+        "taxAmount": 1040,
+        "taxRate": 13,
+        "pricingMode": "暂定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 80,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "1.5",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 付款方式不对",
+        "1.2 进度款比例不对",
+        "1.3 竣工款比例不对"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "paymentMethod",
+          "expected": "MONTHLY",
+          "candidate": "MILESTONE"
+        },
+        {
+          "field": "progressPaymentRatio",
+          "expected": 70,
+          "candidate": 80
+        },
+        {
+          "field": "completionPaymentRatio",
+          "expected": 80,
+          "candidate": 90
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "paymentMethod",
+          "expected": "MONTHLY",
+          "candidate": "MILESTONE"
+        },
+        {
+          "field": "progressPaymentRatio",
+          "expected": 70,
+          "candidate": 80
+        },
+        {
+          "field": "completionPaymentRatio",
+          "expected": 80,
+          "candidate": 90
+        }
+      ],
+      "formulaLinkedEffects": [],
+      "structuredFields": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 8848,
+        "taxExcludedAmount": 7830.09,
+        "taxAmount": 1017.91,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MILESTONE",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 90,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "奔腾公司企鹅岛项目三标段土建总承包工程合同",
+        "partyAName": "奔腾公司",
+        "partyBName": "前水公司",
+        "projectName": "企鹅岛",
+        "contractTotalAmount": 8848,
+        "taxExcludedAmount": 7830.09,
+        "taxAmount": 1017.91,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "节点付款",
+        "prepaymentRatio": 0,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 90,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    }
+  ]
+}

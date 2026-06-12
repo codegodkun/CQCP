@@ -1,0 +1,297 @@
+{
+  "schemaVersion": "v1",
+  "sampleId": "CQCP-MVP-DOCX-004",
+  "sourceDocx": "docx/4、东海船舶工业集团滨海城翡翠大道项目北二期3强化地板产品采购合同_缩减版.docx",
+  "matrixWorkbook": "cqcp-mvp-sample-matrix.xlsx",
+  "matrixSheet": "合同清单",
+  "currency": "CNY",
+  "goldenExpected": {
+    "matrixRowId": "4.1",
+    "notes": [
+      "1、结构化信息 正确",
+      "2、上下文信息正确"
+    ],
+    "structuredFields": {
+      "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+      "partyAName": "东海船舶工业集团",
+      "partyBName": "凌云建材科技有限公司",
+      "projectName": "滨海城市滨海城翡翠大道项目",
+      "contractTotalAmount": 1200000,
+      "taxExcludedAmount": 1061946.9,
+      "taxAmount": 138053.1,
+      "taxRate": 13,
+      "pricingMode": "FIXED_TOTAL_PRICE",
+      "paymentMethod": "MONTHLY",
+      "prepaymentRatio": 15,
+      "progressPaymentRatio": 70,
+      "completionPaymentRatio": 95,
+      "settlementPaymentRatio": 97,
+      "warrantyRetentionRatio": 3,
+      "invoiceType": "VAT_SPECIAL",
+      "currency": "CNY"
+    },
+    "displayValues": {
+      "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+      "partyAName": "东海船舶工业集团",
+      "partyBName": "凌云建材科技有限公司",
+      "projectName": "滨海城市滨海城翡翠大道项目",
+      "contractTotalAmount": 1200000,
+      "taxExcludedAmount": 1061946.9,
+      "taxAmount": 138053.1,
+      "taxRate": 13,
+      "pricingMode": "固定总价",
+      "paymentMethod": "月度付款",
+      "prepaymentRatio": 15,
+      "progressPaymentRatio": 70,
+      "completionPaymentRatio": 95,
+      "settlementPaymentRatio": 97,
+      "warrantyRetentionRatio": 3,
+      "invoiceType": "增值税专用发票",
+      "currency": "CNY"
+    }
+  },
+  "negativeCandidates": [
+    {
+      "matrixRowId": "4.2",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 乙方名称不对",
+        "1.2 含税总金额及税额不对(同时导致税额公式不一致）"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "partyBName",
+          "expected": "凌云建材科技有限公司",
+          "candidate": "凌云建材有限责任公司"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "partyBName",
+          "expected": "凌云建材科技有限公司",
+          "candidate": "凌云建材有限责任公司"
+        },
+        {
+          "field": "contractTotalAmount",
+          "expected": 1200000,
+          "candidate": 1500000
+        },
+        {
+          "field": "taxAmount",
+          "expected": 138053.1,
+          "candidate": 438053.1
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.2 含税总金额及税额不对(同时导致税额公式不一致）",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "东海船舶工业集团",
+        "partyBName": "凌云建材有限责任公司",
+        "projectName": "滨海城市滨海城翡翠大道项目",
+        "contractTotalAmount": 1500000,
+        "taxExcludedAmount": 1061946.9,
+        "taxAmount": 438053.1,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 15,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "东海船舶工业集团",
+        "partyBName": "凌云建材有限责任公司",
+        "projectName": "滨海城市滨海城翡翠大道项目",
+        "contractTotalAmount": 1500000,
+        "taxExcludedAmount": 1061946.9,
+        "taxAmount": 438053.1,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 15,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "4.3",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 计价方式不对",
+        "1.2 进度款比例不对",
+        "1.3 税率不对(同时导致税额公式不一致）"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "pricingMode",
+          "expected": "FIXED_TOTAL_PRICE",
+          "candidate": "PROVISIONAL_TOTAL_PRICE"
+        },
+        {
+          "field": "progressPaymentRatio",
+          "expected": 70,
+          "candidate": 80
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "taxRate",
+          "expected": 13,
+          "candidate": 9
+        },
+        {
+          "field": "pricingMode",
+          "expected": "FIXED_TOTAL_PRICE",
+          "candidate": "PROVISIONAL_TOTAL_PRICE"
+        },
+        {
+          "field": "progressPaymentRatio",
+          "expected": 70,
+          "candidate": 80
+        }
+      ],
+      "formulaLinkedEffects": [
+        {
+          "type": "FORMULA_LINKED",
+          "description": "1.3 税率不对(同时导致税额公式不一致）",
+          "target": "TAX_AMOUNT_FORMULA_CONSISTENCY"
+        }
+      ],
+      "structuredFields": {
+        "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "东海船舶工业集团",
+        "partyBName": "凌云建材科技有限公司",
+        "projectName": "滨海城市滨海城翡翠大道项目",
+        "contractTotalAmount": 1200000,
+        "taxExcludedAmount": 1061946.9,
+        "taxAmount": 138053.1,
+        "taxRate": 9,
+        "pricingMode": "PROVISIONAL_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 15,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "VAT_SPECIAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "东海船舶工业集团",
+        "partyBName": "凌云建材科技有限公司",
+        "projectName": "滨海城市滨海城翡翠大道项目",
+        "contractTotalAmount": 1200000,
+        "taxExcludedAmount": 1061946.9,
+        "taxAmount": 138053.1,
+        "taxRate": 9,
+        "pricingMode": "暂定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 15,
+        "progressPaymentRatio": 80,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 97,
+        "warrantyRetentionRatio": 3,
+        "invoiceType": "增值税专用发票",
+        "currency": "CNY"
+      }
+    },
+    {
+      "matrixRowId": "4.4",
+      "summary": "1、结构化数据对比错误",
+      "issueLines": [
+        "1.1 结算款比例不对",
+        "1.2 质保金比例不对",
+        "1.3 发票类型不对"
+      ],
+      "singlePointDiffs": [
+        {
+          "field": "settlementPaymentRatio",
+          "expected": 97,
+          "candidate": 95
+        },
+        {
+          "field": "warrantyRetentionRatio",
+          "expected": 3,
+          "candidate": 5
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "allDiffs": [
+        {
+          "field": "settlementPaymentRatio",
+          "expected": 97,
+          "candidate": 95
+        },
+        {
+          "field": "warrantyRetentionRatio",
+          "expected": 3,
+          "candidate": 5
+        },
+        {
+          "field": "invoiceType",
+          "expected": "VAT_SPECIAL",
+          "candidate": "VAT_GENERAL"
+        }
+      ],
+      "formulaLinkedEffects": [],
+      "structuredFields": {
+        "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "东海船舶工业集团",
+        "partyBName": "凌云建材科技有限公司",
+        "projectName": "滨海城市滨海城翡翠大道项目",
+        "contractTotalAmount": 1200000,
+        "taxExcludedAmount": 1061946.9,
+        "taxAmount": 138053.1,
+        "taxRate": 13,
+        "pricingMode": "FIXED_TOTAL_PRICE",
+        "paymentMethod": "MONTHLY",
+        "prepaymentRatio": 15,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "VAT_GENERAL",
+        "currency": "CNY"
+      },
+      "displayValues": {
+        "contractName": "东海船舶工业集团滨海新城翡翠大道项目北二期3强化地板产品采购合同",
+        "partyAName": "东海船舶工业集团",
+        "partyBName": "凌云建材科技有限公司",
+        "projectName": "滨海城市滨海城翡翠大道项目",
+        "contractTotalAmount": 1200000,
+        "taxExcludedAmount": 1061946.9,
+        "taxAmount": 138053.1,
+        "taxRate": 13,
+        "pricingMode": "固定总价",
+        "paymentMethod": "月度付款",
+        "prepaymentRatio": 15,
+        "progressPaymentRatio": 70,
+        "completionPaymentRatio": 95,
+        "settlementPaymentRatio": 95,
+        "warrantyRetentionRatio": 5,
+        "invoiceType": "增值税普通发票",
+        "currency": "CNY"
+      }
+    }
+  ]
+}

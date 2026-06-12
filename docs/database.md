@@ -9,6 +9,29 @@
 数据库设计必须支持不可变快照、版本引用和审计追踪。历史结果读取快照，不因后续规则、模型、解析器或 prompt 变化而改变。
 PostgreSQL JSONB 是一期关键能力之一，适合承载 `ReviewResultSnapshot`、`PointDiagnostic`、`TuningPacket` 等结构化字段与半结构化诊断 payload 的组合存储。
 
+## Flyway V1 基线
+
+`TASK-015-flyway-v1-bootstrap` 已在 `apps/api-server/src/main/resources/db/migration/` 冻结第一版核心迁移：
+
+- `V1__cqcp_mvp_core_schema.sql`
+
+V1 只覆盖以下核心表：
+
+- `task`
+- `execution`
+- `task_stage_log`
+- `review_result_snapshot`
+- `tuning_packet`
+- `point_diagnostic`
+
+V1 采用单目录、顺序递增命名：
+
+- `V{version}__{description}.sql`
+- description 使用小写 snake_case
+
+V1 不扩展样本集、规则治理、权限矩阵、发布审批、BI 或回归中心表。
+`maxExecutionsPerTask = 3` 继续由应用层约束，不在数据库层用计数约束实现。
+
 ## 关键数据对象
 
 ### ReviewResultSnapshot

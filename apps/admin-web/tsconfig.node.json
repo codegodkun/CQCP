@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
     "composite": true,
+    "allowJs": true,
+    "noEmit": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true
   },
   "include": [
-    "vite.config.ts",
+    "vite.config.js",
     "eslint.config.js"
   ]
 }
-

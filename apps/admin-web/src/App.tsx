@@ -1,5 +1,7 @@
 import { Layout, List, Tag, Typography } from "antd";
 
+import { AdminTaskDiagnosticsPreview } from "./AdminTaskDiagnosticsPreview";
+
 const scaffoldScopes = [
   "普通结果页和管理台共用前端入口",
   "React Router / TanStack Query / Zustand 依赖基线",
@@ -22,13 +24,14 @@ export function App() {
       </section>
 
       <section className="content-panel">
-        <Typography.Title level={3}>本轮骨架边界</Typography.Title>
+        <Typography.Title level={3}>本轮脚手架边界</Typography.Title>
         <List
           dataSource={scaffoldScopes}
           renderItem={(item) => <List.Item>{item}</List.Item>}
         />
       </section>
+
+      <AdminTaskDiagnosticsPreview />
     </Layout>
   );
 }
-
