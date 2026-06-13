@@ -1,6 +1,6 @@
 # TASK-021 Result URL 查询接口最小实现
 
-状态：已建档，未实现
+状态：已实现，待提交
 类型：A 类核心链路后端开发
 优先级：P0
 负责人：Codex
@@ -149,7 +149,43 @@ A 类核心链路后端开发，由 Codex 主控。
 
 ## 文档更新要求
 
-* `CURRENT_CONTEXT.md`：本轮建档后更新为“TASK-021 已建档，尚未实现”
-* `changelog/2026-06.md`：记录父任务建档事实
+* `CURRENT_CONTEXT.md`：本轮更新为“TASK-021 已完成最小后端实现与验证，待提交收口”
+* `changelog/2026-06.md`：记录 TASK-021 实现与验证事实
 * `tasks/MVP_TASK_MAP.md`：仅同步 `TASK-021` 状态，不改变任务路线
-* 本任务文件：后续实现完成后再写入实现结果与验证结果
+* 本任务文件：写入本轮实现结果与验证结果
+
+## 本轮实现结果
+
+* 新增最小只读查询接口：`GET /api/v1/tasks/{taskId}/result`
+* 新增最小 Spring MVC 入口与错误处理：
+  * `TaskResultQueryController`
+  * `TaskResultQueryService`
+  * `TaskResultQueryExceptionHandler`
+* 新增最小内存态结果承接层 `InMemoryTaskResultStore`：
+  * 实现 `TaskExecutionPersistence`
+  * 提供只读查询所需的 `TaskResultStore`
+  * 复用 `TASK-020` 既有 `saveExecution / appendStageLog / saveSnapshot` 承接方式
+* 查询语义确定为：
+  * 任务存在且已有结果 -> `200`
+  * 任务不存在 -> `404`
+  * 任务存在但尚无结果 -> `409`
+* 本轮未修改 `ResultComposer` 业务合成逻辑，未修改 `TaskExecutionStateMachine` 核心状态迁移逻辑。
+
+## 本轮测试与验证
+
+* 定向测试：
+  * `gradle test --tests "*TaskResultQueryServiceTest" --tests "*TaskResultQueryControllerTest"` -> 通过
+* 回归测试：
+  * `gradle test --tests "*MinimalReviewEngineTest" --tests "*ResultComposerTest" --tests "*TaskExecutionStateMachineTest" --tests "*TaskResultQueryServiceTest" --tests "*TaskResultQueryControllerTest"` -> 通过
+* Docker Compose 标准环境检查：
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example ps` -> 3 个服务均为 `Up`
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp` -> `accepting connections`
+
+## 边界检查结论
+
+* 未修改数据库迁移。
+* 未修改 `PRD.md`。
+* 未修改 `docs/ARCHITECTURE.md`。
+* 未触碰前端。
+* 未修改 Docker 配置。
+* 查询接口只读，不触发审核，不重新执行状态机，不改变 execution 状态，不写 stage log。

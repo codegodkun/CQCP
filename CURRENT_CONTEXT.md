@@ -10,7 +10,7 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 * 基于 V1 schema 的 `task / execution / task_stage_log / review_result_snapshot` 最小契约；
 * 串行执行 `MinimalReviewEngine -> ResultComposer -> ReviewResultSnapshot` 的最小闭环。
 
-下一优先主线任务切换为 `TASK-021 Result URL 查询接口最小实现`。
+当前优先主线任务为 `TASK-021 Result URL 查询接口最小实现`，最小后端实现与验证已完成，待提交收口。
 
 ## 2. 当前关键结论
 
@@ -35,7 +35,14 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 
 ## 3. 当前活跃任务
 
-* `TASK-021 Result URL 查询接口最小实现`：已完成父任务建档，当前仅冻结边界，尚未进入接口实现。
+* `TASK-021 Result URL 查询接口最小实现` 已完成最小后端只读查询接口实现：
+  * 新增 `GET /api/v1/tasks/{taskId}/result`
+  * 当前仓库此前不存在现成 Controller / REST API 包结构，本轮补充了最小 Spring MVC 查询入口
+  * 当前仓库此前不存在统一错误响应风格，本轮采用 Spring `ProblemDetail` 返回 `404/409`
+  * `ReviewResultSnapshot` 仍复用 `reviewengine/ResultComposer.java` 中既有记录类型
+  * `TASK-020` 的 `TaskExecutionPersistence.saveSnapshot(...)` 通过本轮新增的最小内存承接层与查询接口衔接
+  * 查询接口只读，不触发审核、不重新执行状态机、不修改 execution 状态、不写 stage log
+  * 任务存在但结果尚未形成时，本轮采用 `409 Conflict`，理由是任务资源已存在但结果资源当前状态不可读取
 
 ## 4. 已完成任务
 
@@ -56,13 +63,13 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 
 ## 6. 待确认事项
 
-* `TASK-021` 已完成父任务建档；后续实现前仍需先检查路由命名风格、错误响应风格、测试组织方式以及 snapshot 承接方式。
+* `TASK-021` 当前实现仍基于最小内存态结果承接层；何时接入真实数据库 query adapter，待后续任务明确，不在本轮扩展。
 * `TASK-020` 当前仅完成最小内存态持久化抽象；后续何时接入真实数据库 adapter，待后续任务明确，不在本轮内扩展。
 
 ## 7. 下一步顺序
 
-1. 在不扩范围的前提下，后续进入 `TASK-021 Result URL 查询接口最小实现` 的最小后端实现阶段。
-2. `TASK-021` 完成后，再推进普通结果页最小展示和管理台任务详情最小诊断。
+1. 先完成 `TASK-021 Result URL 查询接口最小实现` 的提交收口，不扩展到 TASK-022。
+2. `TASK-021` 提交完成后，再推进普通结果页最小展示和管理台任务详情最小诊断。
 3. 后续 parser / candidate / evidence 主链路接入，继续保持 Codex 主控，不提前扩成完整调度系统。
 
 ## 8. 当前禁止推进
@@ -71,7 +78,7 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 * 不修改 `PRD.md`、`docs/ARCHITECTURE.md` 或数据库迁移 SQL，除非后续任务明确触发并先行确认。
 * 不处理前端 5 个 vulnerabilities，除非单独建任务。
 * 不把非 Docker 启动方式重新写回为标准开发/验收路径。
-* `TASK-021` 当前阶段不得直接进入接口实现之外的扩范围开发，不得提前触碰前端、下载、鉴权或数据库迁移。
+* `TASK-021` 当前阶段不得扩展到前端、下载、鉴权、任务重跑、异步调度或数据库迁移。
 
 ## 9. 长期记忆索引
 
