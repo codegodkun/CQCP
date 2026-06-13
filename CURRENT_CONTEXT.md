@@ -4,7 +4,7 @@
 
 ## 1\. 当前阶段
 
-项目已完成 `TASK-006` 纯技术脚手架环境验证、`TASK-015` Flyway V1 初始化迁移基线（含 PostgreSQL 15 真实容器回放）、`TASK-017` 首批 expected fixtures bootstrap、`TASK-016` 的 4 个开发前验证最小闭环、`TASK-018` 的最小确定性 `Review Engine` 验证收口，以及 `TASK-019` 的正式最小 `Result Composer + ReviewResultSnapshot` 合成。当前阶段已从“可生成真实点级审核结果”推进到“可合成正式最小结果快照”，下一优先工作转为补齐 `Task Execution` 最小状态机。
+项目已完成 `TASK-006` 纯技术脚手架环境验证、`TASK-015` Flyway V1 初始化迁移基线（含 PostgreSQL 15 真实容器回放）、`TASK-017` 首批 expected fixtures bootstrap、`TASK-016` 的 4 个开发前验证最小闭环、`TASK-018` 的最小确定性 `Review Engine` 验证收口，以及 `TASK-019` 的正式最小 `Result Composer + ReviewResultSnapshot` 合成。当前阶段已从“可生成真实点级审核结果”推进到“可合成正式最小结果快照”。`INFRA-001` 正在把本地开发、验证和测试路径收口为 Docker Compose 唯一标准；在 Docker 标准环境阻塞解除前，不应继续推进 `TASK-020` 业务实现。
 
 ## 2\. 当前关键结论
 
@@ -43,31 +43,34 @@
 * `TASK-019` 已冻结并实现点级正式结果到 `ReviewResultSnapshot` 的最小映射边界：`ERROR / WARNING` 进入业务 `findings`，`PASS / NOT_CONCLUDED / SKIPPED` 不进入业务风险统计，`SYS-*` 仍只保留在 `diagnostics`。
 * 当前 `Review Engine` 仍未接入真实 parser/candidate/evidence 主链路；source anchor 仍是最小摘要对象，不等同正式 block/row/cell 原文定位。
 * 当前 `ResultComposer` 只完成正式最小快照内存对象合成，尚未进入数据库持久化 adapter、结果读取 API 或状态机衔接。
-* 下一优先实现主线已更新为：执行 `TASK-020 Task Execution 最小状态机`，随后再推进 `TASK-021 Result URL 查询接口最小实现`；当前不优先扩展 parser、真实模型调用或完整管理台页面。
+* `INFRA-001` 已将 CQCP 标准 Docker Compose 口径收口为：`COMPOSE_PROJECT_NAME=cqcp`，前端宿主机端口 `15173`，后端宿主机端口 `18080`，PostgreSQL 宿主机端口 `54329`，Compose 网络名 `cqcp_default`，PostgreSQL named volume `cqcp_postgres_data`。
+* `INFRA-001` 已明确 Docker Compose 是 CQCP 唯一标准开发、验证、测试方式；非 Docker 启动仅允许临时故障定位，不作为验收依据。
+* 当前 `Review Engine` 后续实现主线仍是 `TASK-020 Task Execution 最小状态机` 与 `TASK-021 Result URL 查询接口最小实现`，但在 `INFRA-001` Docker 阻塞解除前暂不推进。
 
 ## 3\. 当前活跃任务
 
-* `TASK-019-result-composer-review-result-snapshot` 已完成，当前待新建下一优先任务 `TASK-020 Task Execution 最小状态机`。
+* `INFRA-001-docker-standard-dev-environment` 进行中，当前状态为阻塞收口：旧 `cqcp-postgres-test` 已确认为空历史测试容器并删除，Compose 配置静态验证通过，但标准启动阻塞于 Docker Hub 基础镜像拉取。
 
 ## 4\. 当前阻塞点
 
-* 本地开发与 TASK 验证当前推荐采用混合启动模式：PostgreSQL 使用 Docker 容器 `cqcp-postgres-test` 并映射本机端口 `54329`，后端使用本机 Spring Boot 进程并推荐端口 `18080`，前端使用本机 Vite 开发服务并推荐端口 `15173`。该模式仅代表当前本地开发/验证方式，不代表最终 Docker Compose 交付方案；完整 Docker Compose 启动问题后续单独收口。
+* 旧测试容器 `cqcp-postgres-test` 已只读检查：旧库 `cqcp_test` 仅有 V1 基线 6 张表，且表行数均为 0；已停止并删除旧容器，未删除 Docker volume。
+* Docker Compose 标准启动当前阻塞于 Docker Hub 拉取 `gradle:8.10.2-jdk21` 和 `node:20-alpine`，失败原因为获取 Docker Hub 匿名 token 超时。应优先处理镜像源、代理、镜像加速器或内部镜像仓库，不得继续推进业务 TASK。
 * `apps/admin-web` 的 `vitest` 在 Codex 默认沙箱下仍会被目录读取权限拦截；前端 `test` 虽已在提权条件下通过，但默认执行环境仍不是稳定基线。
 * Codex 默认会话仍不会自动继承本机 `JAVA_HOME/PATH`，且默认沙箱网络受限；后续凡涉及 Gradle 远程依赖解析或前端目录权限问题，仍需显式提权或等效执行环境。
 * 本机 `docker` CLI 访问 `C:\Users\1\.docker\config.json` 仍存在权限警告；当前虽不影响已完成的 PostgreSQL 回放验证，但后续若进入镜像构建、容器联调或 compose 启停，仍需复核本地 Docker 配置可持续使用性。
-* 当前没有新的开发前验证主题阻塞；主要风险已转为如何在不扩大 `Review Engine` 输入边界的前提下，把正式最小 `ReviewResultSnapshot` 平滑衔接到后续 `TASK-020` 的 execution 状态机与最小持久化写入。
+* 当前主要阻塞已从业务实现前置验证转为 Docker 标准环境收口；`TASK-020` 暂缓。
 * 本轮 `gradle build` 的唯一失败点是 `CqcpApiServerApplicationTests` 启动阶段无法连接 PostgreSQL；执行时 `docker ps` 为空，说明本地测试库容器未运行。该问题属于当前执行环境/本地依赖状态，不是 `TASK-019` 新增 composer 代码的编译失败。
 
 ## 5\. 下一步顺序
 
-1. 新建并执行 `TASK-020`，补齐最小 `Task Execution` 阶段状态机，并把 `ReviewResultSnapshot` 与 execution 终态衔接。
-2. `TASK-020` 完成后，再推进 `TASK-021`，落地最小 Result URL 查询接口。
-3. 在 `TASK-020` / `TASK-021` 期间继续保留当前边界：不反向扩展为真实 parser 正式抽取、复杂 CandidateResolver 或真实模型调用。
-4. 继续保留执行环境注意事项：前端 `npm test` 在 Codex 默认沙箱下仍需提权或等效执行环境；Gradle 相关验证仍需显式设置 `JAVA_HOME/PATH`。
+1. 处理 Docker Hub 基础镜像拉取阻塞：`gradle:8.10.2-jdk21` 与 `node:20-alpine`。
+2. 镜像拉取阻塞解除后，继续验证 `docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml up -d --build`。
+3. Docker Compose 标准环境启动、`api-server` 健康检查和 `admin-web` 访问均通过后，再恢复 `TASK-020`。
 
 ## 6\. 当前禁止推进
 
 * 不开始业务功能编码。
+* Docker Compose 标准环境未通过前，不进入 `TASK-020`。
 * 不提前引入 Pilot / Production Readiness 能力。
 * 不做 SAP/OA 深度 correction 联调。
 * 不做复杂权限、完整质量治理、自动调优、自动发布。

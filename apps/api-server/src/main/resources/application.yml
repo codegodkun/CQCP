@@ -2,7 +2,7 @@ spring:
   application:
     name: cqcp-api-server
   datasource:
-    url: ${CQCP_DB_URL:jdbc:postgresql://localhost:5432/cqcp}
+    url: ${CQCP_DB_URL:jdbc:postgresql://postgres:5432/cqcp}
     username: ${CQCP_DB_USERNAME:cqcp}
     password: ${CQCP_DB_PASSWORD:cqcp}
   flyway:
@@ -14,4 +14,3 @@ management:
     web:
       exposure:
         include: health,info,metrics
-

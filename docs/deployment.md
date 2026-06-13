@@ -35,20 +35,77 @@ MVP 部署基线冻结如下：
 
 这些启动值必须通过上线前负载演练验证。系统不承诺 DEEP_REVIEW SLA，但必须避免 STANDARD 任务长期饥饿。
 
-## 本地开发端口约定
+## 本地开发、验证与测试标准环境
 
-当前 CQCP 推荐使用混合本地启动模式作为本地开发和 TASK 验证方式：
+从 `INFRA-001` 完成后，CQCP 默认且唯一被承认的本地开发、验证和测试路径为 Docker Compose。
 
-- PostgreSQL：Docker 容器 `cqcp-postgres-test`，本机端口 `54329`
-- 后端：本机 Spring Boot 进程，推荐端口 `18080`
-- 前端：本机 Vite 开发服务，推荐端口 `15173`
+标准开发环境由 Docker 管理：
 
-推荐避开默认端口的原因：
+- PostgreSQL：Docker Compose 服务 `postgres`，容器内端口 `5432`，本机暴露端口 `54329`
+- 后端：Docker Compose 服务 `api-server`，容器内端口 `8080`，本机暴露端口 `18080`
+- 前端：Docker Compose 服务 `admin-web`，容器内 Nginx 端口 `80`，本机暴露端口 `15173`
 
-- 默认前端端口 `5173` 容易与其他 Vite 项目冲突。
-- 默认后端端口 `8080` 容易与其他 Spring Boot / Java 项目冲突。
+标准端口：
 
-该混合启动模式仅用于本地开发和 TASK 验证，不代表最终 Docker Compose 交付方案。当前不把完整 `docker compose up --build` 作为默认验证方式；本机从 Docker Hub 拉取 `gradle:8.10.2-jdk21` 和 `node:20-alpine` 基础镜像失败的问题，后续单独收口。本节不修改 Docker Compose 编排，也不引入新的启动脚本。
+- 前端访问地址：`http://localhost:15173`
+- 后端健康检查地址：`http://localhost:18080/actuator/health`
+- PostgreSQL 本机端口：`54329`
+
+标准 Compose project name 固定为 `cqcp`，推荐通过 `deploy/env/.env.example` 中的 `COMPOSE_PROJECT_NAME=cqcp` 注入。若不使用该环境文件，必须显式使用 `docker compose -p cqcp ...`，避免生成 `compose_default` 这类通用网络名。
+
+标准启动命令：
+
+```bash
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml up -d --build
+```
+
+停止命令：
+
+```bash
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml down
+```
+
+重建命令：
+
+```bash
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml build --no-cache
+```
+
+查看日志命令：
+
+```bash
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml logs -f
+```
+
+查看单个服务日志示例：
+
+```bash
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml logs -f api-server
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml logs -f admin-web
+docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml logs -f postgres
+```
+
+从该约定生效后，不再保留“PostgreSQL Docker + 后端本机 Spring Boot + 前端本机 Vite”的混合模式作为备用开发方式。本机 Java / Node / Gradle / Vite 启动仅允许用于临时故障定位，不得作为 TASK 验收依据；如果 Docker Compose 标准环境无法启动，应暂停业务开发并优先修复 Docker 环境。
+
+前端容器通过 Nginx `/api/` 反向代理访问 `api-server:8080`，不得在业务代码中写死 `localhost:18080`。后端数据库连接通过 `CQCP_DB_URL`、`CQCP_DB_USERNAME`、`CQCP_DB_PASSWORD` 注入，Compose 中使用容器网络地址 `postgres:5432`，不得写死本机数据库端口。
+
+PostgreSQL 数据使用 CQCP 专属 named volume：`cqcp_postgres_data`。不得使用 `postgres-data`、`db-data` 等通用裸名。
+
+如果本机仍存在历史测试容器 `cqcp-postgres-test` 并占用宿主机 `54329`，标准 Compose 启动前必须先人工确认处理方式：停止、迁移或删除该旧测试容器。不得在未确认数据用途前直接删除；该旧容器存在时，Compose 的 `postgres` 服务会因端口冲突无法启动。
+
+当前 Docker 构建仍依赖 Docker Hub 基础镜像：
+
+- `postgres:15`
+- `gradle:8.10.2-jdk21`
+- `eclipse-temurin:21-jre`
+- `node:20-alpine`
+- `nginx:1.27-alpine`
+
+如果 Docker Hub 镜像拉取失败，不得假装 Docker Compose 已成功，也不得继续推进业务 TASK。处理建议：
+
+1. 先确认本机 Docker Desktop 正常运行，并重新执行标准启动命令。
+2. 如仍失败，检查 Docker Hub 网络访问、代理、镜像加速器或企业网络策略。
+3. 如需要切换基础镜像来源、引入内部镜像仓库或锁定镜像 digest，应单独创建 INFRA 后续任务记录，不在业务 TASK 中顺手处理。
 
 ## Stage Timeout
 
