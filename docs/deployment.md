@@ -35,6 +35,21 @@ MVP 部署基线冻结如下：
 
 这些启动值必须通过上线前负载演练验证。系统不承诺 DEEP_REVIEW SLA，但必须避免 STANDARD 任务长期饥饿。
 
+## 本地开发端口约定
+
+当前 CQCP 推荐使用混合本地启动模式作为本地开发和 TASK 验证方式：
+
+- PostgreSQL：Docker 容器 `cqcp-postgres-test`，本机端口 `54329`
+- 后端：本机 Spring Boot 进程，推荐端口 `18080`
+- 前端：本机 Vite 开发服务，推荐端口 `15173`
+
+推荐避开默认端口的原因：
+
+- 默认前端端口 `5173` 容易与其他 Vite 项目冲突。
+- 默认后端端口 `8080` 容易与其他 Spring Boot / Java 项目冲突。
+
+该混合启动模式仅用于本地开发和 TASK 验证，不代表最终 Docker Compose 交付方案。当前不把完整 `docker compose up --build` 作为默认验证方式；本机从 Docker Hub 拉取 `gradle:8.10.2-jdk21` 和 `node:20-alpine` 基础镜像失败的问题，后续单独收口。本节不修改 Docker Compose 编排，也不引入新的启动脚本。
+
 ## Stage Timeout
 
 stage timeout 一期默认值：
