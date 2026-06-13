@@ -1,27 +1,21 @@
-# TASK-020：Task Execution 最小状态机
+# TASK-020 Task Execution 最小状态机
 
-状态：待开始
+状态：已完成
 类型：A 类核心链路后端开发
-
 优先级：P0
 负责人：Codex
 创建日期：2026-06-13
+完成日期：2026-06-13
 
 来源：`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`tasks/TEMPLATE_ROUTER.md`
 
 ## 背景
 
-`TASK-019` 已完成正式最小 `ResultComposer + ReviewResultSnapshot` 合成，`INFRA-001` 已完成 Docker Compose 唯一标准开发环境收口。当前下一优先主线任务为补齐 `Task / Execution / Stage` 的最小状态迁移、阶段日志，以及与 `ReviewResultSnapshot` 的衔接，形成最小串行执行闭环。
-
-根据 `tasks/MVP_TASK_MAP.md`，`TASK-020` 属于 A 类核心链路任务，涉及 execution 状态机边界，必须由 Codex 主控，不得直接派发给 Claude Code / DeepSeek。
+`TASK-019` 已完成正式最小 `ResultComposer + ReviewResultSnapshot` 合成，`INFRA-001` 已完成 Docker Compose 唯一标准开发环境收口。下一步需要把 `Task / Execution / Stage` 串成最小可执行闭环，但不能扩成完整调度系统。
 
 ## 任务目标
 
 补齐 `Task / Execution / Stage` 的最小状态迁移、阶段日志，以及与 `ReviewResultSnapshot` 的衔接，形成最小串行执行闭环。
-
-## 任务性质
-
-A 类核心链路后端开发，由 Codex 主控。
 
 ## Task Context
 
@@ -31,7 +25,6 @@ A 类核心链路后端开发，由 Codex 主控。
 * `CURRENT_CONTEXT.md`
 * `tasks/MVP_TASK_MAP.md`
 * `tasks/TEMPLATE_ROUTER.md`
-* 本任务包
 * `tasks/active/TASK-019-result-composer-review-result-snapshot.md`
 
 ### Optional Context
@@ -44,116 +37,102 @@ A 类核心链路后端开发，由 Codex 主控。
 
 ### Out of Scope
 
-* 前端页面。
-* 真实 Word 解析。
-* AI 调优包导出。
-* 异步队列和完整调度系统。
-* 多租户、权限系统、并发执行扩展。
-* 前端 5 个 vulnerabilities 处理。
+* 前端页面
+* 真实 Word 解析
+* AI 调优包导出
+* 异步队列和完整调度系统
+* 多租户、权限系统、并发执行扩展
+* 前端 5 个 vulnerabilities 处理
 
-## 最小实现范围
+## 本轮实现
 
-* 最小 `Execution` 状态流转。
-* 最小 `Stage` 日志记录。
-* 串行调用现有 `MinimalReviewEngine`。
-* 调用已有 `ResultComposer` 生成 `ReviewResultSnapshot`。
-* 覆盖成功、失败、终态不可重复执行等最小测试。
-* 优先复用现有 V1 schema。
+### 新增代码
+
+* `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/TaskExecutionStateMachine.java`
+
+实现内容：
+
+* 新增最小 `TaskExecutionStateMachine`
+* 新增最小执行输入/输出与持久化抽象：
+  * `TaskExecutionRequest`
+  * `ReviewTaskRecord`
+  * `TaskExecutionRecord`
+  * `TaskStageLogEntry`
+  * `TaskExecutionRunResult`
+  * `TaskExecutionPersistence`
+* 新增最小 `ExecutionStatus`，字段和值对齐 V1 schema
+* 串行执行路径固定为：
+  * `CREATED -> REVIEWING_RULES -> COMPOSING -> SUCCESS / PARTIAL_SUCCESS / FAILED`
+* 在 `REVIEWING_RULES`、`COMPOSING` 两个阶段记录最小 stage log：
+  * `STARTED`
+  * `COMPLETED`
+  * `FAILED`
+* 直接复用现有 `MinimalReviewEngine`
+* 直接复用现有 `ResultComposer`
+* 终态 execution 禁止重复执行
+* 失败路径会写入失败状态和失败 stage log 后再抛出异常
+
+### 新增测试
+
+* `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TaskExecutionStateMachineTest.java`
+
+覆盖场景：
+
+* 成功路径：生成正式 `ReviewResultSnapshot`，并记录完整最小阶段日志
+* 部分成功路径：`SYS-*` diagnostics 继续只留在 `diagnostics`，不进入业务 `findings`
+* 失败路径：review 阶段抛错时，execution 进入 `FAILED`，并记录失败 stage log
+* 终态保护：`SUCCESS` execution 不允许重复执行
+
+## V1 schema 复用判断
+
+本轮未修改数据库迁移 SQL。
+
+复用方式：
+
+* `execution.status` 复用 V1 已冻结状态集合
+* `execution.current_stage` 复用 V1 已冻结阶段/终态口径
+* `task_stage_log` 复用 V1 已冻结最小字段语义：
+  * `stage_name`
+  * `attempt`
+  * `event_type`
+  * `summary_status`
+  * `business_reason`
+  * `duration_ms`
+  * `detail_payload`
+* `review_result_snapshot` 继续复用 `TASK-019` 已冻结正式最小快照结构
+
+本轮仅实现最小内存态持久化抽象，不引入真实数据库 adapter；后续如需数据库接入，应在后续任务内继续推进。
 
 ## 明确不做
 
-* 不做完整任务调度系统。
-* 不做异步队列。
-* 不做并发执行扩展。
-* 不做多租户。
-* 不做权限系统。
-* 不做前端页面。
-* 不做真实 Word 解析。
-* 不做 AI 调优包导出。
-* 不处理前端 5 个 vulnerabilities。
-* 不重复 `TASK-019`。
-* 不修改 `PRD.md`。
-* 不修改 `docs/ARCHITECTURE.md`。
-* 不修改数据库迁移 SQL，除非实现前明确发现 V1 schema 无法承载，并先暂停确认。
+* 不做完整任务调度系统
+* 不做异步队列
+* 不做并发执行扩展
+* 不做多租户
+* 不做权限系统
+* 不做前端页面
+* 不做真实 Word 解析
+* 不做 AI 调优包导出
+* 不处理前端 5 个 vulnerabilities
+* 不重复 `TASK-019`
+* 不修改 `PRD.md`
+* 不修改 `docs/ARCHITECTURE.md`
+* 不修改数据库迁移 SQL
 
-## 预计涉及模块
+## 验证结果
 
-* `task`
-* `execution`
-* `stage`
-* `reviewengine`
-* `ReviewResultSnapshot`
-* `ResultComposer`
-* `MinimalReviewEngine`
-* `Admin diagnostics` 相邻模块
-* 后端测试
+### Docker Compose 环境
 
-## 禁止修改范围
+* `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example ps`：通过
+* `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp`：返回 `accepting connections`
 
-* `TASK-019` 已完成实现。
-* `INFRA-001` 已完成配置。
-* `PRD.md`
-* `docs/ARCHITECTURE.md`
-* 数据库迁移 SQL
-* 前端 vulnerabilities
-* 前端页面
+### 后端定向测试
 
-## 数据库判断
+* `gradle test --tests "*TaskExecutionStateMachineTest"`：通过
+* `gradle test --tests "*MinimalReviewEngineTest" --tests "*ResultComposerTest" --tests "*TaskExecutionStateMachineTest"`：通过
 
-* 目前预判不需要数据库迁移。
-* `TASK-020` 应优先复用 `TASK-015` 已冻结的 V1 schema。
-* 如果实现前发现 schema 不足，必须暂停并报告，不得直接修改迁移 SQL。
+## 结果结论
 
-## Claude Code / DeepSeek 判断
+`TASK-020` 已在冻结边界内完成最小串行执行闭环，未触发 ADR，未触碰前端、PRD、ARCHITECTURE 或数据库迁移 SQL。
 
-* 当前不需要拆 `TASK_SPEC`。
-* `TASK-020` 父任务由 Codex 主控。
-* Claude Code / DeepSeek 不得直接接父 `TASK`。
-* 只有 Codex 后续拆出边界冻结的 `TASK_SPEC` 后，才允许局部执行。
-
-## 预计涉及文件
-
-* `tasks/active/TASK-020-task-execution-state-machine.md`
-* `apps/api-server/src/main/java/com/cqcp/apiserver/...`
-* `apps/api-server/src/test/java/com/cqcp/apiserver/...`
-* `CURRENT_CONTEXT.md`
-* `changelog/2026-06.md`
-
-## 验收标准
-
-* Docker Compose 标准环境保持可用。
-* 后端 `TASK-020` 定向测试通过。
-* 成功路径能产生最小 `ReviewResultSnapshot`。
-* 失败路径能记录失败状态和阶段日志。
-* 终态 `execution` 不允许重复执行。
-* `SYS-* diagnostics` 不抬升为业务 finding。
-* 不引入数据库迁移。
-* 不引入前端页面。
-* Git 工作区收口干净。
-
-## 验收命令
-
-* `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example ps`
-* `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp`
-* 后端定向测试命令根据实际测试类命名确定，例如：
-  `gradle test --tests "*TaskExecution*"`
-
-## 暂停条件
-
-* 发现需要数据库迁移。
-* 发现需要修改 `PRD.md` 或 `docs/ARCHITECTURE.md`。
-* Docker Compose 环境异常。
-* 需要引入异步队列或完整调度系统。
-* 任务范围扩展到前端或真实 Word 解析。
-* 需要 Claude Code / DeepSeek 介入父任务。
-
-## 文档更新要求
-
-* `CURRENT_CONTEXT.md`：任务完成后更新。
-* `changelog/2026-06.md`：任务完成后更新。
-* 本任务包：任务完成后更新。
-* ADR：当前预判不需要；如实现中触发架构、数据库、审核链路、模型职责或治理边界变化，必须先暂停并补 ADR。
-
-## 备注
-
-* 本轮仅创建父任务文件并冻结边界，不进入代码实现。
+下一优先任务为：`TASK-021 Result URL 查询接口最小实现`。
