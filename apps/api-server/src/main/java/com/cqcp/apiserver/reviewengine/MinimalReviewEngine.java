@@ -564,6 +564,10 @@ final class StructuredFieldSet {
         return getOptional(key).map(BigDecimal::new);
     }
 
+    Map<String, String> asMap() {
+        return values;
+    }
+
     static final class Builder {
 
         private final Map<String, String> values = new java.util.LinkedHashMap<>();

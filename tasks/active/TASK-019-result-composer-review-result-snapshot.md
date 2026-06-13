@@ -1,6 +1,6 @@
 # TASK-019：Result Composer + ReviewResultSnapshot 最小合成
 
-状态：待开始
+状态：已完成
 
 类型：父任务 / A 类 Codex 主控 / 后端结果合成
 
@@ -338,8 +338,20 @@
 
 ## 完成记录
 
-* 完成日期：待填写
-* 变更文件：待填写
-* 测试结果：待填写
-* 遗留问题：待填写
-* 备注：待填写
+* 完成日期：2026-06-13
+* 变更文件：
+  * `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ResultComposer.java`
+  * `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java`
+  * `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ResultComposerTest.java`
+  * `tasks/active/TASK-019-result-composer-review-result-snapshot.md`
+  * `CURRENT_CONTEXT.md`
+  * `changelog/2026-06.md`
+* 测试结果：
+  * 定向验证：`gradle test --tests com.cqcp.apiserver.reviewengine.ResultComposerTest --tests com.cqcp.apiserver.reviewengine.MinimalReviewEngineTest` -> 通过
+  * 全量后端构建：`gradle build` 未通过；失败点为 `CqcpApiServerApplicationTests` 启动阶段无法连接 PostgreSQL，执行时 `docker ps` 为空，确认是当前本地测试库容器未运行，不是 `TASK-019` 新增 composer 代码编译失败
+* 遗留问题：
+  * 本轮完成的是正式最小 `ReviewResultSnapshot` 内存对象与 `Result Composer`，尚未进入数据库持久化 adapter、结果读取 API 或状态机衔接
+  * `ReviewResultSnapshot.status` 仍采用最小终态口径：`SUCCESS / PARTIAL_SUCCESS`；更完整的 execution 运行态与失败态衔接留给 `TASK-020`
+* 备注：
+  * 本轮未触发 ADR；未修改数据库迁移、接口契约或主审核链路边界
+  * 当前 `.reviewengine` 包内仍保留 `TASK-018` 的 `ReviewResultSnapshotDraft`，作为最小验证草案对象；正式读取面已切换为 `ResultComposer` 产出的 `ReviewResultSnapshot`

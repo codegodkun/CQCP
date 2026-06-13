@@ -1,10 +1,10 @@
 # CURRENT\_CONTEXT.md
 
-更新日期：2026-06-12
+更新日期：2026-06-13
 
 ## 1\. 当前阶段
 
-项目已完成 `TASK-006` 纯技术脚手架环境验证、`TASK-015` Flyway V1 初始化迁移基线（含 PostgreSQL 15 真实容器回放）、`TASK-017` 首批 expected fixtures bootstrap、`TASK-016` 的 4 个开发前验证最小闭环，以及 `TASK-018` 的最小确定性 `Review Engine` 验证收口。当前阶段已从“前置验证”推进到“可生成真实点级审核结果”，下一优先工作转为补齐 `Result Composer + ReviewResultSnapshot` 合成与最小持久化任务。
+项目已完成 `TASK-006` 纯技术脚手架环境验证、`TASK-015` Flyway V1 初始化迁移基线（含 PostgreSQL 15 真实容器回放）、`TASK-017` 首批 expected fixtures bootstrap、`TASK-016` 的 4 个开发前验证最小闭环、`TASK-018` 的最小确定性 `Review Engine` 验证收口，以及 `TASK-019` 的正式最小 `Result Composer + ReviewResultSnapshot` 合成。当前阶段已从“可生成真实点级审核结果”推进到“可合成正式最小结果快照”，下一优先工作转为补齐 `Task Execution` 最小状态机。
 
 ## 2\. 当前关键结论
 
@@ -34,25 +34,35 @@
   * `ReviewResultSnapshotDraft`
   * `PointDiagnostic[]`
 * `TASK-018` 已验证首批 9 个审核点的最小确定性裁判，并覆盖 `PASS / WARNING / ERROR / NOT_CONCLUDED / SKIPPED` 与 `SYS-* -> NOT_CONCLUDED`。
+* `apps/api-server` 已新增最小 `ResultComposer`，可将 `PointReviewResult[] / ReviewSummary / ReviewCompleteness / PointDiagnostic[]` 合成为正式最小 `ReviewResultSnapshot` 内存对象，并显式产出：
+  * `findings`
+  * `diagnostics`
+  * `sourceAnchors`
+  * `enabledReviewPointsSnapshot / disabledReviewPointsSnapshot`
+  * 最小版本引用字段
+* `TASK-019` 已冻结并实现点级正式结果到 `ReviewResultSnapshot` 的最小映射边界：`ERROR / WARNING` 进入业务 `findings`，`PASS / NOT_CONCLUDED / SKIPPED` 不进入业务风险统计，`SYS-*` 仍只保留在 `diagnostics`。
 * 当前 `Review Engine` 仍未接入真实 parser/candidate/evidence 主链路；source anchor 仍是最小摘要对象，不等同正式 block/row/cell 原文定位。
-* 下一优先实现主线已更新为：新建并执行 `TASK-019 Result Composer + Snapshot`，随后再推进 `TASK-020 Task Execution 最小状态机`；当前不优先扩展 parser、真实模型调用或完整管理台页面。
+* 当前 `ResultComposer` 只完成正式最小快照内存对象合成，尚未进入数据库持久化 adapter、结果读取 API 或状态机衔接。
+* 下一优先实现主线已更新为：执行 `TASK-020 Task Execution 最小状态机`，随后再推进 `TASK-021 Result URL 查询接口最小实现`；当前不优先扩展 parser、真实模型调用或完整管理台页面。
 
 ## 3\. 当前活跃任务
 
-* `TASK-018-review-engine-minimal-validation` 已完成，当前待新建下一优先任务 `TASK-019 Result Composer + Snapshot`。
+* `TASK-019-result-composer-review-result-snapshot` 已完成，当前待新建下一优先任务 `TASK-020 Task Execution 最小状态机`。
 
 ## 4\. 当前阻塞点
 
+* 本地开发与 TASK 验证当前推荐采用混合启动模式：PostgreSQL 使用 Docker 容器 `cqcp-postgres-test` 并映射本机端口 `54329`，后端使用本机 Spring Boot 进程并推荐端口 `18080`，前端使用本机 Vite 开发服务并推荐端口 `15173`。该模式仅代表当前本地开发/验证方式，不代表最终 Docker Compose 交付方案；完整 Docker Compose 启动问题后续单独收口。
 * `apps/admin-web` 的 `vitest` 在 Codex 默认沙箱下仍会被目录读取权限拦截；前端 `test` 虽已在提权条件下通过，但默认执行环境仍不是稳定基线。
 * Codex 默认会话仍不会自动继承本机 `JAVA_HOME/PATH`，且默认沙箱网络受限；后续凡涉及 Gradle 远程依赖解析或前端目录权限问题，仍需显式提权或等效执行环境。
 * 本机 `docker` CLI 访问 `C:\Users\1\.docker\config.json` 仍存在权限警告；当前虽不影响已完成的 PostgreSQL 回放验证，但后续若进入镜像构建、容器联调或 compose 启停，仍需复核本地 Docker 配置可持续使用性。
-* 当前没有新的开发前验证主题阻塞；主要风险已转为如何在不扩大 `Review Engine` 输入边界的前提下，把当前内存态 `ReviewResultSnapshotDraft` 平滑衔接到后续 `TASK-019` 的结果合成与最小持久化结构。
+* 当前没有新的开发前验证主题阻塞；主要风险已转为如何在不扩大 `Review Engine` 输入边界的前提下，把正式最小 `ReviewResultSnapshot` 平滑衔接到后续 `TASK-020` 的 execution 状态机与最小持久化写入。
+* 本轮 `gradle build` 的唯一失败点是 `CqcpApiServerApplicationTests` 启动阶段无法连接 PostgreSQL；执行时 `docker ps` 为空，说明本地测试库容器未运行。该问题属于当前执行环境/本地依赖状态，不是 `TASK-019` 新增 composer 代码的编译失败。
 
 ## 5\. 下一步顺序
 
-1. 新建并执行 `TASK-019`，把当前 `Review Engine` 输出合成为不可变 `ReviewResultSnapshot` 草案/最小持久化结构。
-2. `TASK-019` 完成后，再推进 `TASK-020`，补齐最小 `Task Execution` 阶段状态机。
-3. 在 `TASK-019` / `TASK-020` 期间继续保留当前边界：不反向扩展为真实 parser 正式抽取、复杂 CandidateResolver 或真实模型调用。
+1. 新建并执行 `TASK-020`，补齐最小 `Task Execution` 阶段状态机，并把 `ReviewResultSnapshot` 与 execution 终态衔接。
+2. `TASK-020` 完成后，再推进 `TASK-021`，落地最小 Result URL 查询接口。
+3. 在 `TASK-020` / `TASK-021` 期间继续保留当前边界：不反向扩展为真实 parser 正式抽取、复杂 CandidateResolver 或真实模型调用。
 4. 继续保留执行环境注意事项：前端 `npm test` 在 Codex 默认沙箱下仍需提权或等效执行环境；Gradle 相关验证仍需显式设置 `JAVA_HOME/PATH`。
 
 ## 6\. 当前禁止推进
@@ -79,6 +89,7 @@
 * TASK-016：MVP 开发前验证基线。
 * TASK-017：首批 expected fixtures bootstrap。
 * TASK-018：Review Engine 最小验证闭环，已完成最小确定性点级裁判与 Snapshot draft 对象基线。
+* TASK-019：Result Composer + ReviewResultSnapshot 最小合成，已完成正式最小快照对象、findings/diagnostics/sourceAnchors 合成与版本引用占位。
 * TASK-014：最小 OpenAPI 契约。
 
 更新日期：2026-06-12
