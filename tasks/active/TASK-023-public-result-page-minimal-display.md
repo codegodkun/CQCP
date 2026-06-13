@@ -1,5 +1,5 @@
 # TASK-023：普通结果页最小展示
-状态：已建档，待实现
+状态：已完成最小实现，待提交
 类型：B 类前端父任务
 
 优先级：P1
@@ -147,8 +147,13 @@
 
 ## 测试与验证
 
-* 本轮仅做文档建档与边界冻结，不运行前端、后端或数据库测试。
-* 验证方式为人工核对文档边界是否与 `docs/frontend.md`、`ADR-002`、`TASK-021`、`TASK-022` 一致。
+* 父任务建档阶段已完成；本轮在既有边界内完成最小前端实现与验证。
+* 已执行：
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example ps`
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp`
+  * `npm.cmd run test`
+  * `npm.cmd run build`
+  * `npm.cmd run lint`
 
 ## 文档更新要求
 
@@ -178,7 +183,26 @@
 ## 完成记录
 
 * 完成日期：2026-06-13
-* 变更文件：`tasks/active/TASK-023-public-result-page-minimal-display.md`
-* 测试结果：未运行；本轮仅做父任务建档与文档回写
-* 遗留问题：`TASK-023` 具体实现尚未开始
-* 备注：本轮明确禁止进入前端/后端/数据库实现
+* 变更文件：
+  * `tasks/active/TASK-023-public-result-page-minimal-display.md`
+  * `apps/admin-web/src/App.tsx`
+  * `apps/admin-web/src/App.test.tsx`
+  * `apps/admin-web/src/styles.css`
+  * `apps/admin-web/src/publicResult/api.ts`
+  * `apps/admin-web/src/publicResult/types.ts`
+  * `apps/admin-web/src/publicResult/PublicResultPage.tsx`
+  * `CURRENT_CONTEXT.md`
+  * `changelog/2026-06.md`
+  * `tasks/MVP_TASK_MAP.md`
+* 测试结果：
+  * `npm.cmd run test`：通过（4 tests passed）
+  * `npm.cmd run build`：通过
+  * `npm.cmd run lint`：通过
+  * `docker compose ... ps`：3 个服务 `Up`
+  * `docker compose ... pg_isready`：`accepting connections`
+* 遗留问题：
+  * 当前公开页只能基于 `SourceAnchorSummary` 提供 block 级定位摘要，暂无合同全文预览能力。
+  * `TASK-024` 管理台诊断详情与 `TASK-031` mapper 补洞仍未进入。
+* 备注：
+  * 本轮未修改后端、数据库迁移、`PRD.md`、`docs/ARCHITECTURE.md` 或 Docker 配置。
+  * 本轮未创建 `TASK_SPEC`，未分配 Claude Code / DeepSeek。
