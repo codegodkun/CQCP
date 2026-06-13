@@ -35,7 +35,7 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 
 ## 3. 当前活跃任务
 
-* `TASK-021 Result URL 查询接口最小实现`：下一优先主线任务，需新建/确认父任务文件后执行。
+* `TASK-021 Result URL 查询接口最小实现`：已完成父任务建档，当前仅冻结边界，尚未进入接口实现。
 
 ## 4. 已完成任务
 
@@ -56,13 +56,13 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 
 ## 6. 待确认事项
 
-* `TASK-021` 的任务文件是否沿用父任务最小实现口径直接创建，还是先补 Result URL 边界确认记录。
+* `TASK-021` 已完成父任务建档；后续实现前仍需先检查路由命名风格、错误响应风格、测试组织方式以及 snapshot 承接方式。
 * `TASK-020` 当前仅完成最小内存态持久化抽象；后续何时接入真实数据库 adapter，待后续任务明确，不在本轮内扩展。
 
 ## 7. 下一步顺序
 
-1. 新建并执行 `TASK-021 Result URL 查询接口最小实现`。
-2. 在 `TASK-021` 完成后，再推进普通结果页最小展示和管理台任务详情最小诊断。
+1. 在不扩范围的前提下，后续进入 `TASK-021 Result URL 查询接口最小实现` 的最小后端实现阶段。
+2. `TASK-021` 完成后，再推进普通结果页最小展示和管理台任务详情最小诊断。
 3. 后续 parser / candidate / evidence 主链路接入，继续保持 Codex 主控，不提前扩成完整调度系统。
 
 ## 8. 当前禁止推进
@@ -71,6 +71,7 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 * 不修改 `PRD.md`、`docs/ARCHITECTURE.md` 或数据库迁移 SQL，除非后续任务明确触发并先行确认。
 * 不处理前端 5 个 vulnerabilities，除非单独建任务。
 * 不把非 Docker 启动方式重新写回为标准开发/验收路径。
+* `TASK-021` 当前阶段不得直接进入接口实现之外的扩范围开发，不得提前触碰前端、下载、鉴权或数据库迁移。
 
 ## 9. 长期记忆索引
 
@@ -81,4 +82,5 @@ CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `Rev
 * `decisions/ADR-012-domain-model-freeze.md`
 * `decisions/ADR-013-v1-core-schema-bootstrap.md`
 * `tasks/active/TASK-020-task-execution-state-machine.md`
+* `tasks/active/TASK-021-result-url-query-api.md`
 * `changelog/2026-06.md`
