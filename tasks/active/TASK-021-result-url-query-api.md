@@ -1,10 +1,12 @@
 # TASK-021 Result URL 查询接口最小实现
 
-状态：已实现，待提交
+状态：已完成并提交
 类型：A 类核心链路后端开发
 优先级：P0
 负责人：Codex
 创建日期：2026-06-13
+完成日期：2026-06-13
+完成态 commit hash：`c5e4ddd`
 
 来源：`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`tasks/TEMPLATE_ROUTER.md`
 
@@ -149,10 +151,10 @@ A 类核心链路后端开发，由 Codex 主控。
 
 ## 文档更新要求
 
-* `CURRENT_CONTEXT.md`：本轮更新为“TASK-021 已完成最小后端实现与验证，待提交收口”
-* `changelog/2026-06.md`：记录 TASK-021 实现与验证事实
-* `tasks/MVP_TASK_MAP.md`：仅同步 `TASK-021` 状态，不改变任务路线
-* 本任务文件：写入本轮实现结果与验证结果
+* `CURRENT_CONTEXT.md`：更新为“TASK-021 已完成并提交；当前实现仍为内存态最小承接层”
+* `changelog/2026-06.md`：记录 TASK-021 完成态提交事实与 commit hash
+* `tasks/MVP_TASK_MAP.md`：同步 `TASK-021` 状态为“已完成并提交”
+* 本任务文件：写入本轮实现结果、验证结果和完成态信息
 
 ## 本轮实现结果
 
@@ -170,6 +172,7 @@ A 类核心链路后端开发，由 Codex 主控。
   * 任务不存在 -> `404`
   * 任务存在但尚无结果 -> `409`
 * 本轮未修改 `ResultComposer` 业务合成逻辑，未修改 `TaskExecutionStateMachine` 核心状态迁移逻辑。
+* 当前结果查询仍基于内存态最小承接层，不是最终持久化查询实现；后续需要接入真实数据库 query adapter。
 
 ## 本轮测试与验证
 
