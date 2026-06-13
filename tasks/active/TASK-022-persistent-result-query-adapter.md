@@ -1,10 +1,11 @@
 # TASK-022 Persistent Result Query Adapter 最小持久化查询适配层
 
-状态：已建档
+状态：已实现，待提交
 类型：A 类核心链路后端开发
 优先级：P0
 负责人：Codex
 创建日期：2026-06-13
+实现日期：2026-06-13
 
 来源：`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`tasks/TEMPLATE_ROUTER.md`
 
@@ -128,7 +129,7 @@ A 类核心链路后端开发，由 Codex 主控。
 6. 第六阶段：提交收口。
 7. 第七阶段：再判断是否适合拆给 Claude Code / DeepSeek 局部执行。
 
-当前只做第一阶段。
+当前已完成第一阶段建档、第二阶段探查、第三阶段最小实现与第四阶段定向测试/必要回归，待提交收口。
 
 ## 暂停条件
 
@@ -145,3 +146,47 @@ A 类核心链路后端开发，由 Codex 主控。
 * `changelog/2026-06.md`：记录 TASK-022 建档事实，以及 TASK-021 完成态状态一致性修正
 * `tasks/MVP_TASK_MAP.md`：同步 TASK-021 状态与 TASK-022 任务编号/任务路线
 * 如有必要，修正 `tasks/active/TASK-021-result-url-query-api.md` 中“待提交”表述
+
+## 探查结论
+
+* V1 schema 中 `task`、`execution`、`task_stage_log`、`review_result_snapshot` 均已存在，且 `review_result_snapshot` 已具备读取正式结果快照所需的关键 JSONB 和版本字段。
+* 当前仓库已引入 MyBatis starter 与 PostgreSQL/Flyway 依赖，但尚未建立正式 JPA / MyBatis / Spring Data Repository 数据访问层。
+* 当前后端没有现成持久化查询模块；TASK-021 默认查询来源仍为 `InMemoryTaskResultStore`。
+* `ReviewResultSnapshot` 已通过 TASK-021 Controller 序列化为 JSON；在同包内可通过 `ObjectMapper` 反序列化回记录类型。
+* 基于 `review_result_snapshot` 的 JSONB 列和 `task` 表存在性判断，可以在不新增数据库迁移的情况下完成最小持久化查询适配层。
+
+## 本轮实现结果
+
+* 新增 `PersistentTaskResultStore`，作为默认 `TaskResultStore` 持久化查询实现：
+  * 使用 `JdbcTemplate + ObjectMapper`
+  * 只读取 `task` 和 `review_result_snapshot`
+  * `review_result_snapshot` 读取条件固定为 `task_id + superseded_by_execution_id IS NULL + created_at DESC`
+* 保持 `GET /api/v1/tasks/{taskId}/result` 对外路径不变。
+* 保持 `TASK-021` 已定语义不变：
+  * 已有结果 -> `200`
+  * 任务不存在 -> `404`
+  * 任务存在但没有结果快照 -> `409`
+* 保留 `InMemoryTaskResultStore` 作为 MVP 最小闭环测试替身，不再作为默认持久化查询实现。
+* 本轮未修改 `ResultComposer` 核心合成逻辑，未修改 `TaskExecutionStateMachine` 核心状态迁移逻辑。
+
+## 本轮测试与验证
+
+* 定向测试：
+  * `gradle test --tests "*PersistentTaskResultStoreTest" --tests "*TaskResultQueryServiceTest" --tests "*TaskResultQueryControllerTest"` -> 通过
+* 回归测试：
+  * `gradle test --tests "*MinimalReviewEngineTest" --tests "*ResultComposerTest" --tests "*TaskExecutionStateMachineTest" --tests "*TaskResultQueryServiceTest" --tests "*TaskResultQueryControllerTest" --tests "*PersistentTaskResultStoreTest"` -> 通过
+* Docker Compose 标准环境检查：
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example ps` -> 3 个服务均为 `Up`
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp` -> 需要提权后复核；当前代码实现未受阻塞
+
+## 边界检查结论
+
+* 未修改数据库迁移。
+* 未修改 `PRD.md`。
+* 未修改 `docs/ARCHITECTURE.md`。
+* 未触碰前端。
+* 未修改 Docker 配置。
+* 未修改 `TASK-021` 对外接口路径。
+* 未触发审核，未重新执行状态机。
+* 未改变 execution 状态。
+* 未写 stage log。
