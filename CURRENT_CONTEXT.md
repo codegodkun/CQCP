@@ -1,102 +1,60 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-06-13
+閺囧瓨鏌婇弮銉︽埂閿?026-06-13
 
-## 1. 当前阶段
+## 1. 瑜版挸澧犻梼鑸殿唽
 
-CQCP 已完成 MVP 主链路的前置基线、最小 Review Engine、正式 `ReviewResultSnapshot` 合成、`TASK-020 Task Execution 最小状态机`、`TASK-021 Result URL 查询接口最小实现`，以及 `TASK-022 Persistent Result Query Adapter 最小持久化查询适配层` 的最小实现与验证。
+CQCP 瀹告彃鐣幋?MVP 娑撳鎽肩捄顖滄畱閸撳秶鐤嗛崺铏瑰殠閵嗕焦娓剁亸?Review Engine閵嗕焦顒滃?`ReviewResultSnapshot` 閸氬牊鍨氶妴涔ASK-020 Task Execution 閺堚偓鐏忓繒濮搁幀浣规簚`閵嗕梗TASK-021 Result URL 閺屻儴顕楅幒銉ュ經閺堚偓鐏忓繐鐤勯悳鐧敍灞间簰閸?`TASK-022 Persistent Result Query Adapter 閺堚偓鐏忓繑瀵旀稊鍛閺屻儴顕楅柅鍌炲帳鐏炰繖 閻ㄥ嫭娓剁亸蹇撶杽閻滈绗屾宀冪槈閵?
+瑜版挸澧犳い鍦窗瀹告彃鍙挎径鍥风窗
 
-当前项目已具备：
-
-* Docker Compose 唯一标准开发/验证/测试环境；
-* 基于 V1 schema 的 `task / execution / task_stage_log / review_result_snapshot` 最小契约；
-* 串行执行 `MinimalReviewEngine -> ResultComposer -> ReviewResultSnapshot` 的最小闭环；
-* 只读 `GET /api/v1/tasks/{taskId}/result` 最小结果查询接口；
-* 基于真实 PostgreSQL V1 schema 的最小持久化结果查询适配层。
-
-`TASK-021` 已完成并提交，完成态 commit hash：`c5e4ddd`。
-`TASK-022` 已完成最小实现与验证，当前处于待提交收口状态，尚未进入 `TASK-023`。
-
-## 2. 当前关键结论
-
-* MVP 第一批仍只支持中文 `.docx` 工程采购合同。
-* 首批 9 个 core review point 已冻结，`SYS-*` 继续只保留在 diagnostics，不抬升为业务 finding。
-* `TASK-019` 已完成正式最小 `ReviewResultSnapshot` 合成边界：
-  * `ERROR / WARNING` 进入业务 `findings`
-  * `PASS / NOT_CONCLUDED / SKIPPED` 不进入业务风险统计
-  * `SYS-*` 仅保留在 `diagnostics`
-* `TASK-020` 已完成最小串行执行闭环：
-  * 最小 execution 状态流转：`CREATED -> REVIEWING_RULES -> COMPOSING -> SUCCESS / PARTIAL_SUCCESS / FAILED`
-  * 最小 stage 日志记录：`REVIEWING_RULES`、`COMPOSING` 的 `STARTED / COMPLETED / FAILED`
-  * 串行调用现有 `MinimalReviewEngine`
-  * 调用现有 `ResultComposer` 生成正式 `ReviewResultSnapshot`
-  * 终态 execution 禁止重复执行
-  * 失败路径会落 execution 失败状态和失败 stage log
-* `TASK-021` 已完成最小后端只读结果查询接口：
-  * 新增 `GET /api/v1/tasks/{taskId}/result`
-  * 查询接口只读，不触发审核、不重跑状态机、不修改 execution 状态、不写 stage log
-* `TASK-022` 已将 `TaskResultStore` 的默认结果来源从内存态承接层推进到持久化查询适配层：
-  * 新增 `PersistentTaskResultStore`
-  * 采用 `JdbcTemplate + ObjectMapper` 直接读取 `task` 与 `review_result_snapshot`
-  * 不修改 `TASK-021` 对外接口路径与 `200 / 404 / 409` 语义
-  * 不修改 `TASK-019 ResultComposer` 核心逻辑
-  * 不修改 `TASK-020 TaskExecutionStateMachine` 核心逻辑
-  * 不新增数据库迁移
-* `InMemoryTaskResultStore` 仍保留为 MVP 最小闭环测试替身，不再作为默认持久化查询实现。
-* CQCP 当前唯一标准环境仍为 Docker Compose：
-  * admin-web: `http://localhost:15173`
+* Docker Compose 閸烆垯绔撮弽鍥у櫙瀵偓閸?妤犲矁鐦?濞村鐦悳顖氼暔閿?* 閸╄桨绨?V1 schema 閻?`task / execution / task_stage_log / review_result_snapshot` 閺堚偓鐏忓繐顨栫痪锔肩幢
+* 娑撹尪顢戦幍褑顢?`MinimalReviewEngine -> ResultComposer -> ReviewResultSnapshot` 閻ㄥ嫭娓剁亸蹇涙４閻滎垽绱?* 閸欘亣顕?`GET /api/v1/tasks/{taskId}/result` 閺堚偓鐏忓繒绮ㄩ弸婊勭叀鐠囥垺甯撮崣锝忕幢
+* 閸╄桨绨惇鐔风杽 PostgreSQL V1 schema 閻ㄥ嫭娓剁亸蹇斿瘮娑斿懎瀵茬紒鎾寸亯閺屻儴顕楅柅鍌炲帳鐏炲倶鈧?
+`TASK-021` 已完成并提交，完成态 commit hash：`c5e4ddd`。`TASK-022` 已完成并提交；父任务建档 commit：`dde34dd`，实现 commit：`1a206d7`。当前尚未进入 `TASK-023`。
+## 2. 瑜版挸澧犻崗鎶芥暛缂佹捁顔?
+* MVP 缁楊兛绔撮幍閫涚矝閸欘亝鏁幐浣疯厬閺?`.docx` 瀹搞儳鈻奸柌鍥枠閸氬牆鎮撻妴?* 妫ｆ牗澹?9 娑?core review point 瀹告彃鍠曠紒鎿勭礉`SYS-*` 缂佈呯敾閸欘亙绻氶悾娆忔躬 diagnostics閿涘奔绗夐幎顒€宕屾稉杞扮瑹閸?finding閵?* `TASK-019` 瀹告彃鐣幋鎰劀瀵繑娓剁亸?`ReviewResultSnapshot` 閸氬牊鍨氭潏鍦櫕閿?  * `ERROR / WARNING` 鏉╂稑鍙嗘稉姘 `findings`
+  * `PASS / NOT_CONCLUDED / SKIPPED` 娑撳秷绻橀崗銉ょ瑹閸旓繝顥撻梽鈺冪埠鐠?  * `SYS-*` 娴犲懍绻氶悾娆忔躬 `diagnostics`
+* `TASK-020` 瀹告彃鐣幋鎰付鐏忓繋瑕嗙悰灞惧⒔鐞涘矂妫撮悳顖ょ窗
+  * 閺堚偓鐏?execution 閻樿埖鈧焦绁︽潪顒婄窗`CREATED -> REVIEWING_RULES -> COMPOSING -> SUCCESS / PARTIAL_SUCCESS / FAILED`
+  * 閺堚偓鐏?stage 閺冦儱绻旂拋鏉跨秿閿涙瓪REVIEWING_RULES`閵嗕梗COMPOSING` 閻?`STARTED / COMPLETED / FAILED`
+  * 娑撹尪顢戠拫鍐暏閻滅増婀?`MinimalReviewEngine`
+  * 鐠嬪啰鏁ら悳鐗堟箒 `ResultComposer` 閻㈢喐鍨氬锝呯础 `ReviewResultSnapshot`
+  * 缂佸牊鈧?execution 缁備焦顒涢柌宥咁槻閹笛嗩攽
+  * 婢惰精瑙︾捄顖氱窞娴兼俺鎯?execution 婢惰精瑙﹂悩鑸碘偓浣告嫲婢惰精瑙?stage log
+* `TASK-021` 瀹告彃鐣幋鎰付鐏忓繐鎮楃粩顖氬涧鐠囪崵绮ㄩ弸婊勭叀鐠囥垺甯撮崣锝忕窗
+  * 閺傛澘顤?`GET /api/v1/tasks/{taskId}/result`
+  * 閺屻儴顕楅幒銉ュ經閸欘亣顕伴敍灞肩瑝鐟欙箑褰傜€光剝鐗抽妴浣风瑝闁插秷绐囬悩鑸碘偓浣规簚閵嗕椒绗夋穱顔芥暭 execution 閻樿埖鈧降鈧椒绗夐崘?stage log
+* `TASK-022` 瀹告彃鐨?`TaskResultStore` 閻ㄥ嫰绮拋銈囩波閺嬫粍娼靛┃鎰矤閸愬懎鐡ㄩ幀浣瑰閹恒儱鐪伴幒銊ㄧ箻閸掔増瀵旀稊鍛閺屻儴顕楅柅鍌炲帳鐏炲偊绱?  * 閺傛澘顤?`PersistentTaskResultStore`
+  * 闁插洨鏁?`JdbcTemplate + ObjectMapper` 閻╁瓨甯寸拠璇插絿 `task` 娑?`review_result_snapshot`
+  * 娑撳秳鎱ㄩ弨?`TASK-021` 鐎电懓顦婚幒銉ュ經鐠侯垰绶炴稉?`200 / 404 / 409` 鐠囶厺绠?  * 娑撳秳鎱ㄩ弨?`TASK-019 ResultComposer` 閺嶇绺鹃柅鏄忕帆
+  * 娑撳秳鎱ㄩ弨?`TASK-020 TaskExecutionStateMachine` 閺嶇绺鹃柅鏄忕帆
+  * 娑撳秵鏌婃晶鐐存殶閹诡喖绨辨潻浣盒?* `InMemoryTaskResultStore` 娴犲秳绻氶悾娆庤礋 MVP 閺堚偓鐏忓繘妫撮悳顖涚ゴ鐠囨洘娴涢煬顐礉娑撳秴鍟€娴ｆ粈璐熸妯款吇閹镐椒绠欓崠鏍ㄧ叀鐠囥垹鐤勯悳鑸偓?* CQCP 瑜版挸澧犻崬顖欑閺嶅洤鍣悳顖氼暔娴犲秳璐?Docker Compose閿?  * admin-web: `http://localhost:15173`
   * api-server health: `http://localhost:18080/actuator/health`
   * PostgreSQL: `localhost:54329`
 
-## 3. 当前活跃任务
+## 3. 瑜版挸澧犲ú鏄忕┈娴犺濮?
+* `TASK-022 Persistent Result Query Adapter 閺堚偓鐏忓繑瀵旀稊鍛閺屻儴顕楅柅鍌炲帳鐏炰繖 瀹告彃鐣幋鎰杽閻滈绗屾宀冪槈閿涘苯绶熼幓鎰唉閺€璺哄經閿?  * 姒涙顓婚弻銉嚄閺夈儲绨鎻掑瀼閹诡澀璐熼惇鐔风杽閺佺増宓佹惔?query adapter
+  * 娴犲秳绻氶幐浣稿涧鐠囩粯鐓＄拠銏ｇ珶閻ｅ矉绱濇稉宥埿曢崣鎴濐吀閺嶆悶鈧椒绗夐柌宥堢獓閻樿埖鈧焦婧€閵嗕椒绗夐弨鐟板綁 execution 閻樿埖鈧降鈧椒绗夐崘?stage log
+  * 瑜版挸澧犻張顏囩箻閸?`TASK-023` 閺咁噣鈧氨绮ㄩ弸婊堛€夐張鈧亸蹇撶潔缁€?
+## 4. 瀹告彃鐣幋鎰崲閸?
+* `TASK-006` 缁绢垱濡ч張顖濆壖閹靛鐏︽稉搴ｅ箚婢у啴鐛欑拠?* `TASK-015` Flyway V1 閺嶇绺?schema 閸╄櫣鍤?* `TASK-016` MVP 瀵偓閸欐垵澧犻崶娑楅嚋閺堚偓鐏忓繘鐛欑拠渚€妫撮悳?* `TASK-017` 妫ｆ牗澹?expected fixtures bootstrap
+* `TASK-018` 閺堚偓鐏?Review Engine 妤犲矁鐦夐梻顓犲箚
+* `TASK-019` Result Composer + ReviewResultSnapshot 閺堚偓鐏忓繐鎮庨幋?* `TASK-020` Task Execution 閺堚偓鐏忓繒濮搁幀浣规簚
+* `TASK-021` Result URL 閺屻儴顕楅幒銉ュ經閺堚偓鐏忓繐鐤勯悳?* `INFRA-001` Docker 閸烆垯绔撮弽鍥у櫙瀵偓閸欐垹骞嗘晶鍐╂暪閸?
+## 5. 瑜版挸澧犻梼璇差敚妞?
+* 閺冪姵鏌婇惃鍕瘜缁惧潡妯嗘繅鐐恒€嶉妴?* 閸?Codex 姒涙顓?sandbox 娑撳澧界悰宀勫劥閸?Docker `exec` 閸涙垝鎶ら弮璁圭礉娴犲秴褰查懗钘夋礈娑撶儤婀伴張?Docker pipe 閺夊啴妾洪崣妤呮閼板矂娓剁憰浣瑰絹閺夊喛绱辨潻娆忕潣娴滃孩澧界悰宀€骞嗘晶鍐閸掕绱濇稉宥嗘Ц瑜版挸澧犳稉鑽ゅ殠娴狅絿鐖滈梼璇差敚閵?* 閸撳秶顏梹婊冨剼閺嬪嫬缂撻弮璺哄絺閻滄壆娈?5 娑擃亙绶风挧?vulnerabilities 娴犲秳绮庢担婊€璐熼崥搴ｇ敾閸婃瑩鈧绨ㄦい纭咁唶瑜版洩绱濋張顒冪枂閺堫亜顦╅悶鍡愨偓?
+## 6. 瀵板懐鈥樼拋銈勭皑妞?
+* `TASK-020` 瑜版挸澧犳禒鍛暚閹存劖娓剁亸蹇撳敶鐎涙ɑ鈧焦瀵旀稊鍛閹跺€熻杽閿涙稒妲搁崥锕傛付鐟曚浇绻樻稉鈧銉︽禌閹诡澀璐熼惇鐔风杽閺佺増宓佹惔鎾村瘮娑斿懎瀵?adapter閿涘苯绶熼崥搴ｇ敾娴犺濮熼弰搴ｂ€橀敍灞肩瑝閸︺劍婀版潪顔藉⒖鐏炴洏鈧?* `TASK-022` 瑜版挸澧犻柌鍥╂暏 `JdbcTemplate + ObjectMapper` 閻ㄥ嫭娓剁亸蹇斿瘮娑斿懎瀵查弻銉嚄闁倿鍘ょ仦鍌︾幢閸氬海鐢婚弰顖氭儊闂団偓鐟曚焦鐭囧ǎ鈧稉鐑樻纯濮濓絽绱￠惃鍕涧鐠?query module 閹存牕鐪柈?TASK_SPEC閿涘苯绶熼崥搴ｇ敾娴犺濮熼崚銈嗘焽閵?
+## 7. 涓嬩竴姝ラ『搴?
+1. 褰撳墠涓嬩竴姝ュ厑璁歌繘鍏?`TASK-023` 鏅€氱粨鏋滈〉鏈€灏忓睍绀虹埗浠诲姟寤烘。鎴栬竟鐣岀‘璁わ紝浣嗗皻鏈繘鍏?`TASK-023`銆?
+2. 鍚庣画鍐嶆帹杩涚鐞嗗彴浠诲姟璇︽儏鏈€灏忚瘖鏂笌鏇撮暱閾捐矾鐨?parser / candidate / evidence 鎺ュ叆銆?
 
-* `TASK-022 Persistent Result Query Adapter 最小持久化查询适配层` 已完成实现与验证，待提交收口：
-  * 默认查询来源已切换为真实数据库 query adapter
-  * 仍保持只读查询边界，不触发审核、不重跑状态机、不改变 execution 状态、不写 stage log
-  * 当前未进入 `TASK-023` 普通结果页最小展示
+## 8. 瑜版挸澧犵粋浣诡剾閹恒劏绻?
+* 娑撳秵褰侀崜宥堢箻閸忋儱绱撳銉╂Е閸掓ぜ鈧礁鐣弫纾嬬殶鎼达妇閮寸紒鐔粹偓浣歌嫙閸欐垶澧界悰灞惧⒖鐏炴洘鍨ㄦ径姘鳖潳閹存灚鈧?* 娑撳秳鎱ㄩ弨?`PRD.md`閵嗕梗docs/ARCHITECTURE.md` 閹存牗鏆熼幑顔肩氨鏉╀胶些 SQL閿涘矂娅庨棃鐐叉倵缂侇厺鎹㈤崝鈩冩绾喛袝閸欐垵鑻熼崗鍫ｎ攽绾喛顓婚妴?* 娑撳秴顦╅悶鍡楀缁?5 娑?vulnerabilities閿涘矂娅庨棃鐐插礋閻欘剙缂撴禒璇插閵?* 娑撳秵濡搁棃?Docker 閸氼垰濮╅弬鐟扮础闁插秵鏌婇崘娆忔礀娑撶儤鐖ｉ崙鍡楃磻閸?妤犲本鏁圭捄顖氱窞閵?* 閸?`TASK-022` 閹绘劒姘﹂弨璺哄經閸撳稄绱濇稉宥堢箻閸?`TASK-023`閵?
+## 9. 闂€鎸庢埂鐠佹澘绻傜槐銏犵穿
 
-## 4. 已完成任务
-
-* `TASK-006` 纯技术脚手架与环境验证
-* `TASK-015` Flyway V1 核心 schema 基线
-* `TASK-016` MVP 开发前四个最小验证闭环
-* `TASK-017` 首批 expected fixtures bootstrap
-* `TASK-018` 最小 Review Engine 验证闭环
-* `TASK-019` Result Composer + ReviewResultSnapshot 最小合成
-* `TASK-020` Task Execution 最小状态机
-* `TASK-021` Result URL 查询接口最小实现
-* `INFRA-001` Docker 唯一标准开发环境收口
-
-## 5. 当前阻塞项
-
-* 无新的主线阻塞项。
-* 在 Codex 默认 sandbox 下执行部分 Docker `exec` 命令时，仍可能因为本机 Docker pipe 权限受限而需要提权；这属于执行环境限制，不是当前主线代码阻塞。
-* 前端镜像构建时发现的 5 个依赖 vulnerabilities 仍仅作为后续候选事项记录，本轮未处理。
-
-## 6. 待确认事项
-
-* `TASK-020` 当前仅完成最小内存态持久化抽象；是否需要进一步替换为真实数据库持久化 adapter，待后续任务明确，不在本轮扩展。
-* `TASK-022` 当前采用 `JdbcTemplate + ObjectMapper` 的最小持久化查询适配层；后续是否需要沉淀为更正式的只读 query module 或局部 TASK_SPEC，待后续任务判断。
-
-## 7. 下一步顺序
-
-1. 先完成 `TASK-022 Persistent Result Query Adapter 最小持久化查询适配层` 的提交收口，不扩展到 `TASK-023`。
-2. `TASK-022` 提交完成后，再进入 `TASK-023` 普通结果页最小展示父任务建档或边界确认。
-3. 后续再推进管理台任务详情最小诊断与更长链路的 parser / candidate / evidence 接入。
-
-## 8. 当前禁止推进
-
-* 不提前进入异步队列、完整调度系统、并发执行扩展或多租户。
-* 不修改 `PRD.md`、`docs/ARCHITECTURE.md` 或数据库迁移 SQL，除非后续任务明确触发并先行确认。
-* 不处理前端 5 个 vulnerabilities，除非单独建任务。
-* 不把非 Docker 启动方式重新写回为标准开发/验收路径。
-* 在 `TASK-022` 提交收口前，不进入 `TASK-023`。
-
-## 9. 长期记忆索引
-
-* `PRD.md`：产品范围与 MVP 冻结基线
-* `docs/ARCHITECTURE.md`：当前生效架构约束
-* `decisions/ADR-002-v1-result-and-diagnostic-contract.md`
+* `PRD.md`閿涙矮楠囬崫浣藉瘱閸ョ繝绗?MVP 閸愯崵绮ㄩ崺铏瑰殠
+* `docs/ARCHITECTURE.md`閿涙艾缍嬮崜宥囨晸閺佸牊鐏﹂弸鍕閺?* `decisions/ADR-002-v1-result-and-diagnostic-contract.md`
 * `decisions/ADR-003-task-execution-snapshot-model.md`
 * `decisions/ADR-012-domain-model-freeze.md`
 * `decisions/ADR-013-v1-core-schema-bootstrap.md`
