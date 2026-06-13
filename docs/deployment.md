@@ -59,6 +59,8 @@ MVP 部署基线冻结如下：
 docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml up -d --build
 ```
 
+`api-server` Dockerfile 使用 `gradle bootJar --no-daemon` 生成容器运行制品。镜像构建阶段不执行依赖 Compose PostgreSQL 或仓库级 fixtures 的完整测试，但这不代表项目跳过测试门禁；完整测试必须在独立验证阶段或 CI 阶段执行。
+
 停止命令：
 
 ```bash
@@ -106,6 +108,20 @@ PostgreSQL 数据使用 CQCP 专属 named volume：`cqcp_postgres_data`。不得
 1. 先确认本机 Docker Desktop 正常运行，并重新执行标准启动命令。
 2. 如仍失败，检查 Docker Hub 网络访问、代理、镜像加速器或企业网络策略。
 3. 如需要切换基础镜像来源、引入内部镜像仓库或锁定镜像 digest，应单独创建 INFRA 后续任务记录，不在业务 TASK 中顺手处理。
+
+### INFRA-001 验证基线
+
+2026-06-13 已完成标准环境验证：
+
+- Compose project name：`cqcp`
+- Network：`cqcp_default`
+- PostgreSQL named volume：`cqcp_postgres_data`
+- `admin-web`：`http://localhost:15173` 返回 HTTP 200
+- `api-server`：`http://localhost:18080/actuator/health` 返回 HTTP 200，`status=UP`
+- PostgreSQL：`pg_isready -U cqcp -d cqcp` 返回 `accepting connections`
+- Docker Hub token / 镜像拉取阻塞已解除
+
+前端镜像构建期间发现 5 个依赖漏洞提示。该事项仅记录为后续候选工作，不属于 `INFRA-001` 的处理范围。
 
 ## Stage Timeout
 

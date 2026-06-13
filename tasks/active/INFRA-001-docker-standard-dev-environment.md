@@ -1,6 +1,6 @@
 # INFRA-001：CQCP Docker 唯一标准开发环境收口
 
-状态：阻塞
+状态：已完成
 类型：INFRA 父任务
 
 优先级：P0
@@ -125,10 +125,11 @@
   * network：`cqcp_default`
   * volume：`cqcp_postgres_data`
   * ports：`15173:80`、`18080:8080`、`54329:5432`
-* 未执行：`docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml up -d --build`
-  * 原因：旧容器 `cqcp-postgres-test` 正在运行并占用宿主机 `54329`。
-* 未执行：后端健康检查 `http://localhost:18080/actuator/health`
-* 未执行：前端访问 `http://localhost:15173`
+* 已通过：`docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example build`
+* 已通过：`docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example up -d`
+* 已通过：前端 `http://localhost:15173` 返回 HTTP 200。
+* 已通过：后端 `http://localhost:18080/actuator/health` 返回 HTTP 200，`status=UP`。
+* 已通过：`docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp` 返回 `accepting connections`。
 
 ## 文档更新要求
 
@@ -139,16 +140,18 @@
 
 ## 风险
 
-* Docker Hub 基础镜像拉取可能仍失败。若失败，本任务必须明确阻塞，不得继续推进业务 TASK。
+* Docker Hub token / 基础镜像拉取阻塞已解除；`gradle:8.10.2-jdk21` 与 `node:20-alpine` 已成功拉取。
 * 当前 `apps/api-server` 没有 Gradle Wrapper；当前 Dockerfile 使用 `gradle:8.10.2-jdk21` builder 镜像，因此 Docker 构建本身不依赖 wrapper。是否改为 wrapper 构建属于后续 INFRA 优化，不在本任务中默认扩大。
 * 旧容器 `cqcp-postgres-test` 已检查并删除，未删除任何 Docker volume。
-* 标准 Compose 启动当前阻塞于 Docker Hub 基础镜像拉取：`gradle:8.10.2-jdk21` 与 `node:20-alpine` 获取匿名 token 超时。
+* `apps/api-server/Dockerfile` 使用 `gradle bootJar --no-daemon` 生成容器运行制品。该命令仅表示镜像构建阶段不执行依赖数据库和仓库级 fixtures 的完整测试，不代表项目跳过测试门禁；完整测试必须在独立验证阶段或 CI 阶段执行。
+* 前端镜像构建期间 `npm install` 报告 5 个依赖漏洞（3 moderate、1 high、1 critical），本任务只记录为后续候选事项，不在本轮升级依赖或扩大范围。
 
 ## 待确认
 
 * 是否需要后续引入内部镜像仓库、镜像加速器或锁定基础镜像 digest。
 * 是否需要后续将 Compose 健康检查和服务依赖升级为显式 `healthcheck`。
-* 是否需要后续改用镜像加速器、代理、内部镜像仓库或已缓存基础镜像，以解除 Docker Hub 拉取阻塞。
+* 是否需要后续建立 Docker 镜像拉取稳定性方案，例如镜像加速器、代理、内部镜像仓库或镜像 digest 锁定。
+* 是否需要后续单独评估并处理前端依赖漏洞。
 
 ## 完成记录
 
@@ -157,6 +160,7 @@
   * `deploy/compose/compose.yml`
   * `deploy/env/.env.example`
   * `apps/admin-web/Dockerfile`
+  * `apps/api-server/Dockerfile`
   * `apps/admin-web/nginx.conf.template`
   * `apps/admin-web/vite.config.js`
   * `docs/deployment.md`
@@ -170,9 +174,16 @@
   * 基于容器实际环境，使用默认用户 `postgres` 只读检查 `cqcp_test`，确认仅有 V1 基线 6 张表，且 6 张表行数均为 0。
   * 已执行 `docker stop cqcp-postgres-test` 与 `docker rm cqcp-postgres-test`，仅删除旧容器，未删除 Docker volume。
   * `docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml config` 通过。
-  * `docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml up -d --build` 未通过：Docker Hub 拉取 `gradle:8.10.2-jdk21` 与 `node:20-alpine` 元数据时获取匿名 token 超时。
-  * `docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml ps` 显示当前 CQCP Compose 无运行服务。
+  * Docker Hub 拉取阻塞已解除，`hello-world`、`gradle:8.10.2-jdk21` 与 `node:20-alpine` 均已成功拉取。
+  * 后端镜像首次构建失败，因为 Dockerfile 的 `gradle build` 在镜像构建阶段执行完整测试：Spring Context 测试无法访问尚未启动的 Compose PostgreSQL，部分测试也无法读取仓库级 fixtures。
+  * `apps/api-server/Dockerfile` 改为使用 `gradle bootJar --no-daemon` 生成运行制品后，`api-server` 与 `admin-web` 镜像均构建成功。
+  * 旧本机 CQCP Java 进程占用 `18080`，确认命令行来自本仓库 `apps/api-server` 后已停止。
+  * `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example up -d` 成功。
+  * `docker compose ... ps` 显示 `postgres`、`api-server`、`admin-web` 三个服务均为 Up，端口分别为 `54329`、`18080`、`15173`。
+  * 前端 `http://localhost:15173` 返回 HTTP 200。
+  * 后端 `http://localhost:18080/actuator/health` 返回 HTTP 200，响应 `{"status":"UP"}`。
+  * PostgreSQL `pg_isready -U cqcp -d cqcp` 返回 `accepting connections`。
 * 遗留问题：
-  * Docker Hub 基础镜像拉取阻塞仍未解除，标准 CQCP Compose 环境尚未启动成功。
-  * 前端访问、后端健康检查、PostgreSQL 标准容器状态均因 Compose 构建失败未能验证。
+  * 前端依赖存在 5 个已报告漏洞，仅记录为后续候选事项。
+  * 完整测试仍需在独立验证阶段或 CI 阶段执行，不能以 `bootJar` 构建成功替代测试门禁。
 * 备注：本任务未修改业务功能逻辑，未进入 `TASK-020`，未创建 `TASK_SPEC`，未删除任何非 `cqcp-postgres-test` 的容器，未删除 Docker volume。
