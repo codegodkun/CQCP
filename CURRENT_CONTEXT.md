@@ -17,6 +17,7 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
 当前重点：
 - 保持 `TASK-023`、`TASK-024`、`TASK-031` 三者边界分离
 - 在不扩大边界的前提下评估后续主链路任务与潜在字段补洞需求
+- 补齐项目入口、开发流程与验收规则文档
 
 当前可用本地环境：
 - admin-web：前端本地开发端口已固定
@@ -25,7 +26,7 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
 
 ## 活跃任务
 
-- 当前无新的活跃实现任务；`TASK-024` 已完成，后续是否进入 `TASK-031` 取决于是否新增字段诉求。
+- 当前无新的活跃实现任务。
 
 ## 近期已完成任务
 
@@ -38,7 +39,9 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
   - commit：`13d9783`
 - `TASK-023`：普通结果页最小实现已完成并提交，且已推送到 `origin/master`
   - commit：`b7ab8db`
-- `TASK-024`：管理台诊断详情最小实现已完成，待人工审阅后决定是否归档/提交
+- `TASK-024`：管理台诊断详情最小实现已完成，已提交并已 push 到 `origin/master`
+  - commit：`2339db5`
+  - 本地 `master` 与远程 `origin/master` 已对齐到 `2339db5c5441ebb5841a2676c8276c51f2de0960`
   - 任务文件：`tasks/active/TASK-024-admin-diagnostic-detail-minimal-display.md`
 - `2026-06-14`：治理文档乱码清理已完成并提交
   - commit：`d0349da`
@@ -60,6 +63,7 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
   - `apps/admin-web/src/App.test.tsx`
   - `apps/admin-web/src/styles.css`
 - `TASK-023` 的本地与远程 `master` 已对齐到 `b7ab8db`
+- `TASK-024` 的本地与远程 `master` 已对齐到 `2339db5c5441ebb5841a2676c8276c51f2de0960`
 - `tasks/MVP_TASK_MAP.md` 已重建为可读 UTF-8 版本
 - `TASK-024` 最小前端实现已完成：
   - `apps/admin-web/src/adminDiagnostics/api.ts`
@@ -77,6 +81,10 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
 - `TASK-024` 已通过前端最小验证：
   - `npm.cmd run test -- src/App.test.tsx`
   - `npm.cmd run build`
+- 文档治理入口已补齐：
+  - `README.md`
+  - `docs/DEVELOPMENT.md`
+  - `docs/VERIFY.md`
 
 ## 已接受 ADR
 
@@ -112,6 +120,7 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
 1. 如后续只需维持现有管理台最小诊断能力，可进入人工审阅、归档与提交阶段。
 2. 若后续明确需要 `contractName / currentStage / model summary / stageLogs`，应单独判断是否进入 `TASK-031`。
 3. `TASK-025 ~ TASK-030` 仍为后续主链路深化候选，不受本轮前端最小实现影响。
+4. 后续如继续推进仓库治理，可在 `README.md`、`docs/DEVELOPMENT.md`、`docs/VERIFY.md` 基础上补充更细的模块级协作文档。
 
 ## 参考路径
 

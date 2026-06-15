@@ -146,6 +146,19 @@
 * 具体实现结果仍写入父 TASK、`CURRENT_CONTEXT.md` 和 `changelog/当前月份.md`。
 * 详细规则见 docs/context-management.md。
 
+## 文档更新规则
+
+* `README.md` 只作为项目入口和导航，不承载实时任务状态。
+* 当前任务状态、阻塞项和下一步以 `CURRENT_CONTEXT.md` 为准。
+* 任务完成后必须更新 `CURRENT_CONTEXT.md`。
+* 任务完成后必须追加当月 `changelog`，例如 `changelog/2026-06.md`。
+* `docs/DEVELOPMENT.md` 是开发流程、角色分工和 Git 规则入口。
+* `docs/VERIFY.md` 是验收规则、验证清单和提交前检查入口。
+* 只有架构变化才允许更新 `docs/ARCHITECTURE.md`。
+* 重大技术或架构决策应进入 ADR / `decisions/`，不得散落在普通文档里。
+* 不确定事项必须标记为“待确认”，不得写成已完成事实。
+* 文档更新不得顺手扩大到代码、数据库、Docker 或架构改动。
+
 ## 文件职责
 
 * PROJECT\_BRIEF.md：项目目标、用户角色、业务边界和核心流程。
