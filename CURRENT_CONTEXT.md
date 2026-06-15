@@ -1,21 +1,31 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-06-14
+更新日期：2026-06-15
 
 ## 当前阶段
 
-CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。  
-结果快照、执行状态机、结果查询 API、持久化结果查询适配层、普通结果页最小展示均已完成；当前重点是治理历史文档乱码并保持任务边界稳定。
+CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
+
+已完成：
+- 结果快照与结果合成
+- 最小执行状态机
+- `GET /api/v1/tasks/{taskId}/result`
+- 持久化结果查询适配
+- `TASK-023` 普通结果页最小展示
+- 治理文档历史乱码清理
+
+当前重点：
+- 保持 `TASK-023`、`TASK-024`、`TASK-031` 三者边界分离
+- 在不扩大边界的前提下评估后续主链路任务与潜在字段补洞需求
 
 当前可用本地环境：
-- admin-web：`http://localhost:15173`
-- api-server health：`http://localhost:18080/actuator/health`
-- PostgreSQL：`localhost:54329`
+- admin-web：前端本地开发端口已固定
+- api-server：本地健康检查端口已固定
+- PostgreSQL：本地数据库端口已固定
 
 ## 活跃任务
 
-- 当前无业务实现任务正在进行。
-- 当前无未收口的治理文件编码清理任务；`tasks/MVP_TASK_MAP.md`、`tasks/active/TASK-022-persistent-result-query-adapter.md`、`changelog/2026-06.md` 已完成本轮治理。
+- 当前无新的活跃实现任务；`TASK-024` 已完成，后续是否进入 `TASK-031` 取决于是否新增字段诉求。
 
 ## 近期已完成任务
 
@@ -26,8 +36,14 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
   - 实现 commit：`1a206d7`
 - `TASK-023`：父任务建档已完成并提交
   - commit：`13d9783`
-- `TASK-023`：普通结果页最小实现已完成并提交，并已推送到 `origin/master`
+- `TASK-023`：普通结果页最小实现已完成并提交，且已推送到 `origin/master`
   - commit：`b7ab8db`
+- `TASK-024`：管理台诊断详情最小实现已完成，待人工审阅后决定是否归档/提交
+  - 任务文件：`tasks/active/TASK-024-admin-diagnostic-detail-minimal-display.md`
+- `2026-06-14`：治理文档乱码清理已完成并提交
+  - commit：`d0349da`
+- `2026-06-14`：垃圾文件 `-Pattern` 删除已完成并提交
+  - commit：`e4dc93c`
 
 ## 当前有效结果
 
@@ -37,12 +53,30 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
   - `GET /api/v1/tasks/{taskId}/result`
   - `PersistentTaskResultStore`
 - `TASK-023` 前端最小实现已完成：
-  - 新增 `publicResult/api.ts`
-  - 新增 `publicResult/types.ts`
-  - 新增 `publicResult/PublicResultPage.tsx`
-  - 更新 `App.tsx`、`App.test.tsx`、`styles.css`
+  - `apps/admin-web/src/publicResult/api.ts`
+  - `apps/admin-web/src/publicResult/types.ts`
+  - `apps/admin-web/src/publicResult/PublicResultPage.tsx`
+  - `apps/admin-web/src/App.tsx`
+  - `apps/admin-web/src/App.test.tsx`
+  - `apps/admin-web/src/styles.css`
 - `TASK-023` 的本地与远程 `master` 已对齐到 `b7ab8db`
 - `tasks/MVP_TASK_MAP.md` 已重建为可读 UTF-8 版本
+- `TASK-024` 最小前端实现已完成：
+  - `apps/admin-web/src/adminDiagnostics/api.ts`
+  - `apps/admin-web/src/adminDiagnostics/types.ts`
+  - `apps/admin-web/src/adminDiagnostics/AdminDiagnosticPage.tsx`
+  - `apps/admin-web/src/App.tsx`
+  - `apps/admin-web/src/App.test.tsx`
+  - `apps/admin-web/src/styles.css`
+- `TASK-024` 已确认并保持以下边界：
+  - 只消费既有 `GET /api/v1/tasks/{taskId}/result`
+  - 只展示 `summary`、`reviewCompleteness`、全部点级状态与点级 diagnostics
+  - 管理台可见 `SYS-*`
+  - 不展示 prompt、raw output、endpoint、stack trace、admin logs、secret
+- `TASK-024` 当前页面路径为 `/admin/diagnostics`
+- `TASK-024` 已通过前端最小验证：
+  - `npm.cmd run test -- src/App.test.tsx`
+  - `npm.cmd run build`
 
 ## 已接受 ADR
 
@@ -53,35 +87,36 @@ CQCP 当前处于 MVP 主链路打通后的治理与收口阶段。
 
 ## 当前阻塞项
 
-- 无功能阻塞。
-- 无明确治理阻塞；本轮已完成 Markdown 长期记忆文件乱码清理复核。
+- `TASK-024` 若坚持展示任务级诊断头部、当前 stage、模型摘要和阶段日志，现有已暴露接口字段不足。
+- 当前未发现可直接消费的管理台诊断详情接口；若继续实现这些字段，存在进入 `TASK-031` 或新增管理台接口任务的风险。
 
 ## 待确认事项
 
 - 待确认：公开结果页后续是否需要合同全文预览能力；当前仅支持 block 级定位摘要。
 - 待确认：如后续发现公开页展示字段不足，是否转入 `TASK-031` 处理 mapper / 公开视图补洞。
-- 待确认：`TASK-024` 管理台诊断详情的启动时点。
+- 待确认：公开结果页后续是否需要合同全文预览能力；当前仅支持 block 级定位摘要。
 
 ## 当前禁止推进事项
 
-- 未建 `TASK-024` 父任务前，不进入 `TASK-024` 实现
 - 不进入 `TASK-031`
 - 不创建 `TASK_SPEC`
-- 未冻结父任务边界前，不分配 Claude Code / DeepSeek
+- 不分配 Claude Code / DeepSeek
 - 不修改 `PRD.md`
 - 不修改 `docs/ARCHITECTURE.md`
 - 不修改数据库迁移 SQL
 - 不修改 Docker 配置
+- 在字段缺口未确认前，不顺手扩大到管理台新接口或结果契约补洞
 
 ## 下一步
 
-1. 如需推进管理台诊断能力，先创建 `TASK-024` 父任务并冻结边界。
-2. 在 `TASK-024` 未建档前，不进入 `TASK-024` 实现，也不提前进入 `TASK-031`。
-3. 若后续再发现历史乱码文档，继续按“确认事实后重写，不猜测补全”的原则单独治理。
+1. 如后续只需维持现有管理台最小诊断能力，可进入人工审阅、归档与提交阶段。
+2. 若后续明确需要 `contractName / currentStage / model summary / stageLogs`，应单独判断是否进入 `TASK-031`。
+3. `TASK-025 ~ TASK-030` 仍为后续主链路深化候选，不受本轮前端最小实现影响。
 
 ## 参考路径
 
 - `tasks/active/TASK-023-public-result-page-minimal-display.md`
+- `tasks/active/TASK-024-admin-diagnostic-detail-minimal-display.md`
 - `tasks/active/TASK-021-result-url-query-api.md`
 - `tasks/active/TASK-022-persistent-result-query-adapter.md`
 - `tasks/MVP_TASK_MAP.md`

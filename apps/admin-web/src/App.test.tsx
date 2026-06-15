@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { ConfigProvider } from "antd";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
@@ -30,9 +30,103 @@ function renderApp(initialEntry = "/") {
   );
 }
 
+const adminSnapshot = {
+  taskId: "task-024",
+  executionId: "execution-024",
+  status: "PARTIAL_SUCCESS",
+  summary: {
+    plannedPointCount: 4,
+    passCount: 1,
+    errorCount: 1,
+    warningCount: 1,
+    notConcludedCount: 1,
+    skippedCount: 0
+  },
+  reviewCompleteness: {
+    reviewCoverageStatus: "PARTIAL_REVIEWED",
+    executablePointCount: 4,
+    concludedPointCount: 3,
+    notConcludedPointCount: 1,
+    concludedCoverageRate: 0.75,
+    confidenceLevel: "MEDIUM"
+  },
+  pointResults: [
+    {
+      reviewPointCode: "PARTY_A_NAME_CONSISTENCY",
+      pointStatus: "PASS",
+      businessMessage: "甲方名称一致。"
+    },
+    {
+      reviewPointCode: "PARTY_B_NAME_CONSISTENCY",
+      pointStatus: "ERROR",
+      businessMessage: "乙方名称与合同证据不一致。"
+    },
+    {
+      reviewPointCode: "PREPAYMENT_RATIO_CONSISTENCY",
+      pointStatus: "NOT_CONCLUDED",
+      businessMessage: "未找到可靠合同证据，无法形成正式结论。"
+    },
+    {
+      reviewPointCode: "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      pointStatus: "WARNING",
+      businessMessage: "税额弱校验存在偏差，请人工复核。"
+    }
+  ],
+  diagnostics: [
+    {
+      reviewPointCode: "PREPAYMENT_RATIO_CONSISTENCY",
+      pointStatus: "NOT_CONCLUDED",
+      diagnosticCode: "SYS_MODEL_TIMEOUT",
+      businessReason: "模型超时，当前点位未形成可靠结论。",
+      evidenceSummary: "模型调用阶段未返回可用输出。",
+      evidenceBlockIds: ["block-009", "block-010"],
+      containsSensitivePayload: false
+    }
+  ],
+  enabledReviewPointsSnapshot: [
+    {
+      reviewPointCode: "PARTY_A_NAME_CONSISTENCY",
+      displayCode: "P001",
+      displayName: "甲方名称一致性",
+      reviewPointFamily: "PARTY_FIELDS",
+      contractType: "ENGINEERING_PROCUREMENT",
+      defaultSeverity: "ERROR",
+      displayOrder: 1
+    },
+    {
+      reviewPointCode: "PARTY_B_NAME_CONSISTENCY",
+      displayCode: "P002",
+      displayName: "乙方名称一致性",
+      reviewPointFamily: "PARTY_FIELDS",
+      contractType: "ENGINEERING_PROCUREMENT",
+      defaultSeverity: "ERROR",
+      displayOrder: 2
+    },
+    {
+      reviewPointCode: "PREPAYMENT_RATIO_CONSISTENCY",
+      displayCode: "P003",
+      displayName: "预付款比例一致性",
+      reviewPointFamily: "PAYMENT_FIELDS",
+      contractType: "ENGINEERING_PROCUREMENT",
+      defaultSeverity: "ERROR",
+      displayOrder: 3
+    },
+    {
+      reviewPointCode: "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      displayCode: "P004",
+      displayName: "税额公式一致性",
+      reviewPointFamily: "AMOUNT_FIELDS",
+      contractType: "ENGINEERING_PROCUREMENT",
+      defaultSeverity: "WARNING",
+      displayOrder: 4
+    }
+  ]
+};
+
 describe("TASK-023 public result page", () => {
   afterEach(() => {
     fetchMock.mockReset();
+    cleanup();
   });
 
   it("renders public snapshot and hides internal diagnostics fields", async () => {
@@ -308,5 +402,79 @@ describe("TASK-023 public result page", () => {
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it("renders admin diagnostics page with minimal diagnostics fields", async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify(adminSnapshot), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+    );
+
+    renderApp("/admin/diagnostics?taskId=task-024");
+
+    expect(await screen.findByText("管理台诊断详情最小展示")).toBeInTheDocument();
+    expect(await screen.findByText("SYS_MODEL_TIMEOUT")).toBeInTheDocument();
+    expect(
+      screen.getByText((_, element) => element?.textContent === "任务 task-024")
+    ).toBeInTheDocument();
+    expect(screen.getByText("审核摘要")).toBeInTheDocument();
+    expect(screen.getByText("点级诊断")).toBeInTheDocument();
+    expect(screen.getByText("部分已审核")).toBeInTheDocument();
+    expect(screen.getByText("已形成结论 3 / 4")).toBeInTheDocument();
+    expect(screen.getByText("模型超时，当前点位未形成可靠结论。")).toBeInTheDocument();
+    expect(screen.getByText("模型调用阶段未返回可用输出。")).toBeInTheDocument();
+    expect(screen.getByText("block-009, block-010")).toBeInTheDocument();
+    expect(screen.queryByText("prompt-v1")).not.toBeInTheDocument();
+    expect(screen.queryByText(/raw output/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/endpoint/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/stack trace/i)).not.toBeInTheDocument();
+  });
+
+  it("shows admin diagnostics error states for 404 409 and network error", async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            title: "TASK_RESULT_NOT_FOUND",
+            detail: "Task result not found: missing-admin-task"
+          }),
+          {
+            status: 404,
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            title: "TASK_RESULT_NOT_READY",
+            detail: "Task result not ready: task-024"
+          }),
+          {
+            status: 409,
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )
+      )
+      .mockRejectedValueOnce(new Error("network down"));
+
+    const firstRender = renderApp("/admin/diagnostics?taskId=missing-admin-task");
+    expect(await screen.findByText("未找到对应任务，请确认 taskId 是否正确。")).toBeInTheDocument();
+    firstRender.unmount();
+
+    const secondRender = renderApp("/admin/diagnostics?taskId=task-024");
+    expect(await screen.findByText("任务已创建，但诊断结果尚未生成。")).toBeInTheDocument();
+    secondRender.unmount();
+
+    renderApp("/admin/diagnostics?taskId=task-025");
+    expect(await screen.findByText("诊断查询失败，请稍后重试。")).toBeInTheDocument();
   });
 });

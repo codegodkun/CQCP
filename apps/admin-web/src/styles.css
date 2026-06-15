@@ -68,10 +68,14 @@ body {
   gap: 24px;
 }
 
+.admin-summary-grid,
 .completeness-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
+}
+
+.completeness-grid {
   margin-top: 20px;
 }
 
@@ -124,6 +128,22 @@ body {
   background: rgba(15, 118, 110, 0.06);
 }
 
+.diagnostic-list {
+  display: grid;
+  gap: 12px;
+}
+
+.diagnostic-item {
+  padding: 14px 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.diagnostic-item .ant-typography {
+  margin-bottom: 8px;
+}
+
 @media (max-width: 768px) {
   .app-shell {
     padding: 16px;
@@ -135,12 +155,14 @@ body {
     border-radius: 18px;
   }
 
+  .admin-summary-grid,
   .completeness-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
+  .admin-summary-grid,
   .completeness-grid {
     grid-template-columns: minmax(0, 1fr);
   }
