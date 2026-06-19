@@ -25,7 +25,8 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 ## 活跃任务
 
 - 当前无新的 active TASK。
-- 当前工作区仍有 `TASK-DOC-002` 相关文档改动，状态为“已完成但尚未提交”。
+- `TASK-DOC-002` 已完成、已提交、已 push；最新提交为 `5dcf64e docs(governance): finalize TASK-DOC-002 readonly-review delegation rules`。
+- 当前 `master` 与 `origin/master` 已对齐，工作区干净。
 
 ## 最近完成
 
@@ -89,10 +90,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：`TASK-032` 是否在 `TASK-026` 正式完成后立即启动，拆分 `ParserBackedReviewInputPreparer`
 ## 下一步任务
 
-1. 复核当前 `TASK-DOC-002` 相关文档改动的提交范围。
-2. 决定是否执行提交；如提交，仅限文档治理文件。
-3. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但当前不执行。
-4. 继续保持 `TASK-027` / `TASK-028` 未开始，除非后续任务明确要求。
+1. 先评估 `TASK-027` / ADR 前置条件，不进入实现。
+2. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但当前不执行。
+3. 继续保持 `TASK-027` / `TASK-028` 未开始，除非后续任务明确要求。
 
 ## 参考路径
 
