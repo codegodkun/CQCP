@@ -5,9 +5,8 @@
 ## 当前结论
 
 - `TASK-024` 已完成并已 push
-- 当前主线分成两部分：
-  - `TASK-025`：fixture 级验收收口
-  - `TASK-026`：最小 `CandidateResolver` / 置信度分级 / evidence admission 闸门，已建立独立 active task 文件
+- `TASK-025` 已完成 fixture 级验收收口并归档
+- `TASK-026`：最小 `CandidateResolver` / 置信度分级 / evidence admission 闸门已完成并归档
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` / `TASK-028` / `TASK-031` 仍未进入
 - `TASK-032` 已登记为后续重构任务，不在本轮实现
@@ -22,12 +21,12 @@
 | `TASK-022` | Persistent Result Query Adapter | A | 已完成 |
 | `TASK-023` | 公开结果页最小展示 | B | 已完成 |
 | `TASK-024` | 管理台诊断详情最小展示 | B | 已完成 |
+| `TASK-025` | Parser / Candidate / Evidence 主链路接入 | A | 已完成并归档 |
 
 ## 当前后续任务
 
 | 任务 | 名称 | 类别 | 当前状态 | 说明 |
 |---|---|---|---|---|
-| `TASK-025` | Parser / Candidate / Evidence 主链路接入 | A | 进行中 | 已收口为 fixture 级验收任务；DoD 固定为 4 正 4 负 fixture 的状态与证据值双重校验 |
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 未开始 | 承接完整 evidence 生命周期，不在本轮进入 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 未开始 | 仅作为未来 `MEDIUM` 档辅助通道，不在本轮进入 |
@@ -106,7 +105,6 @@
 
 ## 当前建议顺序
 
-1. 收口 `TASK-025`
-2. 在 `TASK-026` 结束后只登记不实现 `TASK-032`
-3. 继续评估 `TASK-025` / `TASK-026` 是否归档
-4. 不出现场景必要性前，不进入 `TASK-027` / `TASK-028` / `TASK-031`
+1. 人工确认是否提交 `TASK-025` 收口与归档变更
+2. 在明确后续任务前，只登记不实现 `TASK-032`
+3. 不出现场景必要性前，不进入 `TASK-027` / `TASK-028` / `TASK-031`

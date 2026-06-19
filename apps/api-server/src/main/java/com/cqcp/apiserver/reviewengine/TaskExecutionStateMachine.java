@@ -1,5 +1,7 @@
 package com.cqcp.apiserver.reviewengine;
 
+import com.cqcp.apiserver.wordparser.DocxWordParserSpike;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -11,14 +13,24 @@ public final class TaskExecutionStateMachine {
 
     private final MinimalReviewEngine reviewEngine;
     private final ResultComposer resultComposer;
+    private final ParserBackedReviewInputPreparer reviewInputPreparer;
     private final Clock clock;
 
     public TaskExecutionStateMachine(
             MinimalReviewEngine reviewEngine,
             ResultComposer resultComposer,
             Clock clock) {
+        this(reviewEngine, resultComposer, new ParserBackedReviewInputPreparer(new DocxWordParserSpike()), clock);
+    }
+
+    public TaskExecutionStateMachine(
+            MinimalReviewEngine reviewEngine,
+            ResultComposer resultComposer,
+            ParserBackedReviewInputPreparer reviewInputPreparer,
+            Clock clock) {
         this.reviewEngine = Objects.requireNonNull(reviewEngine, "reviewEngine");
         this.resultComposer = Objects.requireNonNull(resultComposer, "resultComposer");
+        this.reviewInputPreparer = Objects.requireNonNull(reviewInputPreparer, "reviewInputPreparer");
         this.clock = Objects.requireNonNull(clock, "clock");
     }
 
@@ -34,25 +46,40 @@ public final class TaskExecutionStateMachine {
 
         var startedAt = Instant.now(clock);
         var runningExecution = request.execution().transitionTo(
-                ExecutionStatus.REVIEWING_RULES,
-                "REVIEWING_RULES",
+                initialStageFor(request),
+                initialStageFor(request).name(),
                 startedAt,
                 null);
         persistence.saveExecution(runningExecution);
 
+        PreparedReviewInput preparedInput;
+        try {
+            preparedInput = request.documentReference() == null
+                    ? new PreparedReviewInput(request.reviewInput(), runningExecution)
+                    : runPreparationStages(request, runningExecution, persistence, startedAt);
+            runningExecution = preparedInput.execution();
+        } catch (RuntimeException exception) {
+            throw exception;
+        }
+
         ReviewEngineResult reviewEngineResult;
         try {
-            reviewEngineResult = runReviewingRulesStage(request, runningExecution, persistence, startedAt);
+            runningExecution = preparedInput.execution().transitionTo(
+                    ExecutionStatus.REVIEWING_RULES,
+                    "REVIEWING_RULES",
+                    preparedInput.execution().startedAt(),
+                    null);
+            reviewEngineResult = runReviewingRulesStage(request, preparedInput.reviewInput(), runningExecution, persistence, Instant.now(clock));
         } catch (RuntimeException exception) {
             var failedExecution = runningExecution.transitionTo(
                     ExecutionStatus.FAILED,
-                    "REVIEWING_RULES",
+                    runningExecution.currentStage(),
                     runningExecution.startedAt(),
                     Instant.now(clock));
             persistence.appendStageLog(TaskStageLogEntry.failed(
                     request.task().taskId(),
                     runningExecution.executionId(),
-                    "REVIEWING_RULES",
+                    runningExecution.currentStage(),
                     1,
                     exception.getMessage(),
                     Duration.between(startedAt, Instant.now(clock)).toMillis(),
@@ -120,11 +147,63 @@ public final class TaskExecutionStateMachine {
         }
     }
 
-    private ReviewEngineResult runReviewingRulesStage(
+    private ExecutionStatus initialStageFor(TaskExecutionRequest request) {
+        return request.documentReference() == null ? ExecutionStatus.REVIEWING_RULES : ExecutionStatus.PARSING;
+    }
+
+    private PreparedReviewInput runPreparationStages(
             TaskExecutionRequest request,
             TaskExecutionRecord runningExecution,
             TaskExecutionPersistence persistence,
+            Instant startedAt) {
+        var parsedDocument = runStage(
+                request,
+                runningExecution,
+                ExecutionStatus.PARSING,
+                persistence,
+                startedAt,
+                () -> reviewInputPreparer.parse(request.documentReference()),
+                result -> "SUCCESS");
+
+        var indexed = runStage(
+                request,
+                parsedDocument.execution(),
+                ExecutionStatus.INDEXING,
+                persistence,
+                Instant.now(clock),
+                () -> reviewInputPreparer.index(parsedDocument.value()),
+                result -> "SUCCESS");
+
+        var planned = runStage(
+                request,
+                indexed.execution(),
+                ExecutionStatus.PLANNING,
+                persistence,
+                Instant.now(clock),
+                () -> reviewInputPreparer.plan(indexed.value()),
+                result -> "SUCCESS");
+
+        var built = runStage(
+                request,
+                planned.execution(),
+                ExecutionStatus.BUILDING_EVIDENCE,
+                persistence,
+                Instant.now(clock),
+                () -> reviewInputPreparer.build(request, planned.value()),
+                input -> input.pointEvidences().values().stream().allMatch(evidence -> evidence.status() == EvidenceStatus.CONFIRMED)
+                        ? "SUCCESS"
+                        : "PARTIAL_SUCCESS");
+
+        return new PreparedReviewInput(built.value(), built.execution());
+    }
+
+    private ReviewEngineResult runReviewingRulesStage(
+            TaskExecutionRequest request,
+            ReviewEngineInput reviewInput,
+            TaskExecutionRecord runningExecution,
+            TaskExecutionPersistence persistence,
             Instant stageStartedAt) {
+        persistence.saveExecution(runningExecution);
         persistence.appendStageLog(TaskStageLogEntry.started(
                 request.task().taskId(),
                 runningExecution.executionId(),
@@ -132,7 +211,7 @@ public final class TaskExecutionStateMachine {
                 1,
                 stageStartedAt));
 
-        var reviewEngineResult = reviewEngine.review(request.reviewInput());
+        var reviewEngineResult = reviewEngine.review(reviewInput);
         var completedAt = Instant.now(clock);
         persistence.appendStageLog(TaskStageLogEntry.completed(
                 request.task().taskId(),
@@ -143,6 +222,57 @@ public final class TaskExecutionStateMachine {
                 Duration.between(stageStartedAt, completedAt).toMillis(),
                 completedAt));
         return reviewEngineResult;
+    }
+
+    private <T> StageValue<T> runStage(
+            TaskExecutionRequest request,
+            TaskExecutionRecord currentExecution,
+            ExecutionStatus stageStatus,
+            TaskExecutionPersistence persistence,
+            Instant stageStartedAt,
+            StageSupplier<T> supplier,
+            StageSummary<T> summary) {
+        var runningExecution = currentExecution.transitionTo(
+                stageStatus,
+                stageStatus.name(),
+                currentExecution.startedAt(),
+                null);
+        persistence.saveExecution(runningExecution);
+        persistence.appendStageLog(TaskStageLogEntry.started(
+                request.task().taskId(),
+                runningExecution.executionId(),
+                stageStatus.name(),
+                1,
+                stageStartedAt));
+        try {
+            var value = supplier.get();
+            var completedAt = Instant.now(clock);
+            persistence.appendStageLog(TaskStageLogEntry.completed(
+                    request.task().taskId(),
+                    runningExecution.executionId(),
+                    stageStatus.name(),
+                    1,
+                    summary.toSummary(value),
+                    Duration.between(stageStartedAt, completedAt).toMillis(),
+                    completedAt));
+            return new StageValue<>(value, runningExecution);
+        } catch (RuntimeException exception) {
+            var failedAt = Instant.now(clock);
+            persistence.appendStageLog(TaskStageLogEntry.failed(
+                    request.task().taskId(),
+                    runningExecution.executionId(),
+                    stageStatus.name(),
+                    1,
+                    exception.getMessage(),
+                    Duration.between(stageStartedAt, failedAt).toMillis(),
+                    failedAt));
+            persistence.saveExecution(runningExecution.transitionTo(
+                    ExecutionStatus.FAILED,
+                    stageStatus.name(),
+                    runningExecution.startedAt(),
+                    failedAt));
+            throw exception;
+        }
     }
 
     private String deriveReviewStageSummaryStatus(ReviewEngineResult reviewEngineResult) {
@@ -171,14 +301,51 @@ record TaskExecutionRequest(
         TaskExecutionRecord execution,
         ReviewEngineInput reviewInput,
         List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
-        List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
+        List<ReviewPointSnapshot> disabledReviewPointsSnapshot,
+        TaskExecutionDocumentReference documentReference) {
+
+    TaskExecutionRequest(
+            ReviewTaskRecord task,
+            TaskExecutionRecord execution,
+            ReviewEngineInput reviewInput,
+            List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
+            List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
+        this(task, execution, reviewInput, enabledReviewPointsSnapshot, disabledReviewPointsSnapshot, null);
+    }
+
+    static TaskExecutionRequest forDocument(
+            ReviewTaskRecord task,
+            TaskExecutionRecord execution,
+            TaskExecutionDocumentReference documentReference,
+            List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
+            List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
+        return new TaskExecutionRequest(
+                task,
+                execution,
+                null,
+                enabledReviewPointsSnapshot,
+                disabledReviewPointsSnapshot,
+                documentReference);
+    }
 
     TaskExecutionRequest {
         Objects.requireNonNull(task, "task");
         Objects.requireNonNull(execution, "execution");
-        Objects.requireNonNull(reviewInput, "reviewInput");
         enabledReviewPointsSnapshot = List.copyOf(enabledReviewPointsSnapshot);
         disabledReviewPointsSnapshot = List.copyOf(disabledReviewPointsSnapshot);
+        if (reviewInput == null && documentReference == null) {
+            throw new IllegalArgumentException("Either reviewInput or documentReference is required");
+        }
+    }
+}
+
+record TaskExecutionDocumentReference(
+        Path docxPath,
+        String sampleId) {
+
+    TaskExecutionDocumentReference {
+        Objects.requireNonNull(docxPath, "docxPath");
+        Objects.requireNonNull(sampleId, "sampleId");
     }
 }
 
@@ -345,4 +512,24 @@ interface TaskExecutionPersistence {
     void appendStageLog(TaskStageLogEntry entry);
 
     void saveSnapshot(ReviewResultSnapshot snapshot);
+}
+
+record PreparedReviewInput(
+        ReviewEngineInput reviewInput,
+        TaskExecutionRecord execution) {
+}
+
+record StageValue<T>(
+        T value,
+        TaskExecutionRecord execution) {
+}
+
+@FunctionalInterface
+interface StageSupplier<T> {
+    T get();
+}
+
+@FunctionalInterface
+interface StageSummary<T> {
+    String toSummary(T value);
 }

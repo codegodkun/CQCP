@@ -13,29 +13,17 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 持久化结果查询适配
 - `TASK-023` 公开结果页最小实现
 - `TASK-024` 管理台诊断详情最小实现
-- parser-backed 主链路最小接入
+- parser-backed 主链路最小接入与 fixture 级验收收口
 - 最小 `CandidateResolver` / evidence admission 闸门
 
 当前重点：
-- 完成 `TASK-025` 的 fixture 级验收收口
+- `TASK-025` 已达到 fixture 级验收 DoD，进入归档
 - `TASK-026` 已完成，后续只登记 `TASK-032` 重构，不提前执行
 - 保持 `TASK-027` / `TASK-028` / `TASK-032` 的边界，不提前吞并
 
 ## 活跃任务
 
-- `TASK-025`
-  - 文件：`tasks/active/TASK-025-parser-candidate-evidence-mainline-integration.md`
-  - 状态：进行中
-  - 定位：fixture 级验收收口任务
-  - 当前 DoD：4 个正向 fixture + 4 个负向 fixture 全部通过
-    - `PointStatus`
-    - `candidateValue`
-    - `blockId`
-    - `evidenceSummary` 包含值与关键词
-- `TASK-026`
-  - 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`
-  - 状态：已完成并归档
-  - 定位：最小 `CandidateResolver`、置信度分级、同 role 竞争检测、真实 parser 主链路非 `HIGH` 可达性、`HIGH` admission gate
+- 当前无 active TASK。`TASK-025` 与 `TASK-026` 均已完成并归档。
 
 ## 最近完成
 
@@ -68,6 +56,13 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-026` 验证结果
   - 目标回归：`MinimalCandidateResolverTest`、`ParserBackedReviewInputPreparerEvidenceTest`、`TaskExecutionStateMachineTest` 通过
   - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests.contextLoads` PostgreSQL host 解析问题
+- `TASK-025` 最终收口结果
+  - 4 个正向 fixture：`CQCP-MVP-DOCX-001`、`CQCP-MVP-DOCX-002`、`CQCP-MVP-DOCX-003`、`CQCP-MVP-DOCX-004`
+  - 负向 fixture 矩阵：4 个 expected fixture 文件中的 `negativeCandidates` 全量展开校验，当前共 14 个负向矩阵行
+  - `TaskExecutionStateMachineTest` 校验真实 parser-backed execution 的 `PointStatus`
+  - `ParserBackedReviewInputPreparerEvidenceTest` 校验 `candidateValue`、`blockId`、`evidenceSummary` 包含关键值与关键词
+  - `MinimalReviewEngine` 本轮仅新增 `StructuredFieldSet.fromMap(...)`，用于 parser-backed request 构造结构化字段输入
+  - `TaskExecutionStateMachine` 本轮仅接入 parser-backed preparation stages 与 fixture 验收路径，未进入通用状态机能力扩展
 
 ## 已接受 ADR
 
@@ -82,7 +77,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 ## 当前阻塞项
 
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
-- `TASK-026` 当前只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
+- `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
 - 位置切片（`paymentClauseBlocks` 按 `MONTHLY` / `MILESTONE` 分段）在当前 4 正 4 负 fixture 上对最终判定结果无可观测影响，实际候选范围限定主要依赖内容关键词过滤（`isRatioRoleBlock` / `isExpectedRatioValue`）；后续若新增表达差异较大的合同样本，应重新验证位置切片是否真正生效，不应假设其已被验证有效
 - `UNKNOWN` 仍仅由 `MinimalCandidateResolverTest` 隔离单测覆盖，尚未由真实 parser 主链路 fixture 触发
 
@@ -93,13 +88,13 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 ## 下一步任务
 
-1. 继续完成 `TASK-025` fixture 级验收收口和归档判断。
-2. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但本轮不执行。
+1. 人工确认是否提交 `TASK-025` 收口与归档变更。
+2. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但当前不执行。
 3. 继续保持 `TASK-027` / `TASK-028` 未开始，除非后续任务明确要求。
 
 ## 参考路径
 
-- `tasks/active/TASK-025-parser-candidate-evidence-mainline-integration.md`
+- `tasks/done/TASK-025-parser-candidate-evidence-mainline-integration.md`
 - `tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`
 - `tasks/MVP_TASK_MAP.md`
 - `decisions/ADR-014-minimal-candidate-resolver-confidence-gating.md`

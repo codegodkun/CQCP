@@ -545,6 +545,10 @@ final class StructuredFieldSet {
         return new Builder();
     }
 
+    static StructuredFieldSet fromMap(Map<String, String> values) {
+        return new StructuredFieldSet(values);
+    }
+
     String getRequired(String key) {
         return getOptional(key)
                 .orElseThrow(() -> new IllegalArgumentException("Missing structured field: " + key));
