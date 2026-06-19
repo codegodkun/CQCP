@@ -1,12 +1,13 @@
 # TASK SPEC — [TASK-XXX] [任务名称]
-# 适用环境：Claude Code（本地 Agent 壳）+ DeepSeek API（推理模型）
+# 适用环境：Claude Code（DeepSeek 模型）— 统一执行环境
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.3
 > **状态**：Draft / Ready for Execution / In Progress / Done
 > **创建日期**：YYYY-MM-DD
 > **起草**：CODEX
-> **执行环境**：Claude Code + DeepSeek API
+> **执行环境**：Claude Code（DeepSeek 模型）
+> **TASK_SPEC 类型**：execution / readonly-review
 > **父任务**：[关联 TASK 编号，如无则 N/A]
 > **关联 ADR**：[如 ADR-005, ADR-010]
 > **所在分支**：[git branch 名称]
@@ -24,7 +25,7 @@
      填写时注意：所有示例内容必须替换为当前任务实际内容，
      不得保留与当前任务无关的示例占位文字。
 
-  B. Claude Code + DeepSeek 执行视角
+  B. Claude Code（DeepSeek 模型）执行视角
      将"DeepSeek 执行指令块"整块粘贴为 Claude Code 首条 prompt。
      DeepSeek 执行完成后将实现报告粘贴至第 10 节。
 
@@ -33,6 +34,10 @@
   - DeepSeek 在 Claude Code 场景下的主动停止、主动提问和边界遵守行为
     不应被默认信任，因此必须通过显式 STOP 指令约束。
   - Git 工作区规则是协作安全的基础，不得省略。
+  - 本模板新增 `TASK_SPEC 类型` 字段，用于区分执行型 `TASK_SPEC` 与只读复查型 `TASK_SPEC`。
+  - 类型为 `execution`：使用本模板。
+  - 类型为 `readonly-review`：使用 `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md`。
+  - readonly-review 的工作区规则、证据规则、STOP 规则和输出格式，以 readonly-review 专用模板为准。
 ════════════════════════════════════════════════════════
 -->
 
@@ -217,7 +222,7 @@ interface [TaskOutput] {
 
 ## 4. 架构空白处理规则
 
-> Claude Code + DeepSeek 不得因为实现方便而自行补全以下内容。
+> Claude Code（DeepSeek 模型）不得因为实现方便而自行补全以下内容。
 > 如果实现必须依赖下列内容，立即输出：
 > `[STOP: 架构空白 — <缺少什么> — 需要 CODEX 决策]`
 
@@ -567,3 +572,31 @@ C. 禁止合并，必须回滚或重做
 *本 Task Spec 由 CODEX 起草，你审核定稿后，将执行指令块粘贴进 Claude Code 启动任务。*
 *DeepSeek 完成后将实现报告粘贴至第 10 节，CODEX 审查后填写第 11 节。*
 *结论 A 后，由 CODEX 按父 TASK 要求更新 CURRENT_CONTEXT.md、父 TASK 完成记录、changelog/当前月份.md；如项目使用 context_history.md，也同步更新。*
+
+---
+
+## 13. TASK_SPEC 类型字段说明
+
+### 13.1 类型值
+
+| 类型值 | 含义 | 使用模板 |
+|---|---|---|
+| `execution` | 执行型 `TASK_SPEC` | `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md` |
+| `readonly-review` | 只读复查型 `TASK_SPEC` | `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md` |
+
+### 13.2 类型选择规则
+
+* `execution`：父 `TASK` 边界已冻结，需要局部实现、测试、bugfix 或 refactor。
+* `readonly-review`：目标执行型 `TASK_SPEC` 交付物已就绪，且 Codex 判断需要独立只读复查。
+
+### 13.3 路由规则
+
+* 当类型为 `execution` 时，使用本模板。
+* 当类型为 `readonly-review` 时，使用 `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md`。
+* readonly-review 的执行规则、工作区规则、证据规则和输出格式，以 readonly-review 专用模板为准。
+
+### 13.4 设定约束
+
+* `TASK_SPEC 类型` 字段只能由 Codex 设定。
+* 外部顾问不得替代 Codex 设定该字段。
+* readonly-review 输出只作为 Codex 的 Review Intake Decision 输入，不自动代表接纳。

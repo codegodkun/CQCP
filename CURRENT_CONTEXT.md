@@ -20,10 +20,12 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-025` 已达到 fixture 级验收 DoD，进入归档
 - `TASK-026` 已完成，后续只登记 `TASK-032` 重构，不提前执行
 - 保持 `TASK-027` / `TASK-028` / `TASK-032` 的边界，不提前吞并
+- `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 
 ## 活跃任务
 
-- 当前无 active TASK。`TASK-025` 与 `TASK-026` 均已完成并归档。
+- 当前无新的 active TASK。
+- 当前工作区仍有 `TASK-DOC-002` 相关文档改动，状态为“已完成但尚未提交”。
 
 ## 最近完成
 
@@ -85,12 +87,12 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 - 待确认：`TASK-027` 的正式 `EvidenceSlot / SourceAnchor` 设计是否还需新增 ADR
 - 待确认：`TASK-032` 是否在 `TASK-026` 正式完成后立即启动，拆分 `ParserBackedReviewInputPreparer`
-
 ## 下一步任务
 
-1. 人工确认是否提交 `TASK-025` 收口与归档变更。
-2. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但当前不执行。
-3. 继续保持 `TASK-027` / `TASK-028` 未开始，除非后续任务明确要求。
+1. 复核当前 `TASK-DOC-002` 相关文档改动的提交范围。
+2. 决定是否执行提交；如提交，仅限文档治理文件。
+3. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但当前不执行。
+4. 继续保持 `TASK-027` / `TASK-028` 未开始，除非后续任务明确要求。
 
 ## 参考路径
 
@@ -101,3 +103,10 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `docs/backend.md`
 - `docs/ai-review.md`
 - `changelog/2026-06.md`
+- `tasks/done/TASK-DOC-002-multi-agent-delegation-and-readonly-review-governance.md`
+- `tasks/done/TASK_SPEC-DOC-002-A-readonly-review-template-draft.md`
+- `tasks/done/TASK_SPEC-DOC-002-B-template-router-and-task-spec-fields-draft.md`
+- `tasks/done/TASK_SPEC-DOC-002-R-final-doc-governance-readonly-review.md`
+- `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md`
+- `tasks/TEMPLATE_ROUTER.md`
+- `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`

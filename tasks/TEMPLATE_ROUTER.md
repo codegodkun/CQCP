@@ -13,11 +13,12 @@
 | 场景 | 使用物 | 说明 |
 |---|---|---|
 | 涉及架构边界、核心链路、接口契约、数据库结构、状态机、审核结果结构、模型职责边界、ADR、长期项目记忆 | `tasks/TASK-000-template.md` | 这是 Codex 主控的父 `TASK` |
-| 父 `TASK` 已冻结边界，现需局部实现、补测试、补 mapper、补页面组件、补错误分支、修局部 bug | `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md` | 这是派发给 Claude Code + DeepSeek 的执行子任务 |
+| 父 `TASK` 已冻结边界，现需局部实现、补测试、补 mapper、补页面组件、补错误分支、修局部 bug | `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md` | 这是派发给 Claude Code（DeepSeek 模型）的执行子任务 |
 | 父 `TASK` 过大，包含多个模块或后续可能拆成多个 `TASK_SPEC` | 先输出 to-issues 草案 | 先拆执行单元，再决定哪些 issue 转成 `TASK_SPEC` |
 | 涉及 MVP 边界变化、新审核点、新输入格式、新模型提供方、公网模型、数据库基线调整、权限边界、SAP/OA 正式联调范围 | 先人工确认 | 确认后再决定创建 `TASK`、`ADR`，或暂不创建 |
+| 目标执行型 `TASK_SPEC` 交付物已就绪，且 Codex 判断需要独立只读复查 | `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md` | 这是只读复查类型 `TASK_SPEC`，由 Codex 派发；输出只作为 Codex Review Intake Decision 的输入，不自动代表验收通过 |
 
-## 3. 三者区别
+## 3. 四者区别
 
 父 `TASK`：
 由 Codex 创建和主控，用来定义目标、范围、约束、验收标准、依赖关系和记忆写回要求。
@@ -27,6 +28,9 @@
 
 to-issues 草案：
 只是拆分草案，用来整理一个父 `TASK` 内部可能的执行单元，不等同于正式 `TASK`，也不等同于 `TASK_SPEC`。
+
+只读复查 `TASK_SPEC`（readonly-review）：
+由 Codex 基于已冻结边界派发的只读复查任务类型。只负责对目标执行型 `TASK_SPEC` 的交付物、实现报告和工作区状态做 claim-based 复查，不负责实现、测试、bugfix 或 refactor。其输出只作为 Codex 的 Review Intake Decision 输入，不自动代表验收通过。
 
 ## 4. 什么时候使用父 TASK
 
@@ -43,7 +47,7 @@ to-issues 草案：
 ## 6. 什么时候先输出 to-issues 草案
 
 * 一个父 `TASK` 内包含多个相对独立的交付物。
-* 存在前后端联动、多个模块并行、或后续可能分别委派给 Claude Code + DeepSeek 的子块。
+* 存在前后端联动、多个模块并行、或后续可能分别委派给 Claude Code（DeepSeek 模型）的子块。
 * Codex 需要先看到拆分结果，才能判断是否值得生成一个或多个 `TASK_SPEC`。
 
 ## 7. 什么时候不创建 TASK_SPEC
@@ -64,5 +68,15 @@ to-issues 草案：
 Codex：
 负责主任务定义、边界冻结、模板选择、是否拆 issue 草案、是否生成 `TASK_SPEC`、最终审查和项目记忆写回。
 
-Claude Code + DeepSeek：
+Codex 同时也是 `TASK_SPEC` 的唯一派发者，以及 readonly-review 的唯一 Review Intake Decision 执行者。
+外部顾问只提供审计建议，不得直接派发 `TASK_SPEC`，不得替代 Codex 做 Review Intake Decision。
+
+Claude Code（DeepSeek 模型）：
 只执行已定界的局部任务，不直接接手父 `TASK`，不改架构、接口、数据库、状态机、审核链路，不写长期项目记忆。
+
+## 10. 什么时候使用 readonly-review TASK_SPEC
+
+* 目标执行型 `TASK_SPEC` 的交付物已就绪。
+* Codex 判断需要独立复查其 claim、范围或工作区状态。
+* readonly-review 默认不修改文件、不安装依赖、不运行测试或构建，除非该 `TASK_SPEC` 明确授权。
+* readonly-review 必须使用 `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md`。
