@@ -295,10 +295,19 @@ ADR 前置阶段只执行文档一致性检查：
   * `git diff --check` 通过
   * 最终由 Codex `Review Intake Decision` 判断是否完成
 
+### `TASK-027-D` 完成结论
+
+* 已完成最小兼容收口。
+* `review_result_snapshot` 现有 JSONB 列结构足以承载 ADR-015 后续兼容新增字段；本轮不需要数据库迁移。
+* `PersistentTaskResultStore` 现改为在持久化读取链路内部使用局部 tolerant-read `ObjectMapper` 副本，并显式关闭 `FAIL_ON_UNKNOWN_PROPERTIES`，仅用于 snapshot JSON 反序列化，不改变全局 Jackson 语义。
+* 当前 Java 读模型仍保持最小固定 record；对后续 `notConcludedDetail`、`missingOptionalSlots[]`、增强 `SourceAnchor` 字段采取“新增字段可写入 JSON、旧读模型安全忽略未知字段”的兼容策略，不要求历史快照回填。
+* 已新增 forward-compatible 单测，证明未来快照 JSON 中出现额外字段时，历史读取路径仍可成功反序列化并保留当前最小稳定字段。
+* 本任务未修改数据库迁移、未修改 OpenAPI、未进入 `TASK-027` evidence / SourceAnchor / slot preflight 主实现、未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：待任务完成后填写。
-* 测试结果：`TASK-027-C` 当前仅完成 OpenAPI / 文档层对齐，并将通过 `git diff --check` 验证；尚未进入实现测试。
-* 遗留问题：`TASK-027-D` 尚未执行，execution 型 `TASK_SPEC` 继续冻结。
-* 备注：`ADR-015` 已人工接受；`TASK-027-C` 已完成但 `TASK-027-D` 仍未完成，因此仍不得进入 evidence / SourceAnchor / slot preflight 实现，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 测试结果：`TASK-027-D` 已新增并通过 `PersistentTaskResultStoreTest` 定向兼容读取测试；提交前仍需执行 `git diff --check`。
+* 遗留问题：`TASK-027` 主实现仍未开始，execution 型 `TASK_SPEC` 继续冻结。
+* 备注：`ADR-015` 已人工接受；`TASK-027-C` 与 `TASK-027-D` 已完成本地收口，但本轮仍不得进入 evidence / SourceAnchor / slot preflight 实现，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。

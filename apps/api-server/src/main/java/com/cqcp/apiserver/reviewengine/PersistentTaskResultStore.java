@@ -3,6 +3,7 @@ package com.cqcp.apiserver.reviewengine;
 import com.cqcp.apiserver.tuning.PointDiagnostic;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -74,11 +75,13 @@ public final class PersistentTaskResultStore implements TaskResultStore {
     private static final TypeReference<List<ReviewPointSnapshot>> REVIEW_POINT_SNAPSHOTS_TYPE = new TypeReference<>() {};
 
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper snapshotObjectMapper;
 
     public PersistentTaskResultStore(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
         this.jdbcTemplate = Objects.requireNonNull(jdbcTemplate, "jdbcTemplate");
-        this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper");
+        this.snapshotObjectMapper = Objects.requireNonNull(objectMapper, "objectMapper")
+                .copy()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
@@ -155,7 +158,7 @@ public final class PersistentTaskResultStore implements TaskResultStore {
 
     private <T> T readJson(String rawJson, Class<T> type) {
         try {
-            return objectMapper.readValue(rawJson, type);
+            return snapshotObjectMapper.readValue(rawJson, type);
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Failed to deserialize snapshot JSON into " + type.getSimpleName(), exception);
         }
@@ -163,7 +166,7 @@ public final class PersistentTaskResultStore implements TaskResultStore {
 
     private <T> T readJson(String rawJson, TypeReference<T> type) {
         try {
-            return objectMapper.readValue(rawJson, type);
+            return snapshotObjectMapper.readValue(rawJson, type);
         } catch (JsonProcessingException exception) {
             throw new IllegalStateException("Failed to deserialize snapshot JSON payload", exception);
         }

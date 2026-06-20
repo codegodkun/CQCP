@@ -32,8 +32,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
 - `TASK-027` 当前处于“ADR 已接受 / 前置兼容任务待完成”阶段；A/B 两份 readonly-review 已完成并被 Codex 接受为有效输入，仍不得进入实现，仍不得派发 execution 型 `TASK_SPEC`。
 - `TASK-027-C` 与 `TASK-027-D` 为 `TASK-027` 的仅允许前置动作；在两者完成并经 Codex 审查前，不得进入 evidence / SourceAnchor / slot preflight 实现。
-- `TASK-027-C` 当前已完成本地文档对齐，但尚未提交；`TASK-027-D` 仍为下一步前置兼容任务。
-- `TASK-DOC-002` 已完成、已提交、已 push；当前最新提交为 `99f1728 docs(governance): accept ADR-015 and freeze TASK-027 preflight tasks`；`TASK-027-C` 仍处于本地未提交收口状态。
+- `TASK-027-C` 已完成并已本地提交：`8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
+- `TASK-027-D` 已完成本地收口：`PersistentTaskResultStore` 现使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON；历史快照不回填、当前不需要数据库迁移，但本轮仍不进入 `TASK-027` 主实现。
+- `TASK-DOC-002` 已完成、已提交、已 push；当前最新提交为 `8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
 
 ## 最近完成
 
@@ -92,6 +93,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-027-A` 回收结论已确认：外部 Result API 真实实现为 `GET /api/v1/tasks/{taskId}/result`，`packages/api-contracts/openapi.yaml` 与真实实现和 DTO 已分叉；`PointStatus` 五值稳定、`notConcludedReason` 六值稳定，但 `notConcludedDetail`、`missingOptionalSlots[]`、正式化 `sourceAnchors` 尚未形成真实对外承载位，因此 OpenAPI 契约对齐 / 文档更新任务阻断 `TASK-027` 直接进入实现
 - `TASK-027-B` 回收结论已确认：`review_result_snapshot` 表的 JSONB 容器能力本身不是硬阻塞，当前不需要数据库迁移；但 Java 读模型仍是固定 record，历史快照兼容读取与 `ObjectMapper` 未知字段策略尚未被证明，因此 snapshot / persistence 兼容任务阻断 `TASK-027` 直接进入 persistence 相关实现
 - `TASK-027-C` 已完成最小保守对齐，但只解决 Result API path / schema 文档分叉，不提供 `notConcludedDetail`、`missingOptionalSlots[]` 或 ADR-015 完整 `SourceAnchor` 的真实代码承载
+- `TASK-027-D` 已完成最小兼容收口：`review_result_snapshot` 继续复用现有 JSONB 列，不引入数据库迁移；`PersistentTaskResultStore` 对快照 JSON 采用局部 `FAIL_ON_UNKNOWN_PROPERTIES=false` 的 tolerant read 策略，从而允许 ADR-015 后续兼容新增字段在不回填历史数据的前提下被旧快照读取逻辑安全忽略
 - `TASK-027` 当前仍不得进入 `TASK-028` / `TASK-031` / `TASK-032`
 - 位置切片（`paymentClauseBlocks` 按 `MONTHLY` / `MILESTONE` 分段）在当前 4 正 4 负 fixture 上对最终判定结果无可观测影响，实际候选范围限定主要依赖内容关键词过滤（`isRatioRoleBlock` / `isExpectedRatioValue`）；后续若新增表达差异较大的合同样本，应重新验证位置切片是否真正生效，不应假设其已被验证有效
 - `UNKNOWN` 仍仅由 `MinimalCandidateResolverTest` 隔离单测覆盖，尚未由真实 parser 主链路 fixture 触发
@@ -99,14 +101,12 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 ## 待确认事项
 
 - 待确认：`TASK-027-C` 是否仅需 OpenAPI 文档更新即可完成，还是还需要最小 contract fixture / example 同步
-- 待确认：`TASK-027-D` 中 `PersistentTaskResultStore` 的 `ObjectMapper` 未知字段策略与 tolerant read 落地方式
 - 待确认：`TASK-032` 是否在 `TASK-026` 正式完成后立即启动，拆分 `ParserBackedReviewInputPreparer`
 ## 下一步任务
 
-1. 先执行 `TASK-027-C`：OpenAPI 契约对齐 / 文档更新任务；当前不进入业务裁判逻辑实现。
-2. 继续执行 `TASK-027-D`：snapshot / persistence 兼容任务；当前默认不做数据库迁移，若发现必须迁移则 STOP 并回交 Codex。
-3. 在 `TASK-027-D` 完成并经 Codex 审查前，`TASK-027` 不进入 evidence / SourceAnchor / slot preflight 实现。
-4. `TASK-028` / `TASK-031` / `TASK-032` 继续保持未开始。
+1. 审查并决定是否提交 `TASK-027-D`：snapshot / persistence 兼容任务；当前结论为不需要数据库迁移、历史快照保持 tolerant read。
+2. 在 `TASK-027-D` 提交并由 Codex 明确放行前，`TASK-027` 仍不进入 evidence / SourceAnchor / slot preflight 实现。
+3. `TASK-028` / `TASK-031` / `TASK-032` 继续保持未开始。
 
 ## 参考路径
 
