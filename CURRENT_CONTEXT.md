@@ -1,6 +1,6 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-06-19
+更新日期：2026-06-20
 
 ## 当前阶段
 
@@ -19,14 +19,19 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 当前重点：
 - `TASK-025` 已达到 fixture 级验收 DoD，进入归档
 - `TASK-026` 已完成，后续只登记 `TASK-032` 重构，不提前执行
-- 保持 `TASK-027` / `TASK-028` / `TASK-032` 的边界，不提前吞并
+- `TASK-027` 已进入“ADR 已接受 / 前置兼容任务待完成”阶段，仍不得进入实现
+- `TASK-027-C` OpenAPI 契约对齐 / 文档更新任务已冻结为实现前置
+- `TASK-027-D` snapshot / persistence 兼容任务已冻结为实现前置
+- 保持 `TASK-028` / `TASK-031` / `TASK-032` 的边界，不提前吞并
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 
 ## 活跃任务
 
-- 当前无新的 active TASK。
+- 当前 active TASK：`tasks/active/TASK-027-evidence-slot-source-anchor-governance.md`。
+- `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
+- `TASK-027` 当前处于“ADR 已接受 / 前置兼容任务待完成”阶段；A/B 两份 readonly-review 已完成并被 Codex 接受为有效输入，仍不得进入实现，仍不得派发 execution 型 `TASK_SPEC`。
+- `TASK-027-C` 与 `TASK-027-D` 为 `TASK-027` 的仅允许前置动作；在两者完成并经 Codex 审查前，不得进入 evidence / SourceAnchor / slot preflight 实现。
 - `TASK-DOC-002` 已完成、已提交、已 push；最新提交为 `5dcf64e docs(governance): finalize TASK-DOC-002 readonly-review delegation rules`。
-- 当前 `master` 与 `origin/master` 已对齐，工作区干净。
 
 ## 最近完成
 
@@ -76,23 +81,29 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `decisions/ADR-012-domain-model-freeze.md`
 - `decisions/ADR-013-v1-core-schema-bootstrap.md`
 - `decisions/ADR-014-minimal-candidate-resolver-confidence-gating.md`
+- `decisions/ADR-015-evidence-slot-source-anchor-governance.md`
 
 ## 当前阻塞项
 
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
 - `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
+- `TASK-027-A` 回收结论已确认：外部 Result API 真实实现为 `GET /api/v1/tasks/{taskId}/result`，`packages/api-contracts/openapi.yaml` 与真实实现和 DTO 已分叉；`PointStatus` 五值稳定、`notConcludedReason` 六值稳定，但 `notConcludedDetail`、`missingOptionalSlots[]`、正式化 `sourceAnchors` 尚未形成真实对外承载位，因此 OpenAPI 契约对齐 / 文档更新任务阻断 `TASK-027` 直接进入实现
+- `TASK-027-B` 回收结论已确认：`review_result_snapshot` 表的 JSONB 容器能力本身不是硬阻塞，当前不需要数据库迁移；但 Java 读模型仍是固定 record，历史快照兼容读取与 `ObjectMapper` 未知字段策略尚未被证明，因此 snapshot / persistence 兼容任务阻断 `TASK-027` 直接进入 persistence 相关实现
+- `TASK-027` 当前仍不得进入 `TASK-028` / `TASK-031` / `TASK-032`
 - 位置切片（`paymentClauseBlocks` 按 `MONTHLY` / `MILESTONE` 分段）在当前 4 正 4 负 fixture 上对最终判定结果无可观测影响，实际候选范围限定主要依赖内容关键词过滤（`isRatioRoleBlock` / `isExpectedRatioValue`）；后续若新增表达差异较大的合同样本，应重新验证位置切片是否真正生效，不应假设其已被验证有效
 - `UNKNOWN` 仍仅由 `MinimalCandidateResolverTest` 隔离单测覆盖，尚未由真实 parser 主链路 fixture 触发
 
 ## 待确认事项
 
-- 待确认：`TASK-027` 的正式 `EvidenceSlot / SourceAnchor` 设计是否还需新增 ADR
+- 待确认：`TASK-027-C` 是否仅需 OpenAPI 文档更新即可完成，还是还需要最小 contract fixture / example 同步
+- 待确认：`TASK-027-D` 中 `PersistentTaskResultStore` 的 `ObjectMapper` 未知字段策略与 tolerant read 落地方式
 - 待确认：`TASK-032` 是否在 `TASK-026` 正式完成后立即启动，拆分 `ParserBackedReviewInputPreparer`
 ## 下一步任务
 
-1. 先评估 `TASK-027` / ADR 前置条件，不进入实现。
-2. `TASK-032` 已登记为后续 `ParserBackedReviewInputPreparer` 物理拆分类重构，但当前不执行。
-3. 继续保持 `TASK-027` / `TASK-028` 未开始，除非后续任务明确要求。
+1. 先执行 `TASK-027-C`：OpenAPI 契约对齐 / 文档更新任务；当前不进入业务裁判逻辑实现。
+2. 先执行 `TASK-027-D`：snapshot / persistence 兼容任务；当前默认不做数据库迁移，若发现必须迁移则 STOP 并回交 Codex。
+3. 在 `TASK-027-C` / `TASK-027-D` 完成并经 Codex 审查前，`TASK-027` 不进入 evidence / SourceAnchor / slot preflight 实现。
+4. `TASK-028` / `TASK-031` / `TASK-032` 继续保持未开始。
 
 ## 参考路径
 
@@ -100,6 +111,8 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`
 - `tasks/MVP_TASK_MAP.md`
 - `decisions/ADR-014-minimal-candidate-resolver-confidence-gating.md`
+- `decisions/ADR-015-evidence-slot-source-anchor-governance.md`
+- `tasks/active/TASK-027-evidence-slot-source-anchor-governance.md`
 - `docs/backend.md`
 - `docs/ai-review.md`
 - `changelog/2026-06.md`

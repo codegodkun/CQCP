@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-06-19
+更新日期：2026-06-20
 
 ## 当前结论
 
@@ -8,7 +8,8 @@
 - `TASK-025` 已完成 fixture 级验收收口并归档
 - `TASK-026`：最小 `CandidateResolver` / 置信度分级 / evidence admission 闸门已完成并归档
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
-- `TASK-027` / `TASK-028` / `TASK-031` 仍未进入
+- `TASK-027` 已建立父任务，`ADR-015` 已接受，A/B 前置 readonly-review 已回收，当前处于“前置兼容任务待完成”阶段，尚未进入实现
+- `TASK-028` / `TASK-031` 仍未进入
 - `TASK-032` 已登记为后续重构任务，不在本轮实现
 
 ## 已完成主链路任务
@@ -28,7 +29,7 @@
 | 任务 | 名称 | 类别 | 当前状态 | 说明 |
 |---|---|---|---|---|
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
-| `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 未开始 | 承接完整 evidence 生命周期，不在本轮进入 |
+| `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | ADR 已接受 / 前置兼容任务待完成 | `ADR-015` 已接受；`TASK-027-A/B` 已回收并确认 OpenAPI 契约对齐 / 文档更新任务与 snapshot / persistence 兼容任务均为实现前置，当前仍不得直接进入实现或派发 execution 型 `TASK_SPEC` |
 | `TASK-028` | Gemma Provider 最小接入 | A | 未开始 | 仅作为未来 `MEDIUM` 档辅助通道，不在本轮进入 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
@@ -65,6 +66,12 @@
 - 定位：完整 `EvidenceSlot / SourceAnchor` 正式治理
 - 依赖：
   - `TASK-026`
+- 当前门禁：
+  - `decisions/ADR-015-evidence-slot-source-anchor-governance.md` 已接受
+  - `TASK-027-A` / `TASK-027-B` 已完成并被 Codex 接受为有效前置输入
+  - 当前先完成 `TASK-027-C` OpenAPI 契约对齐 / 文档更新任务
+  - 当前先完成 `TASK-027-D` snapshot / persistence 兼容任务
+  - 在边界冻结完成前，不进入实现，不派发 execution 型 `TASK_SPEC`
 - 说明：
   - 负责把当前最小 resolver 提升为正式 evidence 生命周期与定位资产
 
@@ -105,6 +112,7 @@
 
 ## 当前建议顺序
 
-1. 先完成 post-push 项目记忆同步，再评估 `TASK-027` / ADR 前置条件
-2. 在明确后续任务前，只登记不实现 `TASK-032`
-3. 不出现场景必要性前，不进入 `TASK-027` / `TASK-028` / `TASK-031`
+1. 执行 `TASK-027-C`：OpenAPI 契约对齐 / 文档更新任务
+2. 执行 `TASK-027-D`：snapshot / persistence 兼容任务
+3. 在 `TASK-027-C/D` 完成并经 Codex 审查前，不进入 `TASK-027` 实现
+4. 不进入 `TASK-028` / `TASK-032` / `TASK-031`
