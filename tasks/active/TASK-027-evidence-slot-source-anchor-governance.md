@@ -250,6 +250,18 @@ ADR 前置阶段只执行文档一致性检查：
   * `git diff --check` 通过
   * 最终由 Codex `Review Intake Decision` 判断是否完成
 
+### `TASK-027-C` 完成结论
+
+* 已完成最小保守对齐。
+* `packages/api-contracts/openapi.yaml` 已从旧 `/api/review/results/{taskId}` 对齐到真实 `GET /api/v1/tasks/{taskId}/result`。
+* 结果契约已改为贴合当前真实 `ReviewResultSnapshot` 返回结构，而非旧的 `ReviewResultViewResponse` 包装视图。
+* `PointStatus` 五值稳定集合保持不变。
+* `notConcludedReason` 六值稳定语义集合保持不变。
+* `notConcludedDetail` 已作为 optional / diagnostic-only compatibility 字段文档化；当前不代表真实 DTO 已承载。
+* `missingOptionalSlots[]` 已作为 optional compatibility 字段文档化；当前不代表真实 DTO 已承载。
+* `sourceAnchors` 已文档化为“当前最小稳定 `SourceAnchorSummary` 字段 + 兼容新增可选字段”，不声称 ADR-015 完整 `SourceAnchor` 已实现。
+* 本任务未修改业务代码、未修改前端 `types.ts`、未修改数据库、未进入 `TASK-027-D` 或 `TASK-027` 主实现。
+
 ### `TASK-027-D` snapshot / persistence 兼容任务
 
 * 目标：
@@ -287,6 +299,6 @@ ADR 前置阶段只执行文档一致性检查：
 
 * 完成日期：未完成。
 * 变更文件：待任务完成后填写。
-* 测试结果：当前仅完成前置 readonly-review 回收与文档冻结；尚未进入实现测试。
-* 遗留问题：`TASK-027-C` 与 `TASK-027-D` 尚未执行，execution 型 `TASK_SPEC` 继续冻结。
-* 备注：`ADR-015` 已人工接受；当前只允许先完成前置兼容任务，不得进入 evidence / SourceAnchor / slot preflight 实现，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 测试结果：`TASK-027-C` 当前仅完成 OpenAPI / 文档层对齐，并将通过 `git diff --check` 验证；尚未进入实现测试。
+* 遗留问题：`TASK-027-D` 尚未执行，execution 型 `TASK_SPEC` 继续冻结。
+* 备注：`ADR-015` 已人工接受；`TASK-027-C` 已完成但 `TASK-027-D` 仍未完成，因此仍不得进入 evidence / SourceAnchor / slot preflight 实现，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。

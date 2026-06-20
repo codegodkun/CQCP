@@ -90,34 +90,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BusinessErrorResponse'
-  /api/review/results/{taskId}:
+  /api/v1/tasks/{taskId}/result:
     get:
-      summary: 读取普通结果视图
+      summary: 读取任务结果快照
       description: >-
-        不带 executionId 时读取最新未 superseded 的 terminal execution；
-        若不存在 terminal execution，则返回处理中视图。
-      operationId: getReviewResultView
+        返回当前 task 最新结果快照。当前真实实现直接返回 `ReviewResultSnapshot`，
+        不再返回旧的 `SNAPSHOT / PENDING / FAILED` 视图包装模型。
+        `notConcludedDetail` 与 `missingOptionalSlots[]` 在本契约中仅作为
+        optional compatibility / diagnostic-only 字段预留，当前真实 DTO 可能尚未承载。
+      operationId: getTaskResultSnapshot
       parameters:
         - name: taskId
           in: path
           required: true
           schema:
             type: string
-        - name: executionId
-          in: query
-          required: false
-          schema:
-            type: string
-          description: 显式读取指定历史 execution。
       responses:
         '200':
-          description: 普通结果页所需最小视图。
+          description: 任务结果快照。
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReviewResultViewResponse'
+                $ref: '#/components/schemas/ReviewResultSnapshot'
         '404':
-          description: task 或 execution 不存在。
+          description: task 不存在或尚无可读取结果。
           content:
             application/json:
               schema:
@@ -198,61 +194,6 @@ components:
           default: false
         supersededReason:
           $ref: '#/components/schemas/SupersededReason'
-    ReviewResultViewResponse:
-      type: object
-      additionalProperties: false
-      required:
-        - viewType
-        - taskId
-        - executionId
-        - status
-        - resultUrl
-        - reviewModel
-      properties:
-        viewType:
-          type: string
-          enum:
-            - SNAPSHOT
-            - PENDING
-            - FAILED
-        taskId:
-          type: string
-        executionId:
-          type: string
-        status:
-          $ref: '#/components/schemas/PublicTaskStatus'
-        resultUrl:
-          type: string
-        reviewModel:
-          $ref: '#/components/schemas/ReviewModelSummary'
-        snapshot:
-          $ref: '#/components/schemas/ReviewResultSnapshot'
-        pendingState:
-          $ref: '#/components/schemas/PendingResultState'
-        failureState:
-          $ref: '#/components/schemas/FailedResultState'
-    PendingResultState:
-      type: object
-      additionalProperties: false
-      required:
-        - currentStage
-        - businessMessage
-      properties:
-        currentStage:
-          $ref: '#/components/schemas/ExecutionStage'
-        businessMessage:
-          type: string
-    FailedResultState:
-      type: object
-      additionalProperties: false
-      required:
-        - businessMessage
-        - operatorActionRequired
-      properties:
-        businessMessage:
-          type: string
-        operatorActionRequired:
-          type: boolean
     ReviewResultSnapshot:
       type: object
       additionalProperties: false
@@ -260,46 +201,94 @@ components:
         - taskId
         - executionId
         - status
-        - contractType
-        - structuredFields
-        - reviewModel
         - summary
+        - reviewCompleteness
         - pointResults
+        - findings
+        - diagnostics
+        - sourceAnchors
+        - structuredFieldsSnapshot
+        - enabledReviewPointsSnapshot
+        - disabledReviewPointsSnapshot
+        - contractTypeProfileVersion
+        - ruleSetVersion
+        - reviewBudgetProfileVersion
+        - modelProfileVersion
+        - parserVersion
+        - promptVersion
+        - schemaVersion
+        - patternLibraryVersion
+        - fieldLexiconVersion
+        - evidenceSelectorVersion
         - createdAt
-        - completedAt
       properties:
         taskId:
           type: string
         executionId:
           type: string
-        status:
+        supersededByExecutionId:
           type: string
-          enum:
-            - SUCCESS
-            - PARTIAL_SUCCESS
-        contractType:
-          $ref: '#/components/schemas/ContractType'
-        structuredFields:
-          $ref: '#/components/schemas/StructuredFieldsInput'
-        reviewModel:
-          $ref: '#/components/schemas/ReviewModelSummary'
+        supersededReason:
+          $ref: '#/components/schemas/SupersededReason'
+        status:
+          $ref: '#/components/schemas/SnapshotStatus'
         summary:
           $ref: '#/components/schemas/ReviewResultSummary'
+        reviewCompleteness:
+          $ref: '#/components/schemas/ReviewCompleteness'
         pointResults:
           type: array
           minItems: 1
           items:
             $ref: '#/components/schemas/PointResult'
+        findings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewFinding'
+        diagnostics:
+          type: array
+          items:
+            $ref: '#/components/schemas/PointDiagnostic'
+        sourceAnchors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceAnchorSummary'
+        structuredFieldsSnapshot:
+          type: object
+          description: 当前真实实现中的结构化字段快照；值统一序列化为字符串。
+          additionalProperties:
+            type: string
+        enabledReviewPointsSnapshot:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewPointSnapshot'
+        disabledReviewPointsSnapshot:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewPointSnapshot'
+        contractTypeProfileVersion:
+          type: string
+        ruleSetVersion:
+          type: string
+        reviewBudgetProfileVersion:
+          type: string
+        modelProfileVersion:
+          type: string
+        parserVersion:
+          type: string
+        promptVersion:
+          type: string
+        schemaVersion:
+          type: string
+        patternLibraryVersion:
+          type: string
+        fieldLexiconVersion:
+          type: string
+        evidenceSelectorVersion:
+          type: string
         createdAt:
           type: string
           format: date-time
-        completedAt:
-          type: string
-          format: date-time
-        supersededByExecutionId:
-          type: string
-        supersededReason:
-          $ref: '#/components/schemas/SupersededReason'
     ReviewResultSummary:
       type: object
       additionalProperties: false
@@ -310,11 +299,6 @@ components:
         - warningCount
         - notConcludedCount
         - skippedCount
-        - disabledByConfigCount
-        - reviewCoverageStatus
-        - criticalSlotCoverageRate
-        - evidenceCoverageRate
-        - confidenceLevel
       properties:
         plannedPointCount:
           type: integer
@@ -334,20 +318,29 @@ components:
         skippedCount:
           type: integer
           minimum: 0
-        disabledByConfigCount:
+    ReviewCompleteness:
+      type: object
+      additionalProperties: false
+      required:
+        - reviewCoverageStatus
+        - executablePointCount
+        - concludedPointCount
+        - notConcludedPointCount
+        - concludedCoverageRate
+        - confidenceLevel
+      properties:
+        reviewCoverageStatus:
+          $ref: '#/components/schemas/ReviewCoverageStatus'
+        executablePointCount:
           type: integer
           minimum: 0
-        reviewCoverageStatus:
-          type: string
-          enum:
-            - COMPLETE
-            - PARTIAL
-            - LOW_CONFIDENCE
-        criticalSlotCoverageRate:
-          type: number
+        concludedPointCount:
+          type: integer
           minimum: 0
-          maximum: 100
-        evidenceCoverageRate:
+        notConcludedPointCount:
+          type: integer
+          minimum: 0
+        concludedCoverageRate:
           type: number
           minimum: 0
           maximum: 100
@@ -358,146 +351,190 @@ components:
       additionalProperties: false
       required:
         - reviewPointCode
-        - reviewPointDisplayCode
-        - reviewPointName
-        - reviewPointCategory
-        - status
+        - pointStatus
         - businessMessage
+        - sourceAnchors
       properties:
         reviewPointCode:
           type: string
-          description: 内部唯一 reviewPointCode。
-        reviewPointDisplayCode:
-          type: string
-          description: 快照中保存的展示编码。
-        reviewPointName:
-          type: string
-        reviewPointCategory:
-          type: string
-        status:
+        pointStatus:
           $ref: '#/components/schemas/PointStatus'
         businessMessage:
           type: string
-        notConcludedReason:
-          $ref: '#/components/schemas/NotConcludedReason'
-        skippedReason:
-          type: string
-        manualReviewHint:
-          type: string
-        evidences:
-          type: array
-          items:
-            $ref: '#/components/schemas/Evidence'
-    Evidence:
-      type: object
-      additionalProperties: false
-      required:
-        - evidenceId
-        - role
-        - summary
-        - selectedCandidates
-        - sourceAnchors
-      properties:
-        evidenceId:
-          type: string
-        role:
-          type: string
-          description: 该证据在当前审核点内承担的候选角色。
-        summary:
-          type: string
-        selectedCandidates:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/Candidate'
+        findingSeverity:
+          $ref: '#/components/schemas/FindingSeverity'
         sourceAnchors:
           type: array
-          minItems: 1
           items:
-            $ref: '#/components/schemas/SourceAnchor'
-    Candidate:
+            $ref: '#/components/schemas/SourceAnchorSummary'
+        notConcludedReason:
+          $ref: '#/components/schemas/NotConcludedReason'
+        notConcludedDetail:
+          $ref: '#/components/schemas/NotConcludedDetail'
+          description: >-
+            optional / diagnostic-only compatibility field。当前真实 DTO 可能尚未承载；
+            仅在后续兼容演进时返回，用于补充 NOT_CONCLUDED 的更细粒度诊断语义。
+        skippedReason:
+          type: string
+        missingOptionalSlots:
+          type: array
+          description: >-
+            optional compatibility field。当前真实 DTO 可能尚未承载；
+            用于表达 optional evidence slot 的缺口，不改变既有 PointStatus 或
+            notConcludedReason 的稳定语义。
+          items:
+            $ref: '#/components/schemas/MissingOptionalSlot'
+    ReviewFinding:
       type: object
       additionalProperties: false
       required:
-        - candidateId
-        - role
-        - value
-        - confidenceLevel
+        - reviewPointCode
+        - severity
+        - businessMessage
+        - sourceAnchors
       properties:
-        candidateId:
+        reviewPointCode:
           type: string
-        role:
+        severity:
+          $ref: '#/components/schemas/FindingSeverity'
+        businessMessage:
           type: string
-        value:
-          type: string
-        normalizedValue:
-          type: string
-        confidenceLevel:
-          $ref: '#/components/schemas/ConfidenceLevel'
-    SourceAnchor:
+        sourceAnchors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceAnchorSummary'
+    PointDiagnostic:
       type: object
       additionalProperties: false
       required:
-        - anchorId
-        - locationLevel
-        - sourceOrigin
-        - sourceExtractionMode
-        - contextType
+        - reviewPointCode
+        - pointStatus
+        - diagnosticCode
+        - businessReason
+        - evidenceBlockIds
+        - evidenceSummary
+        - containsSensitivePayload
       properties:
-        anchorId:
+        reviewPointCode:
           type: string
-        locationLevel:
+        pointStatus:
           type: string
-          enum:
-            - EXACT_TEXT_RANGE
-            - BLOCK
-            - SECTION
-            - TABLE_ROW
-            - TABLE_CELL
-            - PAGE
-            - UNAVAILABLE
-        sectionPath:
+        diagnosticCode:
+          type: string
+        businessReason:
+          type: string
+        evidenceBlockIds:
           type: array
           items:
             type: string
+        evidenceSummary:
+          type: string
+        containsSensitivePayload:
+          type: boolean
+    SourceAnchorSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - blockId
+        - sourceOrigin
+        - sourceExtractionMode
+        - contextType
+        - evidenceSummary
+      properties:
         blockId:
-          type: string
-        tableId:
-          type: string
-        rowIndex:
-          type: integer
-          minimum: 0
-        cellIndex:
-          type: integer
-          minimum: 0
-        previewPage:
-          type: integer
-          minimum: 1
-        quotedText:
           type: string
         sourceOrigin:
           type: string
-          enum:
-            - NATIVE_WORD
-            - LIBREOFFICE_CONVERSION
-            - PREVIEW_ONLY
+          description: 当前最小稳定字段；值集合以后端实际实现为准。
         sourceExtractionMode:
           type: string
-          enum:
-            - STRUCTURED
-            - TEXT_FALLBACK
-            - PREVIEW
+          description: 当前最小稳定字段；值集合以后端实际实现为准。
         contextType:
           type: string
+          description: 当前最小稳定字段；值集合以后端实际实现为准。
+        evidenceSummary:
+          type: string
+        relatedBlockIds:
+          type: array
+          description: optional compatibility field。ADR-015 后续正式化预留字段，当前可能缺失。
+          items:
+            type: string
+        sectionPath:
+          type: array
+          description: optional compatibility field。当前真实结构可能缺失。
+          items:
+            type: string
+        locationLevel:
+          type: string
+          description: optional compatibility field / stabilization field。当前真实结构可能缺失。
           enum:
-            - NORMAL
-            - EXAMPLE
-            - EXPLANATION
-            - HISTORY
-            - HEADER_FOOTER
-            - DELETED
-            - VOIDED
-            - TOC
+            - EXACT_TEXT_RANGE
+            - BLOCK_LEVEL
+            - PAGE_LEVEL
+            - SECTION_LEVEL
+            - UNAVAILABLE
+        regionType:
+          type: string
+          description: optional compatibility field。当前真实结构可能缺失。
+        previewPage:
+          type: integer
+          minimum: 1
+          description: optional compatibility field。当前真实结构可能缺失。
+        previewElementRef:
+          type: string
+          description: optional compatibility field。当前真实结构可能缺失。
+        confidence:
+          type: string
+          description: optional compatibility field。当前真实结构可能缺失。
+        failureReason:
+          type: string
+          description: optional compatibility field。当前真实结构可能缺失。
+    MissingOptionalSlot:
+      type: object
+      additionalProperties: false
+      required:
+        - slotName
+        - cause
+      properties:
+        slotName:
+          type: string
+        cause:
+          type: string
+          description: compatibility field。当前用于承载 optional slot 缺口原因，不改变点级状态语义。
+        contributingCauses:
+          type: array
+          items:
+            type: string
+        businessMessage:
+          type: string
+          description: optional compatibility field。用于结果页或诊断展示的业务化提示。
+    ReviewPointSnapshot:
+      type: object
+      additionalProperties: false
+      required:
+        - reviewPointCode
+        - displayCode
+        - displayName
+        - reviewPointFamily
+        - contractType
+        - defaultSeverity
+        - displayOrder
+      properties:
+        reviewPointCode:
+          type: string
+        displayCode:
+          type: string
+        displayName:
+          type: string
+        reviewPointFamily:
+          type: string
+        contractType:
+          type: string
+        defaultSeverity:
+          $ref: '#/components/schemas/FindingSeverity'
+        displayOrder:
+          type: integer
+          minimum: 0
     DefinitionTermIndexEntry:
       type: object
       additionalProperties: false
@@ -524,7 +561,7 @@ components:
         definitionText:
           type: string
         sourceAnchor:
-          $ref: '#/components/schemas/SourceAnchor'
+          $ref: '#/components/schemas/SourceAnchorSummary'
         applicableScope:
           type: string
           enum:
@@ -796,12 +833,39 @@ components:
         - MODEL_UNAVAILABLE
         - MODEL_BUDGET_EXCEEDED
         - INTERNAL_RULE_ERROR
+    NotConcludedDetail:
+      type: string
+      description: >-
+        optional / diagnostic-only compatibility enum。当前真实 DTO 可能尚未承载；
+        不改变既有 notConcludedReason 的稳定语义，只用于补充诊断细节。
+      enum:
+        - INDEX_MISSING
+        - ROLE_CONFLICT
+        - PARSE_LOW_CONFIDENCE
+        - BUDGET_TRUNCATED
+    SnapshotStatus:
+      type: string
+      enum:
+        - SUCCESS
+        - PARTIAL_SUCCESS
+    ReviewCoverageStatus:
+      type: string
+      enum:
+        - FULL_REVIEWED
+        - PARTIAL_REVIEWED
+        - LOW_CONFIDENCE_REVIEW
     ConfidenceLevel:
       type: string
       enum:
         - HIGH
         - MEDIUM
         - LOW
+    FindingSeverity:
+      type: string
+      nullable: true
+      enum:
+        - WARNING
+        - ERROR
     ProviderType:
       type: string
       enum:
