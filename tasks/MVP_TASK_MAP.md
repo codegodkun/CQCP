@@ -9,7 +9,8 @@
 - `TASK-026`：最小 `CandidateResolver` / 置信度分级 / evidence admission 闸门已完成并归档
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
-- `TASK-EVAL-001` 已正式建档为当前下一任务，边界已冻结，尚未进入实现
+- `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
+- `TASK-EVAL-001-A` 已建档为当前下一前置任务；`TASK-EVAL-001-B` 依赖 A 完成后再启动
 - `TASK-028` 必须等待 `TASK-EVAL-001` 最低评测基线完成后再进入
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，不在本轮实现
@@ -32,7 +33,9 @@
 |---|---|---|---|---|
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
-| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 已建档 / 待实现 | 当前下一任务；建立 block / table-row / cell level evidence overlap 基线，只验证证据定位质量，不改变生产审核语义 |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | NEEDS-SPLIT | 父任务原 DoD 不降级；拆为 A 可观测性前置与 B overlap baseline |
+| `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已建档 / 待实现 | 当前下一任务；补齐真实 row/cell anchor 在 reviewengine 结果链路的可观测性 |
+| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 未启动 / 依赖 A | 暂不创建实现文件；负责 expected anchor、evaluator、4 正 + 4 负及完整指标 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 未开始 / 等待评测基线 | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-EVAL-001` 最低评测基线完成 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
@@ -104,6 +107,38 @@
   - 生产审核语义变更
   - 模型比较或新模型接入
   - parser 替换、检索方案引入或字符级 span 强制评分
+- Review Intake：
+  - 结论为 `NEEDS-SPLIT`
+  - 原 DoD 不降级
+  - A 先解决 SourceAnchor row/cell observability
+  - B 依赖 A 完成并经 Codex 验收
+
+### `TASK-EVAL-001-A`
+
+- 定位：SourceAnchor row/cell observability 前置任务
+- 最低范围：
+  - 稳定表达 block + table row
+  - cell 仅在具备真实稳定 `cellIndex` 时表达
+  - 优先复用 ADR-015 `previewElementRef`
+  - 保持旧 block-level 快照兼容读取
+- 禁止：
+  - 不实现 overlap evaluator
+  - 不修改 expected JSON / DOCX fixture
+  - 不通过 candidateValue 搜索 cells 伪造 cell anchor
+  - 不改变业务 Finding、EvidenceSlot admission 或 CandidateResolver gate
+
+### `TASK-EVAL-001-B`
+
+- 定位：父任务的 evidence overlap baseline 实现阶段
+- 依赖：`TASK-EVAL-001-A` 完成并经 Codex 验收
+- 最低范围：
+  - expected JSON anchor 标注
+  - test-only evaluator
+  - block / row / cell canonical key
+  - 4 正向 + 4 负向/冲突
+  - `expectedRecall / actualPrecision / requiredHitRate`
+  - `missingExpectedBlocks / unexpectedMatchedBlocks / attributionFailureReason`
+- 当前状态：暂不创建实现文件，不得提前启动
 
 ## 协作边界
 
@@ -133,7 +168,8 @@
 
 ## 当前建议顺序
 
-1. 执行 `TASK-EVAL-001`，先建立最低 evidence overlap 评测基线
-2. `TASK-028` 等待 `TASK-EVAL-001` 完成后再进入
-3. `TASK-029` / `TASK-030` 的后续排序在评测基线完成后重新确认
-4. 不进入 `TASK-031` / `TASK-032`
+1. 执行 `TASK-EVAL-001-A`，先补齐 SourceAnchor row/cell observability
+2. A 完成并经 Codex 验收后执行 `TASK-EVAL-001-B`
+3. `TASK-028` 等待 B 完成父任务最低评测基线后再进入
+4. `TASK-029` / `TASK-030` 的后续排序在评测基线完成后重新确认
+5. 不进入 `TASK-031` / `TASK-032`

@@ -1,6 +1,6 @@
 # TASK-EVAL-001：Parser-backed 证据重合度评测基线
 
-状态：待开始（父任务边界已冻结，尚未进入实现）
+状态：NEEDS-SPLIT（Review Intake 已完成；等待 `TASK-EVAL-001-A` 前置任务）
 
 类型：A 类质量评测父任务 / Codex 主控
 
@@ -19,6 +19,25 @@
 当前回归能够验证 `PointStatus`、`candidateValue`、单个 `blockId` 和 `evidenceSummary`，但尚未形成可比较的证据定位质量基线。若缺少 block / table-row / cell level overlap 指标，后续 parser、候选召回、归属规则或模型辅助变化即使让最终状态保持不变，也无法判断证据定位是否真实提升或退化。
 
 本任务建立最小离线评测基线，只评价证据定位与候选归属质量，不改变生产审核语义。
+
+## Review Intake Decision
+
+2026-06-20 实现前 Review Intake Decision：`NEEDS-SPLIT`。
+
+已确认：
+
+* block-level overlap 已具备实现条件。
+* parser 内部已有部分 `tableId + rowIndex` 信息，table row 具备潜在实现条件。
+* 当前 `PointEvidence / SourceAnchorSummary / ResultComposer / TaskResultQuery / PersistentTaskResultStore` 的稳定可见契约仍主要只有 block-level anchor。
+* 当前 cell anchor 缺少稳定 `cellIndex`，不得通过 `candidateValue` 搜索 cells 伪造来源归属。
+* 在 row/cell anchor 无法通过真实结果链路稳定观察前，不得直接进入本父任务的完整 overlap evaluator 实现。
+
+拆分决定：
+
+1. 先执行 `TASK-EVAL-001-A`：SourceAnchor row/cell observability 前置任务。
+2. `TASK-EVAL-001-A` 完成并经 Codex 验收后，再启动 `TASK-EVAL-001-B`：evidence overlap baseline。
+3. `TASK-EVAL-001-B` 暂不创建实现文件；其目标、指标和 fixture DoD 继续由本父任务承载。
+4. 本父任务原 DoD 不降级，仍要求 block / table-row / cell、4 正向 + 4 负向/冲突及完整 overlap 指标。
 
 ## 目标
 
@@ -290,9 +309,10 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## Next Task Handoff
 
-* 本任务建档完成后，下一执行任务仍是 `TASK-EVAL-001` 的实现阶段。
-* 实现阶段不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
-* 本任务不派发 Claude Code / DeepSeek。
+* 下一执行任务是 `TASK-EVAL-001-A`：`tasks/active/TASK-EVAL-001-A-source-anchor-row-cell-observability.md`。
+* `TASK-EVAL-001-B` 依赖 `TASK-EVAL-001-A` 完成并经 Codex 验收后再启动。
+* `TASK-EVAL-001-A` 与 `TASK-EVAL-001-B` 均不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
+* 本任务及两个子阶段默认均不派发 Claude Code / DeepSeek。
 
 ## 风险
 
@@ -303,7 +323,8 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## 待确认
 
-* 无。本父任务目标、边界、DoD 和任务顺序已冻结；实现仍需用户单独授权开始。
+* 待 `TASK-EVAL-001-A` 实现阶段确认：现有 parser 信息能否在不改变 ADR-015 语义的前提下稳定表达 cell anchor。
+* 若只能稳定表达 block + table row，必须回交 Codex 重新判断 cell DoD，不得在 `TASK-EVAL-001-A` 内自行降级父任务。
 
 ## 完成记录
 
@@ -311,4 +332,4 @@ SOURCE_ANCHOR_UNAVAILABLE
 * 变更文件：待实现完成后填写。
 * 测试结果：待实现完成后填写。
 * 遗留问题：待实现完成后填写。
-* 备注：2026-06-20 已完成父任务建档；未进入实现。
+* 备注：2026-06-20 已完成父任务建档及 Review Intake；结论为 `NEEDS-SPLIT`，未进入实现。
