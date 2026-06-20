@@ -105,14 +105,27 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 位置切片（`paymentClauseBlocks` 按 `MONTHLY` / `MILESTONE` 分段）在当前 4 正 4 负 fixture 上对最终判定结果无可观测影响，实际候选范围限定主要依赖内容关键词过滤（`isRatioRoleBlock` / `isExpectedRatioValue`）；后续若新增表达差异较大的合同样本，应重新验证位置切片是否真正生效，不应假设其已被验证有效
 - `UNKNOWN` 仍仅由 `MinimalCandidateResolverTest` 隔离单测覆盖，尚未由真实 parser 主链路 fixture 触发
 
+## 调研结论统一收口
+
+- 当前未发现可直接替代 CQCP 主链路的成熟开源架构；当前主链路继续保持：`Word-first -> CandidateIndex -> CandidateResolver -> EvidenceSlot -> SourceAnchor -> 小模型局部辅助 -> 后端确定性裁判 -> ReviewResultSnapshot`。
+- 国际 benchmark 仅作为审核点、证据召回、证据重合度和失败模式的评测方法参考；中文开源项目仅作为 UI、报告、预览和配置交互参考；不继承“模型直接审查整份合同并输出业务结论”的主链路。
+- 更强模型可能改变候选收集、角色归属、复杂语义消歧和脆弱正则的使用比例，但不取消治理层：`SourceAnchor`、`EvidenceSlot admission`、`SYS / Finding` 分流、`NOT_CONCLUDED`、不可变快照、版本追溯及后端确定性公式/结构化裁判继续保留。
+- 模型输出必须经过后端 verifier 和 `CandidateResolver`，不得直接形成业务 Finding。模型自报 confidence 不得直接成为 `HIGH` admission；模型只能提供候选、理由、anchor、uncertainty reason、alternative candidates 等可验证信号。
+- `TASK-EVAL-001` 是下一优先候选任务，目标是冻结并建立 parser-backed fixtures 的 block / table-row / cell level evidence overlap 最低评测基线；本文件只记录候选顺序，不代表已创建任务或进入实现。
+- `TASK-028` 应等待 `TASK-EVAL-001` 父任务完成边界冻结并形成最低评测基线后再进入，以免在缺少 evidence precision / recall 基线时比较模型或扩大模型辅助范围。
+- A30 24GB 下的后续模型候选池不应预先局限于 1B / 4B / 7B，可在 `TASK-028` 前置调研中评估 Gemma 4 26B A4B、Gemma 4 31B、Qwen3 30B-A3B、Qwen3 32B 及其适用量化版本。待确认：这些候选的 Q4 权重来源、A30 24GB 实际显存占用、上下文预算、吞吐和 CQCP 中文合同质量均尚未专项验证，不得写成已确认可部署或优于当前方案。
+- Docling、BM25、Ragas、Outlines、OpenTelemetry、Label Studio 等只作为 `TASK-EVAL-001` 之后的 parser adapter、候选召回、评测、结构化输出、观测和标注治理候选，不在当前 MVP 抢跑引入。
+
 ## 待确认事项
 
-- 待确认：`TASK-027` 归档后，`TASK-029` 与 `TASK-030` 的优先级应如何排序
+- 待确认：`TASK-EVAL-001` 与 `TASK-029` / `TASK-030` 的最终任务顺序，以及是否需要同步调整 `tasks/MVP_TASK_MAP.md`。
+- 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. 完成 `TASK-027` 归档后，重新评估 `TASK-029` / `TASK-030` 的优先级，不直接进入 `TASK-028`。
-2. 继续保持 `TASK-028` / `TASK-031` / `TASK-032` 未开始；除非用户另行授权，不得抢跑。
-3. 建议下一步重新评估 `TASK-029` / `TASK-030` / `TASK-EVAL-001` 的优先级；当前不自动进入 `TASK-028` / `TASK-031` / `TASK-032`。
+1. 先由 Codex 创建并冻结 `TASK-EVAL-001` 父任务边界；当前尚未创建任务文件，也未进入实现。
+2. `TASK-EVAL-001` 的最低目标应为 block / table-row / cell level evidence overlap 基线，不把 character-level scoring 扩大为 MVP 硬要求。
+3. `TASK-028` 等待 `TASK-EVAL-001` 最低评测基线完成后再进入；`TASK-031` / `TASK-032` 继续不得抢跑。
+4. 后续如任务优先级、依赖关系或协作边界被正式确认，再同步更新 `tasks/MVP_TASK_MAP.md`。
 
 ## 参考路径
 
