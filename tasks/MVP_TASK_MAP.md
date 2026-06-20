@@ -8,8 +8,10 @@
 - `TASK-025` 已完成 fixture 级验收收口并归档
 - `TASK-026`：最小 `CandidateResolver` / 置信度分级 / evidence admission 闸门已完成并归档
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
-- `TASK-027` 最小主实现已完成，当前进入归档收口阶段
-- `TASK-028` / `TASK-031` 仍未进入，继续禁止抢跑
+- `TASK-027` 最小主实现已完成并归档
+- `TASK-EVAL-001` 已正式建档为当前下一任务，边界已冻结，尚未进入实现
+- `TASK-028` 必须等待 `TASK-EVAL-001` 最低评测基线完成后再进入
+- `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，不在本轮实现
 
 ## 已完成主链路任务
@@ -29,8 +31,9 @@
 | 任务 | 名称 | 类别 | 当前状态 | 说明 |
 |---|---|---|---|---|
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
-| `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 最小主实现已完成 / 归档中 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成，本轮完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化；`TASK-028` / `TASK-031` / `TASK-032` 继续不得抢跑 |
-| `TASK-028` | Gemma Provider 最小接入 | A | 未开始 | 仅作为未来 `MEDIUM` 档辅助通道，不在本轮进入 |
+| `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 已建档 / 待实现 | 当前下一任务；建立 block / table-row / cell level evidence overlap 基线，只验证证据定位质量，不改变生产审核语义 |
+| `TASK-028` | Gemma Provider 最小接入 | A | 未开始 / 等待评测基线 | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-EVAL-001` 最低评测基线完成 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
 | `TASK-031` | Result API / Admin API mapper 补洞 | B | 未开始 | 当前明确不进入 |
@@ -82,8 +85,25 @@
 - 依赖：
   - `TASK-026`
   - `TASK-027`
+  - `TASK-EVAL-001` 最低评测基线
 - 说明：
   - 仅作为复杂语义辅助，不承担最终确定性裁判
+
+### `TASK-EVAL-001`
+
+- 定位：parser-backed fixture 的证据定位质量评测基线
+- 依赖：
+  - `TASK-025`
+  - `TASK-026`
+  - `TASK-027`
+- 最低范围：
+  - block / table-row / cell level overlap
+  - 至少 4 个正向 fixture + 4 个负向 / 冲突 fixture
+  - `candidateValue` 正确但 `SourceAnchor` 错误时必须失败
+- 不包含：
+  - 生产审核语义变更
+  - 模型比较或新模型接入
+  - parser 替换、检索方案引入或字符级 span 强制评分
 
 ## 协作边界
 
@@ -113,6 +133,7 @@
 
 ## 当前建议顺序
 
-1. 先完成 `TASK-027` 归档收口，并重新评估 `TASK-029` / `TASK-030` 的优先级
-2. 不直接进入 `TASK-028`
-3. 不进入 `TASK-028` / `TASK-032` / `TASK-031`
+1. 执行 `TASK-EVAL-001`，先建立最低 evidence overlap 评测基线
+2. `TASK-028` 等待 `TASK-EVAL-001` 完成后再进入
+3. `TASK-029` / `TASK-030` 的后续排序在评测基线完成后重新确认
+4. 不进入 `TASK-031` / `TASK-032`

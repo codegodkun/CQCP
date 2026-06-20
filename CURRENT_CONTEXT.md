@@ -17,19 +17,21 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 最小 `CandidateResolver` / evidence admission 闸门
 
 当前重点：
-- `TASK-025` 已达到 fixture 级验收 DoD，进入归档
+- `TASK-025` 已达到 fixture 级验收 DoD 并归档
 - `TASK-026` 已完成，后续只登记 `TASK-032` 重构，不提前执行
 - `TASK-027-C` / `TASK-027-D` 前置兼容任务与 `TASK-027` 最小主实现均已完成并已本地提交
-- `TASK-027` 主实现已完成，当前进入归档收口阶段；本轮完成的是 ADR-015 边界内的最小主实现落地，不是完整 `EvidenceBundle` 平台化
+- `TASK-027` 主实现已完成并归档；完成的是 ADR-015 边界内的最小主实现落地，不是完整 `EvidenceBundle` 平台化
 - `TASK-027-C` OpenAPI 契约对齐 / 文档更新任务已冻结为实现前置
 - `TASK-027-D` snapshot / persistence 兼容任务已冻结为实现前置
 - `TASK-027-C` 已完成最小保守对齐：`packages/api-contracts/openapi.yaml` 已从旧 `/api/review/results/{taskId}` 对齐到真实 `GET /api/v1/tasks/{taskId}/result`，并把 `notConcludedDetail`、`missingOptionalSlots[]`、`sourceAnchors` 仅作为 optional / compatibility / diagnostic-only 字段文档化
 - 保持 `TASK-028` / `TASK-031` / `TASK-032` 的边界，不提前吞并
+- `TASK-EVAL-001` 已正式建档并冻结父任务边界，当前只完成建档，尚未进入实现
+- `TASK-028` 必须等待 `TASK-EVAL-001` 完成 block / table-row / cell level 最低评测基线后再进入
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 
 ## 活跃任务
 
-- 当前 active TASK：无；`TASK-027` 已进入归档收口，归档文件为 `tasks/done/TASK-027-evidence-slot-source-anchor-governance.md`。
+- 当前 active TASK：`TASK-EVAL-001`，文件为 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；状态为父任务边界已冻结、待实现。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
 - `TASK-027` 已完成最小主实现落地；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
 - `TASK-027` 本轮完成范围仅限 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；未扩大到完整 `EvidenceBundle` 平台化实现。
@@ -41,7 +43,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `git rev-list --left-right --count origin/master...HEAD` 当前为 `0 0`。
 - `TASK-027` 相关 5 个本地提交已完成 `push`，当前不存在待同步提交。
 - `TASK-028` / `TASK-031` / `TASK-032` 仍未开始，继续禁止抢跑。
-- 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。建议后续优先评估 `TASK-EVAL-001`（parser-backed fixtures 的 evidence overlap evaluation），但本轮不改变架构、不创建 ADR、不创建任务文件、不进入 `TASK-028`。
+- 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。基于该结论，`TASK-EVAL-001` 已正式建档为当前下一任务；本轮未进入实现、未创建 ADR、未进入 `TASK-028`。
 
 ## 最近完成
 
@@ -101,7 +103,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-027-B` 回收结论已确认：`review_result_snapshot` 表的 JSONB 容器能力本身不是硬阻塞，当前不需要数据库迁移；但 Java 读模型仍是固定 record，历史快照兼容读取与 `ObjectMapper` 未知字段策略尚未被证明，因此 snapshot / persistence 兼容任务阻断 `TASK-027` 直接进入 persistence 相关实现
 - `TASK-027-C` 已完成最小保守对齐，但只解决 Result API path / schema 文档分叉，不提供 `notConcludedDetail`、`missingOptionalSlots[]` 或 ADR-015 完整 `SourceAnchor` 的真实代码承载
 - `TASK-027-D` 已完成最小兼容收口：`review_result_snapshot` 继续复用现有 JSONB 列，不引入数据库迁移；`PersistentTaskResultStore` 对快照 JSON 采用局部 `FAIL_ON_UNKNOWN_PROPERTIES=false` 的 tolerant read 策略，从而允许 ADR-015 后续兼容新增字段在不回填历史数据的前提下被旧快照读取逻辑安全忽略
-- `TASK-027` 已完成最小主实现并进入归档收口；`TASK-028` / `TASK-031` / `TASK-032` 当前仍不得进入
+- `TASK-027` 已完成最小主实现并归档；`TASK-028` / `TASK-031` / `TASK-032` 当前仍不得进入
 - 位置切片（`paymentClauseBlocks` 按 `MONTHLY` / `MILESTONE` 分段）在当前 4 正 4 负 fixture 上对最终判定结果无可观测影响，实际候选范围限定主要依赖内容关键词过滤（`isRatioRoleBlock` / `isExpectedRatioValue`）；后续若新增表达差异较大的合同样本，应重新验证位置切片是否真正生效，不应假设其已被验证有效
 - `UNKNOWN` 仍仅由 `MinimalCandidateResolverTest` 隔离单测覆盖，尚未由真实 parser 主链路 fixture 触发
 
@@ -111,21 +113,21 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 国际 benchmark 仅作为审核点、证据召回、证据重合度和失败模式的评测方法参考；中文开源项目仅作为 UI、报告、预览和配置交互参考；不继承“模型直接审查整份合同并输出业务结论”的主链路。
 - 更强模型可能改变候选收集、角色归属、复杂语义消歧和脆弱正则的使用比例，但不取消治理层：`SourceAnchor`、`EvidenceSlot admission`、`SYS / Finding` 分流、`NOT_CONCLUDED`、不可变快照、版本追溯及后端确定性公式/结构化裁判继续保留。
 - 模型输出必须经过后端 verifier 和 `CandidateResolver`，不得直接形成业务 Finding。模型自报 confidence 不得直接成为 `HIGH` admission；模型只能提供候选、理由、anchor、uncertainty reason、alternative candidates 等可验证信号。
-- `TASK-EVAL-001` 是下一优先候选任务，目标是冻结并建立 parser-backed fixtures 的 block / table-row / cell level evidence overlap 最低评测基线；本文件只记录候选顺序，不代表已创建任务或进入实现。
+- `TASK-EVAL-001` 已正式确认为当前下一任务，父任务文件为 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；目标是建立 parser-backed fixtures 的 block / table-row / cell level evidence overlap 最低评测基线，当前尚未进入实现。
 - `TASK-028` 应等待 `TASK-EVAL-001` 父任务完成边界冻结并形成最低评测基线后再进入，以免在缺少 evidence precision / recall 基线时比较模型或扩大模型辅助范围。
 - A30 24GB 下的后续模型候选池不应预先局限于 1B / 4B / 7B，可在 `TASK-028` 前置调研中评估 Gemma 4 26B A4B、Gemma 4 31B、Qwen3 30B-A3B、Qwen3 32B 及其适用量化版本。待确认：这些候选的 Q4 权重来源、A30 24GB 实际显存占用、上下文预算、吞吐和 CQCP 中文合同质量均尚未专项验证，不得写成已确认可部署或优于当前方案。
 - Docling、BM25、Ragas、Outlines、OpenTelemetry、Label Studio 等只作为 `TASK-EVAL-001` 之后的 parser adapter、候选召回、评测、结构化输出、观测和标注治理候选，不在当前 MVP 抢跑引入。
 
 ## 待确认事项
 
-- 待确认：`TASK-EVAL-001` 与 `TASK-029` / `TASK-030` 的最终任务顺序，以及是否需要同步调整 `tasks/MVP_TASK_MAP.md`。
+- 待确认：`TASK-EVAL-001` 完成后，`TASK-028` 与 `TASK-029` / `TASK-030` 的后续排序。
 - 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. 先由 Codex 创建并冻结 `TASK-EVAL-001` 父任务边界；当前尚未创建任务文件，也未进入实现。
-2. `TASK-EVAL-001` 的最低目标应为 block / table-row / cell level evidence overlap 基线，不把 character-level scoring 扩大为 MVP 硬要求。
+1. 在用户单独确认后进入 `TASK-EVAL-001` 实现阶段。
+2. 实现最低 block / table-row / cell level evidence overlap 基线，不把 character-level scoring 扩大为 MVP 硬要求。
 3. `TASK-028` 等待 `TASK-EVAL-001` 最低评测基线完成后再进入；`TASK-031` / `TASK-032` 继续不得抢跑。
-4. 后续如任务优先级、依赖关系或协作边界被正式确认，再同步更新 `tasks/MVP_TASK_MAP.md`。
+4. `TASK-EVAL-001` 完成后重新确认 `TASK-028`、`TASK-029`、`TASK-030` 的后续顺序。
 
 ## 参考路径
 
