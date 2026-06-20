@@ -19,8 +19,8 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 当前重点：
 - `TASK-025` 已达到 fixture 级验收 DoD，进入归档
 - `TASK-026` 已完成，后续只登记 `TASK-032` 重构，不提前执行
-- `TASK-027-C` / `TASK-027-D` 前置兼容任务已完成并已本地提交，当前已允许进入 `TASK-027` 主实现
-- `TASK-027` 当前进入最小主实现阶段：只在现有审核链路内落地 ADR-015 的 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 兼容增强
+- `TASK-027-C` / `TASK-027-D` 前置兼容任务与 `TASK-027` 最小主实现均已完成并已本地提交
+- `TASK-027` 主实现已完成，当前进入归档收口阶段；本轮完成的是 ADR-015 边界内的最小主实现落地，不是完整 `EvidenceBundle` 平台化
 - `TASK-027-C` OpenAPI 契约对齐 / 文档更新任务已冻结为实现前置
 - `TASK-027-D` snapshot / persistence 兼容任务已冻结为实现前置
 - `TASK-027-C` 已完成最小保守对齐：`packages/api-contracts/openapi.yaml` 已从旧 `/api/review/results/{taskId}` 对齐到真实 `GET /api/v1/tasks/{taskId}/result`，并把 `notConcludedDetail`、`missingOptionalSlots[]`、`sourceAnchors` 仅作为 optional / compatibility / diagnostic-only 字段文档化
@@ -29,13 +29,17 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 ## 活跃任务
 
-- 当前 active TASK：`tasks/active/TASK-027-evidence-slot-source-anchor-governance.md`。
+- 当前 active TASK：无；`TASK-027` 已进入归档收口，归档文件为 `tasks/done/TASK-027-evidence-slot-source-anchor-governance.md`。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
-- `TASK-027` 当前已由 Codex 直接进入主实现；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
-- `TASK-027` 本轮仅允许最小实现：`EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；仍不得派发 Claude Code / DeepSeek，不得扩大到平台化实现。
+- `TASK-027` 已完成最小主实现落地；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
+- `TASK-027` 本轮完成范围仅限 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；未扩大到完整 `EvidenceBundle` 平台化实现。
 - `TASK-027-C` 已完成并已本地提交：`8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
 - `TASK-027-D` 已完成并已本地提交：`ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`；`PersistentTaskResultStore` 继续使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON，历史快照不回填、当前不需要数据库迁移。
-- `TASK-DOC-002` 已完成、已提交、已 push；当前最新提交为 `ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`。
+- `TASK-027` 主实现已完成并已本地提交：`b85f4dd feat(reviewengine): add minimal evidence slot preflight gating`。
+- 当前 `git status --short` 为空，工作区干净。
+- 当前分支状态：`master...origin/master [ahead 4]`。
+- 当前尚未 `push`；本轮只完成本地归档收口，不进入远端同步。
+- `TASK-028` / `TASK-031` / `TASK-032` 仍未开始，继续禁止抢跑。
 
 ## 最近完成
 
@@ -95,19 +99,18 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-027-B` 回收结论已确认：`review_result_snapshot` 表的 JSONB 容器能力本身不是硬阻塞，当前不需要数据库迁移；但 Java 读模型仍是固定 record，历史快照兼容读取与 `ObjectMapper` 未知字段策略尚未被证明，因此 snapshot / persistence 兼容任务阻断 `TASK-027` 直接进入 persistence 相关实现
 - `TASK-027-C` 已完成最小保守对齐，但只解决 Result API path / schema 文档分叉，不提供 `notConcludedDetail`、`missingOptionalSlots[]` 或 ADR-015 完整 `SourceAnchor` 的真实代码承载
 - `TASK-027-D` 已完成最小兼容收口：`review_result_snapshot` 继续复用现有 JSONB 列，不引入数据库迁移；`PersistentTaskResultStore` 对快照 JSON 采用局部 `FAIL_ON_UNKNOWN_PROPERTIES=false` 的 tolerant read 策略，从而允许 ADR-015 后续兼容新增字段在不回填历史数据的前提下被旧快照读取逻辑安全忽略
-- `TASK-027` 当前仍不得进入 `TASK-028` / `TASK-031` / `TASK-032`
+- `TASK-027` 已完成最小主实现并进入归档收口；`TASK-028` / `TASK-031` / `TASK-032` 当前仍不得进入
 - 位置切片（`paymentClauseBlocks` 按 `MONTHLY` / `MILESTONE` 分段）在当前 4 正 4 负 fixture 上对最终判定结果无可观测影响，实际候选范围限定主要依赖内容关键词过滤（`isRatioRoleBlock` / `isExpectedRatioValue`）；后续若新增表达差异较大的合同样本，应重新验证位置切片是否真正生效，不应假设其已被验证有效
 - `UNKNOWN` 仍仅由 `MinimalCandidateResolverTest` 隔离单测覆盖，尚未由真实 parser 主链路 fixture 触发
 
 ## 待确认事项
 
-- 待确认：`TASK-027-C` 是否仅需 OpenAPI 文档更新即可完成，还是还需要最小 contract fixture / example 同步
-- 待确认：`TASK-032` 是否在 `TASK-026` 正式完成后立即启动，拆分 `ParserBackedReviewInputPreparer`
+- 待确认：`TASK-027` 归档后，`TASK-029` 与 `TASK-030` 的优先级应如何排序
 ## 下一步任务
 
-1. 完成 `TASK-027` 主实现最小收口，复核 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 兼容增强是否满足 ADR-015 边界。
-2. 保持 `TASK-028` / `TASK-031` / `TASK-032` 未开始；本轮不得进入主实现范围外扩展。
-3. 主实现收口后，按 Docker Compose 状态核对 + reviewengine 定向 Gradle 测试结果决定是否建议本地提交。
+1. 完成 `TASK-027` 归档后，重新评估 `TASK-029` / `TASK-030` 的优先级，不直接进入 `TASK-028`。
+2. 继续保持 `TASK-028` / `TASK-031` / `TASK-032` 未开始；除非用户另行授权，不得抢跑。
+3. 当前本地分支仍为 `master...origin/master [ahead 4]` 且尚未 `push`；等待审查后再决定是否追加本地提交。
 
 ## 参考路径
 
@@ -116,7 +119,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `tasks/MVP_TASK_MAP.md`
 - `decisions/ADR-014-minimal-candidate-resolver-confidence-gating.md`
 - `decisions/ADR-015-evidence-slot-source-anchor-governance.md`
-- `tasks/active/TASK-027-evidence-slot-source-anchor-governance.md`
+- `tasks/done/TASK-027-evidence-slot-source-anchor-governance.md`
 - `docs/backend.md`
 - `docs/ai-review.md`
 - `changelog/2026-06.md`

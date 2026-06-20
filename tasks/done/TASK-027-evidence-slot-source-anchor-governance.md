@@ -1,6 +1,6 @@
 # TASK-027：EvidenceSlot / SourceAnchor 正式治理
 
-状态：进行中（ADR 已接受，`TASK-027-C` / `TASK-027-D` 已完成并已允许进入最小主实现；仍禁止 `TASK-028` / `TASK-031` / `TASK-032`）
+状态：已完成并归档（ADR 已接受，`TASK-027-C` / `TASK-027-D` 与 `TASK-027` 最小主实现均已本地提交；仍禁止 `TASK-028` / `TASK-031` / `TASK-032`）
 
 类型：A 类主链路任务 / 架构治理与后端实现
 
@@ -178,9 +178,9 @@ ADR 前置阶段只执行文档一致性检查：
 
 ## Next Task Handoff
 
-* `ADR-015` 已接受，但当前下一步不是进入业务实现。
-* `TASK-027-C` 与 `TASK-027-D` 已完成，本轮由 Codex 直接执行 `TASK-027` 最小主实现。
-* 当前仍不生成 Claude Code / DeepSeek 的 execution 型 `TASK_SPEC`，也不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* `TASK-027` 已完成最小主实现落地，下一步是完成归档并重新评估 `TASK-029` / `TASK-030` 的优先级。
+* 归档后不直接进入 `TASK-028`；`TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑，除非用户另行授权。
+* 当前不生成 Claude Code / DeepSeek 的 execution 型 `TASK_SPEC`。
 
 ## 风险
 
@@ -306,8 +306,39 @@ ADR 前置阶段只执行文档一致性检查：
 
 ## 完成记录
 
-* 完成日期：未完成。
-* 变更文件：待任务完成后填写。
-* 测试结果：`TASK-027-D` 已新增并通过 `PersistentTaskResultStoreTest` 定向兼容读取测试；提交前仍需执行 `git diff --check`。
-* 遗留问题：`TASK-027` 主实现仍未开始，execution 型 `TASK_SPEC` 继续冻结。
-* 备注：`ADR-015` 已人工接受；`TASK-027-C` 与 `TASK-027-D` 已完成并已放行，本轮进入 `TASK-027` 最小主实现；仍不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 完成日期：2026-06-20。
+* 完成结论：`TASK-027` 已完成 ADR-015 边界内的最小主实现落地，并已进入归档收口；本轮不包含完整 `EvidenceBundle` 平台化。
+* 实际变更文件：
+  - `packages/api-contracts/openapi.yaml`
+  - `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java`
+  - `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java`
+  - `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/PersistentTaskResultStore.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngineTest.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparerEvidenceTest.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/PersistentTaskResultStoreTest.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ResultComposerTest.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TaskExecutionStateMachineTest.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TaskResultQueryControllerTest.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TaskResultQueryServiceTest.java`
+  - `CURRENT_CONTEXT.md`
+  - `changelog/2026-06.md`
+  - `tasks/MVP_TASK_MAP.md`
+  - `tasks/done/TASK-027-evidence-slot-source-anchor-governance.md`
+* 本地提交记录：
+  - `TASK-027-C`：`8e09dc6 docs(contract): align TASK-027-C result API contract documentation`
+  - `TASK-027-D`：`ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`
+  - `TASK-027` 主实现：`b85f4dd feat(reviewengine): add minimal evidence slot preflight gating`
+* 验证记录：
+  - `gradle test --tests com.cqcp.apiserver.reviewengine.ParserBackedReviewInputPreparerEvidenceTest --tests com.cqcp.apiserver.reviewengine.MinimalReviewEngineTest --tests com.cqcp.apiserver.reviewengine.ResultComposerTest --tests com.cqcp.apiserver.reviewengine.PersistentTaskResultStoreTest --tests com.cqcp.apiserver.reviewengine.TaskExecutionStateMachineTest --tests com.cqcp.apiserver.reviewengine.TaskResultQueryServiceTest`：通过
+  - `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example ps`：服务运行中
+  - `docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example exec postgres pg_isready -U cqcp -d cqcp`：通过
+  - `git status --short`：为空，工作区干净
+  - `git status -sb`：`master...origin/master [ahead 4]`
+  - `git diff --check`：待本轮归档文档更新后再次执行
+* 遗留问题：
+  - 当前仅完成最小主实现落地，未做完整 `EvidenceBundle` 平台化
+  - 未改数据库迁移、未改 OpenAPI、未改前端
+  - 未改 `PRD.md`、未改 `docs/ARCHITECTURE.md`、未改 Docker / Compose
+  - `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑，除非用户另行授权
+  - 当前尚未 `push`
+* 备注：`ADR-015` 已人工接受；`TASK-027-C`、`TASK-027-D` 与 `TASK-027` 主实现均已本地提交，当前进入文档归档收口。
