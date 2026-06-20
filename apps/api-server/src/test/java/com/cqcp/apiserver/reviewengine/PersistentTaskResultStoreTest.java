@@ -64,7 +64,13 @@ class PersistentTaskResultStoreTest {
 
         var result = store.findLatestSnapshot("task-001");
 
-        assertThat(result).contains(snapshot());
+        assertThat(result).isPresent();
+        assertThat(result.orElseThrow().pointResults()).hasSize(1);
+        assertThat(result.orElseThrow().pointResults().getFirst().pointCoverageStatus())
+                .isEqualTo(PointCoverageStatus.COMPLETE);
+        assertThat(result.orElseThrow().pointResults().getFirst().notConcludedDetail())
+                .isEqualTo("INDEX_MISSING");
+        assertThat(result.orElseThrow().pointResults().getFirst().missingOptionalSlots()).hasSize(1);
     }
 
     private ReviewResultSnapshot snapshot() {
@@ -89,7 +95,10 @@ class PersistentTaskResultStoreTest {
                         null,
                         List.of(new SourceAnchorSummary("block-001", "NATIVE_WORD", "STRUCTURED", "NORMAL", "甲方证据")),
                         null,
-                        null)),
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of())),
                 List.of(),
                 List.of(),
                 List.of(new SourceAnchorSummary("block-001", "NATIVE_WORD", "STRUCTURED", "NORMAL", "甲方证据")),

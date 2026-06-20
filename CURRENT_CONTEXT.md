@@ -19,7 +19,8 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 当前重点：
 - `TASK-025` 已达到 fixture 级验收 DoD，进入归档
 - `TASK-026` 已完成，后续只登记 `TASK-032` 重构，不提前执行
-- `TASK-027` 已进入“ADR 已接受 / 前置兼容任务待完成”阶段，仍不得进入实现
+- `TASK-027-C` / `TASK-027-D` 前置兼容任务已完成并已本地提交，当前已允许进入 `TASK-027` 主实现
+- `TASK-027` 当前进入最小主实现阶段：只在现有审核链路内落地 ADR-015 的 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 兼容增强
 - `TASK-027-C` OpenAPI 契约对齐 / 文档更新任务已冻结为实现前置
 - `TASK-027-D` snapshot / persistence 兼容任务已冻结为实现前置
 - `TASK-027-C` 已完成最小保守对齐：`packages/api-contracts/openapi.yaml` 已从旧 `/api/review/results/{taskId}` 对齐到真实 `GET /api/v1/tasks/{taskId}/result`，并把 `notConcludedDetail`、`missingOptionalSlots[]`、`sourceAnchors` 仅作为 optional / compatibility / diagnostic-only 字段文档化
@@ -30,11 +31,11 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 - 当前 active TASK：`tasks/active/TASK-027-evidence-slot-source-anchor-governance.md`。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
-- `TASK-027` 当前处于“ADR 已接受 / 前置兼容任务待完成”阶段；A/B 两份 readonly-review 已完成并被 Codex 接受为有效输入，仍不得进入实现，仍不得派发 execution 型 `TASK_SPEC`。
-- `TASK-027-C` 与 `TASK-027-D` 为 `TASK-027` 的仅允许前置动作；在两者完成并经 Codex 审查前，不得进入 evidence / SourceAnchor / slot preflight 实现。
+- `TASK-027` 当前已由 Codex 直接进入主实现；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
+- `TASK-027` 本轮仅允许最小实现：`EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；仍不得派发 Claude Code / DeepSeek，不得扩大到平台化实现。
 - `TASK-027-C` 已完成并已本地提交：`8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
-- `TASK-027-D` 已完成本地收口：`PersistentTaskResultStore` 现使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON；历史快照不回填、当前不需要数据库迁移，但本轮仍不进入 `TASK-027` 主实现。
-- `TASK-DOC-002` 已完成、已提交、已 push；当前最新提交为 `8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
+- `TASK-027-D` 已完成并已本地提交：`ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`；`PersistentTaskResultStore` 继续使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON，历史快照不回填、当前不需要数据库迁移。
+- `TASK-DOC-002` 已完成、已提交、已 push；当前最新提交为 `ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`。
 
 ## 最近完成
 
@@ -104,9 +105,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：`TASK-032` 是否在 `TASK-026` 正式完成后立即启动，拆分 `ParserBackedReviewInputPreparer`
 ## 下一步任务
 
-1. 审查并决定是否提交 `TASK-027-D`：snapshot / persistence 兼容任务；当前结论为不需要数据库迁移、历史快照保持 tolerant read。
-2. 在 `TASK-027-D` 提交并由 Codex 明确放行前，`TASK-027` 仍不进入 evidence / SourceAnchor / slot preflight 实现。
-3. `TASK-028` / `TASK-031` / `TASK-032` 继续保持未开始。
+1. 完成 `TASK-027` 主实现最小收口，复核 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 兼容增强是否满足 ADR-015 边界。
+2. 保持 `TASK-028` / `TASK-031` / `TASK-032` 未开始；本轮不得进入主实现范围外扩展。
+3. 主实现收口后，按 Docker Compose 状态核对 + reviewengine 定向 Gradle 测试结果决定是否建议本地提交。
 
 ## 参考路径
 

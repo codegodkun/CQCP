@@ -82,6 +82,9 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertThat(evidence.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
         assertThat(evidence.evidenceSummary()).contains("70");
         assertThat(evidence.evidenceSummary()).contains("75");
+        assertThat(evidence.slotCoverages())
+                .singleElement()
+                .satisfies(slot -> assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.AMBIGUOUS));
     }
 
     @Test
@@ -118,7 +121,46 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertThat(evidence.evidenceSummary()).contains("70");
     }
 
+    @Test
+    void missingRequiredSlotProducesMissingCoverage() {
+        var preparer = new ParserBackedReviewInputPreparer(new EmptyContractParser());
+        var fixtureCase = new FixtureCase(
+                "empty-contract",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "甲方公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "60")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+
+        var reviewInput = buildReviewInput(preparer, fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.MISSING);
+        assertThat(evidence.slotCoverages())
+                .singleElement()
+                .satisfies(slot -> {
+                    assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.MISSING);
+                    assertThat(slot.required()).isTrue();
+                    assertThat(slot.critical()).isTrue();
+                });
+    }
+
     private ReviewEngineInput buildReviewInput(FixtureCaseLike fixtureCase) {
+        return buildReviewInput(preparer, fixtureCase);
+    }
+
+    private ReviewEngineInput buildReviewInput(
+            ParserBackedReviewInputPreparer preparer,
+            FixtureCaseLike fixtureCase) {
         var request = newRequest(fixtureCase);
         var parsed = preparer.parse(request.documentReference());
         var indexed = preparer.index(parsed);
@@ -163,6 +205,14 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertThat(evidence.candidateValue()).isEqualTo(expectedValue);
         assertThat(evidence.blockId()).isNotBlank();
         assertThat(evidence.evidenceSummary()).contains(expectedValue);
+        assertThat(evidence.slotCoverages())
+                .singleElement()
+                .satisfies(slot -> {
+                    assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.SATISFIED);
+                    assertThat(slot.required()).isTrue();
+                    assertThat(slot.critical()).isTrue();
+                    assertThat(slot.reliableAnchor()).isTrue();
+                });
         if (expectedKeyword != null) {
             assertThat(evidence.evidenceSummary()).contains(expectedKeyword);
         }
@@ -176,7 +226,9 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertThat(evidence.status()).isEqualTo(EvidenceStatus.AMBIGUOUS);
         assertThat(evidence.confidence()).isEqualTo(expectedConfidence.name());
         assertThat(evidence.diagnosticCode()).isEqualTo(expectedDiagnosticCode);
-        assertThat(evidence.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+        assertThat(evidence.slotCoverages())
+                .singleElement()
+                .satisfies(slot -> assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.LOW_CONFIDENCE));
     }
 
     private List<FixtureCase> loadFixtureCases() throws IOException {
@@ -260,5 +312,34 @@ class ParserBackedReviewInputPreparerEvidenceTest {
             Path docxPath,
             StructuredFieldSet structuredFields,
             StructuredFieldSet goldenStructuredFields) implements FixtureCaseLike {
+    }
+
+    private static final class EmptyContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata("empty", "empty.docx"),
+                    List.of(),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX",
+                            "test",
+                            "zh-CN",
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.FAILED,
+                            "LOW",
+                            0,
+                            0,
+                            0,
+                            List.of("EMPTY")));
+        }
     }
 }

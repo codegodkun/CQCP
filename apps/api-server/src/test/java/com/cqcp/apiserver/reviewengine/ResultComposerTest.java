@@ -25,7 +25,10 @@ class ResultComposerTest {
                         FindingSeverity.ERROR,
                         List.of(sharedAnchor),
                         null,
-                        null),
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of()),
                 new PointReviewResult(
                         ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
                         PointStatus.WARNING,
@@ -33,7 +36,10 @@ class ResultComposerTest {
                         FindingSeverity.WARNING,
                         List.of(secondaryAnchor),
                         null,
-                        null),
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of()),
                 new PointReviewResult(
                         ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
                         PointStatus.PASS,
@@ -41,7 +47,10 @@ class ResultComposerTest {
                         null,
                         List.of(sharedAnchor),
                         null,
-                        null));
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of()));
         var reviewEngineResult = new ReviewEngineResult(
                 pointResults,
                 new ReviewSummary(3, 1, 1, 1, 0, 0),
@@ -97,7 +106,10 @@ class ResultComposerTest {
                         null,
                         List.of(sharedAnchor),
                         null,
-                        null),
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of()),
                 new PointReviewResult(
                         ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
                         PointStatus.NOT_CONCLUDED,
@@ -105,7 +117,10 @@ class ResultComposerTest {
                         null,
                         List.of(),
                         NotConcludedReasonCode.MODEL_UNAVAILABLE,
-                        null));
+                        null,
+                        PointCoverageStatus.PARTIAL,
+                        "INDEX_MISSING",
+                        List.of()));
         var diagnostics = List.of(new PointDiagnostic(
                 ReviewPointCode.PARTY_B_NAME_CONSISTENCY.name(),
                 PointStatus.NOT_CONCLUDED.name(),
@@ -151,6 +166,8 @@ class ResultComposerTest {
         assertThat(snapshot.pointResults())
                 .extracting(PointReviewResult::pointStatus)
                 .containsExactly(PointStatus.PASS, PointStatus.NOT_CONCLUDED);
+        assertThat(snapshot.pointResults().get(1).notConcludedDetail()).isEqualTo("INDEX_MISSING");
+        assertThat(snapshot.pointResults().get(1).missingOptionalSlots()).isEmpty();
     }
 
     private ResultComposerInput defaultInput() {

@@ -631,7 +631,18 @@ final class ParserBackedReviewInputPreparer {
                 confidenceLevel.name(),
                 summarizeEvidence(reviewPointCode, candidate.blockText(), candidate.candidateValue()),
                 null,
-                null);
+                null,
+                List.of(new EvidenceSlotCoverage(
+                        slotKeyOf(reviewPointCode),
+                        true,
+                        true,
+                        candidate.blockId() == null || candidate.blockId().isBlank()
+                                ? EvidenceSlotCoverageStatus.PARTIAL
+                                : EvidenceSlotCoverageStatus.SATISFIED,
+                        candidate.blockId() == null || candidate.blockId().isBlank()
+                                ? "SYS_EVIDENCE_BUNDLE_INVALID"
+                                : null,
+                        candidate.blockId() != null && !candidate.blockId().isBlank())));
     }
 
     private PointEvidence unresolvedEvidence(
@@ -655,7 +666,31 @@ final class ParserBackedReviewInputPreparer {
                 resolution.confidenceLevel().name(),
                 buildUnresolvedSummary(resolution.confidenceLevel(), resolution.selectedCandidate(), candidates),
                 resolution.diagnosticCode(),
-                resolution.notConcludedReason());
+                resolution.notConcludedReason(),
+                List.of(unresolvedSlotCoverage(reviewPointCode, resolution, blockId)));
+    }
+
+    private EvidenceSlotCoverage unresolvedSlotCoverage(
+            ReviewPointCode reviewPointCode,
+            CandidateResolutionResult resolution,
+            String blockId) {
+        var coverageStatus = switch (resolution.confidenceLevel()) {
+            case UNKNOWN -> EvidenceSlotCoverageStatus.MISSING;
+            case CONFLICTED -> EvidenceSlotCoverageStatus.AMBIGUOUS;
+            case MEDIUM, LOW -> EvidenceSlotCoverageStatus.LOW_CONFIDENCE;
+            case HIGH -> EvidenceSlotCoverageStatus.SATISFIED;
+        };
+        return new EvidenceSlotCoverage(
+                slotKeyOf(reviewPointCode),
+                true,
+                true,
+                coverageStatus,
+                resolution.diagnosticCode(),
+                blockId != null && !blockId.isBlank());
+    }
+
+    private String slotKeyOf(ReviewPointCode reviewPointCode) {
+        return roleOf(reviewPointCode).toLowerCase(Locale.ROOT);
     }
 
     private String buildUnresolvedSummary(

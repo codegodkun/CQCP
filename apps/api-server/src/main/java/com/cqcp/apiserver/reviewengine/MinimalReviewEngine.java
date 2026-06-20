@@ -30,7 +30,7 @@ public class MinimalReviewEngine {
         }
 
         var summary = summarize(pointResults);
-        var completeness = buildCompleteness(pointResults, summary);
+        var completeness = buildCompleteness(summary);
         var snapshotStatus = summary.notConcludedCount() > 0 ? "PARTIAL_SUCCESS" : "SUCCESS";
         var snapshotDraft = new ReviewResultSnapshotDraft(
                 input.taskId(),
@@ -62,45 +62,16 @@ public class MinimalReviewEngine {
                     null,
                     List.of(),
                     null,
-                    SkippedReason.NOT_APPLICABLE_FOR_PAYMENT_METHOD);
+                    SkippedReason.NOT_APPLICABLE_FOR_PAYMENT_METHOD,
+                    null,
+                    null,
+                    List.of());
         }
 
         var evidence = input.pointEvidences().get(reviewPointCode);
-        if (evidence == null) {
-            return notConcluded(
-                    reviewPointCode,
-                    "缺少最小合同侧证据，无法形成正式结论。",
-                    "SYS_INDEX_INCOMPLETE",
-                    NotConcludedReasonCode.EVIDENCE_NOT_FOUND,
-                    null,
-                    diagnostics);
-        }
-
-        if (evidence.status() != EvidenceStatus.CONFIRMED) {
-            return switch (evidence.status()) {
-                case MISSING -> notConcluded(
-                        reviewPointCode,
-                        "未找到可靠合同证据，无法形成正式结论。",
-                        defaultIfBlank(evidence.diagnosticCode(), "SYS_INDEX_INCOMPLETE"),
-                        defaultReason(evidence.notConcludedReason(), NotConcludedReasonCode.EVIDENCE_NOT_FOUND),
-                        evidence,
-                        diagnostics);
-                case AMBIGUOUS -> notConcluded(
-                        reviewPointCode,
-                        "候选证据存在歧义，无法可靠归属到当前审核点。",
-                        defaultIfBlank(evidence.diagnosticCode(), "SYS_EVIDENCE_AMBIGUOUS"),
-                        defaultReason(evidence.notConcludedReason(), NotConcludedReasonCode.EVIDENCE_AMBIGUOUS),
-                        evidence,
-                        diagnostics);
-                case SYSTEM_FAILURE -> notConcluded(
-                        reviewPointCode,
-                        "系统侧能力暂不可用，当前未形成正式结论。",
-                        defaultIfBlank(evidence.diagnosticCode(), "SYS_RULE_ERROR"),
-                        defaultReason(evidence.notConcludedReason(), NotConcludedReasonCode.INTERNAL_RULE_ERROR),
-                        evidence,
-                        diagnostics);
-                case CONFIRMED -> throw new IllegalStateException("confirmed evidence should be handled earlier");
-            };
+        var preflight = preflight(reviewPointCode, evidence);
+        if (!preflight.canConclude()) {
+            return notConcludedFromPreflight(reviewPointCode, preflight, evidence, diagnostics);
         }
 
         return switch (reviewPointCode) {
@@ -154,6 +125,100 @@ public class MinimalReviewEngine {
                     "质保款比例一致。",
                     "质保款比例与合同证据不一致。");
         };
+    }
+
+    private PointPreflight preflight(ReviewPointCode reviewPointCode, PointEvidence evidence) {
+        var slotCoverages = evidence == null
+                ? List.of(missingRequiredSlot(reviewPointCode))
+                : !evidence.slotCoverages().isEmpty()
+                        ? evidence.slotCoverages()
+                        : List.of(defaultSlotCoverage(reviewPointCode, evidence));
+        var pointCoverageStatus = evaluatePointCoverageStatus(slotCoverages);
+
+        for (EvidenceSlotCoverage slotCoverage : slotCoverages) {
+            if (!slotCoverage.required()) {
+                continue;
+            }
+
+            return switch (slotCoverage.coverageStatus()) {
+                case SATISFIED -> slotCoverage.reliableAnchor()
+                        ? new PointPreflight(true, pointCoverageStatus, null, null, null, null, slotCoverages)
+                        : failurePreflight(
+                                pointCoverageStatus,
+                                "SYS_EVIDENCE_BUNDLE_INVALID",
+                                NotConcludedReasonCode.INTERNAL_RULE_ERROR,
+                                null,
+                                "关键证据缺少可靠原文定位，当前无法形成正式结论。",
+                                slotCoverages);
+                case LOW_CONFIDENCE -> failurePreflight(
+                        PointCoverageStatus.LOW_CONFIDENCE,
+                        defaultIfBlank(slotCoverage.diagnosticCode(), "SYS_PARSE_LOW_CONFIDENCE"),
+                        NotConcludedReasonCode.PARSE_LOW_CONFIDENCE,
+                        "PARSE_LOW_CONFIDENCE",
+                        "required slot 仅达到低置信覆盖，当前无法形成正式结论。",
+                        slotCoverages);
+                case BUDGET_TRUNCATED -> failurePreflight(
+                        PointCoverageStatus.PARTIAL,
+                        "SYS_EVIDENCE_BUDGET_EXCEEDED",
+                        NotConcludedReasonCode.MODEL_BUDGET_EXCEEDED,
+                        "BUDGET_TRUNCATED",
+                        "required slot 因预算截断未完整保留，当前无法形成正式结论。",
+                        slotCoverages);
+                case MISSING, PARTIAL -> {
+                    var diagnosticCode = defaultIfBlank(slotCoverage.diagnosticCode(), "SYS_INDEX_INCOMPLETE");
+                    if ("SYS_EVIDENCE_BUNDLE_INVALID".equals(diagnosticCode)) {
+                        yield failurePreflight(
+                                PointCoverageStatus.PARTIAL,
+                                diagnosticCode,
+                                NotConcludedReasonCode.INTERNAL_RULE_ERROR,
+                                null,
+                                "关键证据缺少可靠原文定位，当前无法形成正式结论。",
+                                slotCoverages);
+                    }
+                    yield failurePreflight(
+                            PointCoverageStatus.PARTIAL,
+                            diagnosticCode,
+                            NotConcludedReasonCode.EVIDENCE_NOT_FOUND,
+                            "INDEX_MISSING",
+                            "缺少 required slot，当前无法形成正式结论。",
+                            slotCoverages);
+                }
+                case AMBIGUOUS -> ambiguousFailure(slotCoverage.diagnosticCode(), slotCoverages);
+            };
+        }
+
+        return failurePreflight(
+                PointCoverageStatus.PARTIAL,
+                evidence == null ? "SYS_INDEX_INCOMPLETE" : defaultIfBlank(evidence.diagnosticCode(), "SYS_RULE_ERROR"),
+                evidence == null ? NotConcludedReasonCode.EVIDENCE_NOT_FOUND : defaultReason(evidence.notConcludedReason(), NotConcludedReasonCode.INTERNAL_RULE_ERROR),
+                mapNotConcludedDetail(evidence == null ? "SYS_INDEX_INCOMPLETE" : evidence.diagnosticCode()),
+                evidence == null ? "缺少 required slot，当前无法形成正式结论。" : "当前未形成正式结论。",
+                slotCoverages);
+    }
+
+    private PointPreflight ambiguousFailure(String diagnosticCode, List<EvidenceSlotCoverage> slotCoverages) {
+        var resolvedDiagnostic = defaultIfBlank(diagnosticCode, "SYS_EVIDENCE_AMBIGUOUS");
+        var detail = "SYS_ROLE_CONFLICT".equals(resolvedDiagnostic) ? "ROLE_CONFLICT" : null;
+        var message = "SYS_ROLE_CONFLICT".equals(resolvedDiagnostic)
+                ? "required slot 存在角色冲突，当前无法形成正式结论。"
+                : "required slot 存在证据歧义，当前无法形成正式结论。";
+        return failurePreflight(
+                PointCoverageStatus.PARTIAL,
+                resolvedDiagnostic,
+                NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                detail,
+                message,
+                slotCoverages);
+    }
+
+    private PointPreflight failurePreflight(
+            PointCoverageStatus pointCoverageStatus,
+            String diagnosticCode,
+            NotConcludedReasonCode reason,
+            String notConcludedDetail,
+            String message,
+            List<EvidenceSlotCoverage> slotCoverages) {
+        return new PointPreflight(false, pointCoverageStatus, diagnosticCode, reason, notConcludedDetail, message, slotCoverages);
     }
 
     private PointReviewResult compareText(
@@ -219,7 +284,10 @@ public class MinimalReviewEngine {
                 null,
                 anchorsFor(evidence),
                 null,
-                null);
+                null,
+                PointCoverageStatus.COMPLETE,
+                null,
+                List.of());
     }
 
     private PointReviewResult warning(ReviewPointCode reviewPointCode, String message, PointEvidence evidence) {
@@ -230,7 +298,10 @@ public class MinimalReviewEngine {
                 FindingSeverity.WARNING,
                 anchorsFor(evidence),
                 null,
-                null);
+                null,
+                PointCoverageStatus.COMPLETE,
+                null,
+                List.of());
     }
 
     private PointReviewResult error(ReviewPointCode reviewPointCode, String message, PointEvidence evidence) {
@@ -241,22 +312,23 @@ public class MinimalReviewEngine {
                 FindingSeverity.ERROR,
                 anchorsFor(evidence),
                 null,
-                null);
+                null,
+                PointCoverageStatus.COMPLETE,
+                null,
+                List.of());
     }
 
-    private PointReviewResult notConcluded(
+    private PointReviewResult notConcludedFromPreflight(
             ReviewPointCode reviewPointCode,
-            String message,
-            String diagnosticCode,
-            NotConcludedReasonCode reason,
+            PointPreflight preflight,
             PointEvidence evidence,
             List<PointDiagnostic> diagnostics) {
-        if (diagnosticCode != null) {
+        if (preflight.diagnosticCode() != null) {
             diagnostics.add(new PointDiagnostic(
                     reviewPointCode.name(),
                     PointStatus.NOT_CONCLUDED.name(),
-                    diagnosticCode,
-                    message,
+                    preflight.diagnosticCode(),
+                    preflight.message(),
                     evidence == null || evidence.blockId() == null ? List.of() : List.of(evidence.blockId()),
                     evidence == null ? "无证据摘要" : evidence.evidenceSummary(),
                     false));
@@ -265,15 +337,18 @@ public class MinimalReviewEngine {
         return new PointReviewResult(
                 reviewPointCode,
                 PointStatus.NOT_CONCLUDED,
-                message,
+                preflight.message(),
                 null,
                 evidence == null ? List.of() : anchorsFor(evidence),
-                reason,
-                null);
+                preflight.reason(),
+                null,
+                preflight.pointCoverageStatus(),
+                preflight.notConcludedDetail(),
+                List.of());
     }
 
     private List<SourceAnchorSummary> anchorsFor(PointEvidence evidence) {
-        if (evidence == null || evidence.blockId() == null) {
+        if (evidence == null || evidence.blockId() == null || evidence.blockId().isBlank()) {
             return List.of();
         }
         return List.of(new SourceAnchorSummary(
@@ -310,7 +385,7 @@ public class MinimalReviewEngine {
                 skippedCount);
     }
 
-    private ReviewCompleteness buildCompleteness(List<PointReviewResult> pointResults, ReviewSummary summary) {
+    private ReviewCompleteness buildCompleteness(ReviewSummary summary) {
         int executablePointCount = summary.plannedPointCount() - summary.skippedCount();
         int concludedPointCount = summary.passCount() + summary.errorCount() + summary.warningCount();
         BigDecimal coverageRate = executablePointCount == 0
@@ -371,6 +446,113 @@ public class MinimalReviewEngine {
             default -> "当前审核点在该场景下不适用。";
         };
     }
+
+    private EvidenceSlotCoverage missingRequiredSlot(ReviewPointCode reviewPointCode) {
+        return new EvidenceSlotCoverage(slotKeyOf(reviewPointCode), true, true, EvidenceSlotCoverageStatus.MISSING, "SYS_INDEX_INCOMPLETE", false);
+    }
+
+    private EvidenceSlotCoverage defaultSlotCoverage(ReviewPointCode reviewPointCode, PointEvidence evidence) {
+        return switch (evidence.status()) {
+            case CONFIRMED -> new EvidenceSlotCoverage(
+                    slotKeyOf(reviewPointCode),
+                    true,
+                    true,
+                    hasReliableAnchor(evidence) ? EvidenceSlotCoverageStatus.SATISFIED : EvidenceSlotCoverageStatus.PARTIAL,
+                    hasReliableAnchor(evidence) ? null : "SYS_EVIDENCE_BUNDLE_INVALID",
+                    hasReliableAnchor(evidence));
+            case MISSING -> new EvidenceSlotCoverage(
+                    slotKeyOf(reviewPointCode),
+                    true,
+                    true,
+                    EvidenceSlotCoverageStatus.MISSING,
+                    defaultIfBlank(evidence.diagnosticCode(), "SYS_INDEX_INCOMPLETE"),
+                    false);
+            case AMBIGUOUS -> new EvidenceSlotCoverage(
+                    slotKeyOf(reviewPointCode),
+                    true,
+                    true,
+                    lowConfidenceDiagnostic(evidence.diagnosticCode())
+                            ? EvidenceSlotCoverageStatus.LOW_CONFIDENCE
+                            : EvidenceSlotCoverageStatus.AMBIGUOUS,
+                    defaultIfBlank(
+                            evidence.diagnosticCode(),
+                            lowConfidenceDiagnostic(evidence.diagnosticCode()) ? "SYS_PARSE_LOW_CONFIDENCE" : "SYS_EVIDENCE_AMBIGUOUS"),
+                    hasReliableAnchor(evidence));
+            case SYSTEM_FAILURE -> new EvidenceSlotCoverage(
+                    slotKeyOf(reviewPointCode),
+                    true,
+                    true,
+                    "SYS_EVIDENCE_BUDGET_EXCEEDED".equals(evidence.diagnosticCode())
+                            ? EvidenceSlotCoverageStatus.BUDGET_TRUNCATED
+                            : EvidenceSlotCoverageStatus.PARTIAL,
+                    defaultIfBlank(evidence.diagnosticCode(), "SYS_RULE_ERROR"),
+                    hasReliableAnchor(evidence));
+        };
+    }
+
+    private PointCoverageStatus evaluatePointCoverageStatus(List<EvidenceSlotCoverage> slotCoverages) {
+        var requiredSlots = slotCoverages.stream()
+                .filter(EvidenceSlotCoverage::required)
+                .toList();
+        if (requiredSlots.stream().anyMatch(slot -> slot.coverageStatus() == EvidenceSlotCoverageStatus.LOW_CONFIDENCE)) {
+            return PointCoverageStatus.LOW_CONFIDENCE;
+        }
+        if (requiredSlots.stream().allMatch(slot -> slot.coverageStatus() == EvidenceSlotCoverageStatus.SATISFIED)) {
+            return PointCoverageStatus.COMPLETE;
+        }
+        return PointCoverageStatus.PARTIAL;
+    }
+
+    private boolean lowConfidenceDiagnostic(String diagnosticCode) {
+        return "SYS_EVIDENCE_LOW_CONFIDENCE".equals(diagnosticCode)
+                || "SYS_EVIDENCE_MEDIUM_CONFIDENCE".equals(diagnosticCode)
+                || "SYS_PARSE_LOW_CONFIDENCE".equals(diagnosticCode);
+    }
+
+    private boolean hasReliableAnchor(PointEvidence evidence) {
+        return evidence != null && evidence.blockId() != null && !evidence.blockId().isBlank();
+    }
+
+    private String slotKeyOf(ReviewPointCode reviewPointCode) {
+        return switch (reviewPointCode) {
+            case PARTY_A_NAME_CONSISTENCY -> "party_a";
+            case PARTY_B_NAME_CONSISTENCY -> "party_b";
+            case CONTRACT_TOTAL_AMOUNT_CONSISTENCY -> "contract_total_amount";
+            case TAX_AMOUNT_FORMULA_CONSISTENCY -> "tax_amount";
+            case PREPAYMENT_RATIO_CONSISTENCY -> "prepayment_ratio";
+            case PROGRESS_PAYMENT_RATIO_CONSISTENCY -> "progress_payment_ratio";
+            case COMPLETION_PAYMENT_RATIO_CONSISTENCY -> "completion_payment_ratio";
+            case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY -> "settlement_payment_ratio";
+            case WARRANTY_RETENTION_RATIO_CONSISTENCY -> "warranty_retention_ratio";
+        };
+    }
+
+    private String mapNotConcludedDetail(String diagnosticCode) {
+        if (diagnosticCode == null) {
+            return null;
+        }
+        return switch (diagnosticCode) {
+            case "SYS_INDEX_INCOMPLETE" -> "INDEX_MISSING";
+            case "SYS_ROLE_CONFLICT" -> "ROLE_CONFLICT";
+            case "SYS_PARSE_LOW_CONFIDENCE", "SYS_EVIDENCE_LOW_CONFIDENCE", "SYS_EVIDENCE_MEDIUM_CONFIDENCE" -> "PARSE_LOW_CONFIDENCE";
+            case "SYS_EVIDENCE_BUDGET_EXCEEDED" -> "BUDGET_TRUNCATED";
+            default -> null;
+        };
+    }
+
+    private record PointPreflight(
+            boolean canConclude,
+            PointCoverageStatus pointCoverageStatus,
+            String diagnosticCode,
+            NotConcludedReasonCode reason,
+            String notConcludedDetail,
+            String message,
+            List<EvidenceSlotCoverage> slotCoverages) {
+
+        PointPreflight {
+            slotCoverages = slotCoverages == null ? List.of() : List.copyOf(slotCoverages);
+        }
+    }
 }
 
 enum ReviewPointCode {
@@ -430,6 +612,21 @@ enum EvidenceStatus {
     SYSTEM_FAILURE
 }
 
+enum EvidenceSlotCoverageStatus {
+    SATISFIED,
+    PARTIAL,
+    MISSING,
+    AMBIGUOUS,
+    LOW_CONFIDENCE,
+    BUDGET_TRUNCATED
+}
+
+enum PointCoverageStatus {
+    COMPLETE,
+    PARTIAL,
+    LOW_CONFIDENCE
+}
+
 record ReviewEngineInput(
         String taskId,
         String executionId,
@@ -449,6 +646,15 @@ record ReviewEngineInput(
     }
 }
 
+record EvidenceSlotCoverage(
+        String slotKey,
+        boolean required,
+        boolean critical,
+        EvidenceSlotCoverageStatus coverageStatus,
+        String diagnosticCode,
+        boolean reliableAnchor) {
+}
+
 record PointEvidence(
         ReviewPointCode reviewPointCode,
         String candidateRole,
@@ -461,7 +667,12 @@ record PointEvidence(
         String confidence,
         String evidenceSummary,
         String diagnosticCode,
-        NotConcludedReasonCode notConcludedReason) {
+        NotConcludedReasonCode notConcludedReason,
+        List<EvidenceSlotCoverage> slotCoverages) {
+
+    PointEvidence {
+        slotCoverages = slotCoverages == null ? List.of() : List.copyOf(slotCoverages);
+    }
 }
 
 record SourceAnchorSummary(
@@ -472,6 +683,12 @@ record SourceAnchorSummary(
         String evidenceSummary) {
 }
 
+record MissingOptionalSlot(
+        String slotKey,
+        String cause,
+        String businessMessage) {
+}
+
 record PointReviewResult(
         ReviewPointCode reviewPointCode,
         PointStatus pointStatus,
@@ -479,10 +696,21 @@ record PointReviewResult(
         FindingSeverity findingSeverity,
         List<SourceAnchorSummary> sourceAnchors,
         NotConcludedReasonCode notConcludedReason,
-        SkippedReason skippedReason) {
+        SkippedReason skippedReason,
+        PointCoverageStatus pointCoverageStatus,
+        String notConcludedDetail,
+        List<MissingOptionalSlot> missingOptionalSlots) {
 
     PointReviewResult {
-        sourceAnchors = List.copyOf(sourceAnchors);
+        sourceAnchors = sourceAnchors == null ? List.of() : List.copyOf(sourceAnchors);
+        if (pointCoverageStatus == null) {
+            pointCoverageStatus = switch (pointStatus) {
+                case PASS, WARNING, ERROR -> PointCoverageStatus.COMPLETE;
+                case NOT_CONCLUDED -> PointCoverageStatus.PARTIAL;
+                case SKIPPED -> null;
+            };
+        }
+        missingOptionalSlots = missingOptionalSlots == null ? List.of() : List.copyOf(missingOptionalSlots);
     }
 }
 

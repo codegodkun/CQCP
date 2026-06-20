@@ -1,6 +1,6 @@
 # TASK-027：EvidenceSlot / SourceAnchor 正式治理
 
-状态：进行中（ADR 已接受，前置兼容任务待完成，禁止进入实现）
+状态：进行中（ADR 已接受，`TASK-027-C` / `TASK-027-D` 已完成并已允许进入最小主实现；仍禁止 `TASK-028` / `TASK-031` / `TASK-032`）
 
 类型：A 类主链路任务 / 架构治理与后端实现
 
@@ -110,7 +110,7 @@
 * `TASK-027-B-snapshot-persistence-readonly-review` 已回收并被 Codex 接受为有效前置输入。
 * 已冻结 `TASK-027-C`：OpenAPI 契约对齐 / 文档更新任务，作为实现前置。
 * 已冻结 `TASK-027-D`：snapshot / persistence 兼容任务，作为实现前置。
-* 在 `TASK-027-C` / `TASK-027-D` 完成并经 Codex 审查前，不得进入 evidence / SourceAnchor / slot preflight 实现。
+* `TASK-027-C` / `TASK-027-D` 已完成并经 Codex 审查通过；当前已允许进入 `TASK-027` 最小主实现，但仍仅限现有审核链路内的兼容增强。
 * execution 型 `TASK_SPEC` 继续冻结，不得提前派发。
 * 如 ADR 结论影响任务顺序、依赖或协作边界，同步更新 `tasks/MVP_TASK_MAP.md`。
 
@@ -179,8 +179,8 @@ ADR 前置阶段只执行文档一致性检查：
 ## Next Task Handoff
 
 * `ADR-015` 已接受，但当前下一步不是进入业务实现。
-* 当前只能先执行 `TASK-027-C` 与 `TASK-027-D` 两个前置兼容任务。
-* 在 `TASK-027-C` / `TASK-027-D` 完成并经 Codex 审查前，不生成 execution 型 `TASK_SPEC` 或实现型 Handoff Prompt。
+* `TASK-027-C` 与 `TASK-027-D` 已完成，本轮由 Codex 直接执行 `TASK-027` 最小主实现。
+* 当前仍不生成 Claude Code / DeepSeek 的 execution 型 `TASK_SPEC`，也不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ## 风险
 
@@ -191,8 +191,8 @@ ADR 前置阶段只执行文档一致性检查：
 
 ## 待确认
 
-* 待 `TASK-027-C` 确认 `missingOptionalSlots[]` 的最小 external contract 承载方式与 `notConcludedDetail` 的 optional / diagnostic-only 语义。
-* 待 `TASK-027-D` 确认 `PersistentTaskResultStore` 的 `ObjectMapper` 未知字段策略，以及新增字段 tolerant read 的最小实现方式。
+* 已由 `TASK-027-C` 确认 `missingOptionalSlots[]` 的最小 external contract 承载方式与 `notConcludedDetail` 的 optional / diagnostic-only 语义。
+* 已由 `TASK-027-D` 确认 `PersistentTaskResultStore` 的 `ObjectMapper` 未知字段策略，以及新增字段 tolerant read 的最小实现方式。
 
 ## 前置审查回收
 
@@ -310,4 +310,4 @@ ADR 前置阶段只执行文档一致性检查：
 * 变更文件：待任务完成后填写。
 * 测试结果：`TASK-027-D` 已新增并通过 `PersistentTaskResultStoreTest` 定向兼容读取测试；提交前仍需执行 `git diff --check`。
 * 遗留问题：`TASK-027` 主实现仍未开始，execution 型 `TASK_SPEC` 继续冻结。
-* 备注：`ADR-015` 已人工接受；`TASK-027-C` 与 `TASK-027-D` 已完成本地收口，但本轮仍不得进入 evidence / SourceAnchor / slot preflight 实现，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 备注：`ADR-015` 已人工接受；`TASK-027-C` 与 `TASK-027-D` 已完成并已放行，本轮进入 `TASK-027` 最小主实现；仍不得进入 `TASK-028` / `TASK-031` / `TASK-032`。

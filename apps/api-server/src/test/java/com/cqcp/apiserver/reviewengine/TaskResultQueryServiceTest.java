@@ -136,7 +136,14 @@ class TaskResultQueryServiceTest {
                 "HIGH",
                 "测试证据",
                 null,
-                null);
+                null,
+                List.of(new EvidenceSlotCoverage(
+                        role.toLowerCase(java.util.Locale.ROOT),
+                        true,
+                        true,
+                        EvidenceSlotCoverageStatus.SATISFIED,
+                        null,
+                        true)));
     }
 
     private ReviewPointSnapshot reviewPointSnapshot(ReviewPointCode code, String displayCode, int displayOrder) {

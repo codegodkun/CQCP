@@ -34,7 +34,20 @@ class TaskResultQueryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.taskId").value("task-001"))
                 .andExpect(jsonPath("$.executionId").value("execution-001"))
-                .andExpect(jsonPath("$.status").value("SUCCESS"));
+                .andExpect(jsonPath("$.status").value("SUCCESS"))
+                .andExpect(jsonPath("$.pointResults[0].reviewPointCode").value("PARTY_A_NAME_CONSISTENCY"))
+                .andExpect(jsonPath("$.pointResults[0].pointCoverageStatus").value("COMPLETE"))
+                .andExpect(jsonPath("$.pointResults[0].notConcludedDetail").doesNotExist())
+                .andExpect(jsonPath("$.pointResults[0].missingOptionalSlots").isArray())
+                .andExpect(jsonPath("$.pointResults[0].missingOptionalSlots").isEmpty())
+                .andExpect(jsonPath("$.pointResults[0].sourceAnchors[0].blockId").value("block-001"))
+                .andExpect(jsonPath("$.pointResults[1].pointStatus").value("NOT_CONCLUDED"))
+                .andExpect(jsonPath("$.pointResults[1].pointCoverageStatus").value("PARTIAL"))
+                .andExpect(jsonPath("$.pointResults[1].notConcludedReason").value("EVIDENCE_NOT_FOUND"))
+                .andExpect(jsonPath("$.pointResults[1].notConcludedDetail").value("INDEX_MISSING"))
+                .andExpect(jsonPath("$.pointResults[1].missingOptionalSlots[0].slotKey").value("secondary_evidence"))
+                .andExpect(jsonPath("$.pointResults[1].sourceAnchors").isArray())
+                .andExpect(jsonPath("$.sourceAnchors[0].blockId").value("block-001"));
     }
 
     @Test
@@ -64,16 +77,41 @@ class TaskResultQueryControllerTest {
                 SnapshotStatus.SUCCESS,
                 new ReviewSummary(1, 0, 0, 0, 0, 1),
                 new ReviewCompleteness(
-                        ReviewCoverageStatus.FULL_REVIEWED,
+                        ReviewCoverageStatus.PARTIAL_REVIEWED,
+                        2,
                         1,
                         1,
-                        0,
-                        BigDecimal.ONE,
-                        ConfidenceLevel.HIGH),
+                        new BigDecimal("0.5000"),
+                        ConfidenceLevel.MEDIUM),
+                List.of(
+                        new PointReviewResult(
+                                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                                PointStatus.PASS,
+                                "甲方名称一致。",
+                                null,
+                                List.of(new SourceAnchorSummary("block-001", "NATIVE_WORD", "STRUCTURED", "NORMAL", "甲方证据")),
+                                null,
+                                null,
+                                PointCoverageStatus.COMPLETE,
+                                null,
+                                List.of()),
+                        new PointReviewResult(
+                                ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
+                                PointStatus.NOT_CONCLUDED,
+                                "缺少 required slot，当前无法形成正式结论。",
+                                null,
+                                List.of(),
+                                NotConcludedReasonCode.EVIDENCE_NOT_FOUND,
+                                null,
+                                PointCoverageStatus.PARTIAL,
+                                "INDEX_MISSING",
+                                List.of(new MissingOptionalSlot(
+                                        "secondary_evidence",
+                                        "NOT_FOUND",
+                                        "缺少辅助证据")))),
                 List.of(),
                 List.of(),
-                List.of(),
-                List.of(),
+                List.of(new SourceAnchorSummary("block-001", "NATIVE_WORD", "STRUCTURED", "NORMAL", "甲方证据")),
                 Map.of("contractTotalAmount", "1130"),
                 List.of(),
                 List.of(),

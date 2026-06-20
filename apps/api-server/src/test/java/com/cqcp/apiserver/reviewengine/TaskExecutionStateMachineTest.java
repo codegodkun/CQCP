@@ -325,7 +325,14 @@ class TaskExecutionStateMachineTest {
                         "HIGH",
                         "系统能力暂不可用",
                         "SYS_MODEL_TIMEOUT",
-                        NotConcludedReasonCode.MODEL_UNAVAILABLE));
+                        NotConcludedReasonCode.MODEL_UNAVAILABLE,
+                        List.of(new EvidenceSlotCoverage(
+                                "party_b",
+                                true,
+                                true,
+                                EvidenceSlotCoverageStatus.PARTIAL,
+                                "SYS_MODEL_TIMEOUT",
+                                true))));
 
         return new TaskExecutionRequest(
                 request.task(),
@@ -386,7 +393,14 @@ class TaskExecutionStateMachineTest {
                 "HIGH",
                 "测试证据",
                 null,
-                null);
+                null,
+                List.of(new EvidenceSlotCoverage(
+                        role.toLowerCase(Locale.ROOT),
+                        true,
+                        true,
+                        EvidenceSlotCoverageStatus.SATISFIED,
+                        null,
+                        true)));
     }
 
     private ReviewPointSnapshot reviewPointSnapshot(ReviewPointCode code, String displayCode, int displayOrder) {

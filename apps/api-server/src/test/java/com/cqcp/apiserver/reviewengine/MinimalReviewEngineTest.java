@@ -34,6 +34,9 @@ class MinimalReviewEngineTest {
             assertThat(result.pointResults())
                     .extracting(PointReviewResult::pointStatus)
                     .containsOnly(PointStatus.PASS);
+            assertThat(result.pointResults())
+                    .extracting(PointReviewResult::pointCoverageStatus)
+                    .containsOnly(PointCoverageStatus.COMPLETE);
             assertThat(result.summary()).isEqualTo(new ReviewSummary(9, 9, 0, 0, 0, 0));
             assertThat(result.reviewCompleteness().reviewCoverageStatus())
                     .isEqualTo(ReviewCoverageStatus.FULL_REVIEWED);
@@ -116,9 +119,114 @@ class MinimalReviewEngineTest {
         assertThat(point.pointStatus()).isEqualTo(PointStatus.NOT_CONCLUDED);
         assertThat(point.findingSeverity()).isNull();
         assertThat(point.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.PARTIAL);
+        assertThat(point.notConcludedDetail()).isNull();
+        assertThat(point.missingOptionalSlots()).isEmpty();
         assertThat(result.pointDiagnostics())
                 .extracting(PointDiagnostic::diagnosticCode)
                 .contains("SYS_EVIDENCE_AMBIGUOUS");
+    }
+
+    @Test
+    void mapsLowConfidenceEvidenceToParseLowConfidenceInsteadOfBusinessFinding() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-003");
+        var input = fixtureCase.toGoldenInput().withEvidenceOverride(
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                fixtureCase.lowConfidenceEvidence(
+                        ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                        "70",
+                        "SYS_EVIDENCE_LOW_CONFIDENCE"));
+
+        var result = engine.review(input);
+
+        var point = result.pointResults().stream()
+                .filter(item -> item.reviewPointCode() == ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY)
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.NOT_CONCLUDED);
+        assertThat(point.findingSeverity()).isNull();
+        assertThat(point.notConcludedReason()).isEqualTo(NotConcludedReasonCode.PARSE_LOW_CONFIDENCE);
+        assertThat(point.notConcludedDetail()).isEqualTo("PARSE_LOW_CONFIDENCE");
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.LOW_CONFIDENCE);
+        assertThat(result.pointDiagnostics())
+                .extracting(PointDiagnostic::diagnosticCode)
+                .contains("SYS_EVIDENCE_LOW_CONFIDENCE");
+    }
+
+    @Test
+    void missingRequiredSlotReturnsNotConcludedWithoutBusinessFinding() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-003");
+        var input = fixtureCase.toGoldenInput().withEvidenceOverride(
+                ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
+                fixtureCase.missingEvidence(ReviewPointCode.PARTY_B_NAME_CONSISTENCY));
+
+        var result = engine.review(input);
+
+        var point = result.pointResults().stream()
+                .filter(item -> item.reviewPointCode() == ReviewPointCode.PARTY_B_NAME_CONSISTENCY)
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.NOT_CONCLUDED);
+        assertThat(point.findingSeverity()).isNull();
+        assertThat(point.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_NOT_FOUND);
+        assertThat(point.notConcludedDetail()).isEqualTo("INDEX_MISSING");
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.PARTIAL);
+        assertThat(result.pointDiagnostics())
+                .extracting(PointDiagnostic::diagnosticCode)
+                .contains("SYS_INDEX_INCOMPLETE");
+        assertThat(result.pointResults().stream()
+                        .filter(item -> item.reviewPointCode() == ReviewPointCode.PARTY_B_NAME_CONSISTENCY)
+                        .map(PointReviewResult::findingSeverity))
+                .containsOnlyNulls();
+    }
+
+    @Test
+    void budgetTruncatedReturnsModelBudgetExceededWithoutBusinessFinding() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-003");
+        var input = fixtureCase.toGoldenInput().withEvidenceOverride(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                fixtureCase.budgetTruncatedEvidence(ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY));
+
+        var result = engine.review(input);
+
+        var point = result.pointResults().stream()
+                .filter(item -> item.reviewPointCode() == ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY)
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.NOT_CONCLUDED);
+        assertThat(point.findingSeverity()).isNull();
+        assertThat(point.notConcludedReason()).isEqualTo(NotConcludedReasonCode.MODEL_BUDGET_EXCEEDED);
+        assertThat(point.notConcludedDetail()).isEqualTo("BUDGET_TRUNCATED");
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.PARTIAL);
+        assertThat(result.pointDiagnostics())
+                .extracting(PointDiagnostic::diagnosticCode)
+                .contains("SYS_EVIDENCE_BUDGET_EXCEEDED");
+    }
+
+    @Test
+    void confirmedEvidenceWithoutReliableAnchorCannotProduceDeterministicConclusion() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-003");
+        var input = fixtureCase.toGoldenInput().withEvidenceOverride(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                fixtureCase.confirmedEvidenceWithoutAnchor(ReviewPointCode.PARTY_A_NAME_CONSISTENCY));
+
+        var result = engine.review(input);
+
+        var point = result.pointResults().stream()
+                .filter(item -> item.reviewPointCode() == ReviewPointCode.PARTY_A_NAME_CONSISTENCY)
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.NOT_CONCLUDED);
+        assertThat(point.findingSeverity()).isNull();
+        assertThat(point.notConcludedReason()).isEqualTo(NotConcludedReasonCode.INTERNAL_RULE_ERROR);
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.PARTIAL);
+        assertThat(result.pointDiagnostics())
+                .extracting(PointDiagnostic::diagnosticCode)
+                .contains("SYS_EVIDENCE_BUNDLE_INVALID");
     }
 
     private Map<ReviewPointCode, PointStatus> statusByPoint(List<PointReviewResult> pointResults) {
@@ -215,7 +323,14 @@ class MinimalReviewEngineTest {
                     "HIGH",
                     "系统诊断阻断该审核点。",
                     diagnosticCode,
-                    notConcludedReason);
+                    notConcludedReason,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKey(reviewPointCode),
+                            true,
+                            true,
+                            EvidenceSlotCoverageStatus.PARTIAL,
+                            diagnosticCode,
+                            false)));
         }
 
         PointEvidence ambiguousEvidence(ReviewPointCode reviewPointCode, String summary) {
@@ -231,7 +346,109 @@ class MinimalReviewEngineTest {
                     "MEDIUM",
                     summary,
                     "SYS_EVIDENCE_AMBIGUOUS",
-                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKey(reviewPointCode),
+                            true,
+                            true,
+                            EvidenceSlotCoverageStatus.AMBIGUOUS,
+                            "SYS_EVIDENCE_AMBIGUOUS",
+                            false)));
+        }
+
+        PointEvidence lowConfidenceEvidence(
+                ReviewPointCode reviewPointCode,
+                String candidateValue,
+                String diagnosticCode) {
+            return new PointEvidence(
+                    reviewPointCode,
+                    evidenceRole(reviewPointCode),
+                    candidateValue,
+                    EvidenceStatus.AMBIGUOUS,
+                    "NATIVE_WORD",
+                    "STRUCTURED",
+                    "NORMAL",
+                    sampleId + "-" + reviewPointCode.name().toLowerCase(Locale.ROOT),
+                    "LOW",
+                    "低置信候选",
+                    diagnosticCode,
+                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKey(reviewPointCode),
+                            true,
+                            true,
+                            EvidenceSlotCoverageStatus.LOW_CONFIDENCE,
+                            diagnosticCode,
+                            true)));
+        }
+
+        PointEvidence missingEvidence(ReviewPointCode reviewPointCode) {
+            return new PointEvidence(
+                    reviewPointCode,
+                    evidenceRole(reviewPointCode),
+                    null,
+                    EvidenceStatus.MISSING,
+                    "NATIVE_WORD",
+                    "STRUCTURED",
+                    "NORMAL",
+                    null,
+                    "UNKNOWN",
+                    "未找到 required slot 候选",
+                    "SYS_INDEX_INCOMPLETE",
+                    NotConcludedReasonCode.EVIDENCE_NOT_FOUND,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKey(reviewPointCode),
+                            true,
+                            true,
+                            EvidenceSlotCoverageStatus.MISSING,
+                            "SYS_INDEX_INCOMPLETE",
+                            false)));
+        }
+
+        PointEvidence budgetTruncatedEvidence(ReviewPointCode reviewPointCode) {
+            return new PointEvidence(
+                    reviewPointCode,
+                    evidenceRole(reviewPointCode),
+                    null,
+                    EvidenceStatus.SYSTEM_FAILURE,
+                    "NATIVE_WORD",
+                    "STRUCTURED",
+                    "NORMAL",
+                    null,
+                    "HIGH",
+                    "证据因预算截断未完整保留",
+                    "SYS_EVIDENCE_BUDGET_EXCEEDED",
+                    NotConcludedReasonCode.MODEL_BUDGET_EXCEEDED,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKey(reviewPointCode),
+                            true,
+                            true,
+                            EvidenceSlotCoverageStatus.BUDGET_TRUNCATED,
+                            "SYS_EVIDENCE_BUDGET_EXCEEDED",
+                            false)));
+        }
+
+        PointEvidence confirmedEvidenceWithoutAnchor(ReviewPointCode reviewPointCode) {
+            return new PointEvidence(
+                    reviewPointCode,
+                    evidenceRole(reviewPointCode),
+                    evidenceValue(reviewPointCode),
+                    EvidenceStatus.CONFIRMED,
+                    "NATIVE_WORD",
+                    "STRUCTURED",
+                    "NORMAL",
+                    null,
+                    "HIGH",
+                    "缺少可靠锚点",
+                    null,
+                    null,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKey(reviewPointCode),
+                            true,
+                            true,
+                            EvidenceSlotCoverageStatus.PARTIAL,
+                            "SYS_EVIDENCE_BUNDLE_INVALID",
+                            false)));
         }
 
         private Map<ReviewPointCode, PointEvidence> defaultEvidence() {
@@ -251,7 +468,14 @@ class MinimalReviewEngineTest {
                                 "HIGH",
                                 "基于 expected fixture goldenExpected 生成的最小合同侧证据。",
                                 null,
-                                null));
+                                null,
+                                List.of(new EvidenceSlotCoverage(
+                                        slotKey(reviewPointCode),
+                                        true,
+                                        true,
+                                        EvidenceSlotCoverageStatus.SATISFIED,
+                                        null,
+                                        true))));
             }
             return result;
         }
@@ -282,6 +506,10 @@ class MinimalReviewEngineTest {
                 case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY -> "SETTLEMENT_PAYMENT_RATIO";
                 case WARRANTY_RETENTION_RATIO_CONSISTENCY -> "WARRANTY_RETENTION_RATIO";
             };
+        }
+
+        private String slotKey(ReviewPointCode reviewPointCode) {
+            return evidenceRole(reviewPointCode).toLowerCase(Locale.ROOT);
         }
     }
 
