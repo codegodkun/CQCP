@@ -37,9 +37,11 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-027-D` 已完成并已本地提交：`ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`；`PersistentTaskResultStore` 继续使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON，历史快照不回填、当前不需要数据库迁移。
 - `TASK-027` 主实现已完成并已本地提交：`b85f4dd feat(reviewengine): add minimal evidence slot preflight gating`。
 - 当前 `git status --short` 为空，工作区干净。
-- 当前分支状态：`master...origin/master [ahead 4]`。
-- 当前尚未 `push`；本轮只完成本地归档收口，不进入远端同步。
+- 当前分支状态：`master...origin/master`，本地 `master` 与 `origin/master` 已对齐。
+- `git rev-list --left-right --count origin/master...HEAD` 当前为 `0 0`。
+- `TASK-027` 相关 5 个本地提交已完成 `push`，当前不存在待同步提交。
 - `TASK-028` / `TASK-031` / `TASK-032` 仍未开始，继续禁止抢跑。
+- 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。建议后续优先评估 `TASK-EVAL-001`（parser-backed fixtures 的 evidence overlap evaluation），但本轮不改变架构、不创建 ADR、不创建任务文件、不进入 `TASK-028`。
 
 ## 最近完成
 
@@ -110,7 +112,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 1. 完成 `TASK-027` 归档后，重新评估 `TASK-029` / `TASK-030` 的优先级，不直接进入 `TASK-028`。
 2. 继续保持 `TASK-028` / `TASK-031` / `TASK-032` 未开始；除非用户另行授权，不得抢跑。
-3. 当前本地分支仍为 `master...origin/master [ahead 4]` 且尚未 `push`；等待审查后再决定是否追加本地提交。
+3. 建议下一步重新评估 `TASK-029` / `TASK-030` / `TASK-EVAL-001` 的优先级；当前不自动进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ## 参考路径
 
