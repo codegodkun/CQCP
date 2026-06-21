@@ -1,6 +1,6 @@
 # TASK-EVAL-001-A：SourceAnchor 行与单元格可观测性前置
 
-状态：待开始（边界已冻结，尚未进入实现）
+状态：实现与验证已完成，待用户确认提交
 
 类型：A 类质量评测前置子任务 / Codex 主控
 
@@ -195,7 +195,7 @@ TABLE_CELL:<blockId>:<rowIndex>:<cellIndex>
   * 4 正向 + 4 负向/冲突
   * `expectedRecall / actualPrecision / requiredHitRate`
   * `missingExpectedBlocks / unexpectedMatchedBlocks / attributionFailureReason`
-* 本任务未完成前不得创建或执行 B 的实现。
+* 本任务尚未提交，当前不得创建或执行 B 的实现。
 
 ## 风险
 
@@ -206,13 +206,13 @@ TABLE_CELL:<blockId>:<rowIndex>:<cellIndex>
 
 ## 待确认
 
-* 实现前待确认：稳定 cellIndex 是否已存在但未投影，还是需要 parser 产物兼容增强。
-* 实现前待确认：row/cell identity 的最小内部承载位及精确授权文件。
+* 已确认：稳定 cellIndex 来自 Apache POI `row.getTableCells()` 的零基序位；parser 需同步保留拼接文本字符范围。
+* 已确认：row/cell identity 通过 `PointEvidence / SourceAnchorSummary` 的兼容新增字段和 ADR-015 `previewElementRef` 承载。
 
 ## 完成记录
 
-* 完成日期：待实现完成后填写。
-* 变更文件：待实现完成后填写。
-* 测试结果：待实现完成后填写。
-* 遗留问题：待实现完成后填写。
-* 备注：2026-06-20 完成任务拆分建档；未进入实现。
+* 完成日期：2026-06-21。
+* 变更文件：`WordParserSpikeDocument.java`、`DocxWordParserSpike.java`、`MinimalCandidateResolver.java`、`ParserBackedReviewInputPreparer.java`、`MinimalReviewEngine.java`、`ResultComposer.java` 及授权测试、项目记忆文件。
+* 测试结果：目标 Gradle 测试矩阵通过；Compose PostgreSQL `pg_isready` 通过；`docker compose ... build api-server` 通过。
+* 遗留问题：本任务尚未 commit / push；`TASK-EVAL-001-B` 尚未启动。
+* 备注：未修改 expected JSON、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate。

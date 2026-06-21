@@ -94,6 +94,7 @@ public class DocxWordParserSpike {
                         sourceFileId,
                         null,
                         null,
+                        List.of(),
                         confidenceForParagraph(blockType, paragraphText),
                         BLOCK_LEVEL));
 
@@ -120,7 +121,10 @@ public class DocxWordParserSpike {
                         hasMergedCells = true;
                     }
 
-                    var rowText = normalizeWhitespace(String.join(" | ", cells));
+                    var rawRowText = String.join(" | ", cells);
+                    var leadingWhitespace = leadingWhitespaceLength(rawRowText);
+                    var rowText = normalizeWhitespace(rawRowText);
+                    var tableCells = tableCellSpans(cells, leadingWhitespace, rowText.length());
                     rowBlocks.add(new WordParserSpikeDocument.TableRowBlock(rowIndex, List.copyOf(cells), normalizeForSearch(rowText)));
                     if (!rowText.isBlank()) {
                         blocks.add(new WordParserSpikeDocument.DocumentBlock(
@@ -136,6 +140,7 @@ public class DocxWordParserSpike {
                                 sourceFileId,
                                 tableId,
                                 rowIndex,
+                                tableCells,
                                 HIGH,
                                 TABLE_CELL));
                     }
@@ -267,6 +272,36 @@ public class DocxWordParserSpike {
     private String extractCheckSymbol(String text) {
         var matcher = CHECK_SYMBOL.matcher(text);
         return matcher.find() ? matcher.group() : "";
+    }
+
+    private List<WordParserSpikeDocument.TableCellSpan> tableCellSpans(
+            List<String> cells,
+            int leadingWhitespace,
+            int rowTextLength) {
+        var spans = new ArrayList<WordParserSpikeDocument.TableCellSpan>();
+        var offset = 0;
+        for (var cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
+            var cellText = cells.get(cellIndex);
+            var rawStartOffset = offset;
+            var rawEndOffset = rawStartOffset + cellText.length();
+            var startOffset = Math.max(0, Math.min(rowTextLength, rawStartOffset - leadingWhitespace));
+            var endOffset = Math.max(startOffset, Math.min(rowTextLength, rawEndOffset - leadingWhitespace));
+            spans.add(new WordParserSpikeDocument.TableCellSpan(
+                    cellIndex,
+                    rowTextLength == 0 ? "" : cellText,
+                    startOffset,
+                    endOffset));
+            offset = rawEndOffset + (cellIndex + 1 < cells.size() ? " | ".length() : 0);
+        }
+        return List.copyOf(spans);
+    }
+
+    private int leadingWhitespaceLength(String text) {
+        var index = 0;
+        while (index < text.length() && Character.isWhitespace(text.charAt(index))) {
+            index++;
+        }
+        return index;
     }
 
     private String normalizeWhitespace(String text) {

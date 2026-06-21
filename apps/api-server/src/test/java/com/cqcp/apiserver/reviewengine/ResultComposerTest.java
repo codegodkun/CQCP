@@ -170,6 +170,89 @@ class ResultComposerTest {
         assertThat(snapshot.pointResults().get(1).missingOptionalSlots()).isEmpty();
     }
 
+    @Test
+    void keepsDistinctCellAnchorsFromTheSameTableRowBlock() {
+        var firstCell = new SourceAnchorSummary(
+                "block-table-row",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "单元格 1",
+                List.of("付款条款"),
+                "BODY",
+                "HIGH",
+                "BLOCK_LEVEL",
+                "table:table-1/row:2/cell:0");
+        var secondCell = new SourceAnchorSummary(
+                "block-table-row",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "单元格 2",
+                List.of("付款条款"),
+                "BODY",
+                "HIGH",
+                "BLOCK_LEVEL",
+                "table:table-1/row:2/cell:1");
+        var pointResults = List.of(
+                new PointReviewResult(
+                        ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                        PointStatus.PASS,
+                        "甲方名称一致。",
+                        null,
+                        List.of(firstCell),
+                        null,
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of()),
+                new PointReviewResult(
+                        ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
+                        PointStatus.PASS,
+                        "乙方名称一致。",
+                        null,
+                        List.of(secondCell),
+                        null,
+                        null,
+                        PointCoverageStatus.COMPLETE,
+                        null,
+                        List.of()));
+        var reviewEngineResult = new ReviewEngineResult(
+                pointResults,
+                new ReviewSummary(2, 2, 0, 0, 0, 0),
+                new ReviewCompleteness(
+                        ReviewCoverageStatus.FULL_REVIEWED,
+                        2,
+                        2,
+                        0,
+                        BigDecimal.ONE,
+                        ConfidenceLevel.HIGH),
+                new ReviewResultSnapshotDraft(
+                        "task-001",
+                        "execution-001",
+                        "sample-001",
+                        "SUCCESS",
+                        new ReviewSummary(2, 2, 0, 0, 0, 0),
+                        new ReviewCompleteness(
+                                ReviewCoverageStatus.FULL_REVIEWED,
+                                2,
+                                2,
+                                0,
+                                BigDecimal.ONE,
+                                ConfidenceLevel.HIGH),
+                        pointResults,
+                        List.of()),
+                List.of());
+
+        var snapshot = composer.compose(defaultInput(), reviewEngineResult);
+
+        assertThat(snapshot.sourceAnchors())
+                .extracting(SourceAnchorSummary::previewElementRef)
+                .containsExactly(
+                        "table:table-1/row:2/cell:0",
+                        "table:table-1/row:2/cell:1");
+    }
+
     private ResultComposerInput defaultInput() {
         return new ResultComposerInput(
                 "task-001",

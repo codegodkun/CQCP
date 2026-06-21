@@ -41,6 +41,9 @@ class TaskResultQueryControllerTest {
                 .andExpect(jsonPath("$.pointResults[0].missingOptionalSlots").isArray())
                 .andExpect(jsonPath("$.pointResults[0].missingOptionalSlots").isEmpty())
                 .andExpect(jsonPath("$.pointResults[0].sourceAnchors[0].blockId").value("block-001"))
+                .andExpect(jsonPath("$.pointResults[0].sourceAnchors[0].locationLevel").value("BLOCK_LEVEL"))
+                .andExpect(jsonPath("$.pointResults[0].sourceAnchors[0].previewElementRef")
+                        .value("table:table-1/row:0/cell:1"))
                 .andExpect(jsonPath("$.pointResults[1].pointStatus").value("NOT_CONCLUDED"))
                 .andExpect(jsonPath("$.pointResults[1].pointCoverageStatus").value("PARTIAL"))
                 .andExpect(jsonPath("$.pointResults[1].notConcludedReason").value("EVIDENCE_NOT_FOUND"))
@@ -89,7 +92,7 @@ class TaskResultQueryControllerTest {
                                 PointStatus.PASS,
                                 "甲方名称一致。",
                                 null,
-                                List.of(new SourceAnchorSummary("block-001", "NATIVE_WORD", "STRUCTURED", "NORMAL", "甲方证据")),
+                                List.of(tableCellAnchor()),
                                 null,
                                 null,
                                 PointCoverageStatus.COMPLETE,
@@ -111,7 +114,7 @@ class TaskResultQueryControllerTest {
                                         "缺少辅助证据")))),
                 List.of(),
                 List.of(),
-                List.of(new SourceAnchorSummary("block-001", "NATIVE_WORD", "STRUCTURED", "NORMAL", "甲方证据")),
+                List.of(tableCellAnchor()),
                 Map.of("contractTotalAmount", "1130"),
                 List.of(),
                 List.of(),
@@ -126,5 +129,19 @@ class TaskResultQueryControllerTest {
                 "lexicon-v1",
                 "selector-v1",
                 Instant.parse("2026-06-13T10:00:00Z"));
+    }
+
+    private SourceAnchorSummary tableCellAnchor() {
+        return new SourceAnchorSummary(
+                "block-001",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "甲方证据",
+                List.of("第一章"),
+                "BODY",
+                "HIGH",
+                "BLOCK_LEVEL",
+                "table:table-1/row:0/cell:1");
     }
 }

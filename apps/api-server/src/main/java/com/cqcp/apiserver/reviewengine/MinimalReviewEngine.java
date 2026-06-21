@@ -356,7 +356,12 @@ public class MinimalReviewEngine {
                 evidence.sourceOrigin(),
                 evidence.sourceExtractionMode(),
                 evidence.contextType(),
-                evidence.evidenceSummary()));
+                evidence.evidenceSummary(),
+                evidence.sectionPath(),
+                evidence.regionType(),
+                evidence.confidence(),
+                evidence.locationLevel(),
+                evidence.previewElementRef()));
     }
 
     private ReviewSummary summarize(List<PointReviewResult> pointResults) {
@@ -668,10 +673,49 @@ record PointEvidence(
         String evidenceSummary,
         String diagnosticCode,
         NotConcludedReasonCode notConcludedReason,
-        List<EvidenceSlotCoverage> slotCoverages) {
+        List<EvidenceSlotCoverage> slotCoverages,
+        List<String> sectionPath,
+        String regionType,
+        String locationLevel,
+        String previewElementRef) {
+
+    PointEvidence(
+            ReviewPointCode reviewPointCode,
+            String candidateRole,
+            String candidateValue,
+            EvidenceStatus status,
+            String sourceOrigin,
+            String sourceExtractionMode,
+            String contextType,
+            String blockId,
+            String confidence,
+            String evidenceSummary,
+            String diagnosticCode,
+            NotConcludedReasonCode notConcludedReason,
+            List<EvidenceSlotCoverage> slotCoverages) {
+        this(
+                reviewPointCode,
+                candidateRole,
+                candidateValue,
+                status,
+                sourceOrigin,
+                sourceExtractionMode,
+                contextType,
+                blockId,
+                confidence,
+                evidenceSummary,
+                diagnosticCode,
+                notConcludedReason,
+                slotCoverages,
+                List.of(),
+                null,
+                blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
+                null);
+    }
 
     PointEvidence {
         slotCoverages = slotCoverages == null ? List.of() : List.copyOf(slotCoverages);
+        sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
     }
 }
 
@@ -680,7 +724,38 @@ record SourceAnchorSummary(
         String sourceOrigin,
         String sourceExtractionMode,
         String contextType,
-        String evidenceSummary) {
+        String evidenceSummary,
+        List<String> sectionPath,
+        String regionType,
+        String confidence,
+        String locationLevel,
+        String previewElementRef) {
+
+    SourceAnchorSummary(
+            String blockId,
+            String sourceOrigin,
+            String sourceExtractionMode,
+            String contextType,
+            String evidenceSummary) {
+        this(
+                blockId,
+                sourceOrigin,
+                sourceExtractionMode,
+                contextType,
+                evidenceSummary,
+                List.of(),
+                null,
+                null,
+                blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
+                null);
+    }
+
+    SourceAnchorSummary {
+        sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
+        if (locationLevel == null && blockId != null && !blockId.isBlank()) {
+            locationLevel = "BLOCK_LEVEL";
+        }
+    }
 }
 
 record MissingOptionalSlot(

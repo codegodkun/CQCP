@@ -87,6 +87,37 @@ class DocxWordParserSpikeTest {
         assertThat(totalControls).isGreaterThan(0);
     }
 
+    @Test
+    void tableRowsPreserveStableCellIndexesAndJoinedTextRanges() throws IOException {
+        var expected = objectMapper.readTree(Files.readString(
+                FIXTURE_ROOT.resolve("expected").resolve("CQCP-MVP-DOCX-001.json")));
+        var parsed = parser.parse(FIXTURE_ROOT.resolve(expected.path("sourceDocx").asText()).normalize());
+        var tableRows = parsed.blocks().stream()
+                .filter(block -> block.type() == WordParserSpikeDocument.BlockType.TABLE_ROW)
+                .toList();
+
+        assertThat(tableRows).isNotEmpty();
+        assertThat(tableRows)
+                .filteredOn(block -> block.tableCells().size() > 1)
+                .isNotEmpty()
+                .allSatisfy(block -> {
+                    assertThat(block.tableId()).isNotBlank();
+                    assertThat(block.rowIndex()).isNotNull();
+                    assertThat(block.tableCells())
+                            .extracting(WordParserSpikeDocument.TableCellSpan::cellIndex)
+                            .containsExactlyElementsOf(
+                                    java.util.stream.IntStream.range(0, block.tableCells().size())
+                                            .boxed()
+                                            .toList());
+                    assertThat(block.tableCells()).allSatisfy(cell -> {
+                        assertThat(cell.startOffset()).isGreaterThanOrEqualTo(0);
+                        assertThat(cell.endOffset()).isGreaterThanOrEqualTo(cell.startOffset());
+                        assertThat(block.text().substring(cell.startOffset(), cell.endOffset()))
+                                .isEqualTo(cell.text());
+                    });
+                });
+    }
+
     private List<Path> expectedFixturePaths() throws IOException {
         try (Stream<Path> stream = Files.list(FIXTURE_ROOT.resolve("expected"))) {
             return stream

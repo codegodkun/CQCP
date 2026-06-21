@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-06-20
+更新日期：2026-06-21
 
 ## 当前结论
 
@@ -10,7 +10,7 @@
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
-- `TASK-EVAL-001-A` 已建档为当前下一前置任务；`TASK-EVAL-001-B` 依赖 A 完成后再启动
+- `TASK-EVAL-001-A` 最小实现与验证已完成，等待用户确认提交；`TASK-EVAL-001-B` 尚未启动
 - `TASK-028` 必须等待 `TASK-EVAL-001` 最低评测基线完成后再进入
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，不在本轮实现
@@ -34,8 +34,8 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | NEEDS-SPLIT | 父任务原 DoD 不降级；拆为 A 可观测性前置与 B overlap baseline |
-| `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已建档 / 待实现 | 当前下一任务；补齐真实 row/cell anchor 在 reviewengine 结果链路的可观测性 |
-| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 未启动 / 依赖 A | 暂不创建实现文件；负责 expected anchor、evaluator、4 正 + 4 负及完整指标 |
+| `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已实现 / 待提交 | 已补齐真实 row/cell anchor 在 reviewengine 结果链路的可观测性，等待用户确认提交 |
+| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 未启动 / 等待 A 提交确认 | 暂不创建实现文件；负责 expected anchor、evaluator、4 正 + 4 负及完整指标 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 未开始 / 等待评测基线 | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-EVAL-001` 最低评测基线完成 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
@@ -126,6 +126,12 @@
   - 不修改 expected JSON / DOCX fixture
   - 不通过 candidateValue 搜索 cells 伪造 cell anchor
   - 不改变业务 Finding、EvidenceSlot admission 或 CandidateResolver gate
+- 完成结果：
+  - parser 保留真实 `tableId + rowIndex` 与每个 cell 的稳定 `cellIndex + joined-text range`
+  - 单 cell 命中输出 cell `previewElementRef`
+  - 跨 cell 或无法唯一映射的命中降级为 row `previewElementRef`
+  - 旧 block-only snapshot 兼容读取并规范化为 `BLOCK_LEVEL`
+  - ResultComposer 以 `blockId + previewElementRef` 去重，不吞并同一 row 的不同 cell anchor
 
 ### `TASK-EVAL-001-B`
 
@@ -168,8 +174,8 @@
 
 ## 当前建议顺序
 
-1. 执行 `TASK-EVAL-001-A`，先补齐 SourceAnchor row/cell observability
-2. A 完成并经 Codex 验收后执行 `TASK-EVAL-001-B`
+1. 等待用户确认提交 `TASK-EVAL-001-A`
+2. A 提交确认后再冻结并执行 `TASK-EVAL-001-B`
 3. `TASK-028` 等待 B 完成父任务最低评测基线后再进入
 4. `TASK-029` / `TASK-030` 的后续排序在评测基线完成后重新确认
 5. 不进入 `TASK-031` / `TASK-032`

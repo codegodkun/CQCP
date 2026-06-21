@@ -25,8 +25,13 @@ public record WordParserSpikeDocument(
             String sourceFileId,
             String tableId,
             Integer rowIndex,
+            List<TableCellSpan> tableCells,
             ConfidenceLevel blockConfidence,
             PreviewAnchorLevel previewAnchorLevel) {
+
+        public DocumentBlock {
+            tableCells = tableCells == null ? List.of() : List.copyOf(tableCells);
+        }
     }
 
     public record TableBlock(
@@ -42,6 +47,13 @@ public record WordParserSpikeDocument(
     }
 
     public record TableRowBlock(int rowIndex, List<String> cells, String normalizedText) {
+    }
+
+    public record TableCellSpan(
+            int cellIndex,
+            String text,
+            int startOffset,
+            int endOffset) {
     }
 
     public record FormControlBlock(

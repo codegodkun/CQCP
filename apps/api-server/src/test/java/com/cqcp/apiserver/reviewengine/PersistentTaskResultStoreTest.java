@@ -71,6 +71,10 @@ class PersistentTaskResultStoreTest {
         assertThat(result.orElseThrow().pointResults().getFirst().notConcludedDetail())
                 .isEqualTo("INDEX_MISSING");
         assertThat(result.orElseThrow().pointResults().getFirst().missingOptionalSlots()).hasSize(1);
+        assertThat(result.orElseThrow().pointResults().getFirst().sourceAnchors().getFirst().locationLevel())
+                .isEqualTo("BLOCK_LEVEL");
+        assertThat(result.orElseThrow().pointResults().getFirst().sourceAnchors().getFirst().previewElementRef())
+                .isEqualTo("table:table-1/row:0/cell:1");
     }
 
     private ReviewResultSnapshot snapshot() {
@@ -177,7 +181,7 @@ class PersistentTaskResultStoreTest {
                         {"reviewCoverageStatus":"FULL_REVIEWED","executablePointCount":1,"concludedPointCount":1,"notConcludedPointCount":0,"concludedCoverageRate":1,"confidenceLevel":"HIGH","futureCoverageDetail":"ignored"}
                         """.trim()),
                 Map.entry("point_results_json", """
-                        [{"reviewPointCode":"PARTY_A_NAME_CONSISTENCY","pointStatus":"PASS","businessMessage":"甲方名称一致。","findingSeverity":null,"sourceAnchors":[{"blockId":"block-001","sourceOrigin":"NATIVE_WORD","sourceExtractionMode":"STRUCTURED","contextType":"NORMAL","evidenceSummary":"甲方证据","locationLevel":"BLOCK_LEVEL","sectionPath":["第一章"],"previewPage":1}],"notConcludedReason":null,"skippedReason":null,"notConcludedDetail":"INDEX_MISSING","missingOptionalSlots":[{"slotName":"secondaryEvidence","cause":"NOT_FOUND"}]}]
+                        [{"reviewPointCode":"PARTY_A_NAME_CONSISTENCY","pointStatus":"PASS","businessMessage":"甲方名称一致。","findingSeverity":null,"sourceAnchors":[{"blockId":"block-001","sourceOrigin":"NATIVE_WORD","sourceExtractionMode":"STRUCTURED","contextType":"NORMAL","evidenceSummary":"甲方证据","locationLevel":"BLOCK_LEVEL","sectionPath":["第一章"],"previewElementRef":"table:table-1/row:0/cell:1","previewPage":1}],"notConcludedReason":null,"skippedReason":null,"notConcludedDetail":"INDEX_MISSING","missingOptionalSlots":[{"slotName":"secondaryEvidence","cause":"NOT_FOUND"}]}]
                         """.trim()),
                 Map.entry("findings_json", "[]"),
                 Map.entry("diagnostics_json", "[]"),

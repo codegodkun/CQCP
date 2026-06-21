@@ -1,6 +1,6 @@
 # TASK-EVAL-001：Parser-backed 证据重合度评测基线
 
-状态：NEEDS-SPLIT（Review Intake 已完成；等待 `TASK-EVAL-001-A` 前置任务）
+状态：NEEDS-SPLIT（`TASK-EVAL-001-A` 已实现并验证、待提交；`TASK-EVAL-001-B` 未启动）
 
 类型：A 类质量评测父任务 / Codex 主控
 
@@ -309,8 +309,8 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## Next Task Handoff
 
-* 下一执行任务是 `TASK-EVAL-001-A`：`tasks/active/TASK-EVAL-001-A-source-anchor-row-cell-observability.md`。
-* `TASK-EVAL-001-B` 依赖 `TASK-EVAL-001-A` 完成并经 Codex 验收后再启动。
+* `TASK-EVAL-001-A` 已完成最小实现与验证，当前等待用户确认提交。
+* `TASK-EVAL-001-B` 依赖 `TASK-EVAL-001-A` 提交并经用户确认后再启动。
 * `TASK-EVAL-001-A` 与 `TASK-EVAL-001-B` 均不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
 * 本任务及两个子阶段默认均不派发 Claude Code / DeepSeek。
 
@@ -323,8 +323,8 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## 待确认
 
-* 待 `TASK-EVAL-001-A` 实现阶段确认：现有 parser 信息能否在不改变 ADR-015 语义的前提下稳定表达 cell anchor。
-* 若只能稳定表达 block + table row，必须回交 Codex 重新判断 cell DoD，不得在 `TASK-EVAL-001-A` 内自行降级父任务。
+* 已确认：现有 parser 可在不改变 ADR-015 语义的前提下，通过真实 cell ordinal 与 joined-text range 稳定表达 cell anchor。
+* 已确认：跨 cell 或无法唯一映射的 matcher 命中降级为 row anchor，不降低父任务 cell DoD。
 
 ## 完成记录
 
@@ -332,4 +332,4 @@ SOURCE_ANCHOR_UNAVAILABLE
 * 变更文件：待实现完成后填写。
 * 测试结果：待实现完成后填写。
 * 遗留问题：待实现完成后填写。
-* 备注：2026-06-20 已完成父任务建档及 Review Intake；结论为 `NEEDS-SPLIT`，未进入实现。
+* 备注：2026-06-21 `TASK-EVAL-001-A` 已完成实现与验证但尚未提交；父任务仍为 `NEEDS-SPLIT`，B 未启动。

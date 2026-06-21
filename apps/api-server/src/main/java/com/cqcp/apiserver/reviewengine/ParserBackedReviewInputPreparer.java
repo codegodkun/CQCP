@@ -207,12 +207,11 @@ final class ParserBackedReviewInputPreparer {
                 }
                 var value = cleanPartyValue(matchedValue);
                 if (!value.isBlank()) {
-                    candidates.add(new EvidenceCandidate(
+                    candidates.add(candidateForBlock(
                             reviewPointCode,
                             candidateRole,
                             value,
-                            block.blockId(),
-                            block.text(),
+                            block,
                             true,
                             true,
                             true));
@@ -320,15 +319,16 @@ final class ParserBackedReviewInputPreparer {
                 if (!isExpectedRatioValue(reviewPointCode, candidateValue, text)) {
                     continue;
                 }
-                result.add(new EvidenceCandidate(
+                result.add(candidateForMatch(
                         reviewPointCode,
                         candidateRole,
                         candidateValue,
-                        block.blockId(),
-                        block.text(),
+                        block,
                         true,
                         true,
-                        true));
+                        true,
+                        matcher.start(),
+                        matcher.end()));
             }
         }
         return List.copyOf(result);
@@ -394,15 +394,16 @@ final class ParserBackedReviewInputPreparer {
                     if (candidateValue == null || candidateValue.isBlank()) {
                         continue;
                     }
-                    result.add(new EvidenceCandidate(
+                    result.add(candidateForMatch(
                             reviewPointCode,
                             candidateRole,
                             candidateValue,
-                            block.blockId(),
-                            block.text(),
+                            block,
                             roleLabelSignal,
                             true,
-                            roleLabelSignal));
+                            roleLabelSignal,
+                            matcher.start(),
+                            matcher.end()));
                 }
             }
         }
@@ -433,12 +434,11 @@ final class ParserBackedReviewInputPreparer {
                     continue;
                 }
                 var matchedBlock = block.orElseThrow();
-                result.add(new EvidenceCandidate(
+                result.add(candidateForBlock(
                         reviewPointCode,
                         candidateRole,
                         candidateValue,
-                        matchedBlock.blockId(),
-                        matchedBlock.text(),
+                        matchedBlock,
                         true,
                         true,
                         true));
@@ -472,12 +472,11 @@ final class ParserBackedReviewInputPreparer {
             return List.of();
         }
 
-        return List.of(new EvidenceCandidate(
+        return List.of(candidateForBlock(
                 reviewPointCode,
                 candidateRole,
                 selectedValue,
-                selectedBlock.orElseThrow().blockId(),
-                selectedBlock.orElseThrow().text(),
+                selectedBlock.orElseThrow(),
                 true,
                 true,
                 true));
@@ -506,12 +505,11 @@ final class ParserBackedReviewInputPreparer {
                 continue;
             }
 
-            return List.of(new EvidenceCandidate(
+            return List.of(candidateForBlock(
                     reviewPointCode,
                     candidateRole,
                     selectedValue,
-                    block.blockId(),
-                    block.text(),
+                    block,
                     true,
                     true,
                     false));
@@ -538,12 +536,11 @@ final class ParserBackedReviewInputPreparer {
                 continue;
             }
 
-            return List.of(new EvidenceCandidate(
+            return List.of(candidateForBlock(
                     reviewPointCode,
                     candidateRole,
                     selectedValue,
-                    block.blockId(),
-                    block.text(),
+                    block,
                     false,
                     true,
                     false));
@@ -642,7 +639,11 @@ final class ParserBackedReviewInputPreparer {
                         candidate.blockId() == null || candidate.blockId().isBlank()
                                 ? "SYS_EVIDENCE_BUNDLE_INVALID"
                                 : null,
-                        candidate.blockId() != null && !candidate.blockId().isBlank())));
+                        candidate.blockId() != null && !candidate.blockId().isBlank())),
+                candidate.sectionPath(),
+                candidate.regionType(),
+                candidate.blockId() == null || candidate.blockId().isBlank() ? null : "BLOCK_LEVEL",
+                candidate.previewElementRef());
     }
 
     private PointEvidence unresolvedEvidence(
@@ -654,6 +655,7 @@ final class ParserBackedReviewInputPreparer {
                 ? EvidenceStatus.MISSING
                 : EvidenceStatus.AMBIGUOUS;
         var blockId = resolution.selectedCandidate().map(EvidenceCandidate::blockId).orElse(null);
+        var selectedCandidate = resolution.selectedCandidate().orElse(null);
         return new PointEvidence(
                 reviewPointCode,
                 candidateRole,
@@ -667,7 +669,74 @@ final class ParserBackedReviewInputPreparer {
                 buildUnresolvedSummary(resolution.confidenceLevel(), resolution.selectedCandidate(), candidates),
                 resolution.diagnosticCode(),
                 resolution.notConcludedReason(),
-                List.of(unresolvedSlotCoverage(reviewPointCode, resolution, blockId)));
+                List.of(unresolvedSlotCoverage(reviewPointCode, resolution, blockId)),
+                selectedCandidate == null ? List.of() : selectedCandidate.sectionPath(),
+                selectedCandidate == null ? null : selectedCandidate.regionType(),
+                blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
+                selectedCandidate == null ? null : selectedCandidate.previewElementRef());
+    }
+
+    private EvidenceCandidate candidateForBlock(
+            ReviewPointCode reviewPointCode,
+            String candidateRole,
+            String candidateValue,
+            WordParserSpikeDocument.DocumentBlock block,
+            boolean roleLabelSignal,
+            boolean valueFormatSignal,
+            boolean blockAttributionSignal) {
+        return candidateForMatch(
+                reviewPointCode,
+                candidateRole,
+                candidateValue,
+                block,
+                roleLabelSignal,
+                valueFormatSignal,
+                blockAttributionSignal,
+                -1,
+                -1);
+    }
+
+    private EvidenceCandidate candidateForMatch(
+            ReviewPointCode reviewPointCode,
+            String candidateRole,
+            String candidateValue,
+            WordParserSpikeDocument.DocumentBlock block,
+            boolean roleLabelSignal,
+            boolean valueFormatSignal,
+            boolean blockAttributionSignal,
+            int matchStart,
+            int matchEnd) {
+        Integer cellIndex = null;
+        if (matchStart >= 0 && matchEnd >= matchStart) {
+            cellIndex = block.tableCells().stream()
+                    .filter(cell -> matchStart >= cell.startOffset() && matchEnd <= cell.endOffset())
+                    .map(WordParserSpikeDocument.TableCellSpan::cellIndex)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return new EvidenceCandidate(
+                reviewPointCode,
+                candidateRole,
+                candidateValue,
+                block.blockId(),
+                block.text(),
+                roleLabelSignal,
+                valueFormatSignal,
+                blockAttributionSignal,
+                block.sectionPath(),
+                block.regionType().name(),
+                block.tableId(),
+                block.rowIndex(),
+                cellIndex,
+                previewElementRef(block.tableId(), block.rowIndex(), cellIndex));
+    }
+
+    private String previewElementRef(String tableId, Integer rowIndex, Integer cellIndex) {
+        if (tableId == null || tableId.isBlank() || rowIndex == null) {
+            return null;
+        }
+        var rowRef = "table:" + tableId + "/row:" + rowIndex;
+        return cellIndex == null ? rowRef : rowRef + "/cell:" + cellIndex;
     }
 
     private EvidenceSlotCoverage unresolvedSlotCoverage(

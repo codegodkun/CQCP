@@ -41,6 +41,32 @@ class ParserBackedReviewInputPreparerEvidenceTest {
     }
 
     @Test
+    void parserBackedEvidenceExposesRealTableCellAnchorWithoutValueBasedCellLookup() {
+        var fixtureCase = loadFixtureCase(FIXTURE_ROOT.resolve("expected").resolve("CQCP-MVP-DOCX-001.json"));
+        var reviewInput = buildReviewInput(
+                new ParserBackedReviewInputPreparer(new TableAnchorContractParser()),
+                fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
+        assertThat(evidence.locationLevel()).isEqualTo("BLOCK_LEVEL");
+        assertThat(evidence.previewElementRef()).isEqualTo("table:table-1/row:1/cell:1");
+    }
+
+    @Test
+    void parserBackedEvidenceDowngradesCrossCellMatchToTableRowAnchor() {
+        var fixtureCase = loadFixtureCase(FIXTURE_ROOT.resolve("expected").resolve("CQCP-MVP-DOCX-001.json"));
+        var reviewInput = buildReviewInput(
+                new ParserBackedReviewInputPreparer(new TableAnchorContractParser()),
+                fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
+        assertThat(evidence.locationLevel()).isEqualTo("BLOCK_LEVEL");
+        assertThat(evidence.previewElementRef()).isEqualTo("table:table-1/row:0");
+    }
+
+    @Test
     void negativeFixturesStillBindEvidenceToGoldenDocumentValues() throws IOException {
         for (NegativeFixtureCase negativeCase : loadNegativeFixtureCases()) {
             var reviewInput = buildReviewInput(negativeCase);
@@ -270,12 +296,16 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         return result;
     }
 
-    private FixtureCase loadFixtureCase(Path path) throws IOException {
-        var root = objectMapper.readTree(Files.readString(path));
-        return new FixtureCase(
-                root.path("sampleId").asText(),
-                FIXTURE_ROOT.resolve(root.path("sourceDocx").asText()).normalize(),
-                readStructuredFields(root.at("/goldenExpected/structuredFields")));
+    private FixtureCase loadFixtureCase(Path path) {
+        try {
+            var root = objectMapper.readTree(Files.readString(path));
+            return new FixtureCase(
+                    root.path("sampleId").asText(),
+                    FIXTURE_ROOT.resolve(root.path("sourceDocx").asText()).normalize(),
+                    readStructuredFields(root.at("/goldenExpected/structuredFields")));
+        } catch (IOException exception) {
+            throw new IllegalStateException("Failed to load fixture: " + path, exception);
+        }
     }
 
     private StructuredFieldSet readStructuredFields(JsonNode node) {
@@ -340,6 +370,68 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                             0,
                             0,
                             List.of("EMPTY")));
+        }
+    }
+
+    private static final class TableAnchorContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            var amountText = "合同固定总价 | 100元";
+            var progressText = "进度款 | 形象进度产值的70%";
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata("table", "table.docx"),
+                    List.of(
+                            tableRowBlock("block-1", amountText, 0, "合同固定总价", "100元"),
+                            tableRowBlock("block-2", progressText, 1, "进度款", "形象进度产值的70%")),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX",
+                            "test",
+                            "zh-CN",
+                            amountText.length() + progressText.length(),
+                            2,
+                            0,
+                            1,
+                            0,
+                            0,
+                            false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH",
+                            0,
+                            0,
+                            0,
+                            List.of()));
+        }
+
+        private com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock tableRowBlock(
+                String blockId,
+                String text,
+                int rowIndex,
+                String firstCell,
+                String secondCell) {
+            var secondCellStart = firstCell.length() + " | ".length();
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    blockId,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.TABLE_ROW,
+                    text,
+                    text,
+                    List.of("付款条款"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "table.docx",
+                    "table-1",
+                    rowIndex,
+                    List.of(
+                            new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.TableCellSpan(
+                                    0, firstCell, 0, firstCell.length()),
+                            new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.TableCellSpan(
+                                    1, secondCell, secondCellStart, text.length())),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
         }
     }
 }

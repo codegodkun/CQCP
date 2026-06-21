@@ -72,7 +72,8 @@ public final class ResultComposer {
         var anchors = new LinkedHashMap<String, SourceAnchorSummary>();
         for (PointReviewResult pointResult : pointResults) {
             for (SourceAnchorSummary anchor : pointResult.sourceAnchors()) {
-                anchors.putIfAbsent(anchor.blockId(), anchor);
+                var anchorKey = anchor.blockId() + "|" + Objects.toString(anchor.previewElementRef(), "");
+                anchors.putIfAbsent(anchorKey, anchor);
             }
         }
         return List.copyOf(anchors.values());

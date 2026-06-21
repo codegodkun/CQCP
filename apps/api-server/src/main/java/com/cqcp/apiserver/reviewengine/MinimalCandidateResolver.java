@@ -133,7 +133,43 @@ record EvidenceCandidate(
         String blockText,
         boolean roleLabelSignal,
         boolean valueFormatSignal,
-        boolean blockAttributionSignal) {
+        boolean blockAttributionSignal,
+        List<String> sectionPath,
+        String regionType,
+        String tableId,
+        Integer rowIndex,
+        Integer cellIndex,
+        String previewElementRef) {
+
+    EvidenceCandidate(
+            ReviewPointCode reviewPointCode,
+            String candidateRole,
+            String candidateValue,
+            String blockId,
+            String blockText,
+            boolean roleLabelSignal,
+            boolean valueFormatSignal,
+            boolean blockAttributionSignal) {
+        this(
+                reviewPointCode,
+                candidateRole,
+                candidateValue,
+                blockId,
+                blockText,
+                roleLabelSignal,
+                valueFormatSignal,
+                blockAttributionSignal,
+                List.of(),
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    EvidenceCandidate {
+        sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
+    }
 }
 
 record CandidateResolutionResult(
