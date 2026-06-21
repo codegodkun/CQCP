@@ -82,6 +82,21 @@
 
 不得默认全量读取项目文档。
 
+## 角色分离与证据门禁
+
+* Codex 负责父任务边界、冻结 `TASK_SPEC`、实现报告与 `git diff` 审查、Review Intake Decision 和提交前判断。
+* 在角色分离试点中，Codex 可以编写 `TASK_SPEC` 和审查实现，但不得直接编写业务代码后再自行宣布通过。
+* Claude Code / DeepSeek 只能执行 Codex 已冻结且关联现有父 `TASK` 的局部 `TASK_SPEC`，不得直接承接父 `TASK`，不得 commit，不得 push。
+* Claude Code / DeepSeek 执行代码修改前，必须先提交“编码前规格映射计划”，说明验收断言理解、关键字段或信号的真实输入计算方式、明确不修改路径、范围外风险和预计测试；经 Codex 审查放行后才能实现。
+* 独立 agent 只做只读事实核查，不得实现、修复代码或编写业务逻辑。
+* 每个父任务归档前必须经过独立 agent 只读审计；没有独立审计和 Codex 单独 Review Intake Decision，不得归档。
+* `TASK_SPEC` 的验收断言必须可证伪，不得只写“完成优化”“修复问题”等描述性目标。
+* 同根因分批修复时，后续 `TASK_SPEC` 必须对照前一批修复原则，明确一致点、差异点及差异理由，并由 Codex 审查接受或拒绝。
+* 评测、fixture、expected JSON 必须说明 expected 值的来源、是否依赖被测系统输出、是否存在循环验证；如依赖被测系统输出，只能声明一致性，不得声明独立正确性。
+* 不得使用 `CURRENT_CONTEXT.md` 自述替代真实代码、测试、原始 console 输出和 commit 证据；无法核验的完成声明必须标记为“待确认”。
+* 人工合同 anchor 标准答案必须独立于 parser 输出形成，AI agent 不得替代人工定义标准答案。
+* 详细治理依据见 `docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md` 和 `tasks/active/TASK-GOV-003-five-class-remediation-and-role-gates.md`。
+
 ## 任务模板选择规则
 
 * Codex 创建任务前，必须先判断任务类型与边界是否已经冻结。

@@ -27,26 +27,31 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 保持 `TASK-028` / `TASK-031` / `TASK-032` 的边界，不提前吞并
 - `TASK-EVAL-001` 已完成实现前 Review Intake，结论为 `NEEDS-SPLIT`；父任务原 DoD 不降级，不直接进入完整实现
 - `TASK-EVAL-001-A` 已完成并 push，提交为 `4bac2f4`
-- `TASK-EVAL-001-B` 最小实现与验证已完成，当前等待用户确认提交
-- `TASK-028` 必须等待 `TASK-EVAL-001` 完成 block / table-row / cell level 最低评测基线后再进入
+- 已确认《CQCP 五类问题整改计划 v3：角色分工与执行门禁补强版》需要正式入仓并纳入任务治理
+- 当前 active governance task 为 `TASK-GOV-003`，文件为 `tasks/active/TASK-GOV-003-five-class-remediation-and-role-gates.md`
+- `TASK-EVAL-001-B` 暂停提交，等待 v3 计划规定的记录、expected 来源核查和独立 agent 只读审计
+- `TASK-EVAL-001` 暂停归档，等待 `TASK-GOV-003` 治理门禁与父任务归档前独立审计
+- `TASK-028` / `TASK-031` / `TASK-032` 仍禁止进入；后续必须按 v3 计划的角色分工执行
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 
 ## 活跃任务
 
-- 当前 active 父任务：`TASK-EVAL-001`，文件为 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；A/B 实现与验证均已完成，当前待提交 B 与父任务收口。
+- 当前 active governance task：`TASK-GOV-003`，负责五类问题整改记录、角色分离、证据门禁和父任务归档前独立审计；本任务不进入业务实现。
+- `TASK-EVAL-001` 仍为 active 父任务，但暂停 B 提交和父任务归档。
 - `TASK-EVAL-001-A` 已完成并 push：`4bac2f4 feat(reviewengine): expose table row and cell source anchors`。
-- `TASK-EVAL-001-B` 已完成 test-only overlap evaluator、四份 expected anchor 标注、4 正向与至少 4 个负向/冲突 case；尚未 commit / push。
+- `TASK-EVAL-001-B` 已形成 test-only overlap evaluator、四份 expected anchor 标注、4 正向与至少 4 个负向/冲突 case；现有结果属于待独立核验事实，当前不得 commit / push。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
 - `TASK-027` 已完成最小主实现落地；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
 - `TASK-027` 本轮完成范围仅限 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；未扩大到完整 `EvidenceBundle` 平台化实现。
 - `TASK-027-C` 已完成并已本地提交：`8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
 - `TASK-027-D` 已完成并已本地提交：`ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`；`PersistentTaskResultStore` 继续使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON，历史快照不回填、当前不需要数据库迁移。
 - `TASK-027` 主实现已完成并已本地提交：`b85f4dd feat(reviewengine): add minimal evidence slot preflight gating`。
-- 当前工作区包含 `TASK-EVAL-001-B` 未提交 expected fixture、test-only evaluator、基线测试与 Memory Writeback 变更。
+- `TASK-GOV-003` 启动前只读检查确认工作区干净，`master` 与 `origin/master` 为 `0 0`；本轮只允许治理文档变更。
 - 当前分支状态：`master...origin/master`，本地 `master` 与 `origin/master` 已对齐。
 - `git rev-list --left-right --count origin/master...HEAD` 当前为 `0 0`。
 - `TASK-027` 相关 5 个本地提交已完成 `push`，当前不存在待同步提交。
 - `TASK-028` / `TASK-031` / `TASK-032` 仍未开始，继续禁止抢跑。
+- 在 `TASK-GOV-003` 完成前，不得派发 Claude Code / DeepSeek 实现任务，不得把 `CURRENT_CONTEXT.md` 当作完成凭证，不得 push。
 - 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。基于该结论，`TASK-EVAL-001` 已正式建档为当前下一任务；本轮未进入实现、未创建 ADR、未进入 `TASK-028`。
 
 ## 最近完成
@@ -101,6 +106,10 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 ## 当前阻塞项
 
+- `TASK-GOV-003` 完成前，`TASK-EVAL-001-B` 提交、`TASK-EVAL-001` 归档和 `TASK-028` Review Intake 均被治理门禁阻塞。
+- `CURRENT_CONTEXT.md` 的既有完成声明尚需独立 agent 逐条认领审计；本文件只能作为待核验线索，不能作为完成凭证。
+- `TASK-EVAL-001-B` expected anchor 来源和循环验证边界尚需独立 agent 核查；现有 1.0 / 1.0 / 1 不能单独证明 anchor 客观正确。
+- `TABLE_CELL` 真实 `.docx` 端到端覆盖仍是覆盖盲区，不得写成已确认代码 bug。
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
 - `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
 - `TASK-027-A` 回收结论已确认：外部 Result API 真实实现为 `GET /api/v1/tasks/{taskId}/result`，`packages/api-contracts/openapi.yaml` 与真实实现和 DTO 已分叉；`PointStatus` 五值稳定、`notConcludedReason` 六值稳定，但 `notConcludedDetail`、`missingOptionalSlots[]`、正式化 `sourceAnchors` 尚未形成真实对外承载位，因此 OpenAPI 契约对齐 / 文档更新任务阻断 `TASK-027` 直接进入实现
@@ -132,9 +141,10 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. 等待用户审查并确认是否提交 / push `TASK-EVAL-001-B` 与父任务收口变更。
-2. 提交前不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
-3. `TASK-EVAL-001` 提交收口后，重新确认 `TASK-028`、`TASK-029`、`TASK-030` 的后续顺序。
+1. 保持 `TASK-GOV-003` Active，由用户后续调度独立 agent 对治理 diff 执行只读审计。
+2. 在独立审计和 Codex Review Intake Decision 完成前，不提交 `TASK-EVAL-001-B`，不归档 `TASK-EVAL-001`。
+3. 不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。
+4. 后续整改、TASK_SPEC、实现审查和父任务归档必须按 v3 计划角色分工执行。
 
 ## 参考路径
 
@@ -154,3 +164,5 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md`
 - `tasks/TEMPLATE_ROUTER.md`
 - `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`
+- `docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
+- `tasks/active/TASK-GOV-003-five-class-remediation-and-role-gates.md`
