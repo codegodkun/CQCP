@@ -1,6 +1,6 @@
 # TASK-GOV-003：五类问题整改与角色执行门禁
 
-状态：Active（治理规则已入仓，后续整改与审计尚未完成）
+状态：Done（已完成、已审计、已 push、远程同步确认）
 
 类型：治理父任务 / Codex 主控
 
@@ -83,7 +83,7 @@
 
 | 工作 | 主执行者 | 审查者 | 可改代码 | 可 commit | 可 push |
 |---|---|---|---|---|---|
-| 治理任务与模板固化 | Codex | 用户 / 外部审查；归档前独立 agent | 否 | 本次用户已授权治理提交 | 否 |
+| 治理任务与模板固化 | Codex | 用户 / 外部审查；归档前独立 agent | 否 | 本次用户已授权治理提交 | 用户单独授权后已 push |
 | `CURRENT_CONTEXT.md` 逐条认领审计 | 独立 agent | 外部审查 / Codex intake | 否 | 否 | 否 |
 | 局部修复 TASK_SPEC 起草 | Codex | 用户 / 外部审查 | 否 | 否 | 否 |
 | 冻结 TASK_SPEC 实现 | Claude Code / DeepSeek | Codex + 独立 agent 抽查 | 仅授权文件 | 否 | 否 |
@@ -114,18 +114,18 @@
 
 ## DoD
 
-- [ ] v3 计划全文已保存到 `docs/governance/`；除为通过 `git diff --check` 移除 Markdown 行尾空格外，规范化文本与外部原文一致。
-- [ ] 本 active governance task 已建立，并明确五类问题、角色、执行者矩阵和硬门禁。
-- [ ] `tasks/MVP_TASK_MAP.md` 已登记本任务是 `TASK-EVAL-001` 归档和 `TASK-028` Review Intake 的前置治理任务。
-- [ ] `CURRENT_CONTEXT.md` 已记录当前暂停状态，且未把未来整改写成已完成。
-- [ ] `AGENTS.md` 已固化角色分离、证据和父任务归档前独立审计规则。
-- [ ] execution TASK_SPEC 模板已要求编码前规格映射、可证伪断言、同根因一致性和 expected 来源披露。
-- [ ] readonly-review 模板已要求核查角色分离、完成声明证据、循环验证和父任务归档 GO / NO-GO。
-- [ ] `changelog/2026-06.md` 已记录本治理任务及本次不做范围。
-- [ ] 本次 diff 只包含用户授权的文档文件，未修改生产代码、测试、fixture、OpenAPI、迁移、Docker / Compose、PRD、ARCHITECTURE 或 ADR。
-- [ ] `git diff --check` 无 whitespace error。
-- [ ] 本治理变更已独立提交，且未 push。
-- [ ] `TASK-GOV-003` 归档前已由独立 agent 完成只读审计并形成可复核报告。
+- [x] v3 计划全文已保存到 `docs/governance/`；除为通过 `git diff --check` 移除 Markdown 行尾空格外，规范化文本与外部原文一致。
+- [x] 本 governance task 已建立，并明确五类问题、角色、执行者矩阵和硬门禁。
+- [x] `tasks/MVP_TASK_MAP.md` 已登记本任务是 `TASK-EVAL-001` 归档和 `TASK-028` Review Intake 的前置治理任务。
+- [x] `CURRENT_CONTEXT.md` 已记录当前暂停状态，且未把未来整改写成已完成。
+- [x] `AGENTS.md` 已固化角色分离、证据和父任务归档前独立审计规则。
+- [x] execution TASK_SPEC 模板已要求编码前规格映射、可证伪断言、同根因一致性和 expected 来源披露。
+- [x] readonly-review 模板已要求核查角色分离、完成声明证据、循环验证和父任务归档 GO / NO-GO。
+- [x] `changelog/2026-06.md` 已记录本治理任务及本次不做范围。
+- [x] 本次 diff 只包含用户授权的文档文件，未修改生产代码、测试、fixture、OpenAPI、迁移、Docker / Compose、PRD、ARCHITECTURE 或 ADR。
+- [x] `git diff --check` 无 whitespace error。
+- [x] 本治理变更已独立提交为 `515196e20cec7b365fa2c2e843eb9f35b342c28d`，并在用户单独授权后 push。
+- [x] `TASK-GOV-003` 归档前已由独立 agent 完成只读审计并形成可复核报告；Codex Review Intake Decision 为 `GO`。
 
 ## 不做范围
 
@@ -202,4 +202,15 @@ git log --oneline -5
 
 ## Next Task Handoff
 
-本任务提交后仍保持 Active。下一步不是业务实现，而是由用户另行授权并调度独立 agent 对本次治理 diff 执行只读审计；在审计和 Review Intake Decision 完成前，不派发任何实现任务。
+本任务已完成并归档。下一步不是开发，也不是提交 `TASK-EVAL-001-B`，而是回到 v3 计划执行顺序，先做一次只读 Review Intake，确认下一事项的目标、依赖、执行者和禁止边界。Review Intake 完成前，不派发任何实现任务。
+
+## 完成记录
+
+- 完成日期：2026-06-21。
+- 治理提交：`515196e20cec7b365fa2c2e843eb9f35b342c28d`。
+- 独立审计：已完成；8 个授权 Markdown 文件、必需章节、八项硬门禁、角色分离和证据规则均通过核查。
+- 原文完整性：外部原文与仓库 v3 文件原始差异仅为 9 行 Markdown 行尾空格；规范化 SHA-256 均为 `7366b80e6befedf18f8f653d961e2a4476402caa29110034802f8cb74fa6fe6a`。
+- Review Intake Decision：`GO`，无必须修复项。
+- Push：已由用户单独授权并完成。
+- 远程同步：`git status --short` 为空，`master...origin/master`，`origin/master...HEAD` 为 `0 0`，远端最新提交为 `515196e`。
+- 边界：本任务收口不等于 `TASK-EVAL-001-B` 可提交，不等于 `TASK-EVAL-001` 可归档，也不解除 `TASK-028` / `TASK-031` / `TASK-032` 门禁。

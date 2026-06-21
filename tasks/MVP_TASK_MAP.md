@@ -9,12 +9,12 @@
 - `TASK-026`：最小 `CandidateResolver` / 置信度分级 / evidence admission 闸门已完成并归档
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
-- `TASK-GOV-003` 已建立为 active governance task，负责五类问题整改、角色分离和后续硬门禁
+- `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
 - `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
-- `TASK-EVAL-001-B` 暂停提交，等待 `TASK-GOV-003` 规定的记录、审计和 expected 来源门禁完成
-- `TASK-EVAL-001` 暂停归档；`TASK-GOV-003` 是其父任务归档前置治理任务
-- `TASK-028` Review Intake 必须等待 `TASK-GOV-003` 与 `TASK-EVAL-001` 收口后再进入
+- `TASK-EVAL-001-B` 仍暂停提交；`TASK-GOV-003` 收口不等于 B 提交门禁解除
+- `TASK-EVAL-001` 仍暂停归档；`TASK-GOV-003` 只完成其前置治理，不替代父任务归档审计
+- 下一步先做只读 Review Intake，确认 v3 计划中的下一事项边界；不是进入 `TASK-028`
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，当前禁止进入实现
 
@@ -36,7 +36,7 @@
 |---|---|---|---|---|
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
-| `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | Active | `TASK-EVAL-001` 父任务归档和 `TASK-028` Review Intake 的前置治理任务；不等于 `TASK-028`，不进入业务实现 |
+| `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档 | 等待 `TASK-GOV-003` 治理门禁、B 提交前只读审计和父任务归档前独立审计 |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
 | `TASK-EVAL-001-B` | Evidence overlap baseline | A | 已实现 / 暂停提交 | 提交前必须完成五类问题记录、expected 来源披露和独立 agent 只读审计 |
@@ -50,15 +50,15 @@
 
 ### `TASK-GOV-003`
 
-- 定位：五类问题整改、角色分离、证据和父任务归档审计的 active governance task。
+- 定位：五类问题整改、角色分离、证据和父任务归档审计规则的治理任务。
 - 依赖关系：
   - 是 `TASK-EVAL-001` 父任务归档前置治理任务。
   - 是 `TASK-028` Review Intake 前置治理任务。
 - 边界：
   - 不等于 `TASK-028`。
   - 不进入业务实现，不修生产代码、测试或 fixture。
-  - 完成前不得提交 `TASK-EVAL-001-B`、归档 `TASK-EVAL-001`、进入 `TASK-028` / `TASK-031` / `TASK-032`、派发 Claude Code / DeepSeek 实现任务或 push。
-- 文件：`tasks/active/TASK-GOV-003-five-class-remediation-and-role-gates.md`
+  - 任务收口不自动解除 `TASK-EVAL-001-B`、`TASK-EVAL-001`、`TASK-028` / `TASK-031` / `TASK-032` 的专属门禁。
+- 文件：`tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
 - 治理依据：`docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
 
 ### `TASK-025`
@@ -197,8 +197,7 @@
 
 ## 当前建议顺序
 
-1. 保持 `TASK-GOV-003` Active，先完成 v3 计划要求的五类问题记录、角色分离和独立审计门禁。
-2. 在独立 agent 完成 `TASK-EVAL-001-B` 提交前只读审计前，不提交 B。
-3. 在独立 agent 完成父任务归档前审计并形成 `GO` 前，不归档 `TASK-EVAL-001`。
-4. 仅在前述治理与评测收口完成后，重新评估 `TASK-028` / `TASK-029` / `TASK-030` 顺序。
-5. 当前不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。
+1. `TASK-GOV-003` 已完成并归档。
+2. 下一步先执行只读 Review Intake，确认 v3 计划中的下一事项边界，不进入开发。
+3. 不得把 `TASK-GOV-003` 收口和 `TASK-EVAL-001-B` 提交混在一起。
+4. 当前不提交 B、不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。
