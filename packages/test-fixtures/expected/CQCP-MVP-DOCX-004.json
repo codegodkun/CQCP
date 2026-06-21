@@ -48,6 +48,18 @@
       "warrantyRetentionRatio": 3,
       "invoiceType": "增值税专用发票",
       "currency": "CNY"
+    },
+    "evidenceEvaluation": {
+      "positiveCases": [
+        {
+          "caseId": "CQCP-MVP-DOCX-004#PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+          "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+          "expectedCandidateValue": "70",
+          "expectedCanonicalAnchors": [
+            "BLOCK:block-162"
+          ]
+        }
+      ]
     }
   },
   "negativeCandidates": [

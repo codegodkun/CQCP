@@ -1,6 +1,6 @@
 # TASK-EVAL-001-A：SourceAnchor 行与单元格可观测性前置
 
-状态：实现与验证已完成，待用户确认提交
+状态：已完成并 push
 
 类型：A 类质量评测前置子任务 / Codex 主控
 
@@ -195,7 +195,7 @@ TABLE_CELL:<blockId>:<rowIndex>:<cellIndex>
   * 4 正向 + 4 负向/冲突
   * `expectedRecall / actualPrecision / requiredHitRate`
   * `missingExpectedBlocks / unexpectedMatchedBlocks / attributionFailureReason`
-* 本任务尚未提交，当前不得创建或执行 B 的实现。
+* 本任务已提交并 push；`TASK-EVAL-001-B` 已按父任务边界完成最小实现与验证。
 
 ## 风险
 
@@ -214,5 +214,5 @@ TABLE_CELL:<blockId>:<rowIndex>:<cellIndex>
 * 完成日期：2026-06-21。
 * 变更文件：`WordParserSpikeDocument.java`、`DocxWordParserSpike.java`、`MinimalCandidateResolver.java`、`ParserBackedReviewInputPreparer.java`、`MinimalReviewEngine.java`、`ResultComposer.java` 及授权测试、项目记忆文件。
 * 测试结果：目标 Gradle 测试矩阵通过；Compose PostgreSQL `pg_isready` 通过；`docker compose ... build api-server` 通过。
-* 遗留问题：本任务尚未 commit / push；`TASK-EVAL-001-B` 尚未启动。
-* 备注：未修改 expected JSON、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate。
+* 遗留问题：无 A 阶段实现阻塞；后续由 B 完成 overlap baseline。
+* 备注：提交 `4bac2f4 feat(reviewengine): expose table row and cell source anchors` 已 push；未改变 Finding、EvidenceSlot admission、CandidateResolver gate。

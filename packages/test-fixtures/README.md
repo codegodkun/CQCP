@@ -43,11 +43,17 @@
 - `matrixSheet`
 - `goldenExpected`
 - `negativeCandidates`
+- `goldenExpected.evidenceEvaluation`
 
 其中：
 
 - `goldenExpected` 保存该样例的 `GOLDEN_EXPECTED` 基线。
 - `negativeCandidates` 保存该样例的 `NEGATIVE_CANDIDATE` 候选数据。
+- `goldenExpected.evidenceEvaluation.positiveCases[]` 保存 test-only evidence overlap baseline：
+  - `caseId`
+  - `reviewPointCode`
+  - `expectedCandidateValue`
+  - `expectedCanonicalAnchors[]`
 - 每个 negative candidate 同时保存：
   - `allDiffs`
   - `singlePointDiffs`
@@ -60,6 +66,24 @@
 - `GOLDEN_EXPECTED` 行写入对应样例的 `goldenExpected`。
 - `NEGATIVE_CANDIDATE` 行按合同文件名聚合后写入同一样例的 `negativeCandidates[]`。
 - matrix 中“同时导致税额公式不一致”的描述当前写入 `formulaLinkedEffects`；“金额数据连环错误”当前写入 `DATA_CASCADE`。
+
+## Evidence Anchor Canonical Key
+
+证据定位评测统一使用：
+
+```text
+BLOCK:<blockId>
+TABLE_ROW:<blockId>:<rowIndex>
+TABLE_CELL:<blockId>:<rowIndex>:<cellIndex>
+```
+
+约束：
+
+- expected anchor 由人工冻结，不得在测试运行时从 actual 结果反向生成。
+- `candidateValue` 正确但 canonical anchor 不匹配时，评测必须失败。
+- 同一 table、同一 block 或同一 row 不得宽松替代 cell 命中。
+- 字符级 span 不属于当前 MVP overlap baseline。
+- `negativeCandidates[]` 继续用于结构化输入与业务状态回归，不直接等价为 wrong-anchor 样本。
 
 ## 使用边界
 

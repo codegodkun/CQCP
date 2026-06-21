@@ -48,6 +48,18 @@
       "warrantyRetentionRatio": 3,
       "invoiceType": "增值税专用发票",
       "currency": "CNY"
+    },
+    "evidenceEvaluation": {
+      "positiveCases": [
+        {
+          "caseId": "CQCP-MVP-DOCX-003#PARTY_B_NAME_CONSISTENCY",
+          "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+          "expectedCandidateValue": "远航建筑工程有限公司",
+          "expectedCanonicalAnchors": [
+            "TABLE_ROW:block-4:1"
+          ]
+        }
+      ]
     }
   },
   "negativeCandidates": [

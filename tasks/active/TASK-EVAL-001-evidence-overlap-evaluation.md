@@ -1,6 +1,6 @@
 # TASK-EVAL-001：Parser-backed 证据重合度评测基线
 
-状态：NEEDS-SPLIT（`TASK-EVAL-001-A` 已实现并验证、待提交；`TASK-EVAL-001-B` 未启动）
+状态：实现与验证已完成，待用户确认提交收口
 
 类型：A 类质量评测父任务 / Codex 主控
 
@@ -309,16 +309,16 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## Next Task Handoff
 
-* `TASK-EVAL-001-A` 已完成最小实现与验证，当前等待用户确认提交。
-* `TASK-EVAL-001-B` 依赖 `TASK-EVAL-001-A` 提交并经用户确认后再启动。
-* `TASK-EVAL-001-A` 与 `TASK-EVAL-001-B` 均不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
-* 本任务及两个子阶段默认均不派发 Claude Code / DeepSeek。
+* `TASK-EVAL-001-A` 已完成并 push，提交为 `4bac2f4`。
+* `TASK-EVAL-001-B` 已完成最小实现与验证，当前等待用户确认提交 / push。
+* 父任务提交收口前不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
+* 本任务未派发 Claude Code / DeepSeek。
 
 ## 风险
 
-* 现有 `SourceAnchorSummary` 可能只暴露 block 级信息；若 table row/cell 信息在测试可见输出中缺失，不能通过修改生产契约顺手补洞。
-* expected anchor 标注若不完整，会把合法补充证据误报为 precision 下降；因此所有允许 anchor 必须显式登记。
-* 仅用同 block 命中可能掩盖错误 table row/cell 归属，必须保留分层 canonical key。
+* expected canonical key 绑定当前 parser 的稳定 block 顺序；后续 parser 结构变化若改变 blockId，必须通过基线评审更新，不得运行时自动重写 expected。
+* 四份主 DOCX 当前覆盖 BLOCK 与 TABLE_ROW；TABLE_CELL 由 test-only parser-backed case 覆盖。后续如要求真实主 fixture 覆盖 cell，必须单独授权新增样本，不得修改现有 DOCX 迎合评测。
+* expected anchor 标注若不完整，会把合法补充证据误报为 precision 下降；因此所有允许 anchor 必须显式登记，不得静默忽略 unexpected anchor。
 * 基线规模较小，只用于回归门禁，不得宣称代表真实合同总体质量。
 
 ## 待确认
@@ -328,8 +328,13 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## 完成记录
 
-* 完成日期：待实现完成后填写。
-* 变更文件：待实现完成后填写。
-* 测试结果：待实现完成后填写。
-* 遗留问题：待实现完成后填写。
-* 备注：2026-06-21 `TASK-EVAL-001-A` 已完成实现与验证但尚未提交；父任务仍为 `NEEDS-SPLIT`，B 未启动。
+* 完成日期：2026-06-21。
+* 变更文件：四份 `packages/test-fixtures/expected/*.json`、`packages/test-fixtures/README.md`、三个 test-only evaluator / baseline 文件及项目记忆文件。
+* 测试结果：
+  * 4 个真实正向 fixture：`expectedRecall=1.0`、`actualPrecision=1.0`、`requiredHit=1`
+  * 集合 `requiredHitRate=1.0`
+  * BLOCK / TABLE_ROW / TABLE_CELL canonical key 均有自动化覆盖
+  * 真实 `CONFLICTED / MEDIUM / LOW` 与注入 wrong block / row / cell / unexpected / unavailable anchor 均不会误判通过
+  * `ParserBackedReviewInputPreparerEvidenceTest` 与 `TaskExecutionStateMachineTest` 回归通过
+* 遗留问题：当前变更尚未 commit / push；父任务提交收口后需重新确认后续任务排序。
+* 备注：未修改生产代码、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate 或业务状态语义。

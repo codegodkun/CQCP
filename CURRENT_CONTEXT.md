@@ -26,22 +26,23 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-027-C` 已完成最小保守对齐：`packages/api-contracts/openapi.yaml` 已从旧 `/api/review/results/{taskId}` 对齐到真实 `GET /api/v1/tasks/{taskId}/result`，并把 `notConcludedDetail`、`missingOptionalSlots[]`、`sourceAnchors` 仅作为 optional / compatibility / diagnostic-only 字段文档化
 - 保持 `TASK-028` / `TASK-031` / `TASK-032` 的边界，不提前吞并
 - `TASK-EVAL-001` 已完成实现前 Review Intake，结论为 `NEEDS-SPLIT`；父任务原 DoD 不降级，不直接进入完整实现
-- `TASK-EVAL-001-A` 最小实现已完成并通过目标测试，当前等待用户确认提交；`TASK-EVAL-001-B` 尚未启动
+- `TASK-EVAL-001-A` 已完成并 push，提交为 `4bac2f4`
+- `TASK-EVAL-001-B` 最小实现与验证已完成，当前等待用户确认提交
 - `TASK-028` 必须等待 `TASK-EVAL-001` 完成 block / table-row / cell level 最低评测基线后再进入
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 
 ## 活跃任务
 
-- 当前 active 父任务：`TASK-EVAL-001`，文件为 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；状态为 `NEEDS-SPLIT`。
-- 当前 active 前置任务：`TASK-EVAL-001-A`，文件为 `tasks/active/TASK-EVAL-001-A-source-anchor-row-cell-observability.md`；最小实现与验证已完成，尚未 commit / push。
-- `TASK-EVAL-001-B` 暂不创建实现文件；需等待 A 提交并由用户确认后再启动。
+- 当前 active 父任务：`TASK-EVAL-001`，文件为 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；A/B 实现与验证均已完成，当前待提交 B 与父任务收口。
+- `TASK-EVAL-001-A` 已完成并 push：`4bac2f4 feat(reviewengine): expose table row and cell source anchors`。
+- `TASK-EVAL-001-B` 已完成 test-only overlap evaluator、四份 expected anchor 标注、4 正向与至少 4 个负向/冲突 case；尚未 commit / push。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
 - `TASK-027` 已完成最小主实现落地；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
 - `TASK-027` 本轮完成范围仅限 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；未扩大到完整 `EvidenceBundle` 平台化实现。
 - `TASK-027-C` 已完成并已本地提交：`8e09dc6 docs(contract): align TASK-027-C result API contract documentation`。
 - `TASK-027-D` 已完成并已本地提交：`ed63184 fix(reviewengine): tolerate forward-compatible review result snapshots`；`PersistentTaskResultStore` 继续使用局部 tolerant-read `ObjectMapper` 副本读取 `review_result_snapshot` JSON，历史快照不回填、当前不需要数据库迁移。
 - `TASK-027` 主实现已完成并已本地提交：`b85f4dd feat(reviewengine): add minimal evidence slot preflight gating`。
-- 当前工作区包含 `TASK-EVAL-001-A` 未提交实现、测试与 Memory Writeback 变更。
+- 当前工作区包含 `TASK-EVAL-001-B` 未提交 expected fixture、test-only evaluator、基线测试与 Memory Writeback 变更。
 - 当前分支状态：`master...origin/master`，本地 `master` 与 `origin/master` 已对齐。
 - `git rev-list --left-right --count origin/master...HEAD` 当前为 `0 0`。
 - `TASK-027` 相关 5 个本地提交已完成 `push`，当前不存在待同步提交。
@@ -118,7 +119,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 更强模型可能改变候选收集、角色归属、复杂语义消歧和脆弱正则的使用比例，但不取消治理层：`SourceAnchor`、`EvidenceSlot admission`、`SYS / Finding` 分流、`NOT_CONCLUDED`、不可变快照、版本追溯及后端确定性公式/结构化裁判继续保留。
 - 模型输出必须经过后端 verifier 和 `CandidateResolver`，不得直接形成业务 Finding。模型自报 confidence 不得直接成为 `HIGH` admission；模型只能提供候选、理由、anchor、uncertainty reason、alternative candidates 等可验证信号。
 - `TASK-EVAL-001` 父任务目标保持为 parser-backed fixtures 的 block / table-row / cell level evidence overlap 最低评测基线；Review Intake 结论为 `NEEDS-SPLIT`，原 DoD 不降级。
-- `TASK-EVAL-001-A` 已补齐真实 row/cell anchor 的结果链路可观测性；`TASK-EVAL-001-B` 后续负责 expected anchor、overlap evaluator、4 正向 + 4 负向/冲突及指标。
+- `TASK-EVAL-001-A` 已补齐真实 row/cell anchor 的结果链路可观测性。
+- `TASK-EVAL-001-B` 已建立 BLOCK / TABLE_ROW / TABLE_CELL canonical key 与 overlap baseline；4 个真实正向 fixture 的 `expectedRecall / actualPrecision / requiredHit` 均为 `1.0 / 1.0 / 1`，`requiredHitRate=1.0`。
+- 负向矩阵覆盖真实 `CONFLICTED / MEDIUM / LOW`、wrong block、same-row wrong cell、unexpected anchor、wrong row 与 unavailable anchor；candidateValue 正确但 anchor 错误时评测失败。
 - `TASK-028` 应等待 `TASK-EVAL-001` 父任务完成边界冻结并形成最低评测基线后再进入，以免在缺少 evidence precision / recall 基线时比较模型或扩大模型辅助范围。
 - A30 24GB 下的后续模型候选池不应预先局限于 1B / 4B / 7B，可在 `TASK-028` 前置调研中评估 Gemma 4 26B A4B、Gemma 4 31B、Qwen3 30B-A3B、Qwen3 32B 及其适用量化版本。待确认：这些候选的 Q4 权重来源、A30 24GB 实际显存占用、上下文预算、吞吐和 CQCP 中文合同质量均尚未专项验证，不得写成已确认可部署或优于当前方案。
 - Docling、BM25、Ragas、Outlines、OpenTelemetry、Label Studio 等只作为 `TASK-EVAL-001` 之后的 parser adapter、候选召回、评测、结构化输出、观测和标注治理候选，不在当前 MVP 抢跑引入。
@@ -129,11 +132,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. 等待用户审查并确认是否提交 `TASK-EVAL-001-A`。
-2. 本轮不得启动 `TASK-EVAL-001-B`，不得修改 expected JSON 或实现 overlap evaluator。
-3. A 提交并经用户确认后，再为 `TASK-EVAL-001-B` 冻结实现边界，完成父任务原始 block / row / cell overlap DoD。
-4. `TASK-028` 等待 `TASK-EVAL-001-B` 最低评测基线完成后再进入；`TASK-031` / `TASK-032` 继续不得抢跑。
-5. `TASK-EVAL-001` 完成后重新确认 `TASK-028`、`TASK-029`、`TASK-030` 的后续顺序。
+1. 等待用户审查并确认是否提交 / push `TASK-EVAL-001-B` 与父任务收口变更。
+2. 提交前不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
+3. `TASK-EVAL-001` 提交收口后，重新确认 `TASK-028`、`TASK-029`、`TASK-030` 的后续顺序。
 
 ## 参考路径
 

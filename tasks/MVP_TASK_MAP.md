@@ -10,7 +10,8 @@
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
-- `TASK-EVAL-001-A` 最小实现与验证已完成，等待用户确认提交；`TASK-EVAL-001-B` 尚未启动
+- `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
+- `TASK-EVAL-001-B` 最小实现与验证已完成，等待用户确认提交
 - `TASK-028` 必须等待 `TASK-EVAL-001` 最低评测基线完成后再进入
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，不在本轮实现
@@ -33,9 +34,9 @@
 |---|---|---|---|---|
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
-| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | NEEDS-SPLIT | 父任务原 DoD 不降级；拆为 A 可观测性前置与 B overlap baseline |
-| `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已实现 / 待提交 | 已补齐真实 row/cell anchor 在 reviewengine 结果链路的可观测性，等待用户确认提交 |
-| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 未启动 / 等待 A 提交确认 | 暂不创建实现文件；负责 expected anchor、evaluator、4 正 + 4 负及完整指标 |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 已实现 / 待提交收口 | A/B 已完成；父任务等待 B 提交与记忆收口 |
+| `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
+| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 已实现 / 待提交 | expected anchor、test-only evaluator、4 正 + 4 负及完整指标已验证 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 未开始 / 等待评测基线 | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-EVAL-001` 最低评测基线完成 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
@@ -144,7 +145,13 @@
   - 4 正向 + 4 负向/冲突
   - `expectedRecall / actualPrecision / requiredHitRate`
   - `missingExpectedBlocks / unexpectedMatchedBlocks / attributionFailureReason`
-- 当前状态：暂不创建实现文件，不得提前启动
+- 当前状态：已实现并验证，待提交
+- 完成结果：
+  - 四份 expected JSON 已各冻结一个正向 evidence evaluation case
+  - canonical key 覆盖 BLOCK / TABLE_ROW / TABLE_CELL
+  - 4 个真实正向 fixture 达到 `expectedRecall=1.0`、`actualPrecision=1.0`、`requiredHitRate=1.0`
+  - 负向覆盖 conflict / medium / low、wrong block、wrong row、wrong cell、unexpected 与 unavailable anchor
+  - 未修改生产代码或 DOCX fixture
 
 ## 协作边界
 
@@ -174,8 +181,6 @@
 
 ## 当前建议顺序
 
-1. 等待用户确认提交 `TASK-EVAL-001-A`
-2. A 提交确认后再冻结并执行 `TASK-EVAL-001-B`
-3. `TASK-028` 等待 B 完成父任务最低评测基线后再进入
-4. `TASK-029` / `TASK-030` 的后续排序在评测基线完成后重新确认
-5. 不进入 `TASK-031` / `TASK-032`
+1. 等待用户确认提交 / push `TASK-EVAL-001-B` 与父任务收口
+2. 提交收口后重新确认 `TASK-028`、`TASK-029`、`TASK-030` 顺序
+3. 当前不进入 `TASK-031` / `TASK-032`

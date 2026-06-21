@@ -48,6 +48,18 @@
       "warrantyRetentionRatio": 5,
       "invoiceType": "增值税专用发票",
       "currency": "CNY"
+    },
+    "evidenceEvaluation": {
+      "positiveCases": [
+        {
+          "caseId": "CQCP-MVP-DOCX-002#CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+          "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+          "expectedCandidateValue": "884800",
+          "expectedCanonicalAnchors": [
+            "BLOCK:block-38"
+          ]
+        }
+      ]
     }
   },
   "negativeCandidates": [
