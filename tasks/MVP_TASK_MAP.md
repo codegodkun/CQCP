@@ -13,9 +13,9 @@
 - `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；Step 1 只登记、不修复，不代表实现获准启动
 - `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
-- `TASK-EVAL-001-B` 仍暂停提交；`TASK-GOV-003` 收口不等于 B 提交门禁解除
+- Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；据用户提供的外部报告与 Codex Review Intake 摘要，已形成事后条件接纳建议并报告定向测试 `30/30 PASS`，原始凭证待父任务归档前复核
 - `TASK-EVAL-001` 仍暂停归档；`TASK-GOV-003` 只完成其前置治理，不替代父任务归档审计
-- 下一步先做只读 Review Intake，确认 v3 计划中的下一事项边界；不是进入 `TASK-028`
+- Step 2 独立审计及 B 事后复核已有外部报告摘要；任务地图不以自身证明完成，父任务归档前仍须复核原始报告和证据；当前不自动进入 Step 3，也不是进入 `TASK-028`
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，当前禁止进入实现
 
@@ -38,10 +38,10 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
-| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（仅记录） | 统一记录 4 条代码缺陷和 1 条 TABLE_CELL 覆盖盲区；后续修复、人工标注和 TASK_SPEC 均需另行 Review Intake |
-| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档 | 等待 `TASK-GOV-003` 治理门禁、B 提交前只读审计和父任务归档前独立审计 |
+| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（Step 3 禁止进入） | 已登记 5 条标准记录；Step 2 仅有外部报告摘要，父任务归档前需复核原始证据；不提前准备 `resolveTextEvidence` TASK_SPEC |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档 | 据摘要 B 已形成事后条件接纳建议；expected 来源边界、TABLE_CELL 覆盖盲区及父任务归档前独立审计门禁继续有效 |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
-| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 已实现 / 暂停提交 | 提交前必须完成五类问题记录、expected 来源披露和独立 agent 只读审计 |
+| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳摘要待归档复核 | Git 历史显示 commit `672d97f`；外部报告摘要称事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；原始报告与 console 待父任务归档前核验 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 禁止进入 Review Intake | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-GOV-003` 和 `TASK-EVAL-001` 收口 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
@@ -76,6 +76,8 @@
   - Step 1 只登记，不修复。
   - 建立该任务不代表任何修复任务、`TASK_SPEC` 或 `TASK-032` 已获启动授权。
   - TABLE_CELL 补强依赖独立人工 anchor 标注；当前父任务 DoD 不要求真实 DOCX cell，因此不阻塞 `TASK-EVAL-001` 归档判断。
+  - Step 2 `CURRENT_CONTEXT.md` 逐条认领审计已有独立 agent 报告摘要；本任务地图不以自身证明完成，父任务归档前仍需复核原始报告和对应证据；当前不自动进入 Step 3。
+  - 当前不创建、不冻结、不派发 `resolveTextEvidence` TASK_SPEC。
 - 文件：`tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
 
 ### `TASK-025`
@@ -178,13 +180,22 @@
   - 4 正向 + 4 负向/冲突
   - `expectedRecall / actualPrecision / requiredHitRate`
   - `missingExpectedBlocks / unexpectedMatchedBlocks / attributionFailureReason`
-- 当前状态：已实现并验证，待提交
+- 当前状态：Git 历史显示 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的独立 agent 报告摘要，提交前独立复核流程曾缺失，事后复核建议为 `ACCEPT WITH CONDITIONS`，clean clone 定向测试报告为 `30/30 PASS`；据 Codex Review Intake 摘要，接纳建议为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`。上述摘要不替代原始报告、console、commit 和 diff，待父任务归档前独立审计复核
 - 完成结果：
   - 四份 expected JSON 已各冻结一个正向 evidence evaluation case
   - canonical key 覆盖 BLOCK / TABLE_ROW / TABLE_CELL
   - 4 个真实正向 fixture 达到 `expectedRecall=1.0`、`actualPrecision=1.0`、`requiredHitRate=1.0`
   - 负向覆盖 conflict / medium / low、wrong block、wrong row、wrong cell、unexpected 与 unavailable anchor
+  - 据用户提供的独立 agent 报告摘要，定向复跑四组测试合计 `30/30 PASS`，测试前后工作区干净；凭证以原始报告和 console 输出为准
+  - `1.0 / 1.0 / 1` 只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId / rowIndex / cellIndex 依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不证明 anchor 客观正确
+  - evaluator 支持 TABLE_CELL canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成，由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪
   - 未修改生产代码或 DOCX fixture
+
+### 后续治理候选：`TASK-GOV-004`（尚未创建）
+
+- 当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。
+- 后续建议评估 CI、Code Review Agent、Spec & Docs Review Agent required checks；review agent 判决以 GitHub Check Run 或 Commit Status 发布；required checks 指定可信 GitHub App / source；default branch 未满足 required checks 时禁止 merge；管理员 bypass 关闭或单独审计。
+- 当前状态：仅记录治理缺口；`TASK-GOV-004` 未创建、未 active、未批准、未实施，required checks 未配置、branch protection 未生效，不属于本次 `TASK-EVAL-001-B` 文档修正范围。本轮不修改 CI、GitHub Actions、branch protection 或仓库设置。
 
 ## 协作边界
 
@@ -217,4 +228,4 @@
 1. `TASK-GOV-003` 已完成并归档。
 2. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；下一步对该任务执行只读 Review Intake，确认分批顺序与边界，不进入开发。
 3. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
-4. 当前不提交 B、不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。
+4. 当前不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。

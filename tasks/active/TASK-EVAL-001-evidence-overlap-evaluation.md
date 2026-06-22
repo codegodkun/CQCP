@@ -36,7 +36,7 @@
 
 1. 先执行 `TASK-EVAL-001-A`：SourceAnchor row/cell observability 前置任务。
 2. `TASK-EVAL-001-A` 完成并经 Codex 验收后，再启动 `TASK-EVAL-001-B`：evidence overlap baseline。
-3. `TASK-EVAL-001-B` 暂不创建实现文件；其目标、指标和 fixture DoD 继续由本父任务承载。
+3. Git 历史显示 `TASK-EVAL-001-B` 后续对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的外部报告摘要，提交前独立复核流程曾缺失，后续形成了事后独立只读复核和定向测试复跑报告，原始凭证待父任务归档前核验。
 4. 本父任务原 DoD 不降级，仍要求 block / table-row / cell、4 正向 + 4 负向/冲突及完整 overlap 指标。
 
 ## 目标
@@ -310,19 +310,21 @@ SOURCE_ANCHOR_UNAVAILABLE
 ## Next Task Handoff
 
 * `TASK-EVAL-001-A` 已完成并 push，提交为 `4bac2f4`。
-* `TASK-EVAL-001-B` 已完成最小实现与验证，当前等待用户确认提交 / push。
+* Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的独立 agent 事后复核报告摘要，提交前独立复核流程曾缺失，复核建议为 `ACCEPT WITH CONDITIONS`。
+* 据用户提供的独立 agent 定向测试复跑报告摘要，基线为 `CQCP_AUDIT` clean clone、HEAD `829796f2a18a87f1155eea96ed991a5fd0748b99`，四组定向测试合计 `30/30 PASS`，无 failure、error 或 skipped，测试前后工作区干净。凭证应以独立 agent 原始报告和 console 输出为准，本任务文件仅记录摘要，不作为完成凭证。
+* 据 Codex Review Intake 摘要，B 被接纳为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`；该接纳只覆盖 B 子任务，不代表父任务可归档。父任务归档前仍须由独立 agent 对原始报告、测试输出、commit 和 diff 再次核验。
 * 父任务提交收口前不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
 * 本任务未派发 Claude Code / DeepSeek。
 
 ## 评测结果解释边界
 
 * `TASK-EVAL-001-B` 报告的 `expectedRecall=1.0`、`actualPrecision=1.0`、`requiredHit=1` 和集合 `requiredHitRate=1.0` 是 evaluator 基于当前 expected / actual canonical anchor 集合得出的真实计算结果。
-* expected anchor 中的 blockId、rowIndex 和 cellIndex 使用 parser 内部稳定标识；当前结果主要证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性。
+* expected anchor 中的 blockId、rowIndex 和 cellIndex 使用 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix；当前结果只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性。
 * 上述 1.0 / 1.0 / 1 不单独证明 parser anchor 位置客观正确，不得表述为独立人工标注准确率。
-* 当前四份真实主 DOCX 覆盖 BLOCK 与 TABLE_ROW；TABLE_CELL 仅有 test-only / parser-backed case，真实 DOCX TABLE_CELL 覆盖不足。
+* evaluator 支持 TABLE_CELL canonical key，test-only / mock 覆盖已存在；当前四份真实主 DOCX 覆盖 BLOCK 与 TABLE_ROW，真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成。
 * 按父任务 DoD 原文，自动化测试支持 TABLE_CELL canonical key 即满足当前 cell 覆盖要求，未要求真实 DOCX cell fixture；因此该覆盖盲区不阻塞父任务归档判断。
-* 不得宣称真实 DOCX TABLE_CELL 已验证。后续补强必须依赖独立人工 anchor 标注，并防止 parser 输出倒填 expected。
-* 本节只补充解释边界，不改变 `TASK-EVAL-001-B` 暂停提交状态，也不把父任务改为可归档。
+* 不得宣称真实 DOCX TABLE_CELL 已验证。该缺口继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，并防止 parser 输出倒填 expected。
+* 据外部报告和 Codex Review Intake 摘要，B 当前形成“事后条件接纳、定向测试报告摘要已提供”的判断；原始证据仍待父任务归档前独立审计，本节不把父任务改为可归档。
 * 五条已确认问题的标准记录见 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`。
 
 ## 风险
@@ -347,5 +349,19 @@ SOURCE_ANCHOR_UNAVAILABLE
   * BLOCK / TABLE_ROW / TABLE_CELL canonical key 均有自动化覆盖
   * 真实 `CONFLICTED / MEDIUM / LOW` 与注入 wrong block / row / cell / unexpected / unavailable anchor 均不会误判通过
   * `ParserBackedReviewInputPreparerEvidenceTest` 与 `TaskExecutionStateMachineTest` 回归通过
-* 遗留问题：当前变更尚未 commit / push；父任务提交收口后需重新确认后续任务排序。
+* 事后复核摘要：据用户提供的独立 agent 报告，commit `672d97f` 的复核建议为 `ACCEPT WITH CONDITIONS`、定向复跑为 `30/30 PASS`；据 Codex Review Intake 摘要，接纳判断为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`。这些摘要不替代原始报告和 console 输出。
+* 遗留问题：父任务归档前仍需独立 agent 归档审计；真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成。
 * 备注：未修改生产代码、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate 或业务状态语义。
+
+## 后续治理缺口
+
+* 当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。
+* 后续建议单独建立 `TASK-GOV-004`，评估 CI、Code Review Agent、Spec & Docs Review Agent required checks；review agent 判决以 GitHub Check Run 或 Commit Status 发布；required checks 指定可信 GitHub App / source；default branch 未满足 required checks 时禁止 merge；管理员 bypass 关闭或单独审计。
+* `TASK-GOV-004` 尚未创建、未 active、未批准、未实施，required checks 未配置、branch protection 未生效；该机制化治理不纳入本次 `TASK-EVAL-001-B` 文档修正范围。本轮不修改 CI、GitHub Actions、branch protection 或仓库设置。
+
+## 当前持续门禁
+
+* 不归档 `TASK-EVAL-001`。
+* 不进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
+* 不进入 Step 3，不起草或派发 `resolveTextEvidence` TASK_SPEC。
+* 不提交新的 `TASK-EVAL-001-B` 代码、测试、fixture 或 expected JSON 变更。
