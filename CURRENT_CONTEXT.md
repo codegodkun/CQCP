@@ -37,6 +37,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 ## 活跃任务
 
 - `TASK-GOV-003` 已完成并归档：治理提交 `515196e` 已独立审计、push，且远程同步确认 `0 0`。
+- 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。本轮 Step 1 只登记、不修复，建立任务不代表任何实现已获批准。
 - `TASK-EVAL-001` 仍为 active 父任务，但暂停 B 提交和父任务归档。
 - `TASK-EVAL-001-A` 已完成并 push：`4bac2f4 feat(reviewengine): expose table row and cell source anchors`。
 - `TASK-EVAL-001-B` 已形成 test-only overlap evaluator、四份 expected anchor 标注、4 正向与至少 4 个负向/冲突 case；现有结果属于待独立核验事实，当前不得 commit / push。
@@ -108,9 +109,10 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 ## 当前阻塞项
 
 - `TASK-GOV-003` 已收口，但其收口不自动解除后续专属门禁；`TASK-EVAL-001-B` 提交、`TASK-EVAL-001` 归档和 `TASK-028` 仍需按 v3 计划分别完成前置核查。
+- `TASK-DEBT-001` 已记录 `resolveTextEvidence()` signal 硬编码、`collectPatternCandidates()` valueFormatSignal 硬编码、parser provenance 常量覆盖、ratio early return 和 TABLE_CELL 真实 DOCX 覆盖盲区；具体证据与后续分流以任务文件为准，尚未批准任何修复。
 - `CURRENT_CONTEXT.md` 的既有完成声明尚需独立 agent 逐条认领审计；本文件只能作为待核验线索，不能作为完成凭证。
-- `TASK-EVAL-001-B` expected anchor 来源和循环验证边界尚需独立 agent 核查；现有 1.0 / 1.0 / 1 不能单独证明 anchor 客观正确。
-- `TABLE_CELL` 真实 `.docx` 端到端覆盖仍是覆盖盲区，不得写成已确认代码 bug。
+- `TASK-EVAL-001-B` 的 1.0 / 1.0 / 1 是当前 canonical anchor 集合的真实计算，主要证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected 使用 parser 内部稳定标识，不能单独证明 anchor 客观正确，也不得表述为独立人工标注准确率。
+- `TABLE_CELL` 真实 `.docx` 端到端覆盖仍是覆盖盲区，不是已确认代码 bug；父任务 DoD 不要求真实 DOCX cell，因此不阻塞归档判断，但不得宣称真实 DOCX TABLE_CELL 已验证，后续补强依赖人工 anchor 标注。
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
 - `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
 - `TASK-027-A` 回收结论已确认：外部 Result API 真实实现为 `GET /api/v1/tasks/{taskId}/result`，`packages/api-contracts/openapi.yaml` 与真实实现和 DTO 已分叉；`PointStatus` 五值稳定、`notConcludedReason` 六值稳定，但 `notConcludedDetail`、`missingOptionalSlots[]`、正式化 `sourceAnchors` 尚未形成真实对外承载位，因此 OpenAPI 契约对齐 / 文档更新任务阻断 `TASK-027` 直接进入实现
@@ -142,9 +144,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. 回到 v3 计划执行顺序，先做一次只读 Review Intake，确认下一事项的目标、依赖、执行者和禁止边界。
-2. 不得把 `TASK-GOV-003` 收口与 `TASK-EVAL-001-B` 提交混为同一动作。
-3. Review Intake 完成前，不提交 `TASK-EVAL-001-B`，不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+1. v3 Step 1 只完成五条问题的标准记录；下一步先对 `TASK-DEBT-001` 执行只读 Review Intake，决定分批顺序、人工标注前置和后续 TASK_SPEC 边界。
+2. `TASK-DEBT-001` 建立不代表修复任务获准启动，不得直接进入代码修改或实现派发。
+3. 不提交 `TASK-EVAL-001-B`，不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 4. 不派发 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行。
 
 ## 参考路径
@@ -167,3 +169,4 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`
 - `docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
 - `tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
+- `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`

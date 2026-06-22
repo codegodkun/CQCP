@@ -314,6 +314,17 @@ SOURCE_ANCHOR_UNAVAILABLE
 * 父任务提交收口前不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
 * 本任务未派发 Claude Code / DeepSeek。
 
+## 评测结果解释边界
+
+* `TASK-EVAL-001-B` 报告的 `expectedRecall=1.0`、`actualPrecision=1.0`、`requiredHit=1` 和集合 `requiredHitRate=1.0` 是 evaluator 基于当前 expected / actual canonical anchor 集合得出的真实计算结果。
+* expected anchor 中的 blockId、rowIndex 和 cellIndex 使用 parser 内部稳定标识；当前结果主要证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性。
+* 上述 1.0 / 1.0 / 1 不单独证明 parser anchor 位置客观正确，不得表述为独立人工标注准确率。
+* 当前四份真实主 DOCX 覆盖 BLOCK 与 TABLE_ROW；TABLE_CELL 仅有 test-only / parser-backed case，真实 DOCX TABLE_CELL 覆盖不足。
+* 按父任务 DoD 原文，自动化测试支持 TABLE_CELL canonical key 即满足当前 cell 覆盖要求，未要求真实 DOCX cell fixture；因此该覆盖盲区不阻塞父任务归档判断。
+* 不得宣称真实 DOCX TABLE_CELL 已验证。后续补强必须依赖独立人工 anchor 标注，并防止 parser 输出倒填 expected。
+* 本节只补充解释边界，不改变 `TASK-EVAL-001-B` 暂停提交状态，也不把父任务改为可归档。
+* 五条已确认问题的标准记录见 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`。
+
 ## 风险
 
 * expected canonical key 绑定当前 parser 的稳定 block 顺序；后续 parser 结构变化若改变 blockId，必须通过基线评审更新，不得运行时自动重写 expected。

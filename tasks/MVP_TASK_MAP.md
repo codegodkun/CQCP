@@ -10,6 +10,7 @@
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
+- `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；Step 1 只登记、不修复，不代表实现获准启动
 - `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
 - `TASK-EVAL-001-B` 仍暂停提交；`TASK-GOV-003` 收口不等于 B 提交门禁解除
@@ -37,6 +38,7 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
+| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（仅记录） | 统一记录 4 条代码缺陷和 1 条 TABLE_CELL 覆盖盲区；后续修复、人工标注和 TASK_SPEC 均需另行 Review Intake |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档 | 等待 `TASK-GOV-003` 治理门禁、B 提交前只读审计和父任务归档前独立审计 |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
 | `TASK-EVAL-001-B` | Evidence overlap baseline | A | 已实现 / 暂停提交 | 提交前必须完成五类问题记录、expected 来源披露和独立 agent 只读审计 |
@@ -60,6 +62,21 @@
   - 任务收口不自动解除 `TASK-EVAL-001-B`、`TASK-EVAL-001`、`TASK-028` / `TASK-031` / `TASK-032` 的专属门禁。
 - 文件：`tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
 - 治理依据：`docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
+
+### `TASK-DEBT-001`
+
+- 定位：Codex 主控的父级债务记录任务，只承载标准记录和后续分流线索。
+- 已登记：
+  - `resolveTextEvidence()` 三个 signal 硬编码。
+  - `collectPatternCandidates()` 的 `valueFormatSignal` 硬编码。
+  - parser provenance 被 `SOURCE_ORIGIN / SOURCE_EXTRACTION_MODE / CONTEXT_TYPE` 常量覆盖。
+  - `resolveRatioEvidence()` early return 跳过 fallback 候选。
+  - TABLE_CELL 真实 DOCX 覆盖盲区；该项不是已确认代码 bug。
+- 边界：
+  - Step 1 只登记，不修复。
+  - 建立该任务不代表任何修复任务、`TASK_SPEC` 或 `TASK-032` 已获启动授权。
+  - TABLE_CELL 补强依赖独立人工 anchor 标注；当前父任务 DoD 不要求真实 DOCX cell，因此不阻塞 `TASK-EVAL-001` 归档判断。
+- 文件：`tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
 
 ### `TASK-025`
 
@@ -198,6 +215,6 @@
 ## 当前建议顺序
 
 1. `TASK-GOV-003` 已完成并归档。
-2. 下一步先执行只读 Review Intake，确认 v3 计划中的下一事项边界，不进入开发。
-3. 不得把 `TASK-GOV-003` 收口和 `TASK-EVAL-001-B` 提交混在一起。
+2. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；下一步对该任务执行只读 Review Intake，确认分批顺序与边界，不进入开发。
+3. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
 4. 当前不提交 B、不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。
