@@ -11,11 +11,11 @@
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
 - `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；Step 1 只登记、不修复，不代表实现获准启动
-- `TASK-EVAL-001` Review Intake 结论为 `NEEDS-SPLIT`；原 DoD 不降级
+- `TASK-EVAL-001` 归档前 Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
-- Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；据用户提供的外部报告与 Codex Review Intake 摘要，已形成事后条件接纳建议并报告定向测试 `30/30 PASS`，原始凭证待父任务归档前复核
-- `TASK-EVAL-001` 仍暂停归档；`TASK-GOV-003` 只完成其前置治理，不替代父任务归档审计
-- Step 2 独立审计及 B 事后复核已有外部报告摘要；任务地图不以自身证明完成，父任务归档前仍须复核原始报告和证据；当前不自动进入 Step 3，也不是进入 `TASK-028`
+- Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；事后独立复核、定向测试 `30/30 PASS` 和父任务归档前独立审计已形成补偿证据，但不能追溯性等同于提交前复核
+- `TASK-EVAL-001` 已准备条件归档未提交 diff；DoD #1 至 #11 已独立确认，DoD #12 未通过、未补足并作为永久治理债务保留
+- Step 2 原始逐条认领报告未入库，继续作为治理债务；父任务归档前独立审计已重新覆盖本父任务归档相关关键断言，但当前不自动进入 Step 3，也不是进入 `TASK-028`
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，当前禁止进入实现
 
@@ -39,9 +39,9 @@
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（Step 3 禁止进入） | 已登记 5 条标准记录；Step 2 仅有外部报告摘要，父任务归档前需复核原始证据；不提前准备 `resolveTextEvidence` TASK_SPEC |
-| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档 | 据摘要 B 已形成事后条件接纳建议；expected 来源边界、TABLE_CELL 覆盖盲区及父任务归档前独立审计门禁继续有效 |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 条件归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
-| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳摘要待归档复核 | Git 历史显示 commit `672d97f`；外部报告摘要称事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；原始报告与 console 待父任务归档前核验 |
+| `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳 | Git 历史显示 commit `672d97f`；事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；提交前复核缺失作为治理债务保留 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 禁止进入 Review Intake | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-GOV-003` 和 `TASK-EVAL-001` 收口 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
 | `TASK-030` | Review assets 版本化治理 | A | 未开始 | 后续治理任务 |
@@ -131,6 +131,14 @@
 ### `TASK-EVAL-001`
 
 - 定位：parser-backed fixture 的证据定位质量评测基线
+- 条件归档边界：
+  - 仅表示父任务 DoD 范围内的条件收口，不代表 12/12 DoD 全部通过
+  - DoD #12 未通过、未补足；A/B 历史 commit / push 授权记录无法完整核实
+  - 该缺口永久保留为历史流程治理债务，不追溯否定已 push 内容、独立审计结论或 `30/30 PASS`
+  - 该例外不得成为后续绕过 commit / push 明确授权门禁的先例
+  - expected anchor 依赖 parser 内部 `blockId / rowIndex / cellIndex`，只证明一致性和回归稳定性，不证明独立人工 ground truth 正确性
+  - 真实 DOCX positive baseline 的 `TABLE_CELL` 覆盖仍为 0，由 `TASK-DEBT-001` 或后续人工 anchor 标注任务追踪
+  - 不自动解除 `TASK-028` / `TASK-031` / `TASK-032` 门禁，不进入 Step 3，不起草或派发 `TASK_SPEC`
 - 依赖：
   - `TASK-025`
   - `TASK-026`
@@ -228,4 +236,4 @@
 1. `TASK-GOV-003` 已完成并归档。
 2. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；下一步对该任务执行只读 Review Intake，确认分批顺序与边界，不进入开发。
 3. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
-4. 当前不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发 Claude Code / DeepSeek 实现任务。
+4. 当前只准备 `TASK-EVAL-001` 条件归档未提交 diff；不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不进入 Step 3，不起草或派发 `TASK_SPEC`。

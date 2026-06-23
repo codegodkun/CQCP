@@ -29,8 +29,8 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-EVAL-001-A` 已完成并 push，提交为 `4bac2f4`
 - 已确认《CQCP 五类问题整改计划 v3：角色分工与执行门禁补强版》需要正式入仓并纳入任务治理
 - `TASK-GOV-003` 已完成、已独立审计、已 push，并完成远程同步确认；归档文件为 `tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
-- Git 历史显示 `TASK-EVAL-001-B` 已在 `672d97f695756249a871da53ad2821eb5146997f` 提交；据用户提供的外部审计报告摘要，该提交已 push，提交前独立复核流程曾缺失，后续形成了事后独立只读复核与定向测试复跑报告。相关结论待父任务归档前以原始报告、console 输出、commit 和 diff 再次核验
-- `TASK-EVAL-001` 仍暂停归档；`TASK-GOV-003` 收口不等于父任务归档门禁已满足
+- Git 历史显示 `TASK-EVAL-001-B` 已在 `672d97f695756249a871da53ad2821eb5146997f` 提交并进入 `origin/master`；提交前独立复核流程曾缺失，后续已由事后独立只读复核、定向测试复跑和父任务归档前独立审计补偿，但不能追溯性等同于提交前复核
+- `TASK-EVAL-001` 已形成条件归档文档 diff：DoD #1 至 #11 已由归档前独立审计确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并作为永久治理债务保留
 - `TASK-028` / `TASK-031` / `TASK-032` 仍禁止进入；后续必须按 v3 计划的角色分工执行
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 
@@ -38,11 +38,11 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 - `TASK-GOV-003` 已完成并归档：治理提交 `515196e` 已独立审计、push，且远程同步确认 `0 0`。
 - 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。本轮 Step 1 只登记、不修复，建立任务不代表任何实现已获批准。
-- `TASK-EVAL-001` 仍为 active 父任务；B 已事后条件接纳，但父任务仍暂停归档。
+- `TASK-EVAL-001` 已按 `GO TO ARCHIVE WITH CONDITIONS` 准备条件归档，归档文件为 `tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md`；当前仅生成未提交 diff。
 - `TASK-EVAL-001-A` 已完成并 push：`4bac2f4 feat(reviewengine): expose table row and cell source anchors`。
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`。据用户提供的独立 agent 事后复核报告摘要，提交前独立复核流程曾缺失，事后复核建议为 `ACCEPT WITH CONDITIONS`。
 - 据用户提供的独立 agent 定向测试复跑报告摘要，审计基线为 `CQCP_AUDIT` clean clone、HEAD `829796f2a18a87f1155eea96ed991a5fd0748b99`，四组定向测试分别报告 8/8、4/4、8/8、10/10，合计 `30/30 PASS`，且测试前后工作区干净。该结论的凭证应以独立 agent 原始报告和 console 输出为准，本文件仅记录摘要，不作为完成凭证。
-- 据 Codex Review Intake 摘要，`TASK-EVAL-001-B` 被接纳为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`。该接纳只覆盖 B 子任务，不代表 `TASK-EVAL-001` 父任务可归档；父任务归档前仍须由独立 agent 对原始报告、测试输出、commit 和 diff 再次核验。
+- 父任务归档前独立审计结论为 `GO WITH CONDITIONS`；Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`。该条件归档不代表 12/12 DoD 全部通过。
 - `ADR-015` 已人工接受：`decisions/ADR-015-evidence-slot-source-anchor-governance.md`。
 - `TASK-027` 已完成最小主实现落地；A/B 两份 readonly-review、`TASK-027-C`、`TASK-027-D` 均已完成并作为有效前置输入。
 - `TASK-027` 本轮完成范围仅限 `EvidenceSlot / SourceAnchor / coverage / SYS-*` 在现有审核链路中的兼容增强；未扩大到完整 `EvidenceBundle` 平台化实现。
@@ -55,7 +55,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-027` 相关 5 个本地提交已完成 `push`，当前不存在待同步提交。
 - `TASK-028` / `TASK-031` / `TASK-032` 仍未开始，继续禁止抢跑。
 - 下一步只允许执行一次只读 Review Intake，确认 v3 计划中的下一事项边界；不得直接派发 Claude Code / DeepSeek 实现任务。
-- 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。基于该结论，`TASK-EVAL-001` 已正式建档为当前下一任务；本轮未进入实现、未创建 ADR、未进入 `TASK-028`。
+- 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。基于该结论建立的 `TASK-EVAL-001` 已进入条件归档文案准备；仍未进入 `TASK-028`。
 
 ## 最近完成
 
@@ -110,9 +110,10 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 ## 当前阻塞项
 
-- `TASK-GOV-003` 已收口，但其收口不自动解除后续专属门禁；据外部报告与 Codex Review Intake 摘要，`TASK-EVAL-001-B` 已形成事后条件接纳建议，`TASK-EVAL-001` 归档和 `TASK-028` 仍需按 v3 计划分别完成前置核查。
+- `TASK-EVAL-001` 条件归档 diff 尚未 commit / push；后续 commit 与 push 必须分别重新取得用户明确授权。
+- `TASK-EVAL-001` DoD #12 未通过、未补足：A/B 历史 commit / push 授权记录无法完整核实。该缺口作为历史流程治理债务永久保留，不追溯否定已 push 内容、独立审计结论或 `30/30 PASS`，也不得成为后续绕过授权门禁的先例。
 - `TASK-DEBT-001` 已记录 `resolveTextEvidence()` signal 硬编码、`collectPatternCandidates()` valueFormatSignal 硬编码、parser provenance 常量覆盖、ratio early return 和 TABLE_CELL 真实 DOCX 覆盖盲区；具体证据与后续分流以任务文件为准，尚未批准任何修复。
-- `CURRENT_CONTEXT.md` 的既有完成声明尚需独立 agent 逐条认领审计；本文件只能作为待核验线索，不能作为完成凭证。
+- Step 2 原始逐条认领报告未入库，继续作为治理债务；父任务归档前独立审计已重新覆盖 `TASK-EVAL-001` 归档相关关键断言，但不得表述为原始 Step 2 报告已入库。
 - `TASK-EVAL-001-B` 的 `1.0 / 1.0 / 1` 是当前 canonical anchor 集合的真实计算，只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId、rowIndex、cellIndex 仍依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不能单独证明 parser anchor 位置客观正确，也不得表述为独立人工标注准确率。
 - evaluator 已支持 `TABLE_CELL` canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline 的 TABLE_CELL 端到端覆盖仍未完成，继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，不得宣称真实 DOCX TABLE_CELL 已验证。
 - 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。后续建议单独建立 `TASK-GOV-004`，评估 CI、Code Review Agent、Spec & Docs Review Agent required checks；review agent 判决以 GitHub Check Run 或 Commit Status 发布；required checks 指定可信 GitHub App / source；default branch 未满足 required checks 时禁止 merge；管理员 bypass 关闭或单独审计。`TASK-GOV-004` 尚未创建、未 active、未批准、未实施，required checks 未配置、branch protection 未生效；本轮不修改 CI、GitHub Actions、branch protection 或仓库设置。
@@ -133,7 +134,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 国际 benchmark 仅作为审核点、证据召回、证据重合度和失败模式的评测方法参考；中文开源项目仅作为 UI、报告、预览和配置交互参考；不继承“模型直接审查整份合同并输出业务结论”的主链路。
 - 更强模型可能改变候选收集、角色归属、复杂语义消歧和脆弱正则的使用比例，但不取消治理层：`SourceAnchor`、`EvidenceSlot admission`、`SYS / Finding` 分流、`NOT_CONCLUDED`、不可变快照、版本追溯及后端确定性公式/结构化裁判继续保留。
 - 模型输出必须经过后端 verifier 和 `CandidateResolver`，不得直接形成业务 Finding。模型自报 confidence 不得直接成为 `HIGH` admission；模型只能提供候选、理由、anchor、uncertainty reason、alternative candidates 等可验证信号。
-- `TASK-EVAL-001` 父任务目标保持为 parser-backed fixtures 的 block / table-row / cell level evidence overlap 最低评测基线；Review Intake 结论为 `NEEDS-SPLIT`，原 DoD 不降级。
+- `TASK-EVAL-001` 父任务已按 `GO TO ARCHIVE WITH CONDITIONS` 准备条件归档；DoD #1 至 #11 已确认，DoD #12 未通过且作为永久治理债务保留，不得写成 12/12 全部通过。
 - `TASK-EVAL-001-A` 已补齐真实 row/cell anchor 的结果链路可观测性。
 - `TASK-EVAL-001-B` 已建立 BLOCK / TABLE_ROW / TABLE_CELL canonical key 与 overlap baseline；4 个真实正向 fixture 的 `expectedRecall / actualPrecision / requiredHit` 均为 `1.0 / 1.0 / 1`，`requiredHitRate=1.0`。该结果的解释边界以当前阻塞项为准。
 - 负向矩阵覆盖真实 `CONFLICTED / MEDIUM / LOW`、wrong block、same-row wrong cell、unexpected anchor、wrong row 与 unavailable anchor；candidateValue 正确但 anchor 错误时评测失败。
@@ -147,12 +148,11 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. Step 2 `CURRENT_CONTEXT.md` 逐条认领审计已有独立 agent 报告摘要，但本次文档修正不以 `CURRENT_CONTEXT.md` 自身证明 Step 2 完成；父任务归档前仍需独立 agent 复核原始 Step 2 报告和对应证据。当前仍不进入 Step 3。
-2. 据外部报告与 Codex Review Intake 摘要，`TASK-EVAL-001-B` 已形成事后条件接纳建议并报告定向测试 `30/30 PASS`；原始报告与 console 输出仍须在父任务归档前复核。
-3. `TASK-GOV-003` 已完成并归档，本轮不重复归档，也不再检查 Git。
-4. `TASK-DEBT-001` 建立不代表修复任务获准启动；不进入 Step 3，不起草或派发 `resolveTextEvidence` TASK_SPEC。
-5. 不提交新的 `TASK-EVAL-001-B` 代码、测试、fixture 或 expected JSON 变更；不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
-6. 不派发 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行。
+1. 用户审查 `TASK-EVAL-001` 条件归档未提交 diff；如需 commit，必须另行明确授权。
+2. 如归档 commit 完成后需要 push，必须再次取得独立明确授权。
+3. `TASK-DEBT-001` 建立不代表修复任务获准启动；不进入 Step 3，不起草或派发 `resolveTextEvidence` TASK_SPEC。
+4. 不进入 `TASK-028` / `TASK-031` / `TASK-032`；父任务条件归档不自动解除这些门禁。
+5. 不派发 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行。
 
 ## 参考路径
 

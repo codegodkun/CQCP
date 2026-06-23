@@ -1,6 +1,6 @@
 # TASK-EVAL-001：Parser-backed 证据重合度评测基线
 
-状态：实现与验证已完成，待用户确认提交收口
+状态：Done（条件归档，归档 diff 待用户确认）
 
 类型：A 类质量评测父任务 / Codex 主控
 
@@ -38,6 +38,19 @@
 2. `TASK-EVAL-001-A` 完成并经 Codex 验收后，再启动 `TASK-EVAL-001-B`：evidence overlap baseline。
 3. Git 历史显示 `TASK-EVAL-001-B` 后续对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的外部报告摘要，提交前独立复核流程曾缺失，后续形成了事后独立只读复核和定向测试复跑报告，原始凭证待父任务归档前核验。
 4. 本父任务原 DoD 不降级，仍要求 block / table-row / cell、4 正向 + 4 负向/冲突及完整 overlap 指标。
+
+### 归档前 Review Intake Decision
+
+2026-06-23 父任务归档前 Review Intake Decision：`GO TO ARCHIVE WITH CONDITIONS`。
+
+该决定仅允许在 `TASK-EVAL-001` 父任务 DoD 范围内带治理债务条件归档，不代表 12/12 DoD 全部通过：
+
+* DoD #1 至 #11 已由独立 agent 在 `origin/master` clean clone 上重新核验。
+* DoD #12 未通过、未补足：`TASK-EVAL-001-A` commit `4bac2f438389f83e5ec6338558aaee94a6fe4464` 与 `TASK-EVAL-001-B` commit `672d97f695756249a871da53ad2821eb5146997f` 的历史 commit / push 授权记录无法完整核实。
+* 该缺口作为历史流程治理债务永久保留，不追溯否定已 push 内容、事后独立审计结论或定向测试 `30/30 PASS`。
+* 该例外不得成为后续绕过 commit / push 明确授权门禁的先例；本归档 diff 的 commit 与 push 必须分别重新取得用户明确授权。
+* Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
+* 提交前独立复核曾缺失；事后复核与独立重跑只作为补偿证据，不能追溯性等同于提交前复核。
 
 ## 目标
 
@@ -312,8 +325,8 @@ SOURCE_ANCHOR_UNAVAILABLE
 * `TASK-EVAL-001-A` 已完成并 push，提交为 `4bac2f4`。
 * Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的独立 agent 事后复核报告摘要，提交前独立复核流程曾缺失，复核建议为 `ACCEPT WITH CONDITIONS`。
 * 据用户提供的独立 agent 定向测试复跑报告摘要，基线为 `CQCP_AUDIT` clean clone、HEAD `829796f2a18a87f1155eea96ed991a5fd0748b99`，四组定向测试合计 `30/30 PASS`，无 failure、error 或 skipped，测试前后工作区干净。凭证应以独立 agent 原始报告和 console 输出为准，本任务文件仅记录摘要，不作为完成凭证。
-* 据 Codex Review Intake 摘要，B 被接纳为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`；该接纳只覆盖 B 子任务，不代表父任务可归档。父任务归档前仍须由独立 agent 对原始报告、测试输出、commit 和 diff 再次核验。
-* 父任务提交收口前不得进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
+* B 已被接纳为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`；父任务归档前独立审计随后给出 `GO WITH CONDITIONS`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`。
+* 父任务条件归档不自动解除 `TASK-028`、`TASK-031` 或 `TASK-032` 门禁。
 * 本任务未派发 Claude Code / DeepSeek。
 
 ## 评测结果解释边界
@@ -324,7 +337,7 @@ SOURCE_ANCHOR_UNAVAILABLE
 * evaluator 支持 TABLE_CELL canonical key，test-only / mock 覆盖已存在；当前四份真实主 DOCX 覆盖 BLOCK 与 TABLE_ROW，真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成。
 * 按父任务 DoD 原文，自动化测试支持 TABLE_CELL canonical key 即满足当前 cell 覆盖要求，未要求真实 DOCX cell fixture；因此该覆盖盲区不阻塞父任务归档判断。
 * 不得宣称真实 DOCX TABLE_CELL 已验证。该缺口继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，并防止 parser 输出倒填 expected。
-* 据外部报告和 Codex Review Intake 摘要，B 当前形成“事后条件接纳、定向测试报告摘要已提供”的判断；原始证据仍待父任务归档前独立审计，本节不把父任务改为可归档。
+* B 的事后条件接纳、定向测试复跑和父任务归档前独立审计共同构成补偿证据；这些补偿不能追溯性等同于提交前独立复核。
 * 五条已确认问题的标准记录见 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`。
 
 ## 风险
@@ -350,8 +363,29 @@ SOURCE_ANCHOR_UNAVAILABLE
   * 真实 `CONFLICTED / MEDIUM / LOW` 与注入 wrong block / row / cell / unexpected / unavailable anchor 均不会误判通过
   * `ParserBackedReviewInputPreparerEvidenceTest` 与 `TaskExecutionStateMachineTest` 回归通过
 * 事后复核摘要：据用户提供的独立 agent 报告，commit `672d97f` 的复核建议为 `ACCEPT WITH CONDITIONS`、定向复跑为 `30/30 PASS`；据 Codex Review Intake 摘要，接纳判断为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`。这些摘要不替代原始报告和 console 输出。
-* 遗留问题：父任务归档前仍需独立 agent 归档审计；真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成。
+* 父任务归档前独立审计：
+  * 审计基线为 GitHub `origin/master` clean clone，`HEAD = origin/master = 719699d`，工作区干净。
+  * 12 条 DoD 中 #1 至 #11 已确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实。
+  * 独立 agent 重新运行四组定向测试并捕获 JUnit XML，合计 `30/30 PASS`。
+* 遗留问题：
+  * A/B 历史 commit / push 授权记录无法完整核实，作为历史流程治理债务永久保留。
+  * Step 2 原始逐条认领报告未入库。
+  * 提交前独立复核曾缺失，事后复核与独立重跑不能追溯性等同于提交前复核。
+  * 真实 DOCX positive baseline TABLE_CELL 覆盖仍为 0，由 `TASK-DEBT-001` 或后续人工 anchor 标注任务追踪。
 * 备注：未修改生产代码、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate 或业务状态语义。
+
+## 条件归档边界
+
+本次归档仅表示 `TASK-EVAL-001` 父任务在 DoD #1 至 #11 已独立确认、DoD #12 作为未关闭历史流程治理债务保留的条件下完成收口：
+
+* 不代表五类问题整改已完成。
+* 不代表角色分离机制已完全恢复。
+* 不代表真实 DOCX `TABLE_CELL` 已验证。
+* 不代表 expected anchor 已具备独立人工 ground truth 正确性。
+* expected anchor 仍依赖 parser 内部 `blockId / rowIndex / cellIndex`，当前结果只证明 expected 与 parser-backed 输出的一致性和回归稳定性。
+* 不自动解除 `TASK-028`、`TASK-031` 或 `TASK-032` 门禁。
+* 不进入 Step 3，不起草、冻结或派发 `TASK_SPEC`。
+* 后续任何 commit / push 均必须重新取得用户明确授权。
 
 ## 后续治理缺口
 
@@ -361,7 +395,7 @@ SOURCE_ANCHOR_UNAVAILABLE
 
 ## 当前持续门禁
 
-* 不归档 `TASK-EVAL-001`。
 * 不进入 `TASK-028`、`TASK-031` 或 `TASK-032`。
 * 不进入 Step 3，不起草或派发 `resolveTextEvidence` TASK_SPEC。
 * 不提交新的 `TASK-EVAL-001-B` 代码、测试、fixture 或 expected JSON 变更。
+* 本次归档文档 diff 不得在未经用户分别明确授权的情况下 commit 或 push。
