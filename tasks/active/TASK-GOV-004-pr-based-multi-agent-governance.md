@@ -40,18 +40,25 @@ PR_REQUIRED_CHECKS
 * 本轮不能证明 PR 流程、CI、独立审查回写和 GitHub 机制化门禁已经形成闭环。
 * 未达到 Phase 5 全部机制化验收证据前，不得写 `PR_REQUIRED_CHECKS`。
 * 文档规则不是机制门禁。
+* 以上仅是当前现状基线，不代表 `TASK-GOV-004` Phase 1 已实施。
 
 ## 当前只读证据
 
 建档前只读核查结果：
 
+* `gh` CLI 已安装并完成登录，具备基础只读能力。
+* `gh repo view` 本轮存在 EOF 传输不稳定，因此只能作为有限证据，不能单独作为最终结论依据。
 * 主仓库 `git status --short` 为空，工作区干净。
 * 主仓库 `git status -sb` 为 `## master...origin/master`。
 * `git rev-list --left-right --count origin/master...HEAD` 为 `0 0`，本地 `master` 与 `origin/master` 对齐。
-* 本地无 `.github` 目录；`git ls-tree -r --name-only HEAD -- .github` 无输出。
-* `gh` CLI 当前不可用。
-* 公开 GitHub REST API 对 repo、branch protection、rulesets、workflows 返回 `403`。
-* 因此本轮不能证明 GitHub 设置真实状态，不能采信 branch protection、ruleset、required status checks、direct push 拒绝或测试 PR 拦截已经生效。
+* `master` 未启用 branch protection；相关 API 返回 `404 Branch not protected`。
+* repository ruleset 当前按“未配置或无证据”处理。
+* GitHub Actions workflows 数量为 `0`。
+* check-runs 数量为 `0`。
+* commit statuses 返回 `state: "pending"` 且 `statuses / total_count` 为空；这不能证明存在实际 status、pending check 或 required check。
+* default branch 尚未被 PR / review / checks 机制强制保护。
+* 当前仍不能采信 branch protection、ruleset、required status checks、direct push 拒绝或测试 PR 拦截已经生效。
+* 以上仅是当前现状基线，不代表 `TASK-GOV-004` Phase 1 已实施。
 
 ## 目标
 
