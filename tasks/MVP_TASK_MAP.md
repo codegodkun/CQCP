@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-06-21
+更新日期：2026-06-23
 
 ## 当前结论
 
@@ -15,6 +15,7 @@
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；事后独立复核、定向测试 `30/30 PASS` 和父任务归档前独立审计已形成补偿证据，但不能追溯性等同于提交前复核
 - `TASK-EVAL-001` 已准备条件归档未提交 diff；DoD #1 至 #11 已独立确认，DoD #12 未通过、未补足并作为永久治理债务保留
+- `TASK-GOV-004` 已建立 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；当前 Governance Mode 只能标注为 `LEGACY_MANUAL`
 - Step 2 原始逐条认领报告未入库，继续作为治理债务；父任务归档前独立审计已重新覆盖本父任务归档相关关键断言，但当前不自动进入 Step 3，也不是进入 `TASK-028`
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，当前禁止进入实现
@@ -38,6 +39,7 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
+| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 0 / Phase 1） | 当前 Governance Mode 为 `LEGACY_MANUAL`；仅记录 PR + CI + 独立审查 + 机制化门禁实施路径，不修改业务代码或 GitHub 设置 |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（Step 3 禁止进入） | 已登记 5 条标准记录；Step 2 仅有外部报告摘要，父任务归档前需复核原始证据；不提前准备 `resolveTextEvidence` TASK_SPEC |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 条件归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
@@ -199,11 +201,38 @@
   - evaluator 支持 TABLE_CELL canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成，由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪
   - 未修改生产代码或 DOCX fixture
 
-### 后续治理候选：`TASK-GOV-004`（尚未创建）
+### `TASK-GOV-004`
 
-- 当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。
-- 后续建议评估 CI、Code Review Agent、Spec & Docs Review Agent required checks；review agent 判决以 GitHub Check Run 或 Commit Status 发布；required checks 指定可信 GitHub App / source；default branch 未满足 required checks 时禁止 merge；管理员 bypass 关闭或单独审计。
-- 当前状态：仅记录治理缺口；`TASK-GOV-004` 未创建、未 active、未批准、未实施，required checks 未配置、branch protection 未生效，不属于本次 `TASK-EVAL-001-B` 文档修正范围。本轮不修改 CI、GitHub Actions、branch protection 或仓库设置。
+- 定位：PR 化多 Agent 开发治理与 GitHub 机制化门禁父任务。
+- 当前 Governance Mode：`LEGACY_MANUAL`。
+- 当前只读证据：
+  - 主仓库工作区干净。
+  - `master` 与 `origin/master` 对齐。
+  - 本地无 `.github` 目录。
+  - `gh` CLI 不可用。
+  - 公开 GitHub REST API 对 repo / branch protection / rulesets / workflows 返回 `403`。
+  - 因此本轮不能证明 GitHub 设置真实状态。
+- Phase 0-6 顺序：
+  - Phase 0：治理状态基线与任务边界冻结。
+  - Phase 1：目录结构与审计环境核实。
+  - Phase 2：Draft PR 流程。
+  - Phase 3：基础 GitHub Actions CI。
+  - Phase 4：手动独立 Code Review + Spec & Docs Review。
+  - Phase 5：Protected Branch + Required Checks。
+  - Phase 6：归档流程 PR 化。
+- 目录口径：
+  - `C:\Users\1\Documents\CQCP` 是主仓库。
+  - `C:\Users\1\Documents\CQCP-work` 是未来执行 agent 工作区，当前尚未建立。
+  - `C:\Users\1\Documents\CQCP_AUDIT` 是审计环境根目录。
+  - `C:\Users\1\Documents\CQCP_AUDIT\CQCP` 是被审计 git clone，后续审计 git 命令必须在此目录执行。
+  - 不得使用 `git worktree` 创建 `CQCP_AUDIT\CQCP`。
+  - `audit-scratch` 建议放在 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`，不放进被审计 clone。
+- 边界：
+  - 不替代五类问题整改 v3。
+  - 不修复已知代码缺陷。
+  - 不修改 fixture、expected JSON、ADR、PRD、OpenAPI、数据库、Docker、`.github/workflows` 或 GitHub 设置。
+  - 不进入 `TASK-EVAL-001-B`、`TASK-028`、`TASK-031`、`TASK-032`。
+  - Codex 不得充当 Code Review Agent 或 Spec & Docs Review Agent。
 
 ## 协作边界
 
@@ -233,7 +262,8 @@
 
 ## 当前建议顺序
 
-1. `TASK-GOV-003` 已完成并归档。
-2. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；下一步对该任务执行只读 Review Intake，确认分批顺序与边界，不进入开发。
-3. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
-4. 当前只准备 `TASK-EVAL-001` 条件归档未提交 diff；不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不进入 Step 3，不起草或派发 `TASK_SPEC`。
+1. `TASK-GOV-004` 已建立 Phase 0 / Phase 1；下一步如获授权，只执行 Phase 1 只读目录与审计环境核实。
+2. `TASK-GOV-003` 已完成并归档。
+3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；后续对该任务执行只读 Review Intake 时，不进入开发。
+4. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
+5. 当前不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不进入 Step 3，不起草或派发 `TASK_SPEC`。

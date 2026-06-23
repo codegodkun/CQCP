@@ -1,0 +1,340 @@
+# TASK-GOV-004：PR 化多 Agent 开发治理与机制化门禁
+
+状态：Active（Phase 0 / Phase 1）
+
+类型：Governance
+
+优先级：高
+
+负责人：Codex 总控
+
+创建日期：2026-06-23
+
+来源：`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、用户提供的《CQCP 基于 PR 的多 Agent 开发治理方案与实施计划 v2》
+
+## 背景
+
+当前 CQCP 的 v3 角色分离与证据门禁已经形成文档规则，但仍依赖 Codex 遵守、用户判断和独立 agent 审计。尚未通过 GitHub branch protection、required status checks、真实 CI 与 PR 拦截记录形成机制化硬门禁。
+
+本任务用于把 PR 化治理方案 v2 转为项目可追踪任务，逐步建立 `PR + CI + 独立审查 + 机制化门禁` 的治理管道。
+
+## 当前 Governance Mode
+
+当前只能标注为：
+
+```text
+LEGACY_MANUAL
+```
+
+不得写为：
+
+```text
+PR_MANUAL_REVIEW
+PR_REQUIRED_CHECKS
+```
+
+不得使用“PR 治理已启用”这类笼统措辞。
+
+原因：
+
+* 本轮不能证明 PR 流程、CI、独立审查回写和 GitHub 机制化门禁已经形成闭环。
+* 未达到 Phase 5 全部机制化验收证据前，不得写 `PR_REQUIRED_CHECKS`。
+* 文档规则不是机制门禁。
+
+## 当前只读证据
+
+建档前只读核查结果：
+
+* 主仓库 `git status --short` 为空，工作区干净。
+* 主仓库 `git status -sb` 为 `## master...origin/master`。
+* `git rev-list --left-right --count origin/master...HEAD` 为 `0 0`，本地 `master` 与 `origin/master` 对齐。
+* 本地无 `.github` 目录；`git ls-tree -r --name-only HEAD -- .github` 无输出。
+* `gh` CLI 当前不可用。
+* 公开 GitHub REST API 对 repo、branch protection、rulesets、workflows 返回 `403`。
+* 因此本轮不能证明 GitHub 设置真实状态，不能采信 branch protection、ruleset、required status checks、direct push 拒绝或测试 PR 拦截已经生效。
+
+## 目标
+
+* 建立 `PR + CI + 独立审查 + 机制化门禁` 的治理管道。
+* 将治理状态显式分档为 `LEGACY_MANUAL / PR_MANUAL_REVIEW / PR_REQUIRED_CHECKS`。
+* 将 PR 化治理方案 v2 的实施路径写入项目任务系统，形成可追踪、可验收、可审计的阶段任务。
+
+## 非目标
+
+* 不替代五类问题整改 v3。
+* 不修复已知代码缺陷。
+* 不修改 fixture。
+* 不修改 expected JSON。
+* 不修改 ADR / PRD。
+* 不进入 `TASK-EVAL-001-B`。
+* 不归档 `TASK-EVAL-001`。
+* 不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 不修改五类问题整改 v3 的既有门禁。
+
+## 输入
+
+* 相关文档：`CURRENT_CONTEXT.md`
+* 相关任务地图：`tasks/MVP_TASK_MAP.md`
+* 上游治理任务：`tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
+* 外部方案：`C:\Users\1\Downloads\CQCP-PR治理方案-v2.md`
+
+## Task Context
+
+### Required Context
+
+* `AGENTS.md`
+* `CURRENT_CONTEXT.md`
+* 本任务包
+* `tasks/MVP_TASK_MAP.md`
+* `docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
+
+### Optional Context
+
+* `tasks/TEMPLATE_ROUTER.md`
+* `tasks/TASK_SPEC_REVIEW_TEMPLATE_READONLY.md`
+* `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`
+* `changelog/2026-06.md`
+
+### Out of Scope
+
+* 业务代码
+* 测试代码
+* fixture
+* expected JSON
+* OpenAPI
+* 数据库迁移
+* Docker / Compose
+* `PRD.md`
+* `docs/ARCHITECTURE.md`
+* `decisions/ADR-*`
+* `.github/workflows`
+* GitHub branch protection / ruleset 配置
+
+## 范围
+
+### 包含
+
+* 建立本治理父任务。
+* 冻结当前 Governance Mode 基线。
+* 记录 Phase 0 至 Phase 6 的实施顺序。
+* 记录 Phase 5 机制化门禁验收证据清单。
+* 记录 `CQCP / CQCP-work / CQCP_AUDIT` 的目录结构口径。
+* 记录后续审计命令必须在被审计 clone 中执行。
+
+### 不包含
+
+* 不新增 CI workflow。
+* 不创建 PR 模板。
+* 不修改 GitHub 设置。
+* 不创建或移动本地目录。
+* 不派发 Claude Code / DeepSeek 实现任务。
+* 不由 Codex 充当 Code Review Agent 或 Spec & Docs Review Agent。
+
+## 目录结构口径
+
+当前采用以下目录结构口径：
+
+```text
+C:\Users\1\Documents\CQCP
+C:\Users\1\Documents\CQCP-work
+C:\Users\1\Documents\CQCP_AUDIT
+C:\Users\1\Documents\CQCP_AUDIT\CQCP
+```
+
+定义：
+
+* `C:\Users\1\Documents\CQCP` 是主仓库。
+* `C:\Users\1\Documents\CQCP-work` 是未来执行 agent 工作区，当前尚未建立。
+* `C:\Users\1\Documents\CQCP_AUDIT` 是审计环境根目录。
+* `C:\Users\1\Documents\CQCP_AUDIT\CQCP` 是被审计 git clone。
+* 当前结构可以接受：外层 `CQCP_AUDIT` 承载 `.claude` 配置，避免与仓库 clone 根目录冲突。
+* 不得使用 `git worktree` 创建 `C:\Users\1\Documents\CQCP_AUDIT\CQCP`；该目录必须保持为独立 `git clone`。
+* `audit-scratch` 建议放在 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`，不放进 `C:\Users\1\Documents\CQCP_AUDIT\CQCP`，以避免污染被审计 clone 的工作区。
+
+后续审计提示词必须使用以下执行目录与命令：
+
+```powershell
+cd C:\Users\1\Documents\CQCP_AUDIT\CQCP
+git status --short
+git status -sb
+git fetch origin
+git log -1 --format="%H %ci"
+```
+
+仍需只读核实：
+
+* `C:\Users\1\Documents\CQCP_AUDIT\.claude\settings.json` 是否实际限制写入。
+* `.claude/settings.json` 是否实际限制 `git add`、`git commit`、`git push`、`git merge`、`git rebase`、`git reset` 等 git 写操作。
+* 审计临时写入是否仅允许进入外层 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`。
+
+## Phase 0-6 实施顺序
+
+### Phase 0：治理状态基线与任务边界冻结
+
+目标：
+
+* 明确当前 Governance Mode 为 `LEGACY_MANUAL`。
+* 明确 PR 化治理方案 v2 尚未形成机制门禁。
+* 冻结本任务目标、非目标、允许文件与禁止文件。
+* 记录当前只读证据。
+
+验收：
+
+* 本任务文件存在。
+* `CURRENT_CONTEXT.md`、`changelog/2026-06.md`、`tasks/MVP_TASK_MAP.md` 记录本任务状态与边界。
+* 未修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD、`docs/ARCHITECTURE.md`、`.github/workflows` 或 GitHub 设置。
+
+### Phase 1：目录结构与审计环境核实
+
+目标：
+
+* 核实 `CQCP`、`CQCP-work`、`CQCP_AUDIT` 的实际路径与职责。
+* 确认 `CQCP_AUDIT\CQCP` 是独立 git clone，不是 worktree。
+* 确认审计命令在 `CQCP_AUDIT\CQCP` 执行。
+* 只读核实 `.claude/settings.json` 权限边界。
+
+验收：
+
+* 输出 `CQCP_AUDIT\CQCP` 的 `git status --short`、`git status -sb`、`git fetch origin`、`git log -1 --format="%H %ci"`。
+* 输出 `CQCP_AUDIT\.claude\settings.json` 的权限核查结论。
+* 未创建、移动或删除目录。
+
+### Phase 2：Draft PR 流程
+
+目标：
+
+* 让后续任务通过工作分支与 Draft PR 进入审查。
+* PR 描述包含 Review Baseline、Governance Mode、允许文件、禁止文件、测试证据和 expected / fixture 来源说明。
+
+验收：
+
+* 至少一个测试性 Draft PR 流程可被真实创建和审查。
+* 在未进入 Phase 5 前，只能标注为 `PR_MANUAL_REVIEW` 的候选阶段，不得写 `PR_REQUIRED_CHECKS`。
+
+### Phase 3：基础 GitHub Actions CI
+
+目标：
+
+* 添加基础 CI workflow，先覆盖标准构建与测试命令。
+* CI 不调用模型 API，不承担 Code Review 或 Spec & Docs Review 判断。
+
+验收：
+
+* CI workflow 文件存在并通过真实 PR 运行。
+* 有 GitHub Actions 运行记录。
+* CI 失败时不能建议合并。
+
+### Phase 4：手动独立 Code Review + Spec & Docs Review
+
+目标：
+
+* 在 `CQCP_AUDIT` 审计环境中手动触发独立审查。
+* Code Review 与 Spec & Docs Review 必须满足模型厂商独立性和真实命令执行能力要求。
+
+验收：
+
+* 审查结论统一为 `GO / NEEDS-FIX / NO-GO`。
+* 审查结论回写到 PR 评论或后续可转为 Check Run / Commit Status。
+* Codex 不得充当 Code Review Agent 或 Spec & Docs Review Agent。
+
+### Phase 5：Protected Branch + Required Checks
+
+目标：
+
+* 将审查结论从文档规则升级为 GitHub 机制化门禁。
+* 正式进入 `PR_REQUIRED_CHECKS` 前必须取得完整证据。
+
+机制化门禁验收证据，缺一不可：
+
+* branch protection / ruleset 真实配置证据。
+* required status checks 名称与 source。
+* CI workflow 真实运行记录。
+* Code Review / Spec & Docs Review Check Run 或 Commit Status。
+* 测试 PR 被 required checks 阻止合并的证据。
+* direct push 被拒绝的证据。
+* 管理员 bypass 状态说明。
+
+未满足上述全部证据前，不得写 `PR_REQUIRED_CHECKS`。
+
+### Phase 6：归档流程 PR 化
+
+目标：
+
+* 任务归档必须经过 PR、CI、独立审查和用户批准。
+* `tasks/active -> tasks/done`、`CURRENT_CONTEXT.md`、`changelog/`、`tasks/MVP_TASK_MAP.md` 的状态变更必须进入 PR 审查。
+
+验收：
+
+* 归档 PR 中明确 CI、Code Review、Spec & Docs Review、Governance Mode、用户批准和归档建议。
+* 文档状态不得先于真实证据写成 Done / Archived / Completed。
+
+## 约束
+
+* 文档规则不是机制门禁。
+* 未达到 Phase 5 全部证据前，不得写 `PR_REQUIRED_CHECKS`。
+* Codex 不得充当 Code Review Agent 或 Spec & Docs Review Agent。
+* CQCP_AUDIT 独立审计必须基于真实命令、commit、PR、CI、GitHub 设置证据。
+* 不混入 `TASK-EVAL-001-B`、`TASK-028`、`TASK-031`、`TASK-032`。
+* 不修改五类问题整改 v3 的既有门禁。
+* 不把 `CURRENT_CONTEXT.md` 或本任务文件中的自述当作机制生效证据。
+* 不得在未取得用户明确授权时 stage、commit、push、merge 或修改 GitHub 设置。
+
+## 交付物
+
+* `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`
+* `CURRENT_CONTEXT.md` 中的活跃任务与阻塞项摘要
+* `changelog/2026-06.md` 中的建档记录
+* `tasks/MVP_TASK_MAP.md` 中的任务地图更新
+
+## 验收标准
+
+* 任务文件完整记录当前 `LEGACY_MANUAL` 状态和证据边界。
+* 明确 Phase 0-6 实施顺序。
+* 明确 Phase 5 机制化门禁证据清单。
+* 明确 `CQCP_AUDIT` 实际路径口径。
+* 未修改禁止文件。
+* `git diff --check` 通过。
+
+## 测试与验证
+
+本任务当前仅完成治理任务建档，不运行业务测试。
+
+必须执行的验证：
+
+* `git diff --name-status`
+* `git diff --stat`
+* `git diff --check`
+* `git status --short`
+
+## 文档更新要求
+
+* 是否需要更新 `CURRENT_CONTEXT.md`：是。
+* 是否需要更新 `docs/*.md`：本轮不需要。
+* 是否需要更新 `changelog/当前月份.md`：是。
+* 是否需要新增或更新 ADR：否。本任务只治理开发流程，不改变核心审核链路、模型职责、SYS/Finding 边界、EvidenceSlot、ReviewPointFamily 或 CandidateResolver。
+
+## Next Task Handoff
+
+下一步：如用户授权，执行 Phase 1 只读目录与审计环境核实。
+
+## 风险
+
+* GitHub API 当前无法核实配置，不能证明机制化门禁状态。
+* `gh` CLI 不可用会阻碍 Phase 5 证据采集。
+* 如果后续只写文档、不配置 GitHub 规则，治理仍停留在 `LEGACY_MANUAL` 或最多 `PR_MANUAL_REVIEW`，不能写 `PR_REQUIRED_CHECKS`。
+* `CQCP_AUDIT` 的 `.claude/settings.json` 仍需只读核实，不能仅凭目录存在采信其限制已生效。
+
+## 待确认
+
+* 是否将外部 `C:\Users\1\Downloads\CQCP-PR治理方案-v2.md` 正式纳入 `docs/governance/`。
+* 是否安装或启用 `gh` CLI，供 CQCP_AUDIT 后续使用 `gh api` 核实 GitHub 设置。
+* Phase 3 的最小 CI 命令矩阵。
+* Phase 5 的 required checks 命名、source 和发布方式。
+
+## 完成记录
+
+* 完成日期：待填写。
+* 变更文件：待填写。
+* 测试结果：待填写。
+* 遗留问题：待填写。
+* 备注：当前仅完成治理任务建档；尚未进入 Phase 1 实施，尚未配置 PR、CI、branch protection 或 required checks。

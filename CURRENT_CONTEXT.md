@@ -1,6 +1,6 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-06-22
+更新日期：2026-06-23
 
 ## 当前阶段
 
@@ -33,9 +33,11 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-EVAL-001` 已形成条件归档文档 diff：DoD #1 至 #11 已由归档前独立审计确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并作为永久治理债务保留
 - `TASK-028` / `TASK-031` / `TASK-032` 仍禁止进入；后续必须按 v3 计划的角色分工执行
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
+- `TASK-GOV-004` 已建档为 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；当前 Governance Mode 仍为 `LEGACY_MANUAL`，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效
 
 ## 活跃任务
 
+- `TASK-GOV-004` 已建档为 active 治理任务，文件为 `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`。本任务仅建立 Phase 0 / Phase 1 口径和 Phase 0-6 实施路径，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD、`.github/workflows` 或 GitHub 设置。
 - `TASK-GOV-003` 已完成并归档：治理提交 `515196e` 已独立审计、push，且远程同步确认 `0 0`。
 - 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。本轮 Step 1 只登记、不修复，建立任务不代表任何实现已获批准。
 - `TASK-EVAL-001` 已按 `GO TO ARCHIVE WITH CONDITIONS` 准备条件归档，归档文件为 `tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md`；当前仅生成未提交 diff。
@@ -116,7 +118,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - Step 2 原始逐条认领报告未入库，继续作为治理债务；父任务归档前独立审计已重新覆盖 `TASK-EVAL-001` 归档相关关键断言，但不得表述为原始 Step 2 报告已入库。
 - `TASK-EVAL-001-B` 的 `1.0 / 1.0 / 1` 是当前 canonical anchor 集合的真实计算，只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId、rowIndex、cellIndex 仍依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不能单独证明 parser anchor 位置客观正确，也不得表述为独立人工标注准确率。
 - evaluator 已支持 `TABLE_CELL` canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline 的 TABLE_CELL 端到端覆盖仍未完成，继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，不得宣称真实 DOCX TABLE_CELL 已验证。
-- 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。后续建议单独建立 `TASK-GOV-004`，评估 CI、Code Review Agent、Spec & Docs Review Agent required checks；review agent 判决以 GitHub Check Run 或 Commit Status 发布；required checks 指定可信 GitHub App / source；default branch 未满足 required checks 时禁止 merge；管理员 bypass 关闭或单独审计。`TASK-GOV-004` 尚未创建、未 active、未批准、未实施，required checks 未配置、branch protection 未生效；本轮不修改 CI、GitHub Actions、branch protection 或仓库设置。
+- 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。`TASK-GOV-004` 已建档为 active 治理任务用于分阶段治理该缺口；当前 Governance Mode 仍只能标注为 `LEGACY_MANUAL`。本轮只记录任务边界、目录口径与 Phase 0-6 路径，不修改 CI、GitHub Actions、branch protection、ruleset 或仓库设置。
+- `TASK-GOV-004` 建档前只读证据：主仓库工作区干净，`master` 与 `origin/master` 对齐，本地无 `.github` 目录，`gh` CLI 不可用，公开 GitHub REST API 对 repo / branch protection / rulesets / workflows 返回 `403`；因此本轮不能证明 GitHub 设置真实状态，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效。
+- `TASK-GOV-004` Phase 1 目录口径已确认：`C:\Users\1\Documents\CQCP_AUDIT` 是审计环境根目录，`C:\Users\1\Documents\CQCP_AUDIT\CQCP` 是被审计 git clone；后续审计 git 命令必须在 `CQCP_AUDIT\CQCP` 执行，不得写成在 `CQCP_AUDIT` 根目录直接执行。`audit-scratch` 建议位于 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`，不放进被审计 clone。
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
 - `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
 - `TASK-027-A` 回收结论已确认：外部 Result API 真实实现为 `GET /api/v1/tasks/{taskId}/result`，`packages/api-contracts/openapi.yaml` 与真实实现和 DTO 已分叉；`PointStatus` 五值稳定、`notConcludedReason` 六值稳定，但 `notConcludedDetail`、`missingOptionalSlots[]`、正式化 `sourceAnchors` 尚未形成真实对外承载位，因此 OpenAPI 契约对齐 / 文档更新任务阻断 `TASK-027` 直接进入实现
@@ -148,11 +152,12 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
 ## 下一步任务
 
-1. 用户审查 `TASK-EVAL-001` 条件归档未提交 diff；如需 commit，必须另行明确授权。
-2. 如归档 commit 完成后需要 push，必须再次取得独立明确授权。
-3. `TASK-DEBT-001` 建立不代表修复任务获准启动；不进入 Step 3，不起草或派发 `resolveTextEvidence` TASK_SPEC。
-4. 不进入 `TASK-028` / `TASK-031` / `TASK-032`；父任务条件归档不自动解除这些门禁。
-5. 不派发 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行。
+1. 下一步如获用户授权，先执行 `TASK-GOV-004` Phase 1 只读目录与审计环境核实。
+2. 如后续推进 `TASK-GOV-004` Phase 1，只允许只读核实目录结构和 `CQCP_AUDIT\.claude\settings.json` 权限边界，不移动目录、不创建目录、不修改文件。
+3. `TASK-EVAL-001` 条件归档如需 commit / push，仍必须分别重新取得用户明确授权。
+4. `TASK-DEBT-001` 建立不代表修复任务获准启动；不进入 Step 3，不起草或派发 `resolveTextEvidence` TASK_SPEC。
+5. 不进入 `TASK-028` / `TASK-031` / `TASK-032`；父任务条件归档和 `TASK-GOV-004` 建档均不自动解除这些门禁。
+6. 不派发 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行。
 
 ## 参考路径
 
@@ -174,4 +179,5 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `tasks/TASK_SPEC_TEMPLATE_CLAUDECODE_DEEPSEEK.md`
 - `docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
 - `tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
+- `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`
 - `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
