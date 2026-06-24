@@ -119,7 +119,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-EVAL-001-B` 的 `1.0 / 1.0 / 1` 是当前 canonical anchor 集合的真实计算，只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId、rowIndex、cellIndex 仍依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不能单独证明 parser anchor 位置客观正确，也不得表述为独立人工标注准确率。
 - evaluator 已支持 `TABLE_CELL` canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline 的 TABLE_CELL 端到端覆盖仍未完成，继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，不得宣称真实 DOCX TABLE_CELL 已验证。
 - 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。`TASK-GOV-004` 已建档为 active 治理任务用于分阶段治理该缺口；当前 Governance Mode 仍只能标注为 `LEGACY_MANUAL`。本轮只记录任务边界、目录口径与 Phase 0-6 路径，不修改 CI、GitHub Actions、branch protection、ruleset 或仓库设置。
-- `TASK-GOV-004` 建档前只读证据：主仓库工作区干净，`master` 与 `origin/master` 对齐，本地无 `.github` 目录，`gh` CLI 不可用，公开 GitHub REST API 对 repo / branch protection / rulesets / workflows 返回 `403`；因此本轮不能证明 GitHub 设置真实状态，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效。
+- `TASK-GOV-004` 建档前只读证据：主仓库工作区干净，`master` 与 `origin/master` 对齐，本地无 `.github` 目录；截至 2026-06-23 复核，`gh` CLI 可正常使用，公开 GitHub REST API 可返回数据。此处仅记录本次时点性核查结果，后续环境状态仍可能变化，因此不得写成永久可用结论。
 - `TASK-GOV-004` Phase 1 目录口径已确认：`C:\Users\1\Documents\CQCP_AUDIT` 是审计环境根目录，`C:\Users\1\Documents\CQCP_AUDIT\CQCP` 是被审计 git clone；后续审计 git 命令必须在 `CQCP_AUDIT\CQCP` 执行，不得写成在 `CQCP_AUDIT` 根目录直接执行。`audit-scratch` 建议位于 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`，不放进被审计 clone。
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
 - `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
