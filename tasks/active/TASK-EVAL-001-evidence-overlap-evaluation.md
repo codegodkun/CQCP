@@ -1,6 +1,6 @@
 # TASK-EVAL-001：Parser-backed 证据重合度评测基线
 
-状态：Done（条件归档，归档 diff 待用户确认）
+状态：暂停归档（已按用户要求回滚，归档 diff 不提交）
 
 类型：A 类质量评测父任务 / Codex 主控
 
@@ -42,14 +42,18 @@
 ### 归档前 Review Intake Decision
 
 2026-06-23 父任务归档前 Review Intake Decision：`GO TO ARCHIVE WITH CONDITIONS`。
+【2026-06-XX 回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前归档状态依据。
 
 该决定仅允许在 `TASK-EVAL-001` 父任务 DoD 范围内带治理债务条件归档，不代表 12/12 DoD 全部通过：
+【2026-06-XX 回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前归档状态依据。
 
 * DoD #1 至 #11 已由独立 agent 在 `origin/master` clean clone 上重新核验。
 * DoD #12 未通过、未补足：`TASK-EVAL-001-A` commit `4bac2f438389f83e5ec6338558aaee94a6fe4464` 与 `TASK-EVAL-001-B` commit `672d97f695756249a871da53ad2821eb5146997f` 的历史 commit / push 授权记录无法完整核实。
 * 该缺口作为历史流程治理债务永久保留，不追溯否定已 push 内容、事后独立审计结论或定向测试 `30/30 PASS`。
 * 该例外不得成为后续绕过 commit / push 明确授权门禁的先例；本归档 diff 的 commit 与 push 必须分别重新取得用户明确授权。
 * Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
+【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
+* 在 Step 2 原始逐条认领报告真正产出、DoD #12 真正解决之前，不得再次进入任何形式的归档状态，包括“条件归档”这类自定义状态。
 * 提交前独立复核曾缺失；事后复核与独立重跑只作为补偿证据，不能追溯性等同于提交前复核。
 
 ## 目标
@@ -326,7 +330,9 @@ SOURCE_ANCHOR_UNAVAILABLE
 * Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的独立 agent 事后复核报告摘要，提交前独立复核流程曾缺失，复核建议为 `ACCEPT WITH CONDITIONS`。
 * 据用户提供的独立 agent 定向测试复跑报告摘要，基线为 `CQCP_AUDIT` clean clone、HEAD `829796f2a18a87f1155eea96ed991a5fd0748b99`，四组定向测试合计 `30/30 PASS`，无 failure、error 或 skipped，测试前后工作区干净。凭证应以独立 agent 原始报告和 console 输出为准，本任务文件仅记录摘要，不作为完成凭证。
 * B 已被接纳为 `ACCEPT WITH CONDITIONS — TEST EVIDENCE SATISFIED`；父任务归档前独立审计随后给出 `GO WITH CONDITIONS`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`。
+【2026-06-XX 回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前归档状态依据。
 * 父任务条件归档不自动解除 `TASK-028`、`TASK-031` 或 `TASK-032` 门禁。
+【回滚批注】当前状态已变更为暂停归档，但上述门禁仍保持不解除。
 * 本任务未派发 Claude Code / DeepSeek。
 
 ## 评测结果解释边界
@@ -374,9 +380,9 @@ SOURCE_ANCHOR_UNAVAILABLE
   * 真实 DOCX positive baseline TABLE_CELL 覆盖仍为 0，由 `TASK-DEBT-001` 或后续人工 anchor 标注任务追踪。
 * 备注：未修改生产代码、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate 或业务状态语义。
 
-## 条件归档边界
+## 暂停归档边界
 
-本次归档仅表示 `TASK-EVAL-001` 父任务在 DoD #1 至 #11 已独立确认、DoD #12 作为未关闭历史流程治理债务保留的条件下完成收口：
+本次状态仅表示 `TASK-EVAL-001` 当前暂停归档，等待 Step 2 原始逐条认领报告与 DoD #12 的真实解决结果：
 
 * 不代表五类问题整改已完成。
 * 不代表角色分离机制已完全恢复。
@@ -385,7 +391,7 @@ SOURCE_ANCHOR_UNAVAILABLE
 * expected anchor 仍依赖 parser 内部 `blockId / rowIndex / cellIndex`，当前结果只证明 expected 与 parser-backed 输出的一致性和回归稳定性。
 * 不自动解除 `TASK-028`、`TASK-031` 或 `TASK-032` 门禁。
 * 不进入 Step 3，不起草、冻结或派发 `TASK_SPEC`。
-* 后续任何 commit / push 均必须重新取得用户明确授权。
+* 后续任何归档、commit 或 push 均必须重新取得用户明确授权。
 
 ## 后续治理缺口
 

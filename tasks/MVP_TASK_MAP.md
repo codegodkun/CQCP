@@ -11,12 +11,14 @@
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
 - `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；Step 1 只登记、不修复，不代表实现获准启动
-- `TASK-EVAL-001` 归档前 Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`
+- `TASK-EVAL-001` 父任务归档前独立审计随后给出 `GO WITH CONDITIONS`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`
+  【回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前状态依据。
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；事后独立复核、定向测试 `30/30 PASS` 和父任务归档前独立审计已形成补偿证据，但不能追溯性等同于提交前复核
-- `TASK-EVAL-001` 已准备条件归档未提交 diff；DoD #1 至 #11 已独立确认，DoD #12 未通过、未补足并作为永久治理债务保留
+- `TASK-EVAL-001` 已回滚为暂停归档，仅保留未提交 diff；DoD #1 至 #11 已独立确认，DoD #12 未通过、未补足并作为永久治理债务保留
 - `TASK-GOV-004` 已建立 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；当前 Governance Mode 只能标注为 `LEGACY_MANUAL`
-- Step 2 原始逐条认领报告未入库，继续作为治理债务；父任务归档前独立审计已重新覆盖本父任务归档相关关键断言，但当前不自动进入 Step 3，也不是进入 `TASK-028`
+- Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
+  【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
 - `TASK-031` 仍未进入，继续禁止抢跑
 - `TASK-032` 已登记为后续重构任务，当前禁止进入实现
 
@@ -41,7 +43,7 @@
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
 | `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 0 / Phase 1） | 当前 Governance Mode 为 `LEGACY_MANUAL`；仅记录 PR + CI + 独立审查 + 机制化门禁实施路径，不修改业务代码或 GitHub 设置 |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（Step 3 禁止进入） | 已登记 5 条标准记录；Step 2 仅有外部报告摘要，父任务归档前需复核原始证据；不提前准备 `resolveTextEvidence` TASK_SPEC |
-| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 条件归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md` |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
 | `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳 | Git 历史显示 commit `672d97f`；事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；提交前复核缺失作为治理债务保留 |
 | `TASK-028` | Gemma Provider 最小接入 | A | 禁止进入 Review Intake | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-GOV-003` 和 `TASK-EVAL-001` 收口 |
@@ -133,8 +135,8 @@
 ### `TASK-EVAL-001`
 
 - 定位：parser-backed fixture 的证据定位质量评测基线
-- 条件归档边界：
-  - 仅表示父任务 DoD 范围内的条件收口，不代表 12/12 DoD 全部通过
+- 暂停归档边界：
+  - 仅表示父任务当前暂停归档，不代表 12/12 DoD 全部通过
   - DoD #12 未通过、未补足；A/B 历史 commit / push 授权记录无法完整核实
   - 该缺口永久保留为历史流程治理债务，不追溯否定已 push 内容、独立审计结论或 `30/30 PASS`
   - 该例外不得成为后续绕过 commit / push 明确授权门禁的先例
