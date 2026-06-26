@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Frozen for Pre-coding Mapping（仅允许输出编码前规格映射计划，未派发实现）
+> **状态**：Merged via PR #4（post-merge 记录完成；父任务未归档，未进入下一任务）
 > **创建日期**：2026-06-26
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -508,15 +508,26 @@ IMPLEMENTATION_REPORT_END
 
 ---
 
-## 10. 实现报告（DeepSeek 完成后填写）
+## 10. 实现报告
 
-待实现后粘贴。
+实现 PR #4 已合并到 `master`。
+
+- merge commit：`da724ba49c6a33347641950101a84a84dfa8c000`
+- PR head commit：`6513e669ac251f881c4d06ea2574ce6e9c7c9d69`
+- 修复范围：`ParserBackedReviewInputPreparer.collectPatternCandidates()` 的 pattern 候选 `valueFormatSignal` 计算。
+- 未进入范围：parser provenance、ratio early return、TABLE_CELL、fixture / expected JSON / DOCX、OpenAPI、数据库、Docker、`.github/workflows`。
+- CI 状态：临时豁免，原因是当前无 GitHub Actions workflow / checks 可运行；不得写成 CI PASS。
+- 父任务状态：`TASK-DEBT-001` 未归档。
+- 后续任务状态：未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ---
 
 ## 11. CODEX 审查记录
 
-待实现后填写。
+- 审计依据：`CQCP_AUDIT GO`。
+- PR #4 post-merge 复核：本地 `master` 与 `origin/master` 对齐，`git status --short` 为空，`origin/master...HEAD` 为 `0 0`。
+- 本记录仅收口 `TASK_SPEC-DEBT-001-B` 实现 PR，不归档父任务，不进入下一任务。
+- 后续治理候选：`TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup`，仅作为候选 / 待 Review Intake；不得写成已启动、已批准或已实施。
 
 ---
 
