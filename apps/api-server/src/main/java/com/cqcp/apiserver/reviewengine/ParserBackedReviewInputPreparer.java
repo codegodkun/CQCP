@@ -377,7 +377,7 @@ final class ParserBackedReviewInputPreparer {
         };
     }
 
-    private List<EvidenceCandidate> collectPatternCandidates(
+    List<EvidenceCandidate> collectPatternCandidates(
             ReviewPointCode reviewPointCode,
             String candidateRole,
             List<WordParserSpikeDocument.DocumentBlock> blocks,
@@ -397,13 +397,23 @@ final class ParserBackedReviewInputPreparer {
                     if (candidateValue == null || candidateValue.isBlank()) {
                         continue;
                     }
+                    var valueFormatSignal = switch (reviewPointCode) {
+                        case CONTRACT_TOTAL_AMOUNT_CONSISTENCY, TAX_AMOUNT_FORMULA_CONSISTENCY
+                            -> isAmountValueValid(candidateValue);
+                        case PREPAYMENT_RATIO_CONSISTENCY, PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                             COMPLETION_PAYMENT_RATIO_CONSISTENCY, SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                             WARRANTY_RETENTION_RATIO_CONSISTENCY
+                            -> isRatioValueValid(candidateValue);
+                        default -> throw new IllegalArgumentException(
+                                "unsupported review point: " + reviewPointCode);
+                    };
                     result.add(candidateForMatch(
                             reviewPointCode,
                             candidateRole,
                             candidateValue,
                             block,
                             roleLabelSignal,
-                            true,
+                            valueFormatSignal,
                             roleLabelSignal,
                             matcher.start(),
                             matcher.end()));
@@ -934,6 +944,24 @@ final class ParserBackedReviewInputPreparer {
         long letterCount = value.codePoints().filter(Character::isLetter).count();
         long digitCount = value.codePoints().filter(Character::isDigit).count();
         return letterCount >= 1 && (letterCount + digitCount) >= 2;
+    }
+
+    private static boolean isAmountValueValid(String value) {
+        try {
+            var d = Double.parseDouble(value);
+            return d > 0 && Double.isFinite(d);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private static boolean isRatioValueValid(String value) {
+        try {
+            var d = Double.parseDouble(value);
+            return d >= 0 && d <= 100 && Double.isFinite(d);
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private List<String> splitLines(String text) {
