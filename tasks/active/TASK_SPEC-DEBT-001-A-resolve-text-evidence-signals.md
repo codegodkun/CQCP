@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Ready for Review（未派发实现）
+> **状态**：Implemented（Codex Review Intake：A. 可以合并；独立只读审计：GO；未 commit / 未 push）
 > **创建日期**：2026-06-25
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -585,39 +585,74 @@ IMPLEMENTATION_REPORT_END
 
 ## 10. 实现报告（DeepSeek 完成后填写）
 
-待 Claude Code / DeepSeek 执行完成后粘贴。
+Claude Code / DeepSeek 已完成实现并提交实现报告摘要：
+
+- 修改文件：
+  - `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparerEvidenceTest.java`
+- 实现摘要：
+  - `resolveTextEvidence()` 不再向 `candidateForBlock(...)` 传入连续 `true, true, true`。
+  - `roleLabelSignal` 改为基于 `labelHints.stream().anyMatch(block.text()::contains)` 的 block-level label / alias 命中。
+  - `valueFormatSignal` 改为基于清洗后的候选值与 `isPartyNameValueValid(...)` 计算；纯占位符和纯数字不得进入 `HIGH`。
+  - `blockAttributionSignal` 改为基于 `block.blockId()` 非 null 且非 blank。
+  - 新增 parser test double 与专项测试，覆盖 `"甲方：—"`、`"甲方：123"`、`"甲方：A1"` 与空 `blockId` 场景。
+- 执行方声明：
+  - 未修改 `MinimalCandidateResolver` 五档语义。
+  - 未修改 `MinimalReviewEngine` 裁判逻辑。
+  - 未修改 ratio / amount / provenance / early return / TABLE_CELL 路径。
+  - 未修改 fixture / expected JSON / DOCX。
+  - 未 commit，未 push。
+- 必跑测试：
+  - `gradle test --tests "com.cqcp.apiserver.reviewengine.ParserBackedReviewInputPreparerEvidenceTest"`：通过。
+  - `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalCandidateResolverTest"`：通过。
+  - `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalReviewEngineTest"`：通过。
+
+说明：完整原始 console 输出保留在本轮执行上下文中；长期任务文档只记录必要事实和验证摘要。
 
 ---
 
 ## 11. CODEX 审查记录
 
-待实现报告提交后由 Codex 填写。
-
-Codex 审查时必须逐条输出：
+Codex 已完成实现报告、`git diff` 与测试复核。
 
 ```text
-TASK_SPEC 断言 1：满足 / 不满足，证据：
-TASK_SPEC 断言 2：满足 / 不满足，证据：
-TASK_SPEC 断言 3：满足 / 不满足，证据：
-TASK_SPEC 断言 4：满足 / 不满足，证据：
-TASK_SPEC 断言 5：满足 / 不满足，证据：
+TASK_SPEC 断言 1：满足，证据：resolveTextEvidence() 已传入 roleLabelSignal / valueFormatSignal / blockAttributionSignal 三个计算变量，不再保留连续 true, true, true。
+TASK_SPEC 断言 2：满足，证据：roleLabelSignal 来自 labelHints.stream().anyMatch(block.text()::contains)，符合本批接受的 block-level 粒度，未改成无条件常量 true。
+TASK_SPEC 断言 3：满足，证据：valueFormatSignal 来自清洗后的 value 与 isPartyNameValueValid(...)；测试覆盖 "甲方：—"、"甲方：123" 降级，以及 "甲方：A1" 可确认。
+TASK_SPEC 断言 4：满足，证据：blockAttributionSignal 来自 block.blockId() != null && !block.blockId().isBlank()；空 blockId 测试降级为 MEDIUM。
+TASK_SPEC 断言 5：满足，证据：仍通过 resolveFromCandidates(...) 和 MinimalCandidateResolver；未绕过 resolver，非 HIGH 不进入 confirmed evidence。
+
+最终结论：A. 可以合并
 ```
 
-最终结论只能选择：
+Codex 复跑验证：
 
 ```text
-A. 可以合并
-B. 需要 Claude Code 修改后再审
-C. 禁止合并，必须回滚或重做
+工作目录：apps/api-server
+gradle test --tests "com.cqcp.apiserver.reviewengine.ParserBackedReviewInputPreparerEvidenceTest"  BUILD SUCCESSFUL
+gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalCandidateResolverTest"                 BUILD SUCCESSFUL
+gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalReviewEngineTest"                       BUILD SUCCESSFUL
 ```
 
----
+独立只读审计结论：
+
+```text
+READONLY_AUDIT_REPORT：GO
+结论摘要：仅两个允许文件修改；五条 TASK_SPEC 断言均满足；禁止范围未触碰；三组指定测试全部 BUILD SUCCESSFUL；建议 Codex 进入记忆写回与后续提交判断。
+```
+
+提交状态：
+
+- 当前仍未 stage。
+- 当前仍未 commit。
+- 当前仍未 push。
+- 后续如需提交，必须由用户单独授权 commit；如需 push，必须再次单独授权 push。
 
 ## 12. 后续任务联动
 
 | 后续任务 | 依赖本任务的产物 | 状态 |
 |----------|------------------|------|
-| TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复 | 本任务沉淀的三信号计算原则和 Codex 审查结论 | 待本任务 A 结论 |
+| TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复 | 本任务沉淀的三信号计算原则和 Codex 审查结论 | A 批次已获 Codex 接受并经独立只读审计 GO；待用户授权后可进入 B 批次规格起草 |
 | parser provenance 分流任务 | 不依赖本任务实现，只依赖后续 Review Intake | 未定界 |
 | resolveRatioEvidence early return 分流任务 | 不依赖本任务实现，只依赖后续 Review Intake | 未定界 |
 | TABLE_CELL 真实 DOCX 覆盖补强 | 依赖人工 anchor 标注 | 未定界 |

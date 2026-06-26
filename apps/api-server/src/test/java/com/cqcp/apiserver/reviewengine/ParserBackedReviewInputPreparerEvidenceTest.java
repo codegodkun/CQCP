@@ -180,6 +180,115 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                 });
     }
 
+    @Test
+    void textCandidateWithPlaceholderValueIsDowngradedToMediumConfidence() throws IOException {
+        var preparer = new ParserBackedReviewInputPreparer(new PlaceholderValuePartyContractParser());
+        var fixtureCase = new FixtureCase(
+                "placeholder-value",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "甲方公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "60")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+        var reviewInput = buildReviewInput(preparer, fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertNonHighEvidence(evidence, EvidenceConfidenceLevel.MEDIUM, "SYS_EVIDENCE_MEDIUM_CONFIDENCE");
+        assertThat(evidence.candidateValue()).isEqualTo("—");
+        assertThat(evidence.blockId()).isNotBlank();
+    }
+
+    @Test
+    void textCandidateWithMissingBlockIdIsDowngradedToMediumConfidence() throws IOException {
+        var preparer = new ParserBackedReviewInputPreparer(new NoBlockIdPartyContractParser());
+        var fixtureCase = new FixtureCase(
+                "no-blockid",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "甲方公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "60")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+        var reviewInput = buildReviewInput(preparer, fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertNonHighEvidence(evidence, EvidenceConfidenceLevel.MEDIUM, "SYS_EVIDENCE_MEDIUM_CONFIDENCE");
+        assertThat(evidence.candidateValue()).isEqualTo("测试公司");
+        assertThat(evidence.blockId()).isBlank();
+        assertThat(evidence.locationLevel()).isNull();
+    }
+
+    @Test
+    void textCandidateWithAlphanumericCompanyNameAcceptsConfirmed() throws IOException {
+        var preparer = new ParserBackedReviewInputPreparer(new AlphanumericPartyContractParser());
+        var fixtureCase = new FixtureCase(
+                "alphanumeric-party",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "A1")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "60")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+        var reviewInput = buildReviewInput(preparer, fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
+        assertThat(evidence.candidateValue()).isEqualTo("A1");
+        assertThat(evidence.blockId()).isNotBlank();
+    }
+
+    @Test
+    void textCandidateWithNumericOnlyValueIsDowngradedToMediumConfidence() throws IOException {
+        var preparer = new ParserBackedReviewInputPreparer(new NumericOnlyPartyContractParser());
+        var fixtureCase = new FixtureCase(
+                "numeric-only-party",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "123")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "60")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+        var reviewInput = buildReviewInput(preparer, fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertNonHighEvidence(evidence, EvidenceConfidenceLevel.MEDIUM, "SYS_EVIDENCE_MEDIUM_CONFIDENCE");
+        assertThat(evidence.candidateValue()).isEqualTo("123");
+        assertThat(evidence.blockId()).isNotBlank();
+    }
+
     private ReviewEngineInput buildReviewInput(FixtureCaseLike fixtureCase) {
         return buildReviewInput(preparer, fixtureCase);
     }
@@ -370,6 +479,142 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                             0,
                             0,
                             List.of("EMPTY")));
+        }
+    }
+
+    private static final class AlphanumericPartyContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata("alphanumeric", "alphanumeric.docx"),
+                    List.of(partyABlock()),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN",
+                            "甲方：A1".length(), 1, 0, 0, 0, 0, false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
+        }
+
+        private com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock partyABlock() {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    "party-block-1",
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    "甲方：A1",
+                    "甲方：A1",
+                    List.of("合同主体"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "test.docx",
+                    null, null, List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+        }
+    }
+
+    private static final class NumericOnlyPartyContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata("numericonly", "numericonly.docx"),
+                    List.of(partyABlock()),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN",
+                            "甲方：123".length(), 1, 0, 0, 0, 0, false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
+        }
+
+        private com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock partyABlock() {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    "party-block-1",
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    "甲方：123",
+                    "甲方：123",
+                    List.of("合同主体"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "test.docx",
+                    null, null, List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+        }
+    }
+
+    private static final class PlaceholderValuePartyContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata("placeholder", "placeholder.docx"),
+                    List.of(partyABlock()),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN",
+                            "甲方：—".length(), 1, 0, 0, 0, 0, false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
+        }
+
+        private com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock partyABlock() {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    "party-block-1",
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    "甲方：—",
+                    "甲方：—",
+                    List.of("合同主体"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "test.docx",
+                    null, null, List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+        }
+    }
+
+    private static final class NoBlockIdPartyContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata("noblockid", "noblockid.docx"),
+                    List.of(partyABlock()),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN",
+                            "甲方：测试公司".length(), 1, 0, 0, 0, 0, false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
+        }
+
+        private com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock partyABlock() {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    "",   // empty blockId — no reliable anchor
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    "甲方：测试公司",
+                    "甲方：测试公司",
+                    List.of("合同主体"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "test.docx",
+                    null, null, List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
         }
     }
 

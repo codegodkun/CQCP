@@ -190,7 +190,8 @@ final class ParserBackedReviewInputPreparer {
             EvidenceBuildPlan plan) {
         var candidates = new ArrayList<EvidenceCandidate>();
         for (WordParserSpikeDocument.DocumentBlock block : plan.evidenceIndex().parsedDocument().document().blocks()) {
-            if (labelHints.stream().noneMatch(block.text()::contains)) {
+            boolean roleLabelSignal = labelHints.stream().anyMatch(block.text()::contains);
+            if (!roleLabelSignal) {
                 continue;
             }
             for (String line : splitLines(block.text())) {
@@ -207,14 +208,16 @@ final class ParserBackedReviewInputPreparer {
                 }
                 var value = cleanPartyValue(matchedValue);
                 if (!value.isBlank()) {
+                    boolean valueFormatSignal = isPartyNameValueValid(value);
+                    boolean blockAttributionSignal = block.blockId() != null && !block.blockId().isBlank();
                     candidates.add(candidateForBlock(
                             reviewPointCode,
                             candidateRole,
                             value,
                             block,
-                            true,
-                            true,
-                            true));
+                            roleLabelSignal,
+                            valueFormatSignal,
+                            blockAttributionSignal));
                 }
             }
         }
@@ -910,6 +913,27 @@ final class ParserBackedReviewInputPreparer {
             }
         }
         return cleaned;
+    }
+
+    /**
+     * 判断清洗后的候选值是否包含有效文本字符。
+     * 甲方/乙方名称规则：
+     * - 包含至少一个 CJK 汉字 → 有效
+     * - 无 CJK 汉字时：至少 2 个字母数字字符，且其中至少 1 个是字母
+     * - 纯数字、纯标点、纯占位符（如 "—"、"/"、"-"）视为无效
+     */
+    private static boolean isPartyNameValueValid(String value) {
+        if (value == null || value.isBlank()) {
+            return false;
+        }
+        boolean hasHan = value.codePoints().anyMatch(
+                cp -> Character.UnicodeScript.of(cp) == Character.UnicodeScript.HAN);
+        if (hasHan) {
+            return true;
+        }
+        long letterCount = value.codePoints().filter(Character::isLetter).count();
+        long digitCount = value.codePoints().filter(Character::isDigit).count();
+        return letterCount >= 1 && (letterCount + digitCount) >= 2;
     }
 
     private List<String> splitLines(String text) {
