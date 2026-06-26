@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
@@ -287,6 +288,79 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertNonHighEvidence(evidence, EvidenceConfidenceLevel.MEDIUM, "SYS_EVIDENCE_MEDIUM_CONFIDENCE");
         assertThat(evidence.candidateValue()).isEqualTo("123");
         assertThat(evidence.blockId()).isNotBlank();
+    }
+
+    @Test
+    void patternCandidateWithExcessiveRatioHasFalseValueFormatSignal() {
+        var block = new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                "block-1",
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                "预付款至150%",
+                "预付款至150%",
+                List.of("付款条款"),
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "test.docx", null, null, List.of(),
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+
+        var pattern = Pattern.compile("预付款[^\\d]{0,60}(\\d{1,3}(?:\\.\\d+)?)\\s*%");
+        var candidates = preparer.collectPatternCandidates(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "PREPAYMENT_RATIO",
+                List.of(block),
+                List.of("预付款"),
+                List.of(pattern),
+                false);
+
+        assertThat(candidates).isNotEmpty();
+        assertThat(candidates).anySatisfy(c -> {
+            assertThat(c.candidateValue()).isEqualTo("150");
+            assertThat(c.valueFormatSignal()).isFalse();
+            assertThat(c.roleLabelSignal()).isTrue();
+            assertThat(c.blockAttributionSignal()).isTrue();
+        });
+
+        var resolver = new MinimalCandidateResolver();
+        var resolution = resolver.resolve(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "PREPAYMENT_RATIO",
+                candidates);
+        assertThat(resolution.confidenceLevel()).isNotEqualTo(EvidenceConfidenceLevel.HIGH);
+    }
+
+    @Test
+    void patternCandidateWithValidRatioHasTrueValueFormatSignal() {
+        var block = new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                "block-2",
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                "预付款70%",
+                "预付款70%",
+                List.of("付款条款"),
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "test.docx", null, null, List.of(),
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+
+        var pattern = Pattern.compile("(\\d{1,3}(?:\\.\\d+)?)\\s*%");
+        var candidates = preparer.collectPatternCandidates(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "PREPAYMENT_RATIO",
+                List.of(block),
+                List.of("预付款"),
+                List.of(pattern),
+                false);
+
+        assertThat(candidates).isNotEmpty();
+        assertThat(candidates).anySatisfy(c -> {
+            assertThat(c.candidateValue()).isEqualTo("70");
+            assertThat(c.valueFormatSignal()).isTrue();
+        });
     }
 
     private ReviewEngineInput buildReviewInput(FixtureCaseLike fixtureCase) {
