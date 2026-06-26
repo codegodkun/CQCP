@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Implemented（Codex Review Intake：A. 可以合并；独立只读审计：GO；未 commit / 未 push）
+> **状态**：Implemented（Codex Review Intake：A. 可以合并；提交前独立只读审计：GO；已 commit / push：`3223d6760a977fe9deaf722e63b50bcbb6ce3611`；post-push 独立只读核查：NEEDS-FIX）
 > **创建日期**：2026-06-25
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -601,7 +601,7 @@ Claude Code / DeepSeek 已完成实现并提交实现报告摘要：
   - 未修改 `MinimalReviewEngine` 裁判逻辑。
   - 未修改 ratio / amount / provenance / early return / TABLE_CELL 路径。
   - 未修改 fixture / expected JSON / DOCX。
-  - 未 commit，未 push。
+  - 实现报告形成时未 commit、未 push；后续已在用户分别授权下完成 commit / push，提交为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`。
 - 必跑测试：
   - `gradle test --tests "com.cqcp.apiserver.reviewengine.ParserBackedReviewInputPreparerEvidenceTest"`：通过。
   - `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalCandidateResolverTest"`：通过。
@@ -641,18 +641,21 @@ READONLY_AUDIT_REPORT：GO
 结论摘要：仅两个允许文件修改；五条 TASK_SPEC 断言均满足；禁止范围未触碰；三组指定测试全部 BUILD SUCCESSFUL；建议 Codex 进入记忆写回与后续提交判断。
 ```
 
-提交状态：
+提交与 post-push 状态：
 
-- 当前仍未 stage。
-- 当前仍未 commit。
-- 当前仍未 push。
-- 后续如需提交，必须由用户单独授权 commit；如需 push，必须再次单独授权 push。
+- 用户后续已分别授权 commit 与 push。
+- 已提交并推送：`3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`。
+- GitHub 云端只读核查确认：远端 `master` 当前指向该 commit，compare 结果与目标 commit identical，`ahead_by=0`、`behind_by=0`。
+- post-push 独立只读核查结论：`NEEDS-FIX`。
+- `NEEDS-FIX` 原因：远端仓库内本文件、`CURRENT_CONTEXT.md` 等文档仍存在 “未 commit / 未 push” 过期表述，且仓库内尚无可定位的 post-push 独立只读审计 `GO` 记录。
+- 测试证据边界：仓库内记录了三条指定 Gradle 测试通过摘要，但未保存完整原始 console 输出；GitHub Actions workflow runs 为空，不能作为云端 CI 替代证据。
+- 在 post-push 独立只读核查结论变为 `GO` 前，`TASK_SPEC-DEBT-001-B` 不得冻结，不得派发 Claude Code / DeepSeek 实现，也不得进入编码前规格映射计划阶段。
 
 ## 12. 后续任务联动
 
 | 后续任务 | 依赖本任务的产物 | 状态 |
 |----------|------------------|------|
-| TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复 | 本任务沉淀的三信号计算原则和 Codex 审查结论 | A 批次已获 Codex 接受并经独立只读审计 GO；待用户授权后可进入 B 批次规格起草 |
+| TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复 | 本任务沉淀的三信号计算原则和 Codex 审查结论 | A 批次已获 Codex 接受并经提交前独立只读审计 GO，但 post-push 独立只读核查当前为 NEEDS-FIX；B 批次只能保持 Draft / Ready for Review，不得冻结或派发 |
 | parser provenance 分流任务 | 不依赖本任务实现，只依赖后续 Review Intake | 未定界 |
 | resolveRatioEvidence early return 分流任务 | 不依赖本任务实现，只依赖后续 Review Intake | 未定界 |
 | TABLE_CELL 真实 DOCX 覆盖补强 | 依赖人工 anchor 标注 | 未定界 |
