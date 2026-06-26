@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-06-26
+更新日期：2026-06-27
 
 ## 当前结论
 
@@ -10,7 +10,7 @@
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
-- `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；第一批 `TASK_SPEC-DEBT-001-A` 已通过角色分离试点、Codex 审查和提交前独立只读审计，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；GitHub 云端 post-push 独立只读核查当前为 `NEEDS-FIX`；第二批 `TASK_SPEC-DEBT-001-B` 已创建 Draft，尚未冻结或派发，其他分流仍未获实现授权
+- `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；第一批 `TASK_SPEC-DEBT-001-A` 已通过角色分离试点、Codex 审查、提交前独立只读审计、commit / push 和 2026-06-27 post-push 独立只读复审 `GO`；第二批 `TASK_SPEC-DEBT-001-B` 已冻结到编码前规格映射计划阶段，尚未派发实现，其他分流仍未获实现授权
 - `TASK-EVAL-001` 父任务归档前独立审计随后给出 `GO WITH CONDITIONS`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`
   【回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前状态依据。
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
@@ -42,7 +42,7 @@
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
 | `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 0 / Phase 1） | 当前 Governance Mode 为 `LEGACY_MANUAL`；仅记录 PR + CI + 独立审查 + 机制化门禁实施路径，不修改业务代码或 GitHub 设置 |
-| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送；post-push NEEDS-FIX；B 批次 Draft 已创建） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；GitHub 云端 post-push 独立只读核查当前为 `NEEDS-FIX`；`TASK_SPEC-DEBT-001-B` 已创建 Draft，尚未冻结或派发；其他分流仍需另行冻结 TASK_SPEC |
+| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送并 post-push GO；B 批次已冻结到映射计划阶段） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`；`TASK_SPEC-DEBT-001-B` 已冻结到编码前规格映射计划阶段，尚未派发实现；其他分流仍需另行冻结 TASK_SPEC |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
 | `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳 | Git 历史显示 commit `672d97f`；事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；提交前复核缺失作为治理债务保留 |
@@ -78,11 +78,11 @@
   - TABLE_CELL 真实 DOCX 覆盖盲区；该项不是已确认代码 bug。
 - 边界：
   - Step 1 已完成登记。
-  - `TASK_SPEC-DEBT-001-A` 已在角色分离试点下完成实现、Codex 审查、提交前独立只读审计、commit 与 push；提交为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`。GitHub 云端 post-push 独立只读核查当前为 `NEEDS-FIX`，不能作为 B 冻结前置 `GO`。
+  - `TASK_SPEC-DEBT-001-A` 已在角色分离试点下完成实现、Codex 审查、提交前独立只读审计、commit 与 push；提交为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`。2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`，可作为 B 冻结前置审计结论使用。
   - 建立该任务以及 A 批次通过不代表其他修复任务、`TASK_SPEC` 或 `TASK-032` 已获启动授权。
   - TABLE_CELL 补强依赖独立人工 anchor 标注；当前父任务 DoD 不要求真实 DOCX cell，因此不阻塞 `TASK-EVAL-001` 归档判断。
   - Step 2 `CURRENT_CONTEXT.md` 逐条认领审计已有独立 agent 报告摘要；本任务地图不以自身证明完成，父任务归档前仍需复核原始报告和对应证据。
-  - 后续候选 `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 已创建 Draft；当前尚未冻结或派发，不得直接实现。A post-push 独立只读核查 `GO` 前，不得进入 B 编码前规格映射计划。
+  - 后续候选 `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 已冻结到编码前规格映射计划阶段；当前只允许派发映射计划，不得直接实现。Codex 审查映射计划 `GO` 前，不得授权 CC/DeepSeek 修改代码或测试。
 - 文件：`tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
 
 ### `TASK-025`
@@ -269,4 +269,4 @@
 2. `TASK-GOV-003` 已完成并归档。
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；后续对该任务执行只读 Review Intake 时，不进入开发。
 4. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
-5. 当前仅允许审查 `TASK_SPEC-DEBT-001-B` Draft；不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发实现任务。
+5. 当前仅允许派发 `TASK_SPEC-DEBT-001-B` 编码前规格映射计划；不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发实现任务。

@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Draft（Codex 起草中，未冻结，未派发实现）
+> **状态**：Frozen for Pre-coding Mapping（仅允许输出编码前规格映射计划，未派发实现）
 > **创建日期**：2026-06-26
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -25,6 +25,7 @@
 - 本 `TASK_SPEC` 关联父任务 `TASK-DEBT-001`；Claude Code / DeepSeek 不得直接执行父任务。
 - Codex 负责冻结规格、审查编码前规格映射计划、审查实现报告和 `git diff`；Codex 不直接编写本任务业务代码。
 - 前置门禁：只有在 `TASK_SPEC-DEBT-001-A` post-push 独立只读核查结论为 `GO` 后，B 批次才允许进入“编码前规格映射计划”阶段。
+- 当前前置门禁状态：2026-06-27 独立只读 post-push 复审已给出 `GO`；本规格已冻结到编码前规格映射计划阶段，但尚未授权实现。
 - 如果 `TASK_SPEC-DEBT-001-A` post-push 独立只读核查尚未 `GO`，本 B 批次只能保持 `Draft` / `Ready for Review`，不得派发 Claude Code / DeepSeek 实现，也不得要求其输出编码前规格映射计划。
 - Claude Code / DeepSeek 只有在 Codex 明确放行“编码前规格映射计划”后，才允许修改 §0.3 中允许修改的文件。
 - Claude Code / DeepSeek 不得 commit，不得 push。

@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Implemented（Codex Review Intake：A. 可以合并；提交前独立只读审计：GO；已 commit / push：`3223d6760a977fe9deaf722e63b50bcbb6ce3611`；post-push 独立只读核查：NEEDS-FIX）
+> **状态**：Implemented（Codex Review Intake：A. 可以合并；提交前独立只读审计：GO；已 commit / push：`3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 post-push 独立只读复审：GO）
 > **创建日期**：2026-06-25
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -646,16 +646,17 @@ READONLY_AUDIT_REPORT：GO
 - 用户后续已分别授权 commit 与 push。
 - 已提交并推送：`3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`。
 - GitHub 云端只读核查确认：远端 `master` 当前指向该 commit，compare 结果与目标 commit identical，`ahead_by=0`、`behind_by=0`。
-- post-push 独立只读核查结论：`NEEDS-FIX`。
-- `NEEDS-FIX` 原因：远端仓库内本文件、`CURRENT_CONTEXT.md` 等文档仍存在 “未 commit / 未 push” 过期表述，且仓库内尚无可定位的 post-push 独立只读审计 `GO` 记录。
+- 上一轮 post-push 独立只读核查结论：`NEEDS-FIX`，原因是远端仓库内本文件、`CURRENT_CONTEXT.md` 等文档仍存在 “未 commit / 未 push” 过期表述，且仓库内尚无可定位的 post-push 独立只读审计 `GO` 记录。
+- 后续文档修正已提交并推送：`3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。
+- 2026-06-27 post-push 独立只读复审结论：`GO`；复审确认上一轮 `NEEDS-FIX` 的文档过期原因已消除，A 批次可作为 B 批次冻结前置审计结论使用。
 - 测试证据边界：仓库内记录了三条指定 Gradle 测试通过摘要，但未保存完整原始 console 输出；GitHub Actions workflow runs 为空，不能作为云端 CI 替代证据。
-- 在 post-push 独立只读核查结论变为 `GO` 前，`TASK_SPEC-DEBT-001-B` 不得冻结，不得派发 Claude Code / DeepSeek 实现，也不得进入编码前规格映射计划阶段。
+- `TASK_SPEC-DEBT-001-B` 仍不得直接派发实现；必须先完成冻结前检查、编码前规格映射计划和 Codex 审查放行。
 
 ## 12. 后续任务联动
 
 | 后续任务 | 依赖本任务的产物 | 状态 |
 |----------|------------------|------|
-| TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复 | 本任务沉淀的三信号计算原则和 Codex 审查结论 | A 批次已获 Codex 接受并经提交前独立只读审计 GO，但 post-push 独立只读核查当前为 NEEDS-FIX；B 批次只能保持 Draft / Ready for Review，不得冻结或派发 |
+| TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复 | 本任务沉淀的三信号计算原则和 Codex 审查结论 | A 批次已获 Codex 接受、提交前独立只读审计 GO、commit / push 和 2026-06-27 post-push 独立只读复审 GO；B 批次可进入冻结前检查和编码前规格映射计划，但不得直接派发实现 |
 | parser provenance 分流任务 | 不依赖本任务实现，只依赖后续 Review Intake | 未定界 |
 | resolveRatioEvidence early return 分流任务 | 不依赖本任务实现，只依赖后续 Review Intake | 未定界 |
 | TABLE_CELL 真实 DOCX 覆盖补强 | 依赖人工 anchor 标注 | 未定界 |
