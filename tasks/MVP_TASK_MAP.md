@@ -16,7 +16,7 @@
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；事后独立复核、定向测试 `30/30 PASS` 和父任务归档前独立审计已形成补偿证据，但不能追溯性等同于提交前复核
 - `TASK-EVAL-001` 已回滚为暂停归档，仅保留未提交 diff；DoD #1 至 #11 已独立确认，DoD #12 未通过、未补足并作为永久治理债务保留
-- `TASK-GOV-004` 已建立 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；当前 Governance Mode 只能标注为 `LEGACY_MANUAL`
+- `TASK-GOV-004` 已建立 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；2026-06-27 已进入 Phase 3 基础 GitHub Actions CI 最小落地，当前 Governance Mode 仍只能标注为 `LEGACY_MANUAL`
 - Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
   【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
 - `TASK-031` 仍未进入，继续禁止抢跑
@@ -41,7 +41,7 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
-| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 0 / Phase 1） | 当前 Governance Mode 为 `LEGACY_MANUAL`；仅记录 PR + CI + 独立审查 + 机制化门禁实施路径，不修改业务代码或 GitHub 设置 |
+| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 3：基础 CI 已新增，待 PR 运行验证） | 当前 Governance Mode 为 `LEGACY_MANUAL`；新增 `.github/workflows/ci.yml` 最小 CI workflow，但尚无 PR GitHub Actions 运行记录、branch protection、ruleset 或 required checks，不得写 `PR_REQUIRED_CHECKS` |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送并 post-push GO；B 批次已冻结到映射计划阶段） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`；`TASK_SPEC-DEBT-001-B` 已冻结到编码前规格映射计划阶段，尚未派发实现；其他分流仍需另行冻结 TASK_SPEC |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
@@ -208,13 +208,14 @@
 
 - 定位：PR 化多 Agent 开发治理与 GitHub 机制化门禁父任务。
 - 当前 Governance Mode：`LEGACY_MANUAL`。
+- Phase 3 当前状态：已新增 `.github/workflows/ci.yml` 最小 CI workflow，待真实 PR GitHub Actions 运行验证。
 - 当前只读证据：
   - 主仓库工作区干净。
   - `master` 与 `origin/master` 对齐。
-  - 本地无 `.github` 目录。
+  - 2026-06-27 前本地无 `.github` 目录；Phase 3 后新增 `.github/workflows/ci.yml`。
   - `gh` CLI 不可用。
   - 公开 GitHub REST API 对 repo / branch protection / rulesets / workflows 返回 `403`。
-  - 因此本轮不能证明 GitHub 设置真实状态。
+  - 当前仍不能证明 GitHub 设置真实状态，也不能证明 required checks 已生效。
 - Phase 0-6 顺序：
   - Phase 0：治理状态基线与任务边界冻结。
   - Phase 1：目录结构与审计环境核实。
@@ -233,7 +234,7 @@
 - 边界：
   - 不替代五类问题整改 v3。
   - 不修复已知代码缺陷。
-  - 不修改 fixture、expected JSON、ADR、PRD、OpenAPI、数据库、Docker、`.github/workflows` 或 GitHub 设置。
+  - Phase 3 仅允许新增最小 `.github/workflows/ci.yml`；不修改 fixture、expected JSON、ADR、PRD、OpenAPI、数据库、Docker 或 GitHub 设置。
   - 不进入 `TASK-EVAL-001-B`、`TASK-028`、`TASK-031`、`TASK-032`。
   - Codex 不得充当 Code Review Agent 或 Spec & Docs Review Agent。
 
@@ -265,7 +266,7 @@
 
 ## 当前建议顺序
 
-1. `TASK-GOV-004` 已建立 Phase 0 / Phase 1；下一步如获授权，只执行 Phase 1 只读目录与审计环境核实。
+1. `TASK-GOV-004` Phase 3 已新增基础 GitHub Actions CI workflow；下一步是创建 PR 并用真实 GitHub Actions 运行记录验证，PR 运行前不得写成 CI PASS。
 2. `TASK-GOV-003` 已完成并归档。
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；后续对该任务执行只读 Review Intake 时，不进入开发。
 4. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。

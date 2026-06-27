@@ -33,12 +33,12 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-EVAL-001` 已生成回滚前后文档 diff：原先的条件归档状态已按用户要求回滚为暂停归档；DoD #12 仍未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并作为永久治理债务保留
 - `TASK-028` / `TASK-031` / `TASK-032` 仍禁止进入；后续必须按 v3 计划的角色分工执行
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
-- `TASK-GOV-004` 已建档为 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；当前 Governance Mode 仍为 `LEGACY_MANUAL`，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效
-- PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`；`TASK_SPEC-DEBT-001-B` 实现 PR 已收口。CI 状态只能记录为临时豁免，原因是当前无 GitHub Actions workflow / checks 可运行，不得写成 CI PASS。
+- `TASK-GOV-004` 已建档为 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；当前进入 Phase 3 基础 GitHub Actions CI 最小落地，Governance Mode 仍为 `LEGACY_MANUAL`，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效
+- PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`；`TASK_SPEC-DEBT-001-B` 实现 PR 已收口。该 PR 的 CI 状态仍只能记录为临时豁免；后续新增的基础 GitHub Actions workflow 不得追溯写成 PR #4 CI PASS。
 
 ## 活跃任务
 
-- `TASK-GOV-004` 已建档为 active 治理任务，文件为 `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`。本任务仅建立 Phase 0 / Phase 1 口径和 Phase 0-6 实施路径，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD、`.github/workflows` 或 GitHub 设置。
+- `TASK-GOV-004` 已建档为 active 治理任务，文件为 `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`。2026-06-27 已按 Review Intake 授权进入 Phase 3，新增 `.github/workflows/ci.yml` 最小 CI workflow；本轮不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
 - `TASK-GOV-003` 已完成并归档：治理提交 `515196e` 已独立审计、push，且远程同步确认 `0 0`。
 - 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。第一批 `resolveTextEvidence()` 修复规格 `tasks/active/TASK_SPEC-DEBT-001-A-resolve-text-evidence-signals.md` 已完成角色分离试点、commit 与 push：实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，post-push 文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 独立只读 post-push 复审结论为 `GO`：上一轮 `NEEDS-FIX` 的过期文档状态已消除，A 批次可作为 B 批次冻结前置审计 `GO` 使用。第二批 `tasks/active/TASK_SPEC-DEBT-001-B-collect-pattern-candidates-value-format-signal.md` 的实现 PR #4 已合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`，审计依据为 `CQCP_AUDIT GO`。父任务仍未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 - `TASK-EVAL-001` 已按用户要求回滚为暂停归档，文件已从 `tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md` 移回 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；当前仅保留未提交 diff，不进入任何形式归档。
@@ -128,10 +128,10 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
   【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
 - `TASK-EVAL-001-B` 的 `1.0 / 1.0 / 1` 是当前 canonical anchor 集合的真实计算，只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId、rowIndex、cellIndex 仍依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不能单独证明 parser anchor 位置客观正确，也不得表述为独立人工标注准确率。
 - evaluator 已支持 `TABLE_CELL` canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline 的 TABLE_CELL 端到端覆盖仍未完成，继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，不得宣称真实 DOCX TABLE_CELL 已验证。
-- 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。`TASK-GOV-004` 已建档为 active 治理任务用于分阶段治理该缺口；当前 Governance Mode 仍只能标注为 `LEGACY_MANUAL`。本轮只记录任务边界、目录口径与 Phase 0-6 路径，不修改 CI、GitHub Actions、branch protection、ruleset 或仓库设置。
+- 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。`TASK-GOV-004` 已建档为 active 治理任务用于分阶段治理该缺口；2026-06-27 Phase 3 已新增基础 GitHub Actions workflow，但尚无 PR 运行记录、branch protection、ruleset 或 required checks，因此 Governance Mode 仍只能标注为 `LEGACY_MANUAL`。
 - `TASK-GOV-004` 建档前只读证据：主仓库工作区干净，`master` 与 `origin/master` 对齐，本地无 `.github` 目录；截至 2026-06-23 复核，`gh` CLI 可正常使用，公开 GitHub REST API 可返回数据。此处仅记录本次时点性核查结果，后续环境状态仍可能变化，因此不得写成永久可用结论。
 - `TASK-GOV-004` Phase 1 目录口径已确认：`C:\Users\1\Documents\CQCP_AUDIT` 是审计环境根目录，`C:\Users\1\Documents\CQCP_AUDIT\CQCP` 是被审计 git clone；后续审计 git 命令必须在 `CQCP_AUDIT\CQCP` 执行，不得写成在 `CQCP_AUDIT` 根目录直接执行。`audit-scratch` 建议位于 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`，不放进被审计 clone。
-- 后续治理候选：`TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup`，仅作为候选 / 待 Review Intake。候选目标包括添加 `.github/workflows` 基础 CI、后端 Gradle test、前端 test/build、不调用模型 API、不修改业务代码、单独分支、单独 PR、单独审查；当前不得写成已启动、已批准或已实施。
+- `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 已按用户授权启动并新增 `.github/workflows/ci.yml`：backend job 运行 Java 21 + PostgreSQL 16 service + `gradle test`，admin-web job 运行 Node.js 24 + `npm ci` + lint/test/build。该 workflow 仍待真实 PR GitHub Actions 运行验证；不得写成 CI PASS、required checks 已生效或 `PR_REQUIRED_CHECKS`。
 - 全量 `gradle test` 仍失败于既有 `CqcpApiServerApplicationTests` 数据库连接，不作为本轮代码失败结论
 - `TASK-026` 只治理最小 resolver 与 candidate 信号 admission，尚未进入完整 `EvidenceSlot / SourceAnchor` 正式治理
 - `TASK-027-A` 回收结论已确认：外部 Result API 真实实现为 `GET /api/v1/tasks/{taskId}/result`，`packages/api-contracts/openapi.yaml` 与真实实现和 DTO 已分叉；`PointStatus` 五值稳定、`notConcludedReason` 六值稳定，但 `notConcludedDetail`、`missingOptionalSlots[]`、正式化 `sourceAnchors` 尚未形成真实对外承载位，因此 OpenAPI 契约对齐 / 文档更新任务阻断 `TASK-027` 直接进入实现
@@ -169,7 +169,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 3. `TASK-EVAL-001` 暂停归档如需 commit / push，仍必须分别重新取得用户明确授权。
 4. `TASK_SPEC-DEBT-001-A` 已完成实现审查、提交前独立只读审计、commit 与 push；实现提交为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，文档修正提交为 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 GitHub 云端 post-push 独立只读复审结论为 `GO`。
 5. `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 的实现 PR #4 已合并到 `master`，但 `TASK-DEBT-001` 父任务仍未归档，不得因此进入 `TASK-028` / `TASK-031` / `TASK-032`。
-6. `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 仅作为候选 / 待 Review Intake；当前不新增 `.github/workflows`，不创建 CI workflow，不写成 active / approved / implemented。
+6. `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 已启动最小实现，当前分支新增 `.github/workflows/ci.yml`；下一步需要创建 PR 并用真实 GitHub Actions 运行记录验证，不得在 PR 运行前写成 CI PASS。
 7. 不派发新的 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行，并先经过冻结 TASK_SPEC、编码前规格映射计划与 Codex 放行。
 
 ## 参考路径

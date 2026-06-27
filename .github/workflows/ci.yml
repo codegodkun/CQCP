@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend Gradle tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: cqcp
+          POSTGRES_USER: cqcp
+          POSTGRES_PASSWORD: cqcp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cqcp -d cqcp"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      CQCP_DB_URL: jdbc:postgresql://localhost:5432/cqcp
+      CQCP_DB_USERNAME: cqcp
+      CQCP_DB_PASSWORD: cqcp
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run backend tests
+        working-directory: apps/api-server
+        run: gradle test
+
+  admin-web:
+    name: Admin web lint, tests, and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run admin web lint
+        run: npm run lint:admin-web
+
+      - name: Run admin web tests
+        run: npm run test:admin-web
+
+      - name: Build admin web
+        run: npm run build:admin-web
