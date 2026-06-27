@@ -358,7 +358,7 @@ Post-merge 事实记录（2026-06-27）：
 
 * 是否将外部 `C:\Users\1\Downloads\CQCP-PR治理方案-v2.md` 正式纳入 `docs/governance/`。
 * 是否安装或启用 `gh` CLI，供 CQCP_AUDIT 后续使用 `gh api` 核实 GitHub 设置。
-* Phase 3 的最小 CI 命令矩阵已在 `.github/workflows/ci.yml` 中落地，仍待真实 PR 运行验证。
+* Phase 3 的最小 CI 命令矩阵已在 `.github/workflows/ci.yml` 中落地，并已通过 PR #5 final head GitHub Actions run `28288707273` 验证后合并落地；这不代表 branch protection、required checks、ruleset 或 `PR_REQUIRED_CHECKS` 已生效。
 * Phase 5 的 required checks 命名、source 和发布方式。
 
 ## 完成记录
