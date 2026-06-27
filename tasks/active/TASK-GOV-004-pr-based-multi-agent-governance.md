@@ -1,6 +1,6 @@
 # TASK-GOV-004：PR 化多 Agent 开发治理与机制化门禁
 
-状态：Active（Phase 0 / Phase 1）
+状态：Active（Phase 3：基础 GitHub Actions CI 已启动，待 PR 运行验证）
 
 类型：Governance
 
@@ -114,7 +114,6 @@ PR_REQUIRED_CHECKS
 * `PRD.md`
 * `docs/ARCHITECTURE.md`
 * `decisions/ADR-*`
-* `.github/workflows`
 * GitHub branch protection / ruleset 配置
 
 ## 范围
@@ -130,7 +129,6 @@ PR_REQUIRED_CHECKS
 
 ### 不包含
 
-* 不新增 CI workflow。
 * 不创建 PR 模板。
 * 不修改 GitHub 设置。
 * 不创建或移动本地目录。
@@ -231,6 +229,14 @@ git log -1 --format="%H %ci"
 * 有 GitHub Actions 运行记录。
 * CI 失败时不能建议合并。
 
+本轮执行边界（2026-06-27）：
+
+* 新增 `.github/workflows/ci.yml` 作为最小 CI workflow。
+* backend job 使用 Java 21、`gradle/actions/setup-gradle@v4`、Gradle 8.10.2 和 PostgreSQL 16 service，执行 `apps/api-server` 下的 `gradle test`。
+* admin-web job 使用 Node.js 24、根目录 `npm ci`，执行 `npm run lint:admin-web`、`npm run test:admin-web`、`npm run build:admin-web`。
+* CI 不配置模型 API、secrets、Code Review Agent、Spec & Docs Review Agent、branch protection、ruleset 或 required checks。
+* 在真实 PR 运行记录出现前，不得写成 CI 已通过；在 Phase 5 全部证据满足前，不得写成 `PR_REQUIRED_CHECKS`。
+
 ### Phase 4：手动独立 Code Review + Spec & Docs Review
 
 目标：
@@ -304,7 +310,7 @@ git log -1 --format="%H %ci"
 
 ## 测试与验证
 
-本任务当前仅完成治理任务建档，不运行业务测试。
+本任务当前进入 Phase 3，新增基础 GitHub Actions CI workflow。业务代码、测试代码、fixture 和 expected JSON 不在本轮修改范围内。
 
 必须执行的验证：
 
@@ -312,6 +318,7 @@ git log -1 --format="%H %ci"
 * `git diff --stat`
 * `git diff --check`
 * `git status --short`
+* 本地可行时运行 backend / admin-web 对应命令；如因既有环境依赖失败，必须记录为待 PR CI 验证或既有环境问题，不得写成通过。
 
 ## 文档更新要求
 
@@ -322,7 +329,7 @@ git log -1 --format="%H %ci"
 
 ## Next Task Handoff
 
-下一步：如用户授权，执行 Phase 1 只读目录与审计环境核实。
+下一步：为本分支创建 PR，并用真实 GitHub Actions 运行记录验证 `.github/workflows/ci.yml`。PR 运行前不得写成 CI PASS。
 
 ## 风险
 
@@ -335,13 +342,20 @@ git log -1 --format="%H %ci"
 
 * 是否将外部 `C:\Users\1\Downloads\CQCP-PR治理方案-v2.md` 正式纳入 `docs/governance/`。
 * 是否安装或启用 `gh` CLI，供 CQCP_AUDIT 后续使用 `gh api` 核实 GitHub 设置。
-* Phase 3 的最小 CI 命令矩阵。
+* Phase 3 的最小 CI 命令矩阵已在 `.github/workflows/ci.yml` 中落地，仍待真实 PR 运行验证。
 * Phase 5 的 required checks 命名、source 和发布方式。
 
 ## 完成记录
 
-* 完成日期：待填写。
-* 变更文件：待填写。
-* 测试结果：待填写。
-* 遗留问题：待填写。
-* 备注：当前仅完成治理任务建档；尚未进入 Phase 1 实施，尚未配置 PR、CI、branch protection 或 required checks。
+* 完成日期：2026-06-27（Phase 3 workflow 文件新增，待 PR CI 运行验证）
+* 变更文件：`.github/workflows/ci.yml`、`tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
+* 测试结果：
+  * `git diff --check`：通过（仅有 Git CRLF warning，无 whitespace error）。
+  * `npm.cmd run lint:admin-web`：通过。
+  * `npm.cmd run test:admin-web`：通过，1 个 test file / 6 tests passed；沙箱内曾因上级目录读取权限失败，非沙箱重跑通过。
+  * `npm.cmd run build:admin-web`：通过；存在 Vite chunk size warning，不作为失败。
+  * `gradle test`：本地失败于既有 `CqcpApiServerApplicationTests.contextLoads` PostgreSQL hostname / 本地数据库环境问题；本轮 CI workflow 已为 GitHub runner 配置 PostgreSQL 16 service 与 `CQCP_DB_URL=jdbc:postgresql://localhost:5432/cqcp`。
+  * PR #5 首轮 GitHub Actions backend job 失败于 runner 默认 Gradle 9.6.0 下 JUnit Platform launcher 缺失；workflow 已改为显式使用本地验证过的 Gradle 8.10.2。
+  * PR #5 第二轮 GitHub Actions run `28277974535`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
+* 遗留问题：PR #5 已创建且第二轮 GitHub Actions 已通过；但尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`。
+* 备注：本轮只新增基础 CI workflow 与项目记忆记录，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
