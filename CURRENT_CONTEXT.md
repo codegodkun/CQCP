@@ -33,7 +33,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-EVAL-001` 已生成回滚前后文档 diff：原先的条件归档状态已按用户要求回滚为暂停归档；DoD #12 仍未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并作为永久治理债务保留
 - `TASK-028` / `TASK-031` / `TASK-032` 仍禁止进入；后续必须按 v3 计划的角色分工执行
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
-- `TASK-GOV-004` 已建档为 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地（merge commit `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit `50f0befadbd17e7ea80cc2a9d90d38365753f4de`，final head Actions run `28288707273` completed / success），Governance Mode 仍为 `LEGACY_MANUAL`，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`
+- `TASK-GOV-004` 已建档为 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地（merge commit `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit `50f0befadbd17e7ea80cc2a9d90d38365753f4de`，final head Actions run `28288707273` completed / success）。Phase 4 手动独立 Code Review + Spec & Docs Review 规格已准备，但尚未执行审查；Governance Mode 仍为 `LEGACY_MANUAL`，不得写 `PR_MANUAL_REVIEW` 或 `PR_REQUIRED_CHECKS` 已生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`
 - PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`；`TASK_SPEC-DEBT-001-B` 实现 PR 已收口。该 PR 的 CI 状态仍只能记录为临时豁免；后续新增的基础 GitHub Actions workflow 不得追溯写成 PR #4 CI PASS。
 
 ## 活跃任务
@@ -128,7 +128,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
   【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
 - `TASK-EVAL-001-B` 的 `1.0 / 1.0 / 1` 是当前 canonical anchor 集合的真实计算，只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId、rowIndex、cellIndex 仍依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不能单独证明 parser anchor 位置客观正确，也不得表述为独立人工标注准确率。
 - evaluator 已支持 `TABLE_CELL` canonical key，test-only / mock 覆盖已存在；真实 DOCX positive baseline 的 TABLE_CELL 端到端覆盖仍未完成，继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，不得宣称真实 DOCX TABLE_CELL 已验证。
-- 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。`TASK-GOV-004` 已建档为 active 治理任务用于分阶段治理该缺口；2026-06-27 Phase 3 已新增基础 GitHub Actions workflow，PR #5 已形成 CI 运行记录，但尚无 PR 机制化治理流程的完整运行记录，且 branch protection、ruleset 或 required checks 仍未配置，因此 Governance Mode 仍只能标注为 `LEGACY_MANUAL`。
+- 后续治理缺口：当前 v3 门禁仍依赖文档规则、Codex 遵守、用户判断和独立 agent 审计，尚未通过 GitHub branch protection / required status checks 形成机制化硬门禁，当前门禁不具备 GitHub 机制强制能力。`TASK-GOV-004` 已建档为 active 治理任务用于分阶段治理该缺口；2026-06-27 Phase 3 已新增基础 GitHub Actions workflow，PR #5 已形成 CI 运行记录；Phase 4 手动独立 Code Review + Spec & Docs Review 规格已准备，定义了触发、证据、结论格式和回写方式，但尚未执行审查，也未形成机制化 required checks。branch protection、ruleset 或 required checks 仍未配置，因此 Governance Mode 仍只能标注为 `LEGACY_MANUAL`。
 - `TASK-GOV-004` 建档前只读证据：主仓库工作区干净，`master` 与 `origin/master` 对齐，本地无 `.github` 目录；截至 2026-06-23 复核，`gh` CLI 可正常使用，公开 GitHub REST API 可返回数据。此处仅记录本次时点性核查结果，后续环境状态仍可能变化，因此不得写成永久可用结论。
 - `TASK-GOV-004` Phase 1 目录口径已确认：`C:\Users\1\Documents\CQCP_AUDIT` 是审计环境根目录，`C:\Users\1\Documents\CQCP_AUDIT\CQCP` 是被审计 git clone；后续审计 git 命令必须在 `CQCP_AUDIT\CQCP` 执行，不得写成在 `CQCP_AUDIT` 根目录直接执行。`audit-scratch` 建议位于 `C:\Users\1\Documents\CQCP_AUDIT\audit-scratch`，不放进被审计 clone。
 - `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 已按用户授权启动并新增 `.github/workflows/ci.yml`：backend job 运行 Java 21 + Gradle 8.10.2 + PostgreSQL 16 service + `gradle test`，admin-web job 运行 Node.js 24 + `npm ci` + lint/test/build。PR #5 已合并，merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`；final head GitHub Actions run `28288707273` 为 completed / success，`Backend Gradle tests` 与 `Admin web lint, tests, and build` 均为 success。Phase 3 minimal GitHub Actions CI 已落地，但 required checks、branch protection 和 ruleset 仍未配置，不得写成 required checks 已生效或 `PR_REQUIRED_CHECKS`；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
@@ -169,7 +169,8 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 3. `TASK-EVAL-001` 暂停归档如需 commit / push，仍必须分别重新取得用户明确授权。
 4. `TASK_SPEC-DEBT-001-A` 已完成实现审查、提交前独立只读审计、commit 与 push；实现提交为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，文档修正提交为 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 GitHub 云端 post-push 独立只读复审结论为 `GO`。
 5. `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 的实现 PR #4 已合并到 `master`，但 `TASK-DEBT-001` 父任务仍未归档，不得因此进入 `TASK-028` / `TASK-031` / `TASK-032`。
-6. `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 已通过 PR #5 合并落地；merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`，final head GitHub Actions run `28288707273` 已通过。Governance Mode 仍为 `LEGACY_MANUAL`；branch protection、required checks 和 ruleset 未配置，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+6. `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 已通过 PR #5 合并落地；Phase 4 手动独立 Code Review + Spec & Docs Review 规格已准备但尚未执行审查。Governance Mode 仍为 `LEGACY_MANUAL`；branch protection、required checks 和 ruleset 未配置，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+7. 后续如获授权，仅可围绕 `TASK-GOV-004` Phase 4 规格执行一次手动独立审查试运行；不得配置 GitHub 设置，不得进入 Phase 5。
 7. 不派发新的 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行，并先经过冻结 TASK_SPEC、编码前规格映射计划与 Codex 放行。
 
 ## 参考路径

@@ -1,6 +1,6 @@
 # TASK-GOV-004：PR 化多 Agent 开发治理与机制化门禁
 
-状态：Active（Phase 3：minimal GitHub Actions CI 已通过 PR #5 合并落地，未归档）
+状态：Active（Phase 4：手动独立 Code Review + Spec & Docs Review 规格已准备，尚未执行审查，未归档）
 
 类型：Governance
 
@@ -266,6 +266,40 @@ Post-merge 事实记录（2026-06-27）：
 * 审查结论回写到 PR 评论或后续可转为 Check Run / Commit Status。
 * Codex 不得充当 Code Review Agent 或 Spec & Docs Review Agent。
 
+Phase 4 规格（2026-06-27 准备，尚未执行）：
+
+* 触发条件：
+  * 仅在已有 PR、明确 head commit、CI run 结果和授权的审查范围后触发。
+  * 审查对象必须限定为 PR diff、相关任务文件、必要上下文和真实命令输出；不得要求审查 agent 修改文件、提交、push、merge 或配置 GitHub 设置。
+  * 对业务代码变更、治理文档变更和归档 PR 均可触发 Phase 4，但每次必须单独声明允许文件、禁止文件、审查基线和目标结论。
+* 审查环境：
+  * 审查命令必须在 `C:\Users\1\Documents\CQCP_AUDIT\CQCP` 被审计 clone 中执行。
+  * 临时记录仅允许写入审计环境外层 scratch 区；不得污染被审计 clone 工作区。
+  * 审查前后必须记录 `git status --short`、`git status -sb`、`git rev-parse HEAD` 和必要的 PR / CI 只读查询结果。
+* Code Review 证据：
+  * 覆盖 PR diff 是否只修改授权文件。
+  * 覆盖实现或文档是否满足任务验收断言。
+  * 覆盖是否存在范围外修改、完成态夸大、缺失测试、证据不足或与治理边界冲突。
+  * 如涉及代码，必须列出实际运行或核验的测试命令、结果和失败归因；不得用文档自述替代命令证据。
+* Spec & Docs Review 证据：
+  * 覆盖 `AGENTS.md`、当前 TASK、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/` 中相关状态是否一致。
+  * 覆盖 `Governance Mode`、`PR_REQUIRED_CHECKS`、branch protection / ruleset / required checks 等治理状态是否被准确表述。
+  * 覆盖是否错误追溯 PR #4 CI 状态、是否错误归档任务、是否提前进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 结论格式：
+  * `GO`：无阻塞问题，可进入用户决策或下一授权动作。
+  * `NEEDS-FIX`：存在必须修正项；必须列出文件、位置、事实依据和最小修正建议。
+  * `NO-GO`：事实链、范围边界或验证证据不成立；不得合并、归档或进入下一阶段。
+  * 可附 `NON-BLOCKING` 项，但不得用 non-blocking 掩盖完成态夸大、范围外修改或证据缺失。
+* 回写方式：
+  * Phase 4 当前仅允许手动回写到 PR 评论、审计报告摘要或任务记忆文档；尚不发布 GitHub Check Run 或 Commit Status。
+  * 回写必须包含审查对象、head commit、CI run、结论、阻塞项、non-blocking 项和审查环境状态。
+  * Codex 只能基于独立审查结果给出 Review Intake Decision；Codex 不得把自身检查冒充独立 Code Review 或 Spec & Docs Review。
+* 治理边界：
+  * Phase 4 规格准备不代表 Phase 4 已执行。
+  * Phase 4 手动审查不代表 branch protection、ruleset、required checks 或 `PR_REQUIRED_CHECKS` 已生效。
+  * 进入 Phase 5 前仍必须取得机制化门禁验收证据清单中的全部证据。
+  * 当前 Governance Mode 仍为 `LEGACY_MANUAL`。
+
 ### Phase 5：Protected Branch + Required Checks
 
 目标：
@@ -345,7 +379,7 @@ Post-merge 事实记录（2026-06-27）：
 
 ## Next Task Handoff
 
-下一步：暂无授权进入下一任务；当前仅记录 PR #5 post-merge 事实，`TASK-GOV-004` 不归档，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+下一步：如获用户授权，仅可围绕 `TASK-GOV-004` Phase 4 规格执行一次手动独立 Code Review + Spec & Docs Review 试运行；不得配置 GitHub branch protection、ruleset 或 required checks，不得写 `PR_REQUIRED_CHECKS` 已生效，不得归档 `TASK-GOV-004`，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ## 风险
 
@@ -359,11 +393,12 @@ Post-merge 事实记录（2026-06-27）：
 * 是否将外部 `C:\Users\1\Downloads\CQCP-PR治理方案-v2.md` 正式纳入 `docs/governance/`。
 * 是否安装或启用 `gh` CLI，供 CQCP_AUDIT 后续使用 `gh api` 核实 GitHub 设置。
 * Phase 3 的最小 CI 命令矩阵已在 `.github/workflows/ci.yml` 中落地，并已通过 PR #5 final head GitHub Actions run `28288707273` 验证后合并落地；这不代表 branch protection、required checks、ruleset 或 `PR_REQUIRED_CHECKS` 已生效。
+* Phase 4 手动独立审查的实际试运行 PR、审查 agent 类型和回写载体。
 * Phase 5 的 required checks 命名、source 和发布方式。
 
 ## 完成记录
 
-* 完成日期：2026-06-27（Phase 3 workflow 文件新增；PR #5 已合并，minimal GitHub Actions CI 已落地；`TASK-GOV-004` 未归档）
+* 完成日期：2026-06-27（Phase 3 workflow 文件新增；PR #5 已合并，minimal GitHub Actions CI 已落地；Phase 4 手动独立审查规格已准备但尚未执行；`TASK-GOV-004` 未归档）
 * 变更文件：`.github/workflows/ci.yml`、`tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
 * 测试结果：
   * `git diff --check`：通过（仅有 Git CRLF warning，无 whitespace error）。
@@ -375,5 +410,5 @@ Post-merge 事实记录（2026-06-27）：
   * PR #5 第二轮 GitHub Actions run `28277974535`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
   * PR #5 final head GitHub Actions run `28288707273`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
   * PR #5 已 merged；merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`。
-* 遗留问题：尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 遗留问题：Phase 4 手动独立审查尚未试运行；尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 备注：本轮只新增基础 CI workflow 与项目记忆记录，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
