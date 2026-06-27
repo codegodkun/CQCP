@@ -41,7 +41,7 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
-| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 3：基础 CI 已新增，待 PR 运行验证） | 当前 Governance Mode 为 `LEGACY_MANUAL`；新增 `.github/workflows/ci.yml` 最小 CI workflow，但尚无 PR GitHub Actions 运行记录、branch protection、ruleset 或 required checks，不得写 `PR_REQUIRED_CHECKS` |
+| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 3：基础 CI 已新增，PR #5 第二轮 Actions 已通过） | 当前 Governance Mode 为 `LEGACY_MANUAL`；新增 `.github/workflows/ci.yml` 最小 CI workflow，PR #5 run `28277974535` 已通过，但尚无 branch protection、ruleset 或 required checks，不得写 `PR_REQUIRED_CHECKS` |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送并 post-push GO；B 批次已冻结到映射计划阶段） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`；`TASK_SPEC-DEBT-001-B` 已冻结到编码前规格映射计划阶段，尚未派发实现；其他分流仍需另行冻结 TASK_SPEC |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
@@ -208,7 +208,7 @@
 
 - 定位：PR 化多 Agent 开发治理与 GitHub 机制化门禁父任务。
 - 当前 Governance Mode：`LEGACY_MANUAL`。
-- Phase 3 当前状态：已新增 `.github/workflows/ci.yml` 最小 CI workflow，待真实 PR GitHub Actions 运行验证。
+- Phase 3 当前状态：已新增 `.github/workflows/ci.yml` 最小 CI workflow；PR #5 第二轮 GitHub Actions run `28277974535` 已通过。
 - 当前只读证据：
   - 主仓库工作区干净。
   - `master` 与 `origin/master` 对齐。
@@ -266,7 +266,7 @@
 
 ## 当前建议顺序
 
-1. `TASK-GOV-004` Phase 3 已新增基础 GitHub Actions CI workflow；下一步是创建 PR 并用真实 GitHub Actions 运行记录验证，PR 运行前不得写成 CI PASS。
+1. `TASK-GOV-004` Phase 3 已新增基础 GitHub Actions CI workflow，PR #5 第二轮 Actions 已通过；下一步是独立审查 PR diff 与 CI 证据，仍不得写成 `PR_REQUIRED_CHECKS`。
 2. `TASK-GOV-003` 已完成并归档。
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；后续对该任务执行只读 Review Intake 时，不进入开发。
 4. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。

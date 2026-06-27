@@ -355,6 +355,7 @@ git log -1 --format="%H %ci"
   * `npm.cmd run test:admin-web`：通过，1 个 test file / 6 tests passed；沙箱内曾因上级目录读取权限失败，非沙箱重跑通过。
   * `npm.cmd run build:admin-web`：通过；存在 Vite chunk size warning，不作为失败。
   * `gradle test`：本地失败于既有 `CqcpApiServerApplicationTests.contextLoads` PostgreSQL hostname / 本地数据库环境问题；本轮 CI workflow 已为 GitHub runner 配置 PostgreSQL 16 service 与 `CQCP_DB_URL=jdbc:postgresql://localhost:5432/cqcp`。
-  * PR #5 首轮 GitHub Actions backend job 失败于 runner 默认 Gradle 9.6.0 下 JUnit Platform launcher 缺失；workflow 已改为显式使用本地验证过的 Gradle 8.10.2，需等待新一轮 PR Actions 验证。
-* 遗留问题：尚未创建 PR，尚无 GitHub Actions 运行记录；未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`。
+  * PR #5 首轮 GitHub Actions backend job 失败于 runner 默认 Gradle 9.6.0 下 JUnit Platform launcher 缺失；workflow 已改为显式使用本地验证过的 Gradle 8.10.2。
+  * PR #5 第二轮 GitHub Actions run `28277974535`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
+* 遗留问题：PR #5 已创建且第二轮 GitHub Actions 已通过；但尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`。
 * 备注：本轮只新增基础 CI workflow 与项目记忆记录，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
