@@ -1,6 +1,6 @@
 # TASK-GOV-004：PR 化多 Agent 开发治理与机制化门禁
 
-状态：Active（Phase 3：基础 GitHub Actions CI 已启动，待 PR 运行验证）
+状态：Active（Phase 3：minimal GitHub Actions CI 已通过 PR #5 合并落地，未归档）
 
 类型：Governance
 
@@ -237,6 +237,22 @@ git log -1 --format="%H %ci"
 * CI 不配置模型 API、secrets、Code Review Agent、Spec & Docs Review Agent、branch protection、ruleset 或 required checks。
 * 在真实 PR 运行记录出现前，不得写成 CI 已通过；在 Phase 5 全部证据满足前，不得写成 `PR_REQUIRED_CHECKS`。
 
+Post-merge 事实记录（2026-06-27）：
+
+* PR #5 已 merged。
+* merge commit：`455d2e3b7a4d8397087deb127a649a6f92aa19a0`。
+* PR head commit：`50f0befadbd17e7ea80cc2a9d90d38365753f4de`。
+* PR #5 final head GitHub Actions run `28288707273` completed / success。
+* `Backend Gradle tests`：success。
+* `Admin web lint, tests, and build`：success。
+* Phase 3 minimal GitHub Actions CI 已落地。
+* Governance Mode 仍为 `LEGACY_MANUAL`。
+* `PR_REQUIRED_CHECKS` 尚未生效。
+* branch protection / required checks / ruleset 未配置。
+* `TASK-GOV-004` 未归档。
+* 未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* PR #4 的历史 CI 豁免不得追溯写成 CI PASS。
+
 ### Phase 4：手动独立 Code Review + Spec & Docs Review
 
 目标：
@@ -329,7 +345,7 @@ git log -1 --format="%H %ci"
 
 ## Next Task Handoff
 
-下一步：为本分支创建 PR，并用真实 GitHub Actions 运行记录验证 `.github/workflows/ci.yml`。PR 运行前不得写成 CI PASS。
+下一步：暂无授权进入下一任务；当前仅记录 PR #5 post-merge 事实，`TASK-GOV-004` 不归档，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ## 风险
 
@@ -347,7 +363,7 @@ git log -1 --format="%H %ci"
 
 ## 完成记录
 
-* 完成日期：2026-06-27（Phase 3 workflow 文件新增，待 PR CI 运行验证）
+* 完成日期：2026-06-27（Phase 3 workflow 文件新增；PR #5 已合并，minimal GitHub Actions CI 已落地；`TASK-GOV-004` 未归档）
 * 变更文件：`.github/workflows/ci.yml`、`tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
 * 测试结果：
   * `git diff --check`：通过（仅有 Git CRLF warning，无 whitespace error）。
@@ -357,5 +373,7 @@ git log -1 --format="%H %ci"
   * `gradle test`：本地失败于既有 `CqcpApiServerApplicationTests.contextLoads` PostgreSQL hostname / 本地数据库环境问题；本轮 CI workflow 已为 GitHub runner 配置 PostgreSQL 16 service 与 `CQCP_DB_URL=jdbc:postgresql://localhost:5432/cqcp`。
   * PR #5 首轮 GitHub Actions backend job 失败于 runner 默认 Gradle 9.6.0 下 JUnit Platform launcher 缺失；workflow 已改为显式使用本地验证过的 Gradle 8.10.2。
   * PR #5 第二轮 GitHub Actions run `28277974535`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
-* 遗留问题：PR #5 已创建且第二轮 GitHub Actions 已通过；但尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`。
+  * PR #5 final head GitHub Actions run `28288707273`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
+  * PR #5 已 merged；merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`。
+* 遗留问题：尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 备注：本轮只新增基础 CI workflow 与项目记忆记录，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
