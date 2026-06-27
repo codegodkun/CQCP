@@ -232,7 +232,7 @@ git log -1 --format="%H %ci"
 本轮执行边界（2026-06-27）：
 
 * 新增 `.github/workflows/ci.yml` 作为最小 CI workflow。
-* backend job 使用 Java 21、`gradle/actions/setup-gradle@v4` 和 PostgreSQL 16 service，执行 `apps/api-server` 下的 `gradle test`。
+* backend job 使用 Java 21、`gradle/actions/setup-gradle@v4`、Gradle 8.10.2 和 PostgreSQL 16 service，执行 `apps/api-server` 下的 `gradle test`。
 * admin-web job 使用 Node.js 24、根目录 `npm ci`，执行 `npm run lint:admin-web`、`npm run test:admin-web`、`npm run build:admin-web`。
 * CI 不配置模型 API、secrets、Code Review Agent、Spec & Docs Review Agent、branch protection、ruleset 或 required checks。
 * 在真实 PR 运行记录出现前，不得写成 CI 已通过；在 Phase 5 全部证据满足前，不得写成 `PR_REQUIRED_CHECKS`。
@@ -354,6 +354,7 @@ git log -1 --format="%H %ci"
   * `npm.cmd run lint:admin-web`：通过。
   * `npm.cmd run test:admin-web`：通过，1 个 test file / 6 tests passed；沙箱内曾因上级目录读取权限失败，非沙箱重跑通过。
   * `npm.cmd run build:admin-web`：通过；存在 Vite chunk size warning，不作为失败。
-  * `gradle test`：本地失败于既有 `CqcpApiServerApplicationTests.contextLoads` PostgreSQL hostname / 本地数据库环境问题；本轮 CI workflow 已为 GitHub runner 配置 PostgreSQL 16 service 与 `CQCP_DB_URL=jdbc:postgresql://localhost:5432/cqcp`，但 backend job 仍必须等待真实 PR GitHub Actions 运行验证。
+  * `gradle test`：本地失败于既有 `CqcpApiServerApplicationTests.contextLoads` PostgreSQL hostname / 本地数据库环境问题；本轮 CI workflow 已为 GitHub runner 配置 PostgreSQL 16 service 与 `CQCP_DB_URL=jdbc:postgresql://localhost:5432/cqcp`。
+  * PR #5 首轮 GitHub Actions backend job 失败于 runner 默认 Gradle 9.6.0 下 JUnit Platform launcher 缺失；workflow 已改为显式使用本地验证过的 Gradle 8.10.2，需等待新一轮 PR Actions 验证。
 * 遗留问题：尚未创建 PR，尚无 GitHub Actions 运行记录；未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`。
 * 备注：本轮只新增基础 CI workflow 与项目记忆记录，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
