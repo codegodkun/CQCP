@@ -1,6 +1,6 @@
 # TASK-GOV-004：PR 化多 Agent 开发治理与机制化门禁
 
-状态：Active（Phase 4：手动独立 Code Review + Spec & Docs Review 规格已准备，尚未执行审查，未归档）
+状态：Active（Phase 4：手动独立 Code Review + Spec & Docs Review 外部审查试运行 GO，未归档）
 
 类型：Governance
 
@@ -300,6 +300,17 @@ Phase 4 规格（2026-06-27 准备，尚未执行）：
   * 进入 Phase 5 前仍必须取得机制化门禁验收证据清单中的全部证据。
   * 当前 Governance Mode 仍为 `LEGACY_MANUAL`。
 
+Phase 4 外部独立审查试运行记录（2026-06-28）：
+
+* 审查对象：`origin/master@3917848134543a2d99be44bfca6508f99d9a0bbf`（`docs(governance): prepare TASK-GOV-004 phase 4 review spec`）。
+* 审查环境：`C:\Users\1\Documents\CQCP_AUDIT\CQCP`。
+* Code Review：GLM 5.2，结论 `GO`；确认目标提交仅修改 4 个治理/文档文件，未修改代码、测试、workflow、OpenAPI、DB、Docker、ADR、PRD 或 GitHub 设置。
+* Spec & Docs Review：GLM 5.2，结论 `GO`；确认四份文档一致表述 Phase 4 规格已准备、`LEGACY_MANUAL`、`PR_REQUIRED_CHECKS` 尚未生效、branch protection / required checks / ruleset 未配置、`TASK-GOV-004` 未归档、未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 两份审查均记录真实只读 git / rg 命令与 console 输出，并声明未修改文件、未 stage、未 commit、未 push。
+* Non-blocking：Code Review 报告发现 `CURRENT_CONTEXT.md` 下一步任务编号重复；本轮写回已修正。
+* Codex Review Intake Decision：`GO`，Phase 4 外部独立审查试运行可视为完成。
+* 治理边界：该 `GO` 不代表进入 Phase 5，不代表 branch protection、ruleset、required checks 或 `PR_REQUIRED_CHECKS` 已生效；Governance Mode 仍为 `LEGACY_MANUAL`。
+
 ### Phase 5：Protected Branch + Required Checks
 
 目标：
@@ -379,7 +390,7 @@ Phase 4 规格（2026-06-27 准备，尚未执行）：
 
 ## Next Task Handoff
 
-下一步：如获用户授权，仅可围绕 `TASK-GOV-004` Phase 4 规格执行一次手动独立 Code Review + Spec & Docs Review 试运行；不得配置 GitHub branch protection、ruleset 或 required checks，不得写 `PR_REQUIRED_CHECKS` 已生效，不得归档 `TASK-GOV-004`，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
+下一步：如获用户授权，仅可评估 `TASK-GOV-004` Phase 5 机制化门禁规格准备；不得直接配置 GitHub branch protection、ruleset 或 required checks，不得写 `PR_REQUIRED_CHECKS` 已生效，不得归档 `TASK-GOV-004`，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ## 风险
 
@@ -393,12 +404,12 @@ Phase 4 规格（2026-06-27 准备，尚未执行）：
 * 是否将外部 `C:\Users\1\Downloads\CQCP-PR治理方案-v2.md` 正式纳入 `docs/governance/`。
 * 是否安装或启用 `gh` CLI，供 CQCP_AUDIT 后续使用 `gh api` 核实 GitHub 设置。
 * Phase 3 的最小 CI 命令矩阵已在 `.github/workflows/ci.yml` 中落地，并已通过 PR #5 final head GitHub Actions run `28288707273` 验证后合并落地；这不代表 branch protection、required checks、ruleset 或 `PR_REQUIRED_CHECKS` 已生效。
-* Phase 4 手动独立审查的实际试运行 PR、审查 agent 类型和回写载体。
 * Phase 5 的 required checks 命名、source 和发布方式。
 
 ## 完成记录
 
-* 完成日期：2026-06-27（Phase 3 workflow 文件新增；PR #5 已合并，minimal GitHub Actions CI 已落地；Phase 4 手动独立审查规格已准备但尚未执行；`TASK-GOV-004` 未归档）
+* 完成日期：2026-06-27（Phase 3 workflow 文件新增；PR #5 已合并，minimal GitHub Actions CI 已落地；Phase 4 手动独立审查规格已准备；`TASK-GOV-004` 未归档）
+* Phase 4 试运行写回日期：2026-06-28（GLM 5.2 外部 Code Review `GO`；GLM 5.2 外部 Spec & Docs Review `GO`；Codex Review Intake Decision `GO`）
 * 变更文件：`.github/workflows/ci.yml`、`tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
 * 测试结果：
   * `git diff --check`：通过（仅有 Git CRLF warning，无 whitespace error）。
@@ -410,5 +421,5 @@ Phase 4 规格（2026-06-27 准备，尚未执行）：
   * PR #5 第二轮 GitHub Actions run `28277974535`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
   * PR #5 final head GitHub Actions run `28288707273`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
   * PR #5 已 merged；merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`。
-* 遗留问题：Phase 4 手动独立审查尚未试运行；尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 遗留问题：尚未配置 branch protection、ruleset 或 required checks；Governance Mode 仍为 `LEGACY_MANUAL`，`PR_REQUIRED_CHECKS` 尚未生效；`TASK-GOV-004` 未归档，未进入 Phase 5，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 备注：本轮只新增基础 CI workflow 与项目记忆记录，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR、PRD 或 GitHub 设置。
