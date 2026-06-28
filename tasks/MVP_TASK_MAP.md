@@ -16,7 +16,7 @@
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；事后独立复核、定向测试 `30/30 PASS` 和父任务归档前独立审计已形成补偿证据，但不能追溯性等同于提交前复核
 - `TASK-EVAL-001` 已回滚为暂停归档，仅保留未提交 diff；DoD #1 至 #11 已独立确认，DoD #12 未通过、未补足并作为永久治理债务保留
-- `TASK-GOV-004` 已建立 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；2026-06-27 Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地，Phase 4 手动独立 Code Review + Spec & Docs Review 规格已准备，2026-06-28 外部独立审查试运行已完成并取得 GLM 5.2 Code Review `GO` 与 GLM 5.2 Spec & Docs Review `GO`；2026-06-28 Phase 5 第一阶段 GitHub branch protection / required checks 已配置并验证，Phase 5 post-implementation 独立只读审计结论为 `GO`，Codex Review Intake 结论为 `GO TO ARCHIVE PR PREP ONLY`，当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks，`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`
+- `TASK-GOV-004` 已建立 active 治理任务，用于把 PR 化多 Agent 开发治理方案 v2 转为可追踪任务；2026-06-27 Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地，Phase 4 手动独立 Code Review + Spec & Docs Review 规格已准备，2026-06-28 外部独立审查试运行已完成并取得 GLM 5.2 Code Review `GO` 与 GLM 5.2 Spec & Docs Review `GO`；2026-06-28 Phase 5 第一阶段 GitHub branch protection / required checks 已配置并验证，Phase 5 post-implementation 独立只读审计结论为 `GO`，Codex Review Intake 结论为 `GO TO ARCHIVE PR PREP ONLY`，归档准备 Draft PR #8 已创建；当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks，`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`
 - Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
   【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
 - `TASK-031` 仍未进入，继续禁止抢跑
@@ -41,7 +41,7 @@
 | `TASK-026` | 最小 CandidateResolver 置信度治理 | A | 已完成并归档 | 文件：`tasks/done/TASK-026-minimal-candidate-resolver-confidence-governance.md`；已通过真实 parser 主链路 fixture 覆盖 `MEDIUM / LOW / CONFLICTED`，`HIGH` 才可进入确定性裁判 |
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
-| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 5 第一阶段机制化门禁已配置并验证，post-implementation 独立审计 `GO`，Codex Review Intake `GO TO ARCHIVE PR PREP ONLY`；未归档） | 当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；Phase 3 minimal CI 已通过 PR #5 合并落地；Phase 4 规格已定义且外部 GLM 5.2 Code Review 与 Spec & Docs Review 均为 `GO`；Phase 5 第一阶段已配置 branch protection / required checks / PR-only direct push 拒绝；Phase 5 post-implementation 独立只读审计 `GO`；仅可在用户明确授权后准备归档 PR；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks；未进入 `TASK-028` / `TASK-031` / `TASK-032` |
+| `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | Active（Phase 5 第一阶段机制化门禁已配置并验证，post-implementation 独立审计 `GO`，Draft PR #8 已创建；未归档） | 当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；Phase 3 minimal CI 已通过 PR #5 合并落地；Phase 4 规格已定义且外部 GLM 5.2 Code Review 与 Spec & Docs Review 均为 `GO`；Phase 5 第一阶段已配置 branch protection / required checks / PR-only direct push 拒绝；Phase 5 post-implementation 独立只读审计 `GO`；归档准备 PR 为 `https://github.com/codegodkun/CQCP/pull/8`；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks；未进入 `TASK-028` / `TASK-031` / `TASK-032` |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送并 post-push GO；B 批次已冻结到映射计划阶段） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`；`TASK_SPEC-DEBT-001-B` 已冻结到编码前规格映射计划阶段，尚未派发实现；其他分流仍需另行冻结 TASK_SPEC |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
@@ -211,7 +211,7 @@
 - Phase 3 当前状态：已新增 `.github/workflows/ci.yml` 最小 CI workflow；PR #5 已 merged，merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`；final head GitHub Actions run `28288707273` completed / success，`Backend Gradle tests` 与 `Admin web lint, tests, and build` 均为 success。`TASK-GOV-004` 未归档。
 - Phase 4 当前状态：手动独立 Code Review + Spec & Docs Review 规格已准备；触发条件、审查证据、结论格式和回写方式已写入任务文件。2026-06-28 外部 GLM 5.2 Code Review 与 Spec & Docs Review 均为 `GO`；该试运行不发布 Check Run 或 Commit Status，不代表 required checks 生效。
 - Phase 5 当前状态：2026-06-28 第一阶段 GitHub branch protection / required checks 已配置并验证；required checks 为 `Backend Gradle tests` 与 `Admin web lint, tests, and build`，source 为 GitHub Actions `app_id: 15368`，`strict: true`；已启用 PR-only direct push 拒绝。Phase 5 post-implementation 独立只读审计结论为 `GO`。repository ruleset 仍未配置；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks。
-- 归档决策准备：2026-06-28 Codex Review Intake 结论为 `GO TO ARCHIVE PR PREP ONLY`；仅表示可准备归档 PR，不表示已归档；后续 stage / commit / push / 创建归档 PR 仍需用户明确授权。
+- 归档准备：2026-06-28 Codex Review Intake 结论为 `GO TO ARCHIVE PR PREP ONLY`；Draft PR #8 已创建，URL 为 `https://github.com/codegodkun/CQCP/pull/8`；仅表示可准备归档 PR，不表示已归档。
 - 当前只读证据：
   - 主仓库工作区干净。
   - `master` 与 `origin/master` 对齐。
@@ -269,7 +269,7 @@
 
 ## 当前建议顺序
 
-1. `TASK-GOV-004` Phase 5 第一阶段机制化门禁已配置并验证，post-implementation 独立只读审计结论为 `GO`，Codex Review Intake 结论为 `GO TO ARCHIVE PR PREP ONLY`。Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`TASK-GOV-004` 未归档；后续仅可在用户明确授权后准备归档 PR。
+1. `TASK-GOV-004` Phase 5 第一阶段机制化门禁已配置并验证，post-implementation 独立只读审计结论为 `GO`，归档准备 Draft PR #8 已创建。Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`TASK-GOV-004` 未归档；下一步等待 PR #8 required checks 完成后进行只读审查与用户合并/归档决策。
 2. `TASK-GOV-003` 已完成并归档。
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；后续对该任务执行只读 Review Intake 时，不进入开发。
 4. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。

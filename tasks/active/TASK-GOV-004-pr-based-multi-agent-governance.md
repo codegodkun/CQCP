@@ -615,6 +615,17 @@ GO TO ARCHIVE PR PREP ONLY
 * 不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 当前 4 个本地文档 diff 仍未 stage / commit / push；后续 stage、commit、push 或创建归档 PR 均需用户明确授权。
 
+#### 归档准备 PR 创建记录（2026-06-28）
+
+* 用户已授权 stage / commit / push 当前 4 个治理文档 diff 并准备归档 PR。
+* 分支：`codex/task-gov-004-archive-pr-prep`。
+* 提交：`c0e1d2c7f25131b71abcae68f737c494466f52ed docs(governance): prepare TASK-GOV-004 archive PR`。
+* Draft PR：`https://github.com/codegodkun/CQCP/pull/8`。
+* PR #8 base：`master`；head：`codex/task-gov-004-archive-pr-prep`。
+* PR #8 仅为归档准备 PR，不移动 `tasks/active -> tasks/done`，不直接归档 `TASK-GOV-004`。
+* PR #8 当前 required checks 已由 GitHub Actions 触发，查询时 `Backend Gradle tests` 与 `Admin web lint, tests, and build` 均为 `in_progress`，source 为 GitHub Actions `app_id: 15368`。
+* PR #8 未发布 `CQCP Code Review` / `CQCP Spec & Docs Review` Check Run 或 Commit Status。
+
 ### Phase 6：归档流程 PR 化
 
 目标：
@@ -675,7 +686,7 @@ GO TO ARCHIVE PR PREP ONLY
 
 ## Next Task Handoff
 
-下一步：`TASK-GOV-004` 归档决策准备 / Codex Review Intake 结论为 `GO TO ARCHIVE PR PREP ONLY`。如获用户明确授权，仅可准备归档 PR 所需的文档提交与 PR 说明；不得在未授权时 stage / commit / push / 创建 PR，不得直接归档 `TASK-GOV-004`，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。`CQCP Code Review` / `CQCP Spec & Docs Review` 机制化状态发布仍待后续单独定界。
+下一步：等待 PR #8 的 required checks 完成后，按归档 PR 流程进行只读审查与用户合并/归档决策；不得直接归档 `TASK-GOV-004`，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。`CQCP Code Review` / `CQCP Spec & Docs Review` 机制化状态发布仍待后续单独定界。
 
 ## 风险
 
@@ -701,6 +712,7 @@ GO TO ARCHIVE PR PREP ONLY
 * Phase 5 第一阶段实施日期：2026-06-28（GitHub branch protection 已配置；第一阶段 required checks 为 `Backend Gradle tests` 与 `Admin web lint, tests, and build`，source 为 GitHub Actions `app_id: 15368`；`strict: true`；启用 PR-only direct push 拒绝；PR #6 / PR #7 和 direct push probe 已形成证据；repository ruleset 未配置；`TASK-GOV-004` 未归档）
 * Phase 5 post-implementation 独立只读审计日期：2026-06-28（结论 `GO`；无阻塞问题；Non-blocking 为 PR #6 当前 API 状态无法直接重放 pending checks 阻塞瞬时状态；`TASK-GOV-004` 未归档）
 * Phase 5 归档决策准备 / Codex Review Intake 日期：2026-06-28（结论 `GO TO ARCHIVE PR PREP ONLY`；可准备归档 PR；不得在本步直接归档；后续 stage / commit / push / 创建 PR 仍需用户明确授权）
+* 归档准备 PR 创建日期：2026-06-28（branch `codex/task-gov-004-archive-pr-prep`；commit `c0e1d2c7f25131b71abcae68f737c494466f52ed`；Draft PR #8 `https://github.com/codegodkun/CQCP/pull/8`；required checks 查询时为 `in_progress`；`TASK-GOV-004` 未归档）
 * 变更文件：`.github/workflows/ci.yml`、`tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
 * 测试结果：
   * `git diff --check`：通过（仅有 Git CRLF warning，无 whitespace error）。
