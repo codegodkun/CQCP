@@ -1,6 +1,6 @@
 # TASK-GOV-004：PR 化多 Agent 开发治理与机制化门禁
 
-状态：Active（Phase 5 第一阶段机制化门禁已配置并完成验证；未归档）
+状态：Done（2026-06-29 post-merge 归档写回准备）
 
 类型：Governance
 
@@ -42,7 +42,7 @@ PR_MANUAL_REVIEW
 * 已启用 `required_pull_request_reviews`，`required_approving_review_count: 0`，用于强制变更通过 PR，不新增人工 approval 数量要求。
 * 已启用 `enforce_admins: true`，并通过 direct push 测试确认普通 direct push 被拒绝。
 * `CQCP Code Review` / `CQCP Spec & Docs Review` 的 Check Run 或 Commit Status 发布身份与 source 尚未确定，未纳入第一阶段 required checks。
-* `TASK-GOV-004` 仍未归档；Phase 5 post-implementation 独立只读审计已返回 `GO`，当前仅可准备归档 PR。
+* `TASK-GOV-004` 已完成 post-merge 归档写回准备；Phase 5 post-implementation 独立只读审计已返回 `GO`，PR #8 已合并。
 
 ## 当前只读证据
 
@@ -651,6 +651,35 @@ GO TO USER MERGE DECISION ONLY
 * 不发布 `CQCP Code Review` / `CQCP Spec & Docs Review` Check Run 或 Commit Status。
 * 不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
+#### PR #8 post-merge 核实 / 归档状态写回（2026-06-29）
+
+Codex Review Intake Decision：
+
+```text
+GO TO ARCHIVE STATE WRITEBACK
+```
+
+核实依据：
+
+* PR #8 已合并：`https://github.com/codegodkun/CQCP/pull/8`。
+* PR #8 merge commit：`5d73ea22c42971df848dbacb49c86d40e2143e1f`。
+* PR #8 head commit：`e9812bc118aa5a2f33294dcc9507566703da7517`。
+* PR #8 合并时间：`2026-06-28T16:09:22Z`。
+* 本地 `master` 与 `origin/master` 对齐，`git rev-list --left-right --count origin/master...HEAD` 为 `0 0`。
+* 本地 HEAD 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f Merge pull request #8 from codegodkun/codex/task-gov-004-archive-pr-prep`。
+* PR #8 合并前两个 required checks 均为 `COMPLETED / SUCCESS`：
+  * `Backend Gradle tests`
+  * `Admin web lint, tests, and build`
+
+归档写回边界：
+
+* 本次仅执行 post-merge 归档状态写回和任务文件移动。
+* 任务文件从 `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md` 移动到 `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`。
+* `CQCP Code Review` / `CQCP Spec & Docs Review` 仍未机制化发布为 required checks。
+* 不发布 `CQCP Code Review` / `CQCP Spec & Docs Review` Check Run 或 Commit Status。
+* 不修改 GitHub branch protection / ruleset。
+* 不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+
 ### Phase 6：归档流程 PR 化
 
 目标：
@@ -676,7 +705,7 @@ GO TO USER MERGE DECISION ONLY
 
 ## 交付物
 
-* `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`
+* `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`
 * `CURRENT_CONTEXT.md` 中的活跃任务与阻塞项摘要
 * `changelog/2026-06.md` 中的建档记录
 * `tasks/MVP_TASK_MAP.md` 中的任务地图更新
@@ -711,7 +740,7 @@ GO TO USER MERGE DECISION ONLY
 
 ## Next Task Handoff
 
-下一步：PR #8 只读审查结论为 `GO TO USER MERGE DECISION ONLY`；仅可由用户决定是否将 PR #8 标记 ready 并合并。不得直接归档 `TASK-GOV-004`，不得进入 `TASK-028` / `TASK-031` / `TASK-032`。`CQCP Code Review` / `CQCP Spec & Docs Review` 机制化状态发布仍待后续单独定界。
+下一步：`TASK-GOV-004` 已完成 post-merge 归档状态写回准备。后续不得因此进入 `TASK-028` / `TASK-031` / `TASK-032`。`CQCP Code Review` / `CQCP Spec & Docs Review` 机制化状态发布仍待后续单独定界。
 
 ## 风险
 
@@ -739,7 +768,8 @@ GO TO USER MERGE DECISION ONLY
 * Phase 5 归档决策准备 / Codex Review Intake 日期：2026-06-28（结论 `GO TO ARCHIVE PR PREP ONLY`；可准备归档 PR；不得在本步直接归档；后续 stage / commit / push / 创建 PR 仍需用户明确授权）
 * 归档准备 PR 创建日期：2026-06-28（branch `codex/task-gov-004-archive-pr-prep`；commit `c0e1d2c7f25131b71abcae68f737c494466f52ed`；Draft PR #8 `https://github.com/codegodkun/CQCP/pull/8`；`TASK-GOV-004` 未归档）
 * PR #8 只读审查日期：2026-06-28（head commit `b8aff44faf6cdb3dc3948ff7027b5a12fd952575`；两个 required checks completed / success；Codex Review Intake Decision `GO TO USER MERGE DECISION ONLY`；未归档 `TASK-GOV-004`）
-* 变更文件：`.github/workflows/ci.yml`、`tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
+* PR #8 post-merge 归档写回日期：2026-06-29（merge commit `5d73ea22c42971df848dbacb49c86d40e2143e1f`；PR head commit `e9812bc118aa5a2f33294dcc9507566703da7517`；本地 `master` 与 `origin/master` 对齐；任务文件已移动到 `tasks/done/`）
+* 变更文件：`.github/workflows/ci.yml`、`tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-06.md`
 * 测试结果：
   * `git diff --check`：通过（仅有 Git CRLF warning，无 whitespace error）。
   * `npm.cmd run lint:admin-web`：通过。
@@ -750,5 +780,5 @@ GO TO USER MERGE DECISION ONLY
   * PR #5 第二轮 GitHub Actions run `28277974535`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
   * PR #5 final head GitHub Actions run `28288707273`：`Backend Gradle tests` 成功，`Admin web lint, tests, and build` 成功，workflow conclusion 为 `success`。
   * PR #5 已 merged；merge commit 为 `455d2e3b7a4d8397087deb127a649a6f92aa19a0`，PR head commit 为 `50f0befadbd17e7ea80cc2a9d90d38365753f4de`。
-* 遗留问题：`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未形成可审计 Check Run 或 Commit Status source，未纳入第一阶段 required checks；`TASK-GOV-004` 未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 遗留问题：`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未形成可审计 Check Run 或 Commit Status source，未纳入第一阶段 required checks；未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 备注：本轮配置 GitHub branch protection / required checks，并创建测试 PR 与执行 direct push 拒绝测试；不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、ADR 或 PRD。
