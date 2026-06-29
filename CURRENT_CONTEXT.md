@@ -35,11 +35,12 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - `TASK-DOC-002` 已完成并归档：readonly-review 正式模板、模板路由补充、`TASK_SPEC 类型` 字段与最小 R 型 readonly-review 已收口
 - `TASK-GOV-004` 已完成 post-merge 归档状态写回准备：PR #8 已合并，URL 为 `https://github.com/codegodkun/CQCP/pull/8`，merge commit 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f`，PR head 为 `e9812bc118aa5a2f33294dcc9507566703da7517`；本地 `master` 与 `origin/master` 对齐，HEAD 为同一 merge commit。任务文件已从 `tasks/active/TASK-GOV-004-pr-based-multi-agent-governance.md` 移动到 `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`。Governance Mode 当前可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks），但 `CQCP Code Review` / `CQCP Spec & Docs Review` 尚未发布 Check Run / Commit Status，也未纳入 required checks；未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 - PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`；`TASK_SPEC-DEBT-001-B` 实现 PR 已收口。该 PR 的 CI 状态仍只能记录为临时豁免；后续新增的基础 GitHub Actions workflow 不得追溯写成 PR #4 CI PASS。
+- PR #11 已合并到 `master`，merge commit 为 `8fccc542653885e15ea845b247a3ac59f1c33d85`，PR head commit 为 `324d6fd3ffe39bb285196deb3cf4e52fc7ca5246`；`TASK_SPEC-DEBT-001-C` 草案已入库，并在当前规格冻结准备分支调整为 `Frozen for coding-preflight only`。该状态仅表示可进入编码前规格映射计划，不代表实现授权；不得派发 Claude Code / DeepSeek 直接编码，不得进入 parser provenance、TABLE_CELL、`TASK-028`、`TASK-031` 或 `TASK-032`。
 
 ## 活跃任务
 
 - `TASK-GOV-003` 已完成并归档：治理提交 `515196e` 已独立审计、push，且远程同步确认 `0 0`。
-- 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。第一批 `resolveTextEvidence()` 修复规格 `tasks/active/TASK_SPEC-DEBT-001-A-resolve-text-evidence-signals.md` 已完成角色分离试点、commit 与 push：实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，post-push 文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 独立只读 post-push 复审结论为 `GO`：上一轮 `NEEDS-FIX` 的过期文档状态已消除，A 批次可作为 B 批次冻结前置审计 `GO` 使用。第二批 `tasks/active/TASK_SPEC-DEBT-001-B-collect-pattern-candidates-value-format-signal.md` 的实现 PR #4 已合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`，审计依据为 `CQCP_AUDIT GO`。父任务仍未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。
+- 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。第一批 `resolveTextEvidence()` 修复规格 `tasks/active/TASK_SPEC-DEBT-001-A-resolve-text-evidence-signals.md` 已完成角色分离试点、commit 与 push：实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，post-push 文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 独立只读 post-push 复审结论为 `GO`。第二批 `tasks/active/TASK_SPEC-DEBT-001-B-collect-pattern-candidates-value-format-signal.md` 的实现 PR #4 已合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，审计依据为 `CQCP_AUDIT GO`。第三批 `tasks/active/TASK_SPEC-DEBT-001-C-resolve-ratio-evidence-candidate-collection-topology.md` 已通过 PR #11 草案入库，当前仅冻结至编码前规格映射阶段；下一步最多允许 Claude Code / DeepSeek 输出编码前规格映射计划并等待 Codex 审查放行。父任务仍未归档，未进入 parser provenance、TABLE_CELL、`TASK-028` / `TASK-031` / `TASK-032`。
 - `TASK-EVAL-001` 已按用户要求回滚为暂停归档，文件已从 `tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md` 移回 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；当前仅保留未提交 diff，不进入任何形式归档。
 - `TASK-EVAL-001-A` 已完成并 push：`4bac2f4 feat(reviewengine): expose table row and cell source anchors`。
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`。据用户提供的独立 agent 事后复核报告摘要，提交前独立复核流程曾缺失，事后复核建议为 `ACCEPT WITH CONDITIONS`。
@@ -58,7 +59,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 - PR #4 post-merge 只读复核确认本地 `master` 与 `origin/master` 对齐，`git status --short` 为空，`origin/master...HEAD` 为 `0 0`。
 - `TASK-027` 相关 5 个本地提交已完成 `push`，当前不存在待同步提交。
 - `TASK-028` / `TASK-031` / `TASK-032` 仍未开始，继续禁止抢跑。
-- 下一步只允许执行一次只读 Review Intake，确认 v3 计划中的下一事项边界；不得直接派发 Claude Code / DeepSeek 实现任务。
+- 下一步只允许围绕 `TASK_SPEC-DEBT-001-C` 执行编码前规格映射计划审查；不得直接派发 Claude Code / DeepSeek 实现任务，不得修改代码、测试、fixture 或 expected JSON。
 - 开源案例 / benchmark 只读调研已完成：未发现可直接照搬的开源合同审查系统；中文开源项目仅适合作为 UI / 上传 / 报告 / 预览 / 配置交互参考，不能继承其审核架构；国际 benchmark 主要用于评测方法参考。基于该结论建立的 `TASK-EVAL-001` 已回滚为暂停归档；仍未进入 `TASK-028`。
 
 ## 最近完成
@@ -122,7 +123,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 
 - `TASK-EVAL-001` 暂停归档 diff 尚未 commit / push；后续 commit 与 push 必须分别重新取得用户明确授权。
 - `TASK-EVAL-001` DoD #12 未通过、未补足：A/B 历史 commit / push 授权记录无法完整核实。该缺口作为历史流程治理债务永久保留，不追溯否定已 push 内容、独立审计结论或 `30/30 PASS`，也不得成为后续绕过授权门禁的先例。
-- `TASK-DEBT-001` 已记录 `resolveTextEvidence()` signal 硬编码、`collectPatternCandidates()` valueFormatSignal 硬编码、parser provenance 常量覆盖、ratio early return 和 TABLE_CELL 真实 DOCX 覆盖盲区；具体证据与后续分流以任务文件为准。第一批 `TASK_SPEC-DEBT-001-A` 已通过 Codex 审查、提交前独立只读审计、commit / push 和 2026-06-27 post-push 独立只读复审 `GO`。第二批 `TASK_SPEC-DEBT-001-B` 实现 PR #4 已合并并完成 post-merge 记录准备；CI 状态为临时豁免，原因是当前无 GitHub Actions workflow / checks 可运行。父任务仍未归档，provenance、ratio early return 和 TABLE_CELL 仍未获实现授权。
+- `TASK-DEBT-001` 已记录 `resolveTextEvidence()` signal 硬编码、`collectPatternCandidates()` valueFormatSignal 硬编码、parser provenance 常量覆盖、ratio early return 和 TABLE_CELL 真实 DOCX 覆盖盲区；具体证据与后续分流以任务文件为准。第一批 `TASK_SPEC-DEBT-001-A` 已通过 Codex 审查、提交前独立只读审计、commit / push 和 2026-06-27 post-push 独立只读复审 `GO`。第二批 `TASK_SPEC-DEBT-001-B` 实现 PR #4 已合并并完成 post-merge 记录准备；CI 状态为临时豁免，原因是当前无 GitHub Actions workflow / checks 可运行。第三批 `TASK_SPEC-DEBT-001-C` 仅冻结至编码前规格映射阶段，未派发、未实现。父任务仍未归档，provenance 和 TABLE_CELL 仍未获实现授权。
 - Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
   【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
 - `TASK-EVAL-001-B` 的 `1.0 / 1.0 / 1` 是当前 canonical anchor 集合的真实计算，只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性；expected blockId、rowIndex、cellIndex 仍依赖 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix，不能单独证明 parser anchor 位置客观正确，也不得表述为独立人工标注准确率。
@@ -166,9 +167,9 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 1. `TASK-GOV-004` 已完成 post-merge 归档状态写回准备：PR #8 已合并，merge commit 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f`；任务文件已移动到 `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`。不得因此进入 `TASK-028` / `TASK-031` / `TASK-032`；`CQCP Code Review` / `CQCP Spec & Docs Review` 机制化 required checks 仍需另行定界。
 2. `TASK-EVAL-001` 暂停归档如需 commit / push，仍必须分别重新取得用户明确授权。
 3. `TASK_SPEC-DEBT-001-A` 已完成实现审查、提交前独立只读审计、commit 与 push；实现提交为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，文档修正提交为 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 GitHub 云端 post-push 独立只读复审结论为 `GO`。
-4. `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 的实现 PR #4 已合并到 `master`，但 `TASK-DEBT-001` 父任务仍未归档，不得因此进入 `TASK-028` / `TASK-031` / `TASK-032`。
+4. `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 的实现 PR #4 已合并到 `master`；`TASK_SPEC-DEBT-001-C resolveRatioEvidence 候选收集拓扑修复` 已入库并冻结至编码前规格映射阶段，但仅允许下一步输出编码前规格映射计划。`TASK-DEBT-001` 父任务仍未归档，不得因此进入 parser provenance、TABLE_CELL、`TASK-028` / `TASK-031` / `TASK-032`。
 5. `TASK-GOV-004 Phase 5` 第一阶段已配置并验证 GitHub branch protection / required checks：required checks 为 `Backend Gradle tests` 与 `Admin web lint, tests, and build`，source 为 GitHub Actions `app_id: 15368`，`strict: true`，并启用 PR-only direct push 拒绝。Phase 5 post-implementation 独立只读审计结论为 `GO`。Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）。`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks。
-6. 不派发新的 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行，并先经过冻结 TASK_SPEC、编码前规格映射计划与 Codex 放行。
+6. 不派发新的 Claude Code / DeepSeek 实现任务；后续必须按 v3 计划角色分工执行，`TASK_SPEC-DEBT-001-C` 下一步也只能先提交编码前规格映射计划，等待 Codex 审查放行后才可考虑实现。
 
 ## 参考路径
 
