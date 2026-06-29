@@ -3,14 +3,14 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Draft（仅起草，未冻结，未派发）
+> **状态**：Frozen for coding-preflight only（冻结至编码前规格映射阶段，未派发、未实现）
 > **创建日期**：2026-06-29
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
 > **TASK_SPEC 类型**：execution
 > **父任务**：TASK-DEBT-001
 > **关联 ADR**：ADR-014, ADR-015
-> **所在分支**：codex/task-debt-001-c-draft-spec（base: master）
+> **所在分支**：codex/task-debt-001-c-spec-freeze（base: master）
 
 ---
 
@@ -23,9 +23,9 @@
 ### 0.1 角色与执行门禁
 
 - 本 `TASK_SPEC` 关联父任务 `TASK-DEBT-001`；Claude Code / DeepSeek 不得直接执行父任务。
-- 本文件当前仅为 Draft，不代表已冻结，不得据此派发实现。
+- 本文件当前仅冻结至“编码前规格映射计划”阶段；这不是实现授权，不得据此直接修改代码、测试、fixture、expected JSON 或任何实现文件。
 - Codex 负责冻结规格、审查编码前规格映射计划、审查实现报告和 `git diff`；Codex 不直接编写本任务业务代码。
-- Claude Code / DeepSeek 只有在 Codex 后续明确宣布本规格冻结并放行“编码前规格映射计划”后，才允许修改 §0.3 中允许修改的文件。
+- Claude Code / DeepSeek 下一步最多只能输出 §0.2 要求的“编码前规格映射计划”并停止；只有在 Codex 后续明确审查该计划并放行实现后，才允许修改 §0.3 中允许修改的文件。
 - Claude Code / DeepSeek 不得 commit，不得 push。
 - 独立 agent 只做只读事实核查，不得实现或修复代码。
 - 不得用 `CURRENT_CONTEXT.md` 自述替代真实代码、测试、原始 console 输出和 commit 证据。
@@ -56,7 +56,7 @@ Codex 未明确放行前，不得修改任何文件。
 
 ### 0.3 文件访问范围
 
-本节文件写入限制适用于 Claude Code / DeepSeek 执行阶段。Codex 在冻结前修订本 `TASK_SPEC` 草案不视为 Claude Code / DeepSeek 越界。
+本节文件写入限制适用于 Claude Code / DeepSeek 执行阶段。冻结至编码前规格映射阶段仍不构成实现授权；后续实现仍只限本节允许的两个代码/测试文件，且必须等编码前规格映射计划被 Codex 审查放行。
 
 ```text
 ✅ 允许修改文件：
@@ -318,7 +318,7 @@ if (!semanticCandidates.isEmpty() && reviewPointCode != ReviewPointCode.PREPAYME
   - 实际修改、新增、删除的文件完整列表
 ```
 
-说明：本草案起草时工作区已有 `tasks/MVP_TASK_MAP.md` 的未提交文档修正。未来真正派发本 TASK_SPEC 前，必须先完成或清理该状态，确保执行者看到干净工作区。
+说明：本 `TASK_SPEC` 已冻结至编码前规格映射阶段，但尚未派发实现。未来真正进入编码前映射计划前，必须确认执行分支由 Codex 明确指定且工作区干净。
 
 ---
 
@@ -433,7 +433,7 @@ docker compose up / down
   git status --short
 
 确认：
-  - 当前分支为 master
+  - 当前分支为 Codex 明确指定的执行分支；如仍在 master，必须先等待 Codex 明确说明本地实现后将通过 PR-only 流程转入 PR，不得直接 push master
   - git status --short 输出为空
 
 任一条件不满足，立即输出：
@@ -521,13 +521,13 @@ IMPLEMENTATION_REPORT_END
 
 ## 10. 实现报告
 
-待执行方完成后填写。当前状态为 Draft，未派发、未实现。
+待执行方完成后填写。当前状态为 Frozen for coding-preflight only，未派发、未实现。
 
 ---
 
 ## 11. CODEX 审查记录
 
-待实现报告提交后填写。当前状态为 Draft，未派发、未实现。
+待实现报告提交后填写。当前状态为 Frozen for coding-preflight only，未派发、未实现。
 
 ---
 

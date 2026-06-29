@@ -10,7 +10,7 @@
 - `TASK-026` 已完成真实 parser 主链路非 `HIGH` 可达性治理
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
-- `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；第一批 `TASK_SPEC-DEBT-001-A` 已通过角色分离试点、Codex 审查、提交前独立只读审计、commit / push 和 2026-06-27 post-push 独立只读复审 `GO`；第二批 `TASK_SPEC-DEBT-001-B` 已通过 PR #4 合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`；父任务仍为 Active 且未归档，不解锁 `TASK-028` / `TASK-031` / `TASK-032`
+- `TASK-DEBT-001` 已建立为 active 父级债务记录任务，标准登记 4 条代码缺陷和 1 条覆盖盲区；第一批 `TASK_SPEC-DEBT-001-A` 已通过角色分离试点、Codex 审查、提交前独立只读审计、commit / push 和 2026-06-27 post-push 独立只读复审 `GO`；第二批 `TASK_SPEC-DEBT-001-B` 已通过 PR #4 合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`；第三批 `TASK_SPEC-DEBT-001-C` 草案已通过 PR #11 入库，当前仅冻结至编码前规格映射阶段；父任务仍为 Active 且未归档，不解锁 `TASK-028` / `TASK-031` / `TASK-032`
 - `TASK-EVAL-001` 父任务归档前独立审计随后给出 `GO WITH CONDITIONS`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`
   【回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前状态依据。
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
@@ -42,7 +42,7 @@
 | `TASK-027` | EvidenceSlot / SourceAnchor 正式治理 | A | 已完成并归档 | `ADR-015` 已接受；`TASK-027-C`、`TASK-027-D` 与主实现提交 `b85f4dd` 均已完成；完成的是最小主实现落地，不是完整 `EvidenceBundle` 平台化 |
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
 | `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | 已完成并归档写回准备 | 当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；Phase 3 minimal CI 已通过 PR #5 合并落地；Phase 4 规格已定义且外部 GLM 5.2 Code Review 与 Spec & Docs Review 均为 `GO`；Phase 5 第一阶段已配置 branch protection / required checks / PR-only direct push 拒绝；Phase 5 post-implementation 独立只读审计 `GO`；PR #8 已合并，merge commit `5d73ea22c42971df848dbacb49c86d40e2143e1f`，head `e9812bc118aa5a2f33294dcc9507566703da7517`；任务文件已移动到 `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks；未进入 `TASK-028` / `TASK-031` / `TASK-032` |
-| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送并 post-push GO；B 批次已通过 PR #4 合并） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`；`TASK_SPEC-DEBT-001-B` 已通过 PR #4 合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`；父任务仍未归档，provenance、ratio early return 和 TABLE_CELL 分流仍需另行定界 |
+| `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | Active（A 批次已提交推送并 post-push GO；B 批次已通过 PR #4 合并；C 批次冻结至编码前规格映射阶段） | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A` 已完成实现、Codex Review Intake `A. 可以合并`、提交前独立只读审计 `GO`，并已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 GitHub 云端 post-push 独立只读复审为 `GO`；`TASK_SPEC-DEBT-001-B` 已通过 PR #4 合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`；`TASK_SPEC-DEBT-001-C` 已通过 PR #11 入库并冻结至编码前规格映射阶段，但未派发、未实现；父任务仍未归档，provenance 和 TABLE_CELL 分流仍需另行定界 |
 | `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | 暂停归档（未提交 diff） | DoD #1 至 #11 已独立确认；DoD #12 未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
 | `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳 | Git 历史显示 commit `672d97f`；事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；提交前复核缺失作为治理债务保留 |
@@ -83,6 +83,7 @@
   - TABLE_CELL 补强依赖独立人工 anchor 标注；当前父任务 DoD 不要求真实 DOCX cell，因此不阻塞 `TASK-EVAL-001` 归档判断。
   - Step 2 `CURRENT_CONTEXT.md` 逐条认领审计已有独立 agent 报告摘要；本任务地图不以自身证明完成，父任务归档前仍需复核原始报告和对应证据。
   - `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 已通过 PR #4 合并并收口；该收口不代表父任务归档，也不授权 provenance、ratio early return、TABLE_CELL 或 `TASK-028` / `TASK-031` / `TASK-032`。
+  - `TASK_SPEC-DEBT-001-C resolveRatioEvidence 候选收集拓扑修复` 已通过 PR #11 草案入库，并在本轮准备冻结至编码前规格映射阶段；该状态只允许下一步输出编码前规格映射计划，不代表实现授权，不授权 parser provenance、TABLE_CELL 或 `TASK-028` / `TASK-031` / `TASK-032`。
 - 文件：`tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
 
 ### `TASK-025`
@@ -273,4 +274,4 @@
 2. `TASK-GOV-003` 已完成并归档。
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录；后续对该任务执行只读 Review Intake 时，不进入开发。
 4. `TASK-DEBT-001` 建立不代表修复获准启动，不得直接派发实现 TASK_SPEC。
-5. 下一步仅允许起草但不派发 `TASK_SPEC-DEBT-001-C`，候选范围限定为 `resolveRatioEvidence()` early return 跳过 fallback 候选；不提交新的 B 代码、测试、fixture 或 expected JSON 变更，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发实现任务。
+5. 下一步仅允许围绕已入库的 `TASK_SPEC-DEBT-001-C` 执行编码前规格映射计划；这不是实现授权，不提交代码、测试、fixture 或 expected JSON 变更，不进入 parser provenance / TABLE_CELL，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不派发实现任务。
