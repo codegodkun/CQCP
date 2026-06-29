@@ -10,7 +10,7 @@
 > **TASK_SPEC 类型**：execution
 > **父任务**：TASK-DEBT-001
 > **关联 ADR**：ADR-014, ADR-015
-> **所在分支**：master
+> **所在分支**：codex/task-debt-001-c-draft-spec（base: master）
 
 ---
 
