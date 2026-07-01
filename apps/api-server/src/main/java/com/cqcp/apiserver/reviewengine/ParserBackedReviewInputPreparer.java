@@ -266,11 +266,7 @@ final class ParserBackedReviewInputPreparer {
                 roleOf(reviewPointCode),
                 blocks,
                 paymentMethod);
-        if (!semanticCandidates.isEmpty() && reviewPointCode != ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY) {
-            return resolveFromCandidates(reviewPointCode, roleOf(reviewPointCode), semanticCandidates);
-        }
-
-        var candidates = new ArrayList<EvidenceCandidate>();
+        var candidates = new LinkedHashSet<EvidenceCandidate>();
         candidates.addAll(semanticCandidates);
         candidates.addAll(collectPatternCandidates(
                 reviewPointCode,
@@ -298,7 +294,7 @@ final class ParserBackedReviewInputPreparer {
                     roleOf(reviewPointCode),
                     blocks));
         }
-        return resolveFromCandidates(reviewPointCode, roleOf(reviewPointCode), candidates);
+        return resolveFromCandidates(reviewPointCode, roleOf(reviewPointCode), new ArrayList<>(candidates));
     }
 
     private List<EvidenceCandidate> collectSemanticRatioCandidates(

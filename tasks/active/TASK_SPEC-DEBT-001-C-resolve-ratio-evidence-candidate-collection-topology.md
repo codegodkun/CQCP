@@ -521,13 +521,65 @@ IMPLEMENTATION_REPORT_END
 
 ## 10. 实现报告
 
-待执行方完成后填写。当前状态为 Frozen for coding-preflight only，未派发、未实现。
+### 2026-07-01 implementation report
+
+Implementation branch: `codex/task-debt-001-c-implementation`.
+
+Modified files:
+
+- `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java`
+- `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparerEvidenceTest.java`
+
+Implementation summary:
+
+- Removed the non-`PREPAYMENT_RATIO_CONSISTENCY` early return when `semanticCandidates` is non-empty in `resolveRatioEvidence()`.
+- Candidate collection now uses `LinkedHashSet<EvidenceCandidate>` for ordered deduplication.
+- Candidate topology is `semantic candidates -> direct pattern candidates -> whole-text fallback candidates -> role-block fallback only if previous candidates are empty -> weak fallback only if still empty and non-prepayment`.
+- Final candidates still go through `resolveFromCandidates(...)` and `MinimalCandidateResolver`.
+- `PREPAYMENT_RATIO_CONSISTENCY` behavior is preserved.
+- No resolver semantics, deterministic review engine logic, `resolveTextEvidence()`, `collectPatternCandidates()` `valueFormatSignal`, parser provenance, `SourceAnchor`, `TABLE_CELL`, fixture, expected JSON, DOCX, OpenAPI, database, Docker, workflow, ADR or PRD changes were made.
+
+Test coverage added:
+
+- `ParserBackedReviewInputPreparerEvidenceTest.progressPaymentRatioSemanticAndWholeTextFallbackConflictProducesAmbiguous()`.
+- The test uses a parser double with `paymentMethod = MONTHLY`, semantic progress candidate `70%`, and a `节点...85%` block that is excluded from semantic progress matching but captured by whole-text fallback.
+- Expected `AMBIGUOUS / CONFLICTED / SYS_ROLE_CONFLICT` is derived from test input, candidate collection topology and `MinimalCandidateResolver` conflict rules. It is not a real DOCX anchor correctness claim.
+
+Verification:
+
+- `gradle test --tests "com.cqcp.apiserver.reviewengine.ParserBackedReviewInputPreparerEvidenceTest"` run from `apps/api-server`: `BUILD SUCCESSFUL`.
+- `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalCandidateResolverTest"` run from `apps/api-server`: `BUILD SUCCESSFUL`.
+- `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalReviewEngineTest"` run from `apps/api-server`: `BUILD SUCCESSFUL`.
+- `git diff --check`: no output.
 
 ---
 
 ## 11. CODEX 审查记录
 
-待实现报告提交后填写。当前状态为 Frozen for coding-preflight only，未派发、未实现。
+### 2026-07-01 Review Intake
+
+Codex Review Intake Decision: `GO`.
+
+Basis:
+
+- Implementation matches the frozen candidate collection topology.
+- Modified files are limited to the two authorized paths.
+- Final candidate set still enters `resolveFromCandidates(...)` / `MinimalCandidateResolver`.
+- Required tests passed from `apps/api-server`.
+- `git diff --check` returned no output.
+
+Independent read-only audit:
+
+- Audit agent decision: `GO`.
+- Findings: no blocking issues.
+- Scope check: no out-of-scope file or logic changes detected.
+- Residual risk: the new test is a parser-double topology regression test and does not claim independent real DOCX anchor correctness.
+
+Current status:
+
+- `TASK_SPEC-DEBT-001-C` implementation and pre-commit gates are accepted.
+- This does not archive parent `TASK-DEBT-001`.
+- This does not unlock parser provenance, `TABLE_CELL`, `TASK-028`, `TASK-031` or `TASK-032`.
 
 ---
 

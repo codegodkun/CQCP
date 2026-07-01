@@ -1,6 +1,6 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-06-29
+更新日期：2026-07-01
 
 ## 当前阶段
 
@@ -40,7 +40,7 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。
 ## 活跃任务
 
 - `TASK-GOV-003` 已完成并归档：治理提交 `515196e` 已独立审计、push，且远程同步确认 `0 0`。
-- 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。第一批 `resolveTextEvidence()` 修复规格 `tasks/active/TASK_SPEC-DEBT-001-A-resolve-text-evidence-signals.md` 已完成角色分离试点、commit 与 push：实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，post-push 文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 独立只读 post-push 复审结论为 `GO`。第二批 `tasks/active/TASK_SPEC-DEBT-001-B-collect-pattern-candidates-value-format-signal.md` 的实现 PR #4 已合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，审计依据为 `CQCP_AUDIT GO`。第三批 `tasks/active/TASK_SPEC-DEBT-001-C-resolve-ratio-evidence-candidate-collection-topology.md` 已通过 PR #11 草案入库，当前仅冻结至编码前规格映射阶段；下一步最多允许 Claude Code / DeepSeek 输出编码前规格映射计划并等待 Codex 审查放行。父任务仍未归档，未进入 parser provenance、TABLE_CELL、`TASK-028` / `TASK-031` / `TASK-032`。
+- 当前 active 债务记录任务：`TASK-DEBT-001`，文件为 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`；已按统一七字段模板登记 4 条代码缺陷和 1 条覆盖盲区。第一批 `resolveTextEvidence()` 修复规格 `tasks/active/TASK_SPEC-DEBT-001-A-resolve-text-evidence-signals.md` 已完成角色分离试点、commit 与 push：实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611 fix(reviewengine): compute text evidence confidence signals`，post-push 文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973 docs(task): record A post-push audit and draft B spec`。2026-06-27 独立只读 post-push 复审结论为 `GO`。第二批 `tasks/active/TASK_SPEC-DEBT-001-B-collect-pattern-candidates-value-format-signal.md` 的实现 PR #4 已合并，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，审计依据为 `CQCP_AUDIT GO`。第三批 `tasks/active/TASK_SPEC-DEBT-001-C-resolve-ratio-evidence-candidate-collection-topology.md` 已完成受控实现、Codex Review Intake `GO` 和独立只读审计 `GO`；当前准备提交 PR。父任务仍未归档，未进入 parser provenance、TABLE_CELL、`TASK-028` / `TASK-031` / `TASK-032`。
 - `TASK-EVAL-001` 已按用户要求回滚为暂停归档，文件已从 `tasks/done/TASK-EVAL-001-evidence-overlap-evaluation.md` 移回 `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`；当前仅保留未提交 diff，不进入任何形式归档。
 - `TASK-EVAL-001-A` 已完成并 push：`4bac2f4 feat(reviewengine): expose table row and cell source anchors`。
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`。据用户提供的独立 agent 事后复核报告摘要，提交前独立复核流程曾缺失，事后复核建议为 `ACCEPT WITH CONDITIONS`。

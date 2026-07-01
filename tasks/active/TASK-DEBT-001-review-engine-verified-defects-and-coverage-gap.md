@@ -301,6 +301,23 @@ BLOCK、TABLE_ROW：已有真实 DOCX fixture 覆盖。TABLE_CELL：仅 test-onl
 - 后续任务状态：未进入 `TASK-028` / `TASK-031` / `TASK-032`。
 - 后续治理候选：`TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup`，仅作为候选 / 待 Review Intake；不得写成已启动、已批准或已实施。
 
+## TASK_SPEC-DEBT-001-C implementation record（2026-07-01）
+
+- `TASK_SPEC-DEBT-001-C resolveRatioEvidence candidate collection topology` has completed controlled implementation on branch `codex/task-debt-001-c-implementation`.
+- Scope was limited to:
+  - `apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java`
+  - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparerEvidenceTest.java`
+- Implementation removed the non-prepayment semantic-candidate early return in `resolveRatioEvidence()` and sends the complete ordered candidate set through `resolveFromCandidates(...)` / `MinimalCandidateResolver`.
+- Candidate topology is now semantic candidates, direct pattern candidates, whole-text fallback candidates, role-block fallback only when the previous set is empty, and weak fallback only when still empty and non-prepayment.
+- Added parser-double regression coverage for `MONTHLY` progress payment conflict: semantic `70%` plus whole-text fallback `85%` returns `AMBIGUOUS / CONFLICTED / SYS_ROLE_CONFLICT`.
+- Required tests run from `apps/api-server`:
+  - `gradle test --tests "com.cqcp.apiserver.reviewengine.ParserBackedReviewInputPreparerEvidenceTest"`: `BUILD SUCCESSFUL`.
+  - `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalCandidateResolverTest"`: `BUILD SUCCESSFUL`.
+  - `gradle test --tests "com.cqcp.apiserver.reviewengine.MinimalReviewEngineTest"`: `BUILD SUCCESSFUL`.
+- Codex Review Intake Decision: `GO`.
+- Independent read-only audit decision: `GO`, no blocking findings.
+- Parent task remains `Active`; this C batch does not archive `TASK-DEBT-001` and does not authorize parser provenance, real DOCX `TABLE_CELL`, `TASK-028`, `TASK-031` or `TASK-032`.
+
 ## Next Task Handoff
 
 `TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 的实现 PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`。CI 状态为临时豁免，原因是当前无 GitHub Actions workflow / checks 可运行；不得写成 CI PASS。`TASK-DEBT-001` 父任务仍为 active 且未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。后续治理候选 `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 仅待 Review Intake，不得写成 active / approved / implemented。

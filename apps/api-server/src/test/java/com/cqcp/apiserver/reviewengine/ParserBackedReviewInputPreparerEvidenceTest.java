@@ -692,6 +692,95 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         }
     }
 
+    @Test
+    void progressPaymentRatioSemanticAndWholeTextFallbackConflictProducesAmbiguous() {
+        var preparer = new ParserBackedReviewInputPreparer(new ProgressSemanticWholeTextConflictParser());
+        var fixtureCase = new FixtureCase(
+                "progress-semantic-fallback-conflict",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "甲方公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "70")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+
+        var reviewInput = buildReviewInput(preparer, fixtureCase);
+
+        var progressEvidence = reviewInput.pointEvidences().get(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY);
+        assertThat(progressEvidence).isNotNull();
+        assertThat(progressEvidence.status()).isEqualTo(EvidenceStatus.AMBIGUOUS);
+        assertThat(progressEvidence.confidence()).isEqualTo(EvidenceConfidenceLevel.CONFLICTED.name());
+        assertThat(progressEvidence.diagnosticCode()).isEqualTo("SYS_ROLE_CONFLICT");
+        assertThat(progressEvidence.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+        assertThat(progressEvidence.evidenceSummary()).contains("70");
+        assertThat(progressEvidence.evidenceSummary()).contains("85");
+        assertThat(progressEvidence.slotCoverages())
+                .singleElement()
+                .satisfies(slot -> assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.AMBIGUOUS));
+
+        var prepayEvidence = reviewInput.pointEvidences().get(ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY);
+        assertThat(prepayEvidence).isNotNull();
+        assertThat(prepayEvidence.status()).isEqualTo(EvidenceStatus.MISSING);
+        assertThat(prepayEvidence.confidence()).isEqualTo(EvidenceConfidenceLevel.UNKNOWN.name());
+        assertThat(prepayEvidence.diagnosticCode()).isEqualTo("SYS_INDEX_INCOMPLETE");
+        assertThat(prepayEvidence.slotCoverages())
+                .singleElement()
+                .satisfies(slot -> assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.MISSING));
+    }
+
+    private static final class ProgressSemanticWholeTextConflictParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            var blockA = new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    "block-progress-70",
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    "进度款：形象进度产值的70%",
+                    "进度款：形象进度产值的70%",
+                    List.of("付款条款"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "test.docx", null, null, List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+            var blockB = new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    "block-node-85",
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    "节点：形象进度产值的85%",
+                    "节点：形象进度产值的85%",
+                    List.of("付款条款"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "test.docx", null, null, List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+            var fullText = "进度款：形象进度产值的70%\n节点：形象进度产值的85%";
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata(
+                            "progress-conflict", "progress-conflict.docx"),
+                    List.of(blockA, blockB),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN",
+                            fullText.length(), 2, 0, 0, 0, 0, false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
+        }
+    }
+
     private static final class TableAnchorContractParser extends DocxWordParserSpike {
 
         @Override
