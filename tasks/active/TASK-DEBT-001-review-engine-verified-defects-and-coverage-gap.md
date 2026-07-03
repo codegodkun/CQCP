@@ -334,14 +334,14 @@ BLOCK、TABLE_ROW：已有真实 DOCX fixture 覆盖。TABLE_CELL：仅 test-onl
   - Continue to prohibit parser provenance / `TABLE_CELL` implementation and `TASK-028` / `TASK-031` / `TASK-032`.
 - This section records the pre-archive gate result only; it does not move this file to `tasks/done/` and does not itself perform archival.
 
-## PR #14 post-merge record（2026-07-03）
+## PR #14 合并后记录（2026-07-03）
 
-- PR #14 has been merged into `master`.
-- Merge commit: `13794fb2f09e02dad3b1d556cb6a5b9af7731c66`.
-- PR head commit: `d232df3fa320ae1ef85578942a366e125b961a0b`.
-- Scope: parent pre-archive audit writeback for `TASK-DEBT-001` only.
-- Parent task status: `TASK-DEBT-001` remains `Active` and is not archived.
-- Unauthorized follow-up remains unchanged: parser provenance / `SourceAnchor`, real DOCX `TABLE_CELL`, `TASK-028`, `TASK-031` and `TASK-032` are not entered.
+- PR #14 已合并到 `master`。
+- Merge commit：`13794fb2f09e02dad3b1d556cb6a5b9af7731c66`。
+- PR head commit：`d232df3fa320ae1ef85578942a366e125b961a0b`。
+- 范围：仅记录 `TASK-DEBT-001` 父任务归档前审计写回。
+- 父任务状态：`TASK-DEBT-001` 仍为 `Active`，未归档。
+- 未授权后续项保持不变：未进入 parser provenance / `SourceAnchor`、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 和 `TASK-032`。
 
 ## Next Task Handoff
 
