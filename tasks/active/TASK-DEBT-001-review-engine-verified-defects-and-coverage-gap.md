@@ -1,6 +1,6 @@
 # TASK-DEBT-001：Review Engine 已确认缺陷与覆盖盲区记录
 
-状态：Active（Step 1 标准记录与非 Git Review Intake 已完成；Step 3 第一批 TASK_SPEC-DEBT-001-A 已实现并经 Codex 审查、提交前独立只读审计通过，已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 post-push 独立只读复审为 GO；第二批 TASK_SPEC-DEBT-001-B 实现 PR #4 已合并到 `master`；第三批 TASK_SPEC-DEBT-001-C 实现 PR #13 已合并到 `master`，merge commit 为 `15888df4f0e89882814940c5eca0fc948fd1fef0`；父任务归档前独立只读审计为 GO，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`；父任务未归档，未进入下一任务）
+状态：Active（Step 1 标准记录与非 Git Review Intake 已完成；Step 3 第一批 TASK_SPEC-DEBT-001-A 已实现并经 Codex 审查、提交前独立只读审计通过，已 commit / push 为 `3223d6760a977fe9deaf722e63b50bcbb6ce3611`；2026-06-27 post-push 独立只读复审为 GO；第二批 TASK_SPEC-DEBT-001-B 实现 PR #4 已合并到 `master`；第三批 TASK_SPEC-DEBT-001-C 实现 PR #13 已合并到 `master`，merge commit 为 `15888df4f0e89882814940c5eca0fc948fd1fef0`；父任务归档前独立只读审计为 GO，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`；PR #14 已合并但仅记录归档前审计写回；父任务未归档，未进入下一任务）
 
 类型：父级技术债记录任务 / Codex 主控
 
@@ -14,7 +14,7 @@
 
 ## 背景
 
-v3 整改计划要求先把已确认问题写入仓库内可追踪记录，再决定后续分批 TASK_SPEC、人工标注和独立审计。本任务承载“4 条代码缺陷 + 1 条覆盖盲区”的标准记录、后续分流线索和持续门禁。2026-06-26 起，第一批 `TASK_SPEC-DEBT-001-A` 已作为角色分离试点完成实现、审查、commit 与 push；2026-06-27 GitHub 云端 post-push 独立只读复审确认实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611` 和文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973` 均在远端 `master`，上一轮 `NEEDS-FIX` 的文档过期问题已消除，复审结论为 `GO`。第二批 `TASK_SPEC-DEBT-001-B` 实现 PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`，审计依据为 `CQCP_AUDIT GO`。第三批 `TASK_SPEC-DEBT-001-C` 实现 PR #13 已合并到 `master`，merge commit 为 `15888df4f0e89882814940c5eca0fc948fd1fef0`。2026-07-02 父任务归档前独立只读审计结论为 `GO`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`。父任务仍保持 active，未归档，未进入 parser provenance、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 或 `TASK-032`。
+v3 整改计划要求先把已确认问题写入仓库内可追踪记录，再决定后续分批 TASK_SPEC、人工标注和独立审计。本任务承载“4 条代码缺陷 + 1 条覆盖盲区”的标准记录、后续分流线索和持续门禁。2026-06-26 起，第一批 `TASK_SPEC-DEBT-001-A` 已作为角色分离试点完成实现、审查、commit 与 push；2026-06-27 GitHub 云端 post-push 独立只读复审确认实现提交 `3223d6760a977fe9deaf722e63b50bcbb6ce3611` 和文档修正提交 `3b35e2728143ce8f6c89bcc74cb1cb7fb469d973` 均在远端 `master`，上一轮 `NEEDS-FIX` 的文档过期问题已消除，复审结论为 `GO`。第二批 `TASK_SPEC-DEBT-001-B` 实现 PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`，审计依据为 `CQCP_AUDIT GO`。第三批 `TASK_SPEC-DEBT-001-C` 实现 PR #13 已合并到 `master`，merge commit 为 `15888df4f0e89882814940c5eca0fc948fd1fef0`。2026-07-02 父任务归档前独立只读审计结论为 `GO`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`。PR #14 已合并到 `master`，merge commit 为 `13794fb2f09e02dad3b1d556cb6a5b9af7731c66`，head commit 为 `d232df3fa320ae1ef85578942a366e125b961a0b`，仅记录父任务归档前审计写回。父任务仍保持 active，未归档，未进入 parser provenance、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 或 `TASK-032`。
 
 本任务不是 `TASK-EVAL-001-B` 提交任务，不是 `TASK-EVAL-001` 归档任务，也不是 `TASK-028`、`TASK-031` 或 `TASK-032` 的启动授权。
 
@@ -334,6 +334,15 @@ BLOCK、TABLE_ROW：已有真实 DOCX fixture 覆盖。TABLE_CELL：仅 test-onl
   - Continue to prohibit parser provenance / `TABLE_CELL` implementation and `TASK-028` / `TASK-031` / `TASK-032`.
 - This section records the pre-archive gate result only; it does not move this file to `tasks/done/` and does not itself perform archival.
 
+## PR #14 post-merge record（2026-07-03）
+
+- PR #14 has been merged into `master`.
+- Merge commit: `13794fb2f09e02dad3b1d556cb6a5b9af7731c66`.
+- PR head commit: `d232df3fa320ae1ef85578942a366e125b961a0b`.
+- Scope: parent pre-archive audit writeback for `TASK-DEBT-001` only.
+- Parent task status: `TASK-DEBT-001` remains `Active` and is not archived.
+- Unauthorized follow-up remains unchanged: parser provenance / `SourceAnchor`, real DOCX `TABLE_CELL`, `TASK-028`, `TASK-031` and `TASK-032` are not entered.
+
 ## Next Task Handoff
 
-`TASK_SPEC-DEBT-001-B collectPatternCandidates valueFormatSignal 修复` 的实现 PR #4 已合并到 `master`，merge commit 为 `da724ba49c6a33347641950101a84a84dfa8c000`，PR head commit 为 `6513e669ac251f881c4d06ea2574ce6e9c7c9d69`。CI 状态为临时豁免，原因是当前无 GitHub Actions workflow / checks 可运行；不得写成 CI PASS。`TASK-DEBT-001` 父任务仍为 active 且未归档，未进入 `TASK-028` / `TASK-031` / `TASK-032`。后续治理候选 `TASK-GOV-004 Phase 3：GitHub Actions CI minimal setup` 仅待 Review Intake，不得写成 active / approved / implemented。
+PR #14 已合并到 `master`，merge commit 为 `13794fb2f09e02dad3b1d556cb6a5b9af7731c66`，head commit 为 `d232df3fa320ae1ef85578942a366e125b961a0b`。该 PR 仅记录 `TASK-DEBT-001` 父任务归档前审计写回；`TASK-DEBT-001` 仍为 active 且未归档。后续仍不得进入 parser provenance / `SourceAnchor`、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 或 `TASK-032`；不得派发新的 Claude Code / DeepSeek 实现任务。
