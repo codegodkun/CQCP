@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Frozen for coding-preflight only（冻结至编码前规格映射阶段，未派发、未实现）
+> **状态**：Implemented and merged via PR #13（实现已落地；父任务未归档）
 > **创建日期**：2026-06-29
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -318,7 +318,7 @@ if (!semanticCandidates.isEmpty() && reviewPointCode != ReviewPointCode.PREPAYME
   - 实际修改、新增、删除的文件完整列表
 ```
 
-说明：本 `TASK_SPEC` 已冻结至编码前规格映射阶段，但尚未派发实现。未来真正进入编码前映射计划前，必须确认执行分支由 Codex 明确指定且工作区干净。
+说明：本 `TASK_SPEC` 已完成受控实现并通过 PR #13 合并到 `master`。该状态仅表示 `TASK_SPEC-DEBT-001-C` 落地，不归档 `TASK-DEBT-001`，不授权 parser provenance、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 或 `TASK-032`。
 
 ---
 
@@ -580,6 +580,14 @@ Current status:
 - `TASK_SPEC-DEBT-001-C` implementation and pre-commit gates are accepted.
 - This does not archive parent `TASK-DEBT-001`.
 - This does not unlock parser provenance, `TABLE_CELL`, `TASK-028`, `TASK-031` or `TASK-032`.
+
+### 2026-07-02 Parent pre-archive audit status alignment
+
+- PR #13 has been merged into `master`.
+- Merge commit: `15888df4f0e89882814940c5eca0fc948fd1fef0`.
+- Parent pre-archive independent read-only audit conclusion for `TASK-DEBT-001`: `GO`.
+- Codex parent Review Intake Decision: `GO TO ARCHIVE WITH CONDITIONS`.
+- This record only aligns the completed C batch status; parent task archival still requires the documented pre-archive writeback and explicit Git flow authorization.
 
 ---
 
