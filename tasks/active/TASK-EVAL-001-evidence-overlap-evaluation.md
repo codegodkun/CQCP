@@ -1,6 +1,6 @@
 # TASK-EVAL-001：Parser-backed 证据重合度评测基线
 
-状态：暂停归档（已按用户要求回滚，归档 diff 不提交）
+状态：REBASELINED / Active / 不归档 / 不进入 TASK-028
 
 类型：A 类质量评测父任务 / Codex 主控
 
@@ -38,6 +38,165 @@
 2. `TASK-EVAL-001-A` 完成并经 Codex 验收后，再启动 `TASK-EVAL-001-B`：evidence overlap baseline。
 3. Git 历史显示 `TASK-EVAL-001-B` 后续对应 commit 为 `672d97f695756249a871da53ad2821eb5146997f`；据用户提供的外部报告摘要，提交前独立复核流程曾缺失，后续形成了事后独立只读复核和定向测试复跑报告，原始凭证待父任务归档前核验。
 4. 本父任务原 DoD 不降级，仍要求 block / table-row / cell、4 正向 + 4 负向/冲突及完整 overlap 指标。
+
+### Rebaseline 前收口判断
+
+2026-07-04 文档治理收口判断曾为：`NO-GO TO ARCHIVE / 继续暂停 / 需重新定界`。该判断是触发后续 rebaseline 的前置状态，不再作为当前最终状态文字。
+
+本判断仅固化当前项目状态，不新增业务代码，不修改测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
+
+判断依据：
+
+* 旧 `GO TO ARCHIVE WITH CONDITIONS` 口径已按用户要求回滚，不再作为当前归档依据。
+* DoD #12 仍未通过、未补足；`TASK-EVAL-001-A` 与 `TASK-EVAL-001-B` 的历史 commit / push 授权记录无法完整核实。
+* 事后独立复核、定向测试 `30/30 PASS` 与已 push 内容不被本判断追溯否定，但这些补偿证据不能替代提交前门禁，也不能支撑父任务归档。
+* Step 2 原始逐条认领报告未入库；此前“重新覆盖审计”未找到可追溯原始报告记录，不能支撑归档判断。
+
+后续要求：
+
+* `TASK-EVAL-001` 保持 active，不移动到 `tasks/done/`。
+* 不得恢复“条件归档”或其他绕过 DoD #12 的归档口径。
+* 如需继续推进，必须重新定界：明确新的任务边界、验收断言、证据来源、授权记录要求和归档门禁。该要求已在下方 `Rebaseline Decision` 中处理。
+* 不自动解除 `TASK-028`、`TASK-031` 或 `TASK-032` 门禁，不进入 Step 3，不起草、冻结或派发 `TASK_SPEC`。
+
+### 重新定界 Review Intake Decision
+
+2026-07-04 Codex Review Intake Decision：`NO-GO TO ARCHIVE / SPLIT GOVERNANCE DEBT`。
+
+本轮按 GOAL-2 证据恢复结果进入“证据不可恢复 / 不可完整核实”分支：`TASK-EVAL-001-A` 与 `TASK-EVAL-001-B` 的历史 commit / push 授权链无法恢复到可完整核实状态，不能作为父任务归档 DoD #12 的通过证据。
+
+DoD 支撑边界：
+
+* DoD #1 至 #11：仍可沿用既有独立审计记录作为“已独立确认”的子断言摘要，但这些断言不足以单独支撑父任务归档。
+* DoD #12：不可支撑；历史授权链缺口未通过、未补足，且当前没有可恢复的完整原始授权证据。
+* 事后独立复核、定向测试 `30/30 PASS` 与已 merge / push 内容：不被本判断追溯否定，但只可作为补偿性质量证据，不可替代提交前授权门禁。
+
+处理决定：
+
+1. `TASK-EVAL-001` 保持 active / 继续暂停，不归档。
+2. 不恢复旧 `GO TO ARCHIVE WITH CONDITIONS` 口径，也不创建新的条件归档例外。
+3. 将 A/B 历史授权链不可完整核实问题从本父任务拆出为治理债务任务：`tasks/active/TASK-GOV-005-historical-commit-authorization-evidence-debt.md`。
+4. `TASK-GOV-005` 只记录和治理历史授权证据债务，不写业务代码，不追溯否定已 merge 内容，但明确阻止其成为后续绕过 commit / push 明确授权门禁的先例。
+5. `TASK-028`、`TASK-031`、`TASK-032` 继续禁止抢跑；如需重新推进 `TASK-EVAL-001`，必须先重新冻结任务边界、验收断言、证据来源和归档门禁。
+
+### GOAL-5 / GOAL-6 / GOAL-7 只读复判
+
+2026-07-04 Codex 只读复判结论：
+
+* GOAL-5：`TASK-EVAL-001` 最终处理方式为 `ARCHIVE BLOCKED`，继续 active / paused。当前不采用 `ARCHIVE WITH EXPLICIT DEBT SPLIT`，因为 `TASK-GOV-005` 只拆出了历史授权链治理债务，不等于用户接受父任务归档例外；如后续仍要推进父任务，必须按 `REBASELINE REQUIRED` 重新定义父任务边界、DoD、证据来源和归档门禁。该要求已在本文件 `Rebaseline Decision` 中执行。
+* GOAL-6：`TASK-028` Readiness Gate 为 `NO-GO`。`TASK-EVAL-001` 当前收口结果稳定为 blocked，但这不是可进入 `TASK-028` 的完成态；本轮仍不是实现授权，也不是 `TASK_SPEC` 派发授权。
+* GOAL-7：`DEBT-001-03` parser provenance / `SourceAnchor` 与 `DEBT-001-05` real DOCX `TABLE_CELL` 分别保留为未授权债务。前者必须单独定界 provenance 数据契约与真实 parser block / candidate 透传边界；后者必须先取得独立人工 anchor 标注，不得由 parser 输出倒填 expected。
+
+### Rebaseline Decision
+
+2026-07-04 Codex 按用户要求执行 `REBASELINE REQUIRED`，结论为：`TASK-EVAL-001` 不再按原父任务 DoD 伪装为 12/12 全通过，也不恢复旧 `GO TO ARCHIVE WITH CONDITIONS` 口径；本任务进入 rebaseline 后的 active 状态。
+
+本次 rebaseline 只重定界父任务文档、DoD 和归档门禁，不写业务代码，不修改测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、PRD、架构文档或 ADR。
+
+#### Rebaseline 后任务定位
+
+`TASK-EVAL-001` 从“准备按原 DoD 归档的 evidence overlap baseline 父任务”调整为：
+
+* 记录 parser-backed evidence overlap baseline 的历史实现结果和可复用质量信号。
+* 明确原 DoD #12 未通过、未补足，且该缺口不能由事后复核或治理债务拆出替代。
+* 将 A/B 历史 commit / push 授权链不可完整核实问题保留为 `TASK-GOV-005` 治理债务。
+* 保留真实 DOCX positive baseline `TABLE_CELL` 覆盖不足为后续 `DEBT-001-05` / 人工 anchor 标注前置问题。
+* 在未满足 rebaseline 后归档门禁前，不归档本父任务，不解除 `TASK-028` / `TASK-031` / `TASK-032` 门禁。
+
+#### Rebaseline 后 DoD
+
+本父任务后续不得再声明原 DoD 全量通过。rebaseline 后仅允许使用以下 DoD 作为后续收口判断依据：
+
+1. 原 DoD #1 至 #11 可保留为“既有独立确认摘要”，但必须标注其证据来源为历史审计 / 复核摘要，不得替代原始 console、commit、PR 或独立审计报告。
+2. 原 DoD #12 固定为未通过、未补足；该项不再作为可被事后补写文档修复的完成项。
+3. `TASK-EVAL-001-A` / `TASK-EVAL-001-B` 的实现结果可作为历史技术质量信号和后续任务参考，不作为父任务归档通过证据。
+4. `TASK-GOV-005` 只治理历史授权证据债务，不补足本父任务 DoD #12，不授权业务实现，不覆盖 `DEBT-001-03` 或 `DEBT-001-05`。
+5. 真实 DOCX positive baseline `TABLE_CELL` 覆盖仍不得宣称已验证；如后续需要解决，必须先取得独立人工 anchor 标注并另行定界。
+6. 本父任务后续若申请归档，必须先经过独立 agent 只读审计，并由 Codex 单独给出 Review Intake Decision；不得把本 rebaseline 文档本身当作归档证据。
+7. 任何后续 commit / push 仍需单独取得用户明确授权；历史授权链缺口不得成为例外先例。
+
+#### Rebaseline 后归档门禁
+
+本任务当前不归档。后续只有同时满足以下条件，才允许重新进入归档判断：
+
+* 用户明确要求对 rebaseline 后的 `TASK-EVAL-001` 发起归档判断。
+* 独立 agent 对 rebaseline 后任务文件、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`TASK-GOV-005` 和相关历史证据做只读审计。
+* Codex 单独 Review Intake 确认：归档判断没有恢复旧 DoD、没有把 DoD #12 写成通过、没有把 `TASK-GOV-005` 当作父任务完成证据。
+* 项目记忆明确保留 `TASK-028` / `TASK-031` / `TASK-032` 门禁，除非另有独立任务解除。
+
+#### 2026-07-04 归档前审计启动前收口判断
+
+Codex Review Intake Decision：
+
+```text
+NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN
+```
+
+触发原因：
+
+* 用户已明确要求先处理 `TASK-EVAL-001` 的归档前审计 / 收口判断，满足“发起归档判断”的人工触发条件。
+* 归档门禁仍要求独立 agent 对 rebaseline 后任务文件、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`TASK-GOV-005` 和相关历史证据做只读审计；本轮 Codex 只做预审与收口判断，不能替代独立审计。
+* 当前主工作区不是干净审计基线，`git status --short` 显示仍存在已修改文件和未跟踪治理文件；这些差异需分批处理，不能作为干净归档审计基线。
+* `origin/master...HEAD` 为 `0 0`，本地分支与远端分支提交指针对齐；上述差异属于未提交工作区状态，不得被当作已入库归档证据。
+* `TASK-GOV-005` 只能作为历史授权证据债务记录，不能补足本任务 DoD #12，也不能支撑本父任务归档。
+
+收口判断：
+
+* 当前不得归档 `TASK-EVAL-001`。
+* 当前不得恢复 `GO TO ARCHIVE WITH CONDITIONS` 或创建新的条件归档例外。
+* 当前不得把 `TASK-GOV-005`、事后独立复核或 `30/30 PASS` 写成本父任务 DoD #12 已通过。
+* 当前不得进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 若后续继续申请归档，必须先由独立 agent 在明确的只读审计基线上完成归档前审计；审计报告返回后，Codex 再单独给出 Review Intake Decision。
+
+建议独立只读审计输入：
+
+```text
+26/07/04 23:38:20
+本窗口是 TASK-EVAL-001 归档前独立只读审计窗口，不依赖历史聊天记录作为事实来源。若聊天内容与仓库文件冲突，以仓库文件为准。
+
+请在只读模式下审计 CQCP 仓库的 TASK-EVAL-001 是否可进入归档判断。不得修改文件、不得 stage、不得 commit、不得 push、不得 merge、不得配置 GitHub。
+
+开始前读取：
+- AGENTS.md
+- CURRENT_CONTEXT.md
+- tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md
+- tasks/active/TASK-GOV-005-historical-commit-authorization-evidence-debt.md
+- tasks/MVP_TASK_MAP.md
+- docs/context-management.md
+- docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md
+
+必须执行并报告原始输出摘要：
+- git status --short
+- git status -sb
+- git rev-list --left-right --count origin/master...HEAD
+- git log --oneline -8
+- git diff --name-status
+
+审计问题：
+1. rebaseline 后的 TASK-EVAL-001 是否仍明确 DoD #12 未通过、未补足？
+2. 是否存在把 TASK-GOV-005、事后独立复核或 30/30 PASS 当作 DoD #12 通过证据的表述？
+3. 是否存在恢复 GO TO ARCHIVE WITH CONDITIONS 或条件归档例外的表述？
+4. CURRENT_CONTEXT.md、tasks/MVP_TASK_MAP.md、TASK-EVAL-001、TASK-GOV-005 是否一致保留 TASK-028 / TASK-031 / TASK-032 门禁？
+5. 当前工作区是否适合作为归档判断基线？如不适合，请说明具体文件和原因。
+6. 是否发现任何会阻止 TASK-EVAL-001 归档判断的缺失证据、循环验证、未记录债务或完成态夸大？
+
+输出格式：
+- Decision: GO / NEEDS-FIX / NO-GO
+- Blocking findings:
+- Non-blocking findings:
+- Evidence reviewed:
+- Commands run:
+- Final recommendation:
+```
+
+#### Rebaseline 后禁止事项
+
+* 不恢复 `GO TO ARCHIVE WITH CONDITIONS`。
+* 不创建“显式债务拆分即可归档”的新例外。
+* 不把 `TASK-GOV-005`、事后独立复核或 `30/30 PASS` 写成本父任务原 DoD #12 已通过。
+* 不进入 `TASK-028`、`TASK-031`、`TASK-032`。
+* 不起草、冻结或派发 `TASK_SPEC`。
+* 不修改业务代码、测试、fixture、expected JSON 或生产链路。
 
 ### 归档前 Review Intake Decision
 
@@ -341,9 +500,9 @@ SOURCE_ANCHOR_UNAVAILABLE
 * expected anchor 中的 blockId、rowIndex 和 cellIndex 使用 parser 内部稳定标识，candidateValue 来源于独立登记的 matrix；当前结果只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性。
 * 上述 1.0 / 1.0 / 1 不单独证明 parser anchor 位置客观正确，不得表述为独立人工标注准确率。
 * evaluator 支持 TABLE_CELL canonical key，test-only / mock 覆盖已存在；当前四份真实主 DOCX 覆盖 BLOCK 与 TABLE_ROW，真实 DOCX positive baseline TABLE_CELL 覆盖仍未完成。
-* 按父任务 DoD 原文，自动化测试支持 TABLE_CELL canonical key 即满足当前 cell 覆盖要求，未要求真实 DOCX cell fixture；因此该覆盖盲区不阻塞父任务归档判断。
+* 按父任务原 DoD 文本，自动化测试支持 TABLE_CELL canonical key 曾被视为满足 cell 覆盖要求；rebaseline 后不得再用该解释支撑父任务归档。真实 DOCX positive baseline `TABLE_CELL` 覆盖仍为后续人工 anchor 标注前置问题。
 * 不得宣称真实 DOCX TABLE_CELL 已验证。该缺口继续由 `TASK-DEBT-001` 和后续人工 anchor 标注任务追踪，并防止 parser 输出倒填 expected。
-* B 的事后条件接纳、定向测试复跑和父任务归档前独立审计共同构成补偿证据；这些补偿不能追溯性等同于提交前独立复核。
+* B 的事后条件接纳、定向测试复跑和父任务归档前独立审计只构成补偿性质量证据；这些补偿不能追溯性等同于提交前独立复核，也不能支撑 rebaseline 后父任务归档。
 * 五条已确认问题的标准记录见 `tasks/active/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`。
 
 ## 风险
@@ -380,9 +539,9 @@ SOURCE_ANCHOR_UNAVAILABLE
   * 真实 DOCX positive baseline TABLE_CELL 覆盖仍为 0，由 `TASK-DEBT-001` 或后续人工 anchor 标注任务追踪。
 * 备注：未修改生产代码、DOCX fixture、OpenAPI、数据库、Docker/Compose、前端、PRD、架构文档或 ADR；未改变 Finding、EvidenceSlot admission、CandidateResolver gate 或业务状态语义。
 
-## 暂停归档边界
+## Rebaseline 后持续边界
 
-本次状态仅表示 `TASK-EVAL-001` 当前暂停归档，等待 Step 2 原始逐条认领报告与 DoD #12 的真实解决结果：
+本次状态表示 `TASK-EVAL-001` 当前为 `REBASELINED / Active / 不归档 / 不进入 TASK-028`。本任务不再等待通过补写文档恢复原 DoD，也不把 Step 2 原始逐条认领报告或 DoD #12 作为可由本轮补足的完成项：
 
 * 不代表五类问题整改已完成。
 * 不代表角色分离机制已完全恢复。
