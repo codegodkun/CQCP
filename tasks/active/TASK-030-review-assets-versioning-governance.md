@@ -530,9 +530,98 @@ packages/review-assets/review-budget-profiles/review-budget-profile-v1.yaml
   * 本任务为文档盘点与治理方案，不运行后端 / 前端业务测试。
   * 已执行只读检索和文件读取，完成后执行 `git status --short`、`git status -sb`、`git diff --name-status`、`git diff --stat`、`git diff --check`。
 * 遗留问题：
-  * Review assets 实际源文件尚未落地。
-  * runtime loader、数据库持久化、发布审批、UI 展示和模型 profile 真实接入均待后续单独定界。
+  * `TASK_SPEC-030-A` 已补齐首批 Review assets 静态源文件和 RuleSetVersion manifest；schema 校验、runtime loader、数据库持久化、发布审批、UI 展示和模型 profile 真实接入仍待后续单独定界。
   * Gemma / A30 具体模型、权重、量化格式、license 和 A30 可运行性仍待确认。
 * 备注：
   * 本轮未修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、branch protection、required checks、ADR 或 PRD。
   * 本轮未创建 `TASK-033`，未派发 Claude Code / DeepSeek，实现建议仅作为后续切分候选。
+
+## TASK_SPEC-030-A 执行记录：2026-07-05
+
+### 执行范围
+
+按用户授权推进 `TASK_SPEC-030-A`：Review assets 静态源文件与 manifest 最小建档。
+
+本轮创建任务文件：
+
+* `tasks/active/TASK_SPEC-030-A-review-assets-static-source-manifest.md`
+
+本轮新增或更新资产文件：
+
+* `packages/review-assets/README.md`
+* `packages/review-assets/rule-sets/ruleset-v20260705.1.json`
+* `packages/review-assets/review-point-definitions/review-points-v20260705.1.json`
+* `packages/review-assets/pattern-libraries/pattern-library-v20260705.1.json`
+* `packages/review-assets/field-lexicons/field-lexicon-v20260705.1.json`
+* `packages/review-assets/prompts/prompts-v20260705.1.json`
+* `packages/review-assets/contract-type-profiles/contract-type-profile-v20260705.1.json`
+* `packages/review-assets/evidence-selectors/evidence-selector-v20260705.1.json`
+
+### 验收结果
+
+* 七类资产均包含 `assetId`、`assetType`、`version`、`status`、`source`、`changeReason`。
+* `ruleset-v20260705.1.json` 作为 RuleSetVersion manifest，能引用 review point、pattern library、field lexicon、prompt、contract type profile 和 evidence selector 的模块版本。
+* 所有资产均明确当前为 `code-current-mapping` 或等价“代码现状映射”，并声明 `runtimeBinding` 为 `NOT_BOUND` 或未绑定生产 runtime。
+* 本轮只做源定义和映射，不启用 runtime loader。
+
+### 范围外确认
+
+本轮未修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、branch protection、required checks、ADR 或 PRD。
+
+本轮未进入 `TASK-028` / `TASK-031` / `TASK-032`，未接入 Gemma / A30，未创建 `TASK-033`。
+
+### ADR 判断
+
+不需要新增 ADR。原因：本轮只补静态资产源文件和 manifest，不改变核心审核链路、模型职责边界、`SYS-*` / Finding 边界、`EvidenceSlot` 机制、`ReviewPointFamily` 或 `CandidateResolver` runtime 行为。
+
+### 角色分工复核补充
+
+本次 TASK_SPEC-030-A 因范围仅为未绑定 runtime 的静态 Review assets 源文件建档，由 Codex 直接完成并作为一次性例外接受；后续更偏实现、代码修改或 runtime 行为变更的 TASK_SPEC 应按角色分工交由 Claude Code / DeepSeek 执行，Codex 负责冻结规格和审查。
+
+## TASK_SPEC-030-B 执行记录：2026-07-05
+
+### 执行范围
+
+按用户授权（Codex 审查放行编码前规格映射计划）由 Claude Code 执行 `TASK_SPEC-030-B`：Review assets schema 与 manifest 引用校验。
+
+### 交付物
+
+- `scripts/validate-review-assets.mjs`：新增，无第三方依赖，校验 7 个资产 JSON 的必需字段、`assetId` 唯一性、`source.type`/`source.runtimeBinding`、`loaderEnabled` 和 RuleSet manifest `moduleVersions` 引用一致性。
+- `packages/review-assets/README.md`：新增静态校验说明。
+- `tasks/active/TASK_SPEC-030-B-review-assets-schema-manifest-validation.md`：执行记录。
+- `CURRENT_CONTEXT.md`：状态更新。
+- `changelog/2026-07.md`：追加记录。
+
+### 验收结果
+
+- `node scripts/validate-review-assets.mjs` 退出码 0，7 文件全通过。
+- `git diff --check` 无格式问题。
+- 未修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
+- 未进入 `TASK-028` / `TASK-031` / `TASK-032`，未创建 `TASK-033`，未接入 Gemma / A30。
+- 未 stage、未 commit、未 push。
+
+## TASK_SPEC-030-C 执行记录：2026-07-05
+
+### 执行范围
+
+按 Codex 审查放行的编码前规格映射计划，由 Claude Code 执行 `TASK_SPEC-030-C`：Review assets 版本治理与变更流程最小建档。
+
+本轮创建任务文件：
+
+- `tasks/active/TASK_SPEC-030-C-review-assets-version-governance-docs.md`
+
+本轮更新文件：
+
+- `packages/review-assets/README.md`：新增版本命名规则（`vYYYYMMDD.N`）、新增/升级资产流程、RuleSetVersion manifest `moduleVersions` 引用规则、校验命令说明和 runtime loader 未启用声明。
+- `tasks/active/TASK-030-review-assets-versioning-governance.md`：本执行记录。
+- `CURRENT_CONTEXT.md`：状态更新。
+- `changelog/2026-07.md`：追加记录。
+
+### 验收结果
+
+- `packages/review-assets/README.md` 包含完整的版本命名规则、资产新增/升级流程、manifest 引用规则、校验命令和 runtime loader 状态说明。
+- `node scripts/validate-review-assets.mjs` 退出码 0，7 文件全通过（未修改资产文件，校验仍通过）。
+- `git diff --check` 无格式问题。
+- 未修改 7 个 JSON 资产文件、`scripts/validate-review-assets.mjs`、业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
+- 未进入 `TASK-028` / `TASK-031` / `TASK-032`，未创建 `TASK-033`，未接入 Gemma / A30。
+- 未 stage、未 commit、未 push。

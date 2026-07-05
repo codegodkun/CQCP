@@ -1,0 +1,60 @@
+{
+  "assetId": "cqcp.evidence-selector.mvp.code-current.v20260705.1",
+  "assetType": "EVIDENCE_SELECTOR",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalCandidateResolver.java",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java",
+      "decisions/ADR-014-minimal-candidate-resolver-confidence-gating.md",
+      "decisions/ADR-015-evidence-slot-source-anchor-governance.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前 EvidenceSelector / EvidenceSlot / CandidateResolver 策略仍由 Java 代码执行，本文件只做映射。"
+  },
+  "changeReason": "TASK_SPEC-030-A 将当前 EvidenceSlot preflight、候选置信和 SourceAnchor 最小策略建档。",
+  "createdAt": "2026-07-05",
+  "candidateResolverPolicy": {
+    "confidenceLevels": ["HIGH", "MEDIUM", "LOW", "CONFLICTED", "UNKNOWN"],
+    "highRequires": ["roleLabelSignal", "valueFormatSignal", "blockAttributionSignal", "singleDistinctValue"],
+    "mediumCondition": "singleDistinctValue with roleLabelSignal but missing full attribution signals",
+    "lowCondition": "candidate exists but lacks role label confidence",
+    "conflictCondition": "same block and candidate role has multiple values, or fully attributed candidates have multiple distinct values",
+    "unknownCondition": "no candidate",
+    "diagnosticCodes": {
+      "UNKNOWN": "SYS_INDEX_INCOMPLETE",
+      "CONFLICTED": "SYS_ROLE_CONFLICT",
+      "MEDIUM": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+      "LOW": "SYS_EVIDENCE_LOW_CONFIDENCE"
+    }
+  },
+  "evidenceSlotPolicy": {
+    "requiredSlots": [
+      {"reviewPointCode": "PARTY_A_NAME_CONSISTENCY", "slotKey": "party_a", "required": true, "critical": true},
+      {"reviewPointCode": "PARTY_B_NAME_CONSISTENCY", "slotKey": "party_b", "required": true, "critical": true},
+      {"reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY", "slotKey": "contract_total_amount", "required": true, "critical": true},
+      {"reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY", "slotKey": "tax_amount", "required": true, "critical": true},
+      {"reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY", "slotKey": "prepayment_ratio", "required": true, "critical": true},
+      {"reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY", "slotKey": "progress_payment_ratio", "required": true, "critical": true},
+      {"reviewPointCode": "COMPLETION_PAYMENT_RATIO_CONSISTENCY", "slotKey": "completion_payment_ratio", "required": true, "critical": true},
+      {"reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY", "slotKey": "settlement_payment_ratio", "required": true, "critical": true},
+      {"reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY", "slotKey": "warranty_retention_ratio", "required": true, "critical": true}
+    ],
+    "coverageMappings": {
+      "CONFIRMED_WITH_RELIABLE_ANCHOR": "SATISFIED",
+      "CONFIRMED_WITHOUT_RELIABLE_ANCHOR": "PARTIAL + SYS_EVIDENCE_BUNDLE_INVALID",
+      "MISSING": "MISSING + SYS_INDEX_INCOMPLETE",
+      "CONFLICTED": "AMBIGUOUS + SYS_ROLE_CONFLICT",
+      "MEDIUM_OR_LOW": "LOW_CONFIDENCE",
+      "BUDGET_TRUNCATED": "BUDGET_TRUNCATED + SYS_EVIDENCE_BUDGET_EXCEEDED"
+    }
+  },
+  "sourceAnchorPolicy": {
+    "minimumCurrentLevel": "BLOCK_LEVEL",
+    "previewElementRef": "table row/cell ref when available from parser block metadata",
+    "reliableAnchorRequiredForConclusion": true
+  }
+}
