@@ -71,6 +71,16 @@ docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example 
 - 不得把无关代码、日志、输出文件、缓存文件顺手混入提交
 - 如需暂存局部改动，优先使用只针对单个文件的精确操作
 
+## PR 授权证据规则
+
+- 每个 PR 必须填写 `.github/pull_request_template.md` 中的 `CQCP Authorization Evidence` 区块。
+- PR body 至少记录任务编号、当前 Governance Mode、允许文件、禁止文件、commit 授权、push 授权、merge 授权、测试证据、独立审计状态、Memory Writeback 和范围外确认。
+- 供自动检查的字段值必须写在冒号后同一行；需要长说明时可先写同一行摘要，再在下方补充细节。
+- `Authorization evidence check` 只检查 PR body 文本字段是否存在且非空；它不证明用户授权、测试、独立审计或 Memory Writeback 已真实发生。
+- commit、push、merge 仍必须按任务当次状态取得用户明确授权；不得用 PR 模板默认文字替代真实授权。
+- 如字段内容为 `待确认`、`TBD`、`TODO`、`N/A`、空白或无法独立审查的占位描述，PR body 检查应失败。
+- 将 `Authorization evidence check` 纳入 required status checks、修改 branch protection 或配置 repository ruleset，必须另行定界任务并取得用户授权。
+
 ## 文档修改规则
 
 - 任务完成后需要更新 `CURRENT_CONTEXT.md`

@@ -70,6 +70,28 @@
 - 确认没有日志、缓存、输出物或临时文件
 - 确认没有使用 `git add .`
 - 确认未包含未经授权的 `push`
+- 如创建或更新 PR，确认 PR body 已填写 `CQCP Authorization Evidence` 区块
+- 如任务涉及 commit / push / merge，确认 PR body 或交付摘要中记录了当次真实授权来源，不以模板默认文字替代授权
+
+## PR 授权证据检查
+
+`Authorization evidence check` 是 PR body 文本门禁，最低验证以下字段存在且非占位：
+
+- `Task`
+- `Governance mode`
+- `Allowed files`
+- `Forbidden files`
+- `Commit authorization`
+- `Push authorization`
+- `Merge authorization`
+- `Test evidence`
+- `Independent review`
+- `Memory writeback`
+- `Out-of-scope confirmation`
+
+该检查不替代真实命令输出、独立只读审计、Codex Review Intake Decision、用户授权、GitHub branch protection 或 required status checks 配置。字段真实性仍需在 Review Intake、独立审计和用户决策中核查。
+
+自动检查只读取冒号后同一行的字段值；多行补充说明可以存在，但不能替代同一行摘要值。
 
 ## 验证失败时如何处理
 
