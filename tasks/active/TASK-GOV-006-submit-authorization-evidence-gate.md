@@ -1,6 +1,6 @@
 # TASK-GOV-006：提交前授权证据模板与 PR 文本门禁
 
-状态：Active / 本地准备中 / 待提交 / 待 PR 验证 / 不配置 required status checks
+状态：Active / 本地准备完成 / 独立只读复核 GO / 待提交 / 待 PR 验证 / 不配置 required status checks
 
 类型：Governance
 
@@ -179,9 +179,18 @@ git status --short
   * `node scripts/check-pr-authorization-evidence.mjs scripts/fixtures/valid-pr-authorization-evidence.md`：通过，输出 `CQCP authorization evidence check passed.`。
   * `node scripts/check-pr-authorization-evidence.mjs scripts/fixtures/invalid-pr-authorization-evidence.md`：按预期失败，退出码为 1，并列出 11 个空白或占位字段。
   * `git diff --check`：通过，仅有 CRLF warning，无 whitespace error。
-  * `git status --short`：已核查；当前仍包含本轮 C 批候选变更以及明确排除的 D 批剩余变更。
+  * `git status --short`：已核查；2026-07-05 当前仅包含本任务范围内治理文档与项目记忆写回变更。
 * GitHub Actions 云端验证：待真实 PR 触发；当前仅完成本地脚本与 workflow 配置验证。
 * 遗留问题：
   * 是否将 `Authorization evidence check` 纳入 required status checks，仍需后续单独任务和用户授权。
   * `CQCP Code Review` / `CQCP Spec & Docs Review` 机制化发布仍未实现。
 * 备注：本轮不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、PRD、架构文档或 ADR；不配置 branch protection、repository ruleset 或 required status checks；不补足 `TASK-EVAL-001` DoD #12；不支撑 `TASK-EVAL-001` 归档；不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+
+## 完成态复核记录
+
+* 复核日期：2026-07-05。
+* 用户确认后续任务推进采用“完成态复核优先”规则：普通任务执行中不反复请求外部复核，完成后一次性提交 `git status`、`diff`、测试输出、修改文件清单、越界判断、Memory Writeback 状态和风险说明；高风险节点必须追加独立 agent 只读复核。
+* 已同步规则入口：`docs/DEVELOPMENT.md`、`docs/VERIFY.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
+* 当前本地状态：提交前授权证据模板、PR 模板、PR body 文本检查脚本、正反 fixture 和 workflow job 已在本地准备完成；云端 GitHub Actions 验证仍待真实 PR 触发。
+* 当前边界：本任务仍不配置 branch protection、repository ruleset 或 required status checks；不发布 `CQCP Code Review` / `CQCP Spec & Docs Review` Check Run 或 Commit Status；不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、PRD、架构文档或 ADR。
+* 独立只读复核：2026-07-05 结论为 `GO`；阻塞问题为无。Non-blocking 为 `git diff --check` / git diff/status 的 CRLF warning，以及 `git status -sb` 无法访问 `C:\Users\1\.config\git\ignore` 的权限 warning；均不影响本任务范围判断。

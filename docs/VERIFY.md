@@ -73,6 +73,22 @@
 - 如创建或更新 PR，确认 PR body 已填写 `CQCP Authorization Evidence` 区块
 - 如任务涉及 commit / push / merge，确认 PR body 或交付摘要中记录了当次真实授权来源，不以模板默认文字替代授权
 
+## 完成态复核材料
+
+普通任务默认只在完成态做一次复核。提交完成态复核时，材料至少包括：
+
+- `git status --short`
+- `git status -sb`
+- `git diff --name-status`
+- `git diff --stat`
+- `git diff --check`
+- 实际测试命令和 console 输出
+- 修改文件清单
+- 是否越界
+- 是否更新必要项目记忆
+
+完成态复核用于判断是否接纳、是否提交、是否合并、是否进入下一任务；不得用复核替代任务执行、规格冻结或 Codex Review Intake Decision。
+
 ## PR 授权证据检查
 
 `Authorization evidence check` 是 PR body 文本门禁，最低验证以下字段存在且非占位：
