@@ -62,6 +62,26 @@ docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example 
 
 任何需要修改架构、审核链路、模型职责、EvidenceSlot、ReviewPointFamily、CandidateResolver 的事项，必须先进入 ADR 或明确方案评审。
 
+## 完成态复核优先规则
+
+后续 CQCP 任务推进采用“完成态复核优先”，避免把复核变成任务推进本身。
+
+- 普通任务执行过程中不反复请求外部复核；Codex 负责冻结 `TASK_SPEC`、边界和验收标准，执行层按冻结规格完成。
+- 普通任务默认只做一次完成态复核；执行完成后一次性提交 `diff`、测试输出、`git status`、风险说明和 Memory Writeback 状态供 Codex 判断是否接纳。
+- 独立 agent 只在完成态或关键门禁点介入，只做只读事实核查，不参与每个小步骤，不替代 Codex 总控职责。
+- 低风险文档动作默认由 Codex 自查；证据不足、工作区不清或触发高风险节点时，再请求独立只读复核。
+
+以下高风险节点必须追加独立 agent 只读复核：
+
+- 父任务归档。
+- `push` / `merge`。
+- 进入 `TASK-028` / `TASK-031` / `TASK-032`。
+- 涉及 `EvidenceSlot` / `CandidateResolver` / `SourceAnchor`。
+- 涉及 expected fixture / 评测指标。
+- 涉及 workflow / CI / required checks / branch protection。
+- Codex 自己写代码又自己审查。
+- 工作区状态或远程同步状态不清。
+
 ## Git 操作规则
 
 - 禁止 `git add .`
