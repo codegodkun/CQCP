@@ -10,6 +10,27 @@ permissions:
   contents: read
 
 jobs:
+  authorization-evidence:
+    name: Authorization evidence check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Check PR authorization evidence
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+          node scripts/check-pr-authorization-evidence.mjs "$RUNNER_TEMP/pr-body.md"
+
   backend:
     name: Backend Gradle tests
     runs-on: ubuntu-latest
