@@ -1,0 +1,84 @@
+{
+  "assetId": "cqcp.pattern-library.mvp.code-current.v20260705.1",
+  "assetType": "PATTERN_LIBRARY",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前正则仍硬编码在 ParserBackedReviewInputPreparer，本文件仅记录映射。"
+  },
+  "changeReason": "TASK_SPEC-030-A 将当前硬编码 party / amount / payment ratio pattern 建档为静态映射。",
+  "createdAt": "2026-07-05",
+  "patterns": [
+    {
+      "patternId": "party-a-line.v20260705.1",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "regex": "^(?:发包方\\s*[（(]?甲方[）)]?|甲方（全称）|甲方)\\s*[:：]\\s*(.+)$"
+    },
+    {
+      "patternId": "party-b-line.v20260705.1",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "regex": "^(?:承包方\\s*[（(]?乙方[）)]?|乙方（全称）|乙方)\\s*[:：]\\s*(.+)$"
+    },
+    {
+      "patternId": "amount-after-label.v20260705.1",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "regexTemplate": "<label>[^\\d]{0,40}(\\d[\\d,]*(?:\\.\\d+)?)\\s*元",
+      "labelsFromFieldLexicon": ["合同固定总价", "合同暂定总价", "签约合同价", "含税总价", "材料/设备含税总价"]
+    },
+    {
+      "patternId": "tax-amount-after-label.v20260705.1",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "candidateRole": "TAX_AMOUNT",
+      "regexTemplate": "<label>[^\\d]{0,40}(\\d[\\d,]*(?:\\.\\d+)?)\\s*元",
+      "labelsFromFieldLexicon": ["增值税税款", "税金"]
+    },
+    {
+      "patternId": "prepayment-ratio.v20260705.1",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "regexes": ["无预付款", "预付款[^\\d]{0,60}(\\d{1,3}(?:\\.\\d+)?)\\s*%"]
+    },
+    {
+      "patternId": "progress-payment-ratio.v20260705.1",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "regexes": ["^(?:进度款|到货验收款)[：:].{0,240}?(\\d{1,3}(?:\\.\\d+)?)\\s*%", "形象进度产值的(\\d{1,3}(?:\\.\\d+)?)\\s*%"]
+    },
+    {
+      "patternId": "completion-payment-ratio.v20260705.1",
+      "reviewPointCode": "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "COMPLETION_PAYMENT_RATIO",
+      "regexes": ["^竣工款[：:].{0,240}?已完工程量的(\\d{1,3}(?:\\.\\d+)?)\\s*%", "^安装完工款[：:].{0,240}?(\\d{1,3}(?:\\.\\d+)?)\\s*%", "已完工程量的(\\d{1,3}(?:\\.\\d+)?)\\s*%"]
+    },
+    {
+      "patternId": "settlement-payment-ratio.v20260705.1",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "regexes": ["^结算款[：:].{0,240}?结算金额的(\\d{1,3}(?:\\.\\d+)?)\\s*%", "结算金额的(\\d{1,3}(?:\\.\\d+)?)\\s*%"]
+    },
+    {
+      "patternId": "warranty-retention-ratio.v20260705.1",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "regexes": ["^(?:质保(?:金)?|质量保函)[^\\d]{0,120}(\\d{1,3}(?:\\.\\d+)?)\\s*%", "(\\d{1,3}(?:\\.\\d+)?)\\s*%[^\\d]{0,40}(?:的《质量保函》|质量保函)"]
+    },
+    {
+      "patternId": "generic-numeric-value.v20260705.1",
+      "candidateRole": "GENERIC_NUMERIC_VALUE",
+      "regex": "(\\d[\\d,]*(?:\\.\\d+)?)"
+    },
+    {
+      "patternId": "generic-percent-value.v20260705.1",
+      "candidateRole": "GENERIC_PERCENT_VALUE",
+      "regex": "(\\d{1,3}(?:\\.\\d+)?)\\s*%"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "assetId": "cqcp.review-points.mvp.code-current.v20260705.1",
+  "assetType": "REVIEW_POINT_DEFINITION",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "docs/review-point-definitions.md",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前文件记录首批 9 个审核点现状映射；生产 ReviewPointCode 枚举仍在 Java 代码中。"
+  },
+  "changeReason": "TASK_SPEC-030-A 建立首批 ReviewPointDefinition 静态源文件，映射当前 Java 代码和草案文档。",
+  "createdAt": "2026-07-05",
+  "contractTypes": [
+    "ENGINEERING_PROCUREMENT"
+  ],
+  "reviewPoints": [
+    {
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "name": "甲方名称一致性",
+      "family": "PARTY_FIELDS",
+      "candidateRole": "PARTY_A",
+      "requiredStructuredFields": ["partyAName"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "normalizeText(structured partyAName) == normalizeText(candidateValue)",
+      "currentRuntimeSource": "MinimalReviewEngine.compareText + ParserBackedReviewInputPreparer.resolvePartyA"
+    },
+    {
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "name": "乙方名称一致性",
+      "family": "PARTY_FIELDS",
+      "candidateRole": "PARTY_B",
+      "requiredStructuredFields": ["partyBName"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "normalizeText(structured partyBName) == normalizeText(candidateValue)",
+      "currentRuntimeSource": "MinimalReviewEngine.compareText + ParserBackedReviewInputPreparer.resolvePartyB"
+    },
+    {
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "name": "合同总金额一致性",
+      "family": "AMOUNT_TAX",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "requiredStructuredFields": ["contractTotalAmount"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + ParserBackedReviewInputPreparer.resolveNumericEvidence"
+    },
+    {
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "name": "税额公式一致性",
+      "family": "AMOUNT_TAX",
+      "candidateRole": "TAX_AMOUNT",
+      "requiredStructuredFields": ["contractTotalAmount", "taxExcludedAmount", "taxAmount"],
+      "optionalStructuredFields": ["taxRate"],
+      "executionStrategy": "FORMULA_RULE",
+      "deterministicRule": "contractTotalAmount = taxExcludedAmount + taxAmount; optional weak check taxAmount = taxExcludedAmount * taxRate / 100",
+      "currentRuntimeSource": "MinimalReviewEngine.reviewTaxFormula + ParserBackedReviewInputPreparer.resolveNumericEvidence"
+    },
+    {
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "name": "预付款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "prepaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + ParserBackedReviewInputPreparer.resolveRatioEvidence"
+    },
+    {
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "name": "进度款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "progressPaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence"
+    },
+    {
+      "reviewPointCode": "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+      "name": "竣工款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "COMPLETION_PAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "completionPaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence"
+    },
+    {
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "name": "结算款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "settlementPaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence"
+    },
+    {
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "name": "质保款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "warrantyRetentionRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "assetId": "cqcp.field-lexicon.mvp.code-current.v20260705.1",
+  "assetType": "FIELD_LEXICON",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java",
+      "docs/review-point-definitions.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前 label hints 仍硬编码在 ParserBackedReviewInputPreparer。"
+  },
+  "changeReason": "TASK_SPEC-030-A 将当前字段 label hints、candidate role 和结构化字段映射建档。",
+  "createdAt": "2026-07-05",
+  "lexiconEntries": [
+    {
+      "fieldKey": "partyAName",
+      "candidateRole": "PARTY_A",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "labelHints": ["发包方", "甲方（全称）", "甲方"],
+      "displayLabel": "甲方"
+    },
+    {
+      "fieldKey": "partyBName",
+      "candidateRole": "PARTY_B",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "labelHints": ["承包方", "乙方（全称）", "乙方"],
+      "displayLabel": "乙方"
+    },
+    {
+      "fieldKey": "contractTotalAmount",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "labelHints": ["合同固定总价", "合同暂定总价", "含税总价", "签约合同价", "材料/设备含税总价"],
+      "displayLabel": "合同总金额"
+    },
+    {
+      "fieldKey": "taxAmount",
+      "candidateRole": "TAX_AMOUNT",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "labelHints": ["增值税税款", "税金"],
+      "displayLabel": "税额"
+    },
+    {
+      "fieldKey": "prepaymentRatio",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "labelHints": ["预付款"],
+      "displayLabel": "预付款"
+    },
+    {
+      "fieldKey": "progressPaymentRatio",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "labelHints": ["进度款", "到货验收款"],
+      "displayLabel": "进度款"
+    },
+    {
+      "fieldKey": "completionPaymentRatio",
+      "candidateRole": "COMPLETION_PAYMENT_RATIO",
+      "reviewPointCode": "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+      "labelHints": ["竣工款", "安装完工款"],
+      "displayLabel": "竣工款"
+    },
+    {
+      "fieldKey": "settlementPaymentRatio",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "labelHints": ["结算款"],
+      "displayLabel": "结算款"
+    },
+    {
+      "fieldKey": "warrantyRetentionRatio",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "labelHints": ["质保", "保函", "质保金", "质量保函"],
+      "displayLabel": "质保"
+    }
+  ],
+  "normalizationNotes": [
+    "ParserBackedReviewInputPreparer.textVariants 当前会生成 UTF-8/GBK mojibake 变体；本文件只记录可读中文 label。",
+    "金额字段使用 stripTrailingZeros 和逗号清理；比例字段按 0..100 百分比数值处理。"
+  ]
+}

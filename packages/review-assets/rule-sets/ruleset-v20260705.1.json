@@ -1,0 +1,62 @@
+{
+  "assetId": "cqcp.ruleset.mvp.code-current.v20260705.1",
+  "assetType": "RULE_SET",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ParserBackedReviewInputPreparer.java",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalCandidateResolver.java",
+      "docs/review-point-definitions.md",
+      "tasks/active/TASK-030-review-assets-versioning-governance.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前资产只是代码现状映射；生产审核链路尚未从 packages/review-assets 读取本 manifest。"
+  },
+  "changeReason": "TASK_SPEC-030-A 首批 RuleSetVersion manifest 建档，用于引用各模块静态资产版本，不改变 runtime 行为。",
+  "createdAt": "2026-07-05",
+  "moduleVersions": {
+    "reviewPointDefinitions": {
+      "assetId": "cqcp.review-points.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../review-point-definitions/review-points-v20260705.1.json"
+    },
+    "patternLibrary": {
+      "assetId": "cqcp.pattern-library.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../pattern-libraries/pattern-library-v20260705.1.json"
+    },
+    "fieldLexicon": {
+      "assetId": "cqcp.field-lexicon.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../field-lexicons/field-lexicon-v20260705.1.json"
+    },
+    "promptTemplates": {
+      "assetId": "cqcp.prompts.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../prompts/prompts-v20260705.1.json"
+    },
+    "contractTypeProfiles": {
+      "assetId": "cqcp.contract-type-profile.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../contract-type-profiles/contract-type-profile-v20260705.1.json"
+    },
+    "evidenceSelectors": {
+      "assetId": "cqcp.evidence-selector.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../evidence-selectors/evidence-selector-v20260705.1.json"
+    }
+  },
+  "runtimePolicy": {
+    "loaderEnabled": false,
+    "databasePersistence": false,
+    "productionEffect": "NONE",
+    "notes": [
+      "RuleSetVersion manifest 能引用各模块版本，但当前不作为生产裁判输入。",
+      "后端确定性裁判仍位于 MinimalReviewEngine。",
+      "候选归属仍位于 ParserBackedReviewInputPreparer 和 MinimalCandidateResolver。"
+    ]
+  }
+}

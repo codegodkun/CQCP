@@ -1,0 +1,35 @@
+{
+  "assetId": "cqcp.prompts.mvp.code-current.v20260705.1",
+  "assetType": "PROMPT_TEMPLATE",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "apps/api-server/src/main/java/com/cqcp/apiserver/modelgateway/ModelCallIntent.java",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/modelgateway/ModelGatewayService.java",
+      "docs/model-gateway-budget-baseline.md",
+      "tasks/active/TASK-030-review-assets-versioning-governance.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前仓库未见正式 prompt 模板源文件；ModelCallIntent 只记录 promptVersion / schemaVersion / modelVersion。"
+  },
+  "changeReason": "TASK_SPEC-030-A 为 prompt 资产建立最小源定义，明确当前只是版本引用与缺口映射，不接入 Gemma / A30。",
+  "createdAt": "2026-07-05",
+  "runtimePromptStatus": "NO_FORMAL_PROMPT_TEMPLATE_IN_CODEBASE",
+  "modelAssistBoundary": {
+    "productionGemmaA30Enabled": false,
+    "allowedFutureUse": ["局部抽取", "证据选择", "复杂语义辅助"],
+    "forbiddenUse": ["一次性裁判全部审核点", "直接决定 PASS/ERROR/WARNING", "无可靠证据生成业务 Finding"]
+  },
+  "versionReferencesObserved": [
+    "promptVersion",
+    "schemaVersion",
+    "modelVersion"
+  ],
+  "templates": [],
+  "notes": [
+    "本文件不包含生产 prompt 文本。",
+    "如后续新增 prompt 模板、schema 或 Gemma/A30 provider，必须另行定界并重新判断 ADR。"
+  ]
+}

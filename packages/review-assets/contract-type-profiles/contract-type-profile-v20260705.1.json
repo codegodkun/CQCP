@@ -1,0 +1,43 @@
+{
+  "assetId": "cqcp.contract-type-profile.mvp.code-current.v20260705.1",
+  "assetType": "CONTRACT_TYPE_PROFILE",
+  "version": "v20260705.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "code-current-mapping",
+    "paths": [
+      "docs/review-point-definitions.md",
+      "docs/ARCHITECTURE.md",
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/ResultComposer.java"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "当前 contractTypeProfileVersion 已进入 snapshot 版本引用，但没有 profile loader 或 selector。"
+  },
+  "changeReason": "TASK_SPEC-030-A 建立首批合同类型画像静态源定义，映射当前工程采购合同 MVP 口径。",
+  "createdAt": "2026-07-05",
+  "profiles": [
+    {
+      "profileCode": "ENGINEERING_PROCUREMENT",
+      "displayName": "工程采购合同",
+      "status": "DRAFT",
+      "reviewPointScope": [
+        "PARTY_A_NAME_CONSISTENCY",
+        "PARTY_B_NAME_CONSISTENCY",
+        "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+        "TAX_AMOUNT_FORMULA_CONSISTENCY",
+        "PREPAYMENT_RATIO_CONSISTENCY",
+        "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+        "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+        "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+        "WARRANTY_RETENTION_RATIO_CONSISTENCY"
+      ],
+      "fieldLexiconVersion": "v20260705.1",
+      "patternLibraryVersion": "v20260705.1",
+      "profileBoostRuntimeStatus": "NOT_IMPLEMENTED",
+      "notes": [
+        "docs/review-point-definitions.md 使用 ENGINEERING_PROCUREMENT 作为建议编码。",
+        "当前后端未从本 profile 执行 CandidateIndex boost 或 profile routing。"
+      ]
+    }
+  ]
+}
