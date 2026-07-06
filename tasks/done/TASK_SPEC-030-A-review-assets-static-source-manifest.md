@@ -1,6 +1,6 @@
 # TASK_SPEC-030-A：Review assets 静态源文件与 manifest 最小建档
 
-状态：Done / Codex 自执行 / PR #20 已合并 / 归档 Review Intake GO / 待父任务归档执行
+状态：Done / Codex 自执行 / PR #20 已合并 / 已随父任务 TASK-030 归档
 
 类型：execution（低风险静态资产建档）
 

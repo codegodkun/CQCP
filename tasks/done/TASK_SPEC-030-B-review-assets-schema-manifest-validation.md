@@ -1,6 +1,6 @@
 # TASK_SPEC-030-B：Review assets schema 与 manifest 引用校验
 
-状态：Done / Claude Code 执行 / PR #20 已合并 / 归档 Review Intake GO / 待父任务归档执行
+状态：Done / Claude Code 执行 / PR #20 已合并 / 已随父任务 TASK-030 归档
 
 类型：execution
 

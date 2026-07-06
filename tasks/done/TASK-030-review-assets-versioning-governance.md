@@ -1,6 +1,6 @@
 # TASK-030：Review assets 版本化治理最小落地
 
-状态：A/B/C 已完成并经 PR #20 合并 / 归档 Review Intake GO / 待归档执行授权 / 后续实现待用户确认
+状态：已归档 / A/B/C 已完成并经 PR #20 合并 / 归档 Review Intake GO / 后续实现待用户确认
 
 类型：Governance / A
 
@@ -673,3 +673,27 @@ Codex Review Intake Decision：`READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / NOT_AR
 - 独立只读审计已发生，Codex 已单独进行 Review Intake Decision，满足 AGENTS.md 父任务归档门禁。
 - 当前结论只授权 `TASK-030` 父任务归档流程；不授权 runtime loader、数据库资产表、发布审批、model / budget profile 源定义、`TASK-028`、`TASK-031`、`TASK-032` 或 `TASK-033`。
 - 归档执行仍需单独执行文件移动与记忆写回，不得把本 Decision 直接等同于已归档。
+
+## TASK-030 父任务归档执行记录：2026-07-06
+
+### 归档范围
+
+- 父任务文件已从 `tasks/active/TASK-030-review-assets-versioning-governance.md` 移动到 `tasks/done/TASK-030-review-assets-versioning-governance.md`。
+- 已完成子任务文件 `TASK_SPEC-030-A/B/C` 已随父任务从 `tasks/active/` 移动到 `tasks/done/`。
+- 本次归档仅执行文件移动与项目记忆写回，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
+
+### 最终边界
+
+- `TASK-030` 归档不授权 runtime loader、数据库资产表、发布审批、model / budget profile 源定义。
+- `TASK-030` 归档不进入 `TASK-028` / `TASK-031` / `TASK-032`，不创建或派发 `TASK-033`。
+- 后续如进入 runtime loading、发布审批、数据库资产表、模型职责或 `EvidenceSlot` / `CandidateResolver` 行为变化，必须重新判断 ADR。
+
+### 归档验证
+
+- `node scripts/validate-review-assets.mjs` 通过：7 个文件检查，7 个 JSON 文件扫描通过。
+- `git diff --check` 通过，无格式问题。
+- 本次为文档与任务归档流程，不运行后端 / 前端业务测试。
+
+### Next Task Handoff
+
+`TASK-030` 已归档。当前没有已冻结且可直接执行的 `TASK-030` 后续任务；runtime loader 评审、数据库持久化方案、model / budget profile 源定义、`TASK-028`、`TASK-031`、`TASK-032` 和 `TASK-033` 均仍需用户另行确认或单独定界，不生成 Next Task Handoff Prompt。
