@@ -1,6 +1,6 @@
 # TASK-030：Review assets 版本化治理最小落地
 
-状态：已完成只读盘点 / 待提交 / 后续实现待用户确认
+状态：A/B/C 已完成并经 PR #20 合并 / 待父任务归档前独立只读审计 / 后续实现待用户确认
 
 类型：Governance / A
 
@@ -625,3 +625,28 @@ packages/review-assets/review-budget-profiles/review-budget-profile-v1.yaml
 - 未修改 7 个 JSON 资产文件、`scripts/validate-review-assets.mjs`、业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
 - 未进入 `TASK-028` / `TASK-031` / `TASK-032`，未创建 `TASK-033`，未接入 Gemma / A30。
 - 未 stage、未 commit、未 push。
+
+## PR #20 合并与父任务收口判断：2026-07-06
+
+### 合并事实
+
+- `TASK-030` A/B/C 当前批次已通过 PR #20 合并到 `master`。
+- PR head commit：`29d4a94eaf07b37831f07dd93f78d3027b770f01`（`docs: add review assets versioning governance`）。
+- PR merge commit：`eadd017808fc8c2471fb0ac081f1e68e22dce5f5`。
+- 本地 `master` 已与 `origin/master` 对齐，工作区在 post-merge 只读核查时为 clean。
+- post-merge 只读核查结论：`POST_MERGE_GO`。
+
+### post-merge 核查摘要
+
+- 变更文件共 15 个，均属于 `TASK-030` A/B/C 授权范围。
+- 7 个 Review assets JSON 均通过 `node scripts/validate-review-assets.mjs` 校验。
+- `git diff --check` 通过。
+- README 与资产文件未声明 runtime loader 已启用，未声明 `RuleSetVersion` 已在生产 runtime 绑定。
+- 未修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
+- 未进入 `TASK-028` / `TASK-031` / `TASK-032`，未创建 `TASK-033`，未解除 `TASK-EVAL-001` blocked。
+
+### Codex 父任务收口判断
+
+Codex Review Intake Decision：`READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / NOT_ARCHIVED`。
+
+判断依据：`AGENTS.md` 要求每个父任务归档前必须经过独立 agent 只读审计；当前已有 Codex post-merge 只读核查，但不能替代独立审计。因此 `TASK-030` 当前不得归档，下一步只可进入父任务归档前独立只读审计；独立审计返回后，再由 Codex 单独给出归档 Review Intake Decision。

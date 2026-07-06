@@ -1,6 +1,6 @@
 # TASK_SPEC-030-B：Review assets schema 与 manifest 引用校验
 
-状态：Done / Claude Code 执行 / 待提交
+状态：Done / Claude Code 执行 / PR #20 已合并 / 待父任务归档前独立只读审计
 
 类型：execution
 
