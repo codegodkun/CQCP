@@ -1,6 +1,6 @@
 # TASK-030：Review assets 版本化治理最小落地
 
-状态：A/B/C 已完成并经 PR #20 合并 / 待父任务归档前独立只读审计 / 后续实现待用户确认
+状态：A/B/C 已完成并经 PR #20 合并 / 归档 Review Intake GO / 待归档执行授权 / 后续实现待用户确认
 
 类型：Governance / A
 
@@ -650,3 +650,26 @@ packages/review-assets/review-budget-profiles/review-budget-profile-v1.yaml
 Codex Review Intake Decision：`READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / NOT_ARCHIVED`。
 
 判断依据：`AGENTS.md` 要求每个父任务归档前必须经过独立 agent 只读审计；当前已有 Codex post-merge 只读核查，但不能替代独立审计。因此 `TASK-030` 当前不得归档，下一步只可进入父任务归档前独立只读审计；独立审计返回后，再由 Codex 单独给出归档 Review Intake Decision。
+
+## TASK-030 归档 Review Intake Decision：2026-07-06
+
+### 输入证据
+
+- 独立只读审计结论：`GO_WITH_CONDITIONS`。
+- 独立审计条件 B1-B5：`TASK_SPEC-030-A/B/C`、`TASK-030` 父任务和 `tasks/MVP_TASK_MAP.md` 的 post-merge 状态残留需修正。
+- 条件修正提交：`40f28e7159f0cfc7d63546db07c5b8819edbc0c3`（`docs: record TASK-030 post-merge closeout status`）。
+- 条件修正合并：PR #21，merge commit `ef4643c7d11b1209c935229b4e39b76d659db00f`，merged at `2026-07-06T15:27:11Z`。
+- PR #21 required checks：`Authorization evidence check`、`Backend Gradle tests`、`Admin web lint, tests, and build` 均为 `SUCCESS`。
+- 本地 `master` 已同步到 `origin/master`，当前工作区在 Decision 前为 clean。
+- `node scripts/validate-review-assets.mjs` 通过：7 个 JSON asset 全部通过静态校验。
+
+### Codex Review Intake Decision
+
+结论：`GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`。
+
+判断：
+
+- `TASK-030` A/B/C 已通过 PR #20 合并，PR #21 已完成 post-merge 状态写回并满足独立审计条件。
+- 独立只读审计已发生，Codex 已单独进行 Review Intake Decision，满足 AGENTS.md 父任务归档门禁。
+- 当前结论只授权 `TASK-030` 父任务归档流程；不授权 runtime loader、数据库资产表、发布审批、model / budget profile 源定义、`TASK-028`、`TASK-031`、`TASK-032` 或 `TASK-033`。
+- 归档执行仍需单独执行文件移动与记忆写回，不得把本 Decision 直接等同于已归档。
