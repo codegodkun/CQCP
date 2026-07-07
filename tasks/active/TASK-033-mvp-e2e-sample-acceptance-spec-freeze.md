@@ -1,6 +1,6 @@
 # TASK-033：MVP 端到端样本验收规格冻结
 
-状态：Active / 规格冻结中 / 待独立只读复核 / 不实现
+状态：Active / 规格冻结中 / 独立只读复核 GO / 待 PR merge / 不实现
 
 类型：Codex 主控验收规格任务
 
@@ -18,7 +18,7 @@
 
 当前仓库已有 `packages/test-fixtures/` 下的 4 份 DOCX 样本、`cqcp-mvp-sample-matrix.xlsx` 和 4 份 `expected/*.json`。这些资产可作为 MVP 端到端验收规格的输入基础，但本任务不修改样本、fixture、expected JSON 或测试代码。
 
-本任务不是派发给 Claude Code / DeepSeek 的实现 `TASK_SPEC`。本任务只冻结验收规格和证据口径，不运行完整验收，不写业务代码，不创建自动化测试。
+本任务不是派发给 CC-DS 执行环境的实现 `TASK_SPEC`。本任务只冻结验收规格和证据口径，不运行完整验收，不写业务代码，不创建自动化测试。
 
 ## 目标
 
@@ -268,7 +268,7 @@ git status --short
 git diff --name-status
 ```
 
-正式提交前必须进行独立 agent 只读复核，复核重点：
+正式提交前必须进行独立 agent 只读复核；该复核已完成，结论为 `GO`，无 blocking findings。复核重点：
 
 * 是否只修改允许文件。
 * 是否没有修改代码、测试、fixture、expected JSON、workflow、ADR 或 PRD。
@@ -286,11 +286,11 @@ git diff --name-status
 
 ## Next Task Handoff
 
-下一步应进行 `TASK-033` 正式提交前独立 agent 只读复核。复核通过后，Codex 才能执行提交前判断；复核不授权实现、不授权 merge、不授权进入 `TASK-028` / `TASK-031` / `TASK-032`。
+下一步应等待 PR #24 merge 授权判断；当前独立只读复核已完成且结论为 `GO`。复核不授权实现、不授权 merge、不授权进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ```text
 26/07/07 21:39:14
-本窗口是 TASK-033 正式提交前独立只读复核窗口，不依赖历史聊天记录作为事实来源。请在只读模式下审计 CQCP 仓库的 TASK-033 建档是否满足边界。
+本窗口是 TASK-033 / PR #24 merge 前最终授权核查窗口，不依赖历史聊天记录作为事实来源。请在只读模式下审计 CQCP 仓库的 TASK-033 建档与 PR #24 是否满足 merge 前边界。
 
 禁止修改文件、stage、commit、push、merge、配置 GitHub 或运行会写文件的命令。
 
@@ -306,7 +306,7 @@ git diff --name-status
 核查问题：
 1. 是否只修改允许文件？
 2. 是否没有修改代码、测试、fixture、expected JSON、workflow、ADR 或 PRD？
-3. TASK-033 是否明确不是 CC-DS 实现 TASK_SPEC？
+3. TASK-033 是否明确不是 CC-DS 执行环境实现 TASK_SPEC？
 4. 样本选择原则、输入字段、验收命令、证据口径和 expected 来源是否可证伪？
 5. 是否没有把 AI/parser 输出当作人工 anchor 标准答案？
 6. 是否明确 TASK-DATA-001 承接真实 DOCX TABLE_CELL 人工 anchor 标注？
@@ -333,9 +333,9 @@ git diff --name-status
 
 ## 完成记录
 
-* 建档日期：2026-07-07。正式提交前独立只读复核待执行。
+* 建档日期：2026-07-07。正式提交前独立只读复核已完成，结论为 `GO`，无 blocking findings。
 * 变更文件：`tasks/active/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`、`docs/VERIFY.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
 * 验证结果：本轮执行 `git diff --check`、`git status --short`、`git diff --name-status`，结果以交付摘要为准。
-* 独立只读复核：待执行。
-* 遗留问题：正式提交前需完成独立只读复核，并由 Codex 做 Review Intake Decision。
+* 独立只读复核：已完成，Decision 为 `GO`。
+* 遗留问题：等待 PR #24 merge 授权判断；本任务仍不授权实现、不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 备注：本任务仅冻结规格，不运行完整验收，不修改代码、测试、fixture、expected JSON、workflow、ADR 或 PRD。
