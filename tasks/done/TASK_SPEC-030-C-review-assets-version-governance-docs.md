@@ -1,6 +1,6 @@
 # TASK_SPEC-030-C：Review assets 版本治理与变更流程最小建档
 
-状态：Done / Claude Code 执行 / PR #20 已合并 / 待父任务归档前独立只读审计
+状态：Done / Claude Code 执行 / PR #20 已合并 / 已随父任务 TASK-030 归档
 
 类型：execution（文档级治理建档）
 

@@ -1,6 +1,6 @@
 # TASK-030：Review assets 版本化治理最小落地
 
-状态：A/B/C 已完成并经 PR #20 合并 / 待父任务归档前独立只读审计 / 后续实现待用户确认
+状态：已归档 / A/B/C 已完成并经 PR #20 合并 / 归档 Review Intake GO / 后续实现待用户确认
 
 类型：Governance / A
 
@@ -650,3 +650,50 @@ packages/review-assets/review-budget-profiles/review-budget-profile-v1.yaml
 Codex Review Intake Decision：`READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / NOT_ARCHIVED`。
 
 判断依据：`AGENTS.md` 要求每个父任务归档前必须经过独立 agent 只读审计；当前已有 Codex post-merge 只读核查，但不能替代独立审计。因此 `TASK-030` 当前不得归档，下一步只可进入父任务归档前独立只读审计；独立审计返回后，再由 Codex 单独给出归档 Review Intake Decision。
+
+## TASK-030 归档 Review Intake Decision：2026-07-06
+
+### 输入证据
+
+- 独立只读审计结论：`GO_WITH_CONDITIONS`。
+- 独立审计条件 B1-B5：`TASK_SPEC-030-A/B/C`、`TASK-030` 父任务和 `tasks/MVP_TASK_MAP.md` 的 post-merge 状态残留需修正。
+- 条件修正提交：`40f28e7159f0cfc7d63546db07c5b8819edbc0c3`（`docs: record TASK-030 post-merge closeout status`）。
+- 条件修正合并：PR #21，merge commit `ef4643c7d11b1209c935229b4e39b76d659db00f`，merged at `2026-07-06T15:27:11Z`。
+- PR #21 required checks：`Authorization evidence check`、`Backend Gradle tests`、`Admin web lint, tests, and build` 均为 `SUCCESS`。
+- 本地 `master` 已同步到 `origin/master`，当前工作区在 Decision 前为 clean。
+- `node scripts/validate-review-assets.mjs` 通过：7 个 JSON asset 全部通过静态校验。
+
+### Codex Review Intake Decision
+
+结论：`GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`。
+
+判断：
+
+- `TASK-030` A/B/C 已通过 PR #20 合并，PR #21 已完成 post-merge 状态写回并满足独立审计条件。
+- 独立只读审计已发生，Codex 已单独进行 Review Intake Decision，满足 AGENTS.md 父任务归档门禁。
+- 当前结论只授权 `TASK-030` 父任务归档流程；不授权 runtime loader、数据库资产表、发布审批、model / budget profile 源定义、`TASK-028`、`TASK-031`、`TASK-032` 或 `TASK-033`。
+- 归档执行仍需单独执行文件移动与记忆写回，不得把本 Decision 直接等同于已归档。
+
+## TASK-030 父任务归档执行记录：2026-07-06
+
+### 归档范围
+
+- 父任务文件已从 `tasks/active/TASK-030-review-assets-versioning-governance.md` 移动到 `tasks/done/TASK-030-review-assets-versioning-governance.md`。
+- 已完成子任务文件 `TASK_SPEC-030-A/B/C` 已随父任务从 `tasks/active/` 移动到 `tasks/done/`。
+- 本次归档仅执行文件移动与项目记忆写回，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD。
+
+### 最终边界
+
+- `TASK-030` 归档不授权 runtime loader、数据库资产表、发布审批、model / budget profile 源定义。
+- `TASK-030` 归档不进入 `TASK-028` / `TASK-031` / `TASK-032`，不创建或派发 `TASK-033`。
+- 后续如进入 runtime loading、发布审批、数据库资产表、模型职责或 `EvidenceSlot` / `CandidateResolver` 行为变化，必须重新判断 ADR。
+
+### 归档验证
+
+- `node scripts/validate-review-assets.mjs` 通过：7 个文件检查，7 个 JSON 文件扫描通过。
+- `git diff --check` 通过，无格式问题。
+- 本次为文档与任务归档流程，不运行后端 / 前端业务测试。
+
+### Next Task Handoff
+
+`TASK-030` 已归档。当前没有已冻结且可直接执行的 `TASK-030` 后续任务；runtime loader 评审、数据库持久化方案、model / budget profile 源定义、`TASK-028`、`TASK-031`、`TASK-032` 和 `TASK-033` 均仍需用户另行确认或单独定界，不生成 Next Task Handoff Prompt。

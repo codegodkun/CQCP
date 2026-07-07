@@ -22,7 +22,7 @@
 - 2026-07-04 用户确认：不单独创建 MVP 上线 / readiness 任务；后续按正常开发顺序推进，不代表进入 `TASK-029`
 - `TASK-GOV-005` 已拆出并定界为历史 commit / push 授权证据治理债务；处理决定为 `BOUNDARY RECORDED / NO RECOVERY PATH / NO IMPLEMENTATION AUTHORIZATION`；2026-07-04 独立只读审计结论为 `GO`；该债务不追溯否定已 merge / push 内容，但阻止其作为后续绕过授权门禁的先例
 - `TASK-GOV-006` 本地准备完成且独立只读复核 `GO`，用于建立提交前授权证据模板、PR 模板和 `Authorization evidence check` PR body 文本门禁；本轮本地正向 fixture 已通过、反向 fixture 已按预期失败，2026-07-05 已同步“完成态复核优先”规则，云端 GitHub Actions 验证待真实 PR 触发；该任务不配置 branch protection、repository ruleset 或 required status checks，不补足 `TASK-EVAL-001` DoD #12，不支撑父任务归档
-- `TASK-030` A/B/C 当前批次已通过 PR #20 合并，merge commit `eadd017808fc8c2471fb0ac081f1e68e22dce5f5`，post-merge 只读核查结论为 `POST_MERGE_GO`；已落地静态 Review assets 源文件、RuleSetVersion manifest、schema / manifest 校验脚本和 README 版本治理说明。父任务当前为 `READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / NOT_ARCHIVED`，归档前仍需独立 agent 只读审计；后续只可按单独 `TASK_SPEC` 或任务授权推进，不自动进入 `TASK-028` / `TASK-031` / `TASK-032`
+- `TASK-030` A/B/C 当前批次已通过 PR #20 合并，PR #21 已合并 post-merge 状态写回，独立审计结论 `GO_WITH_CONDITIONS` 的 B1-B5 条件已满足，Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`，父任务已归档到 `tasks/done/TASK-030-review-assets-versioning-governance.md`；后续只可按单独 `TASK_SPEC` 或任务授权推进，不自动进入 `TASK-028` / `TASK-031` / `TASK-032`
 - `TASK-GOV-004` 已完成并进入归档写回准备：2026-06-27 Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地，2026-06-28 Phase 5 第一阶段 GitHub branch protection / required checks 已配置并验证，Phase 5 post-implementation 独立只读审计结论为 `GO`；PR #8 已合并，merge commit 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f`，PR head 为 `e9812bc118aa5a2f33294dcc9507566703da7517`。当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks，未进入 `TASK-028` / `TASK-031` / `TASK-032`
 - Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
   【回滚批注】经独立核实，上述“重新覆盖审计”未找到可追溯的原始报告记录，该依据不能支撑归档判断。
@@ -57,7 +57,7 @@
 | `TASK-EVAL-001-B` | Evidence overlap baseline | A | 事后条件接纳 | Git 历史显示 commit `672d97f`；事后复核为 `ACCEPT WITH CONDITIONS`、定向测试 `30/30 PASS`；提交前复核缺失作为治理债务保留 |
 | `TASK-028` | Gemma Provider 最小接入 | A | Readiness Gate NO-GO / 禁止进入 Review Intake | 仅作为未来 `MEDIUM` 档辅助通道；依赖 `TASK-GOV-003` 和 `TASK-EVAL-001` 收口；2026-07-04 只读复判未授权实现或 `TASK_SPEC` 派发 |
 | `TASK-029` | MVP 端到端验证收口 | A | 未开始 | 依赖 `TASK-025` ~ `TASK-028` |
-| `TASK-030` | Review assets 版本化治理 | Governance / A | A/B/C 已合并 / POST_MERGE_GO / 待父任务归档前独立只读审计 / 后续实现待确认 | 文件：`tasks/active/TASK-030-review-assets-versioning-governance.md`；PR #20 已合并，merge commit `eadd017808fc8c2471fb0ac081f1e68e22dce5f5`，head commit `29d4a94eaf07b37831f07dd93f78d3027b770f01`；已落地静态 Review assets 源文件、RuleSetVersion manifest、schema / manifest 校验脚本和 README 版本治理说明。父任务尚未归档，归档前仍需独立 agent 只读审计；不启用 runtime loader，不声明生产 runtime 绑定，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不创建 `TASK-033` |
+| `TASK-030` | Review assets 版本化治理 | Governance / A | 已完成并归档 | 文件：`tasks/done/TASK-030-review-assets-versioning-governance.md`；PR #20 已合并，merge commit `eadd017808fc8c2471fb0ac081f1e68e22dce5f5`；PR #21 已合并 post-merge 状态写回，merge commit `ef4643c7d11b1209c935229b4e39b76d659db00f`；独立审计 `GO_WITH_CONDITIONS` 的 B1-B5 条件已满足，Codex Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`。归档不启用 runtime loader，不声明生产 runtime 绑定，不修改业务代码、测试、fixture、expected JSON、OpenAPI、数据库、Docker、workflow、ADR 或 PRD，不进入 `TASK-028` / `TASK-031` / `TASK-032`，不创建 `TASK-033` |
 | `TASK-031` | Result API / Admin API mapper 补洞 | B | 未开始 | 当前明确不进入 |
 | `TASK-032` | ParserBackedReviewInputPreparer 按 ReviewPointFamily 拆分 | A | 禁止进入实现 | 等待治理门禁解除后再定界；不得以债务存在为由提前启动 |
 
@@ -322,7 +322,7 @@
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录，`TASK-DEBT-001` 已经用户授权归档；该归档不代表后续修复任务获准启动，不得直接派发实现 TASK_SPEC。
 4. `TASK-EVAL-001` 已执行 rebaseline；2026-07-04 Codex 预审为 `NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN`；后续如需重新申请归档，必须先做独立只读审计和 Codex Review Intake。
 5. `TASK-GOV-006` 当前承接提交前授权证据模板、PR 模板和 PR body 文本门禁；完成后仍不自动纳入 required status checks。
-6. `TASK-030` A/B/C 已通过 PR #20 合并，父任务当前为 `READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / NOT_ARCHIVED`；如继续收口，应先执行父任务归档前独立 agent 只读审计。runtime loader 评审、model / budget profile 源定义等仍只是后续候选建议，不等于实现授权，需用户另行确认。
+6. `TASK-030` 已归档；runtime loader 评审、model / budget profile 源定义等仍只是后续候选建议，不等于实现授权，需用户另行确认。
 7. 用户已确认不单独创建 MVP 上线 / readiness 任务；后续按正常开发顺序推进，当前不进入 `TASK-029`。
 8. 后续如需处理 parser provenance 或 real DOCX `TABLE_CELL`，必须另行定界任务；TABLE_CELL 必须先取得独立人工 anchor 标注。
 9. 继续禁止 `TASK-028` / `TASK-031` / `TASK-032` 抢跑。
