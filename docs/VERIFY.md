@@ -62,6 +62,20 @@
 - 是否没有误改代码、数据库、Docker 或架构文件
 - 是否完成必要的 Memory Writeback
 
+## MVP 端到端样本验收规格
+
+`TASK-033` 负责冻结 MVP 端到端样本验收规格，任务文件为 `tasks/active/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`。
+
+验收规格必须满足：
+
+- 样本从 `packages/test-fixtures/README.md` 已登记的 DOCX 样本池中选择，不临时新增或修改样本。
+- 每份样本必须冻结 `sampleId`、DOCX 路径、合同类型、审核点范围、expected 来源、anchor 要求和可观测输出。
+- expected 来源必须逐项说明；parser actual、AI 输出或被测系统输出不得倒填为人工 anchor 标准答案。
+- parser-backed overlap 指标只能证明与当前 expected JSON 的一致性和回归稳定性，不证明独立人工 ground truth 正确。
+- 真实 DOCX `TABLE_CELL` anchor 必须依赖 `TASK-DATA-001` 或等效人工标注任务产出的独立人工标准答案。
+- 本规格不归档 `TASK-EVAL-001`，不补足 DoD #12，不解除 `TASK-028` / `TASK-031` / `TASK-032` 门禁。
+- 正式提交前必须进行独立 agent 只读复核，复核不得修改文件。
+
 ## 提交前 Checklist
 
 - 运行 `git diff --check`
