@@ -1,6 +1,6 @@
 # TASK-033：MVP 端到端样本验收规格冻结
 
-状态：Active / 规格冻结中 / 独立只读复核 GO / 待 PR merge / 不实现
+状态：Active / 规格冻结完成 / PR #24 已合并 / 待归档 Review Intake / 不实现
 
 类型：Codex 主控验收规格任务
 
@@ -286,11 +286,11 @@ git diff --name-status
 
 ## Next Task Handoff
 
-下一步应等待 PR #24 merge 授权判断；当前独立只读复核已完成且结论为 `GO`。复核不授权实现、不授权 merge、不授权进入 `TASK-028` / `TASK-031` / `TASK-032`。
+PR #24 已合并，merge commit 为 `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`。下一步应在 post-merge 状态写回合并后，由 Codex 执行 `TASK-033` 归档 Review Intake；该流程不授权实现、不授权归档 `TASK-EVAL-001`、不授权进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ```text
-26/07/07 21:39:14
-本窗口是 TASK-033 / PR #24 merge 前最终授权核查窗口，不依赖历史聊天记录作为事实来源。请在只读模式下审计 CQCP 仓库的 TASK-033 建档与 PR #24 是否满足 merge 前边界。
+26/07/08 16:57:31
+本窗口是 TASK-033 post-merge 状态写回后的归档 Review Intake 窗口，不依赖历史聊天记录作为事实来源。请在只读模式下审计 CQCP 仓库的 TASK-033 是否满足归档判断前置条件。
 
 禁止修改文件、stage、commit、push、merge、配置 GitHub 或运行会写文件的命令。
 
@@ -311,9 +311,11 @@ git diff --name-status
 5. 是否没有把 AI/parser 输出当作人工 anchor 标准答案？
 6. 是否明确 TASK-DATA-001 承接真实 DOCX TABLE_CELL 人工 anchor 标注？
 7. 是否没有归档 TASK-EVAL-001、补足 DoD #12 或进入 TASK-028 / TASK-031 / TASK-032？
+8. PR #24 是否已合并，且 merge commit 是否为 880893639ada9fa5e2d42b3d2bccb1662e37a5c9？
+9. post-merge 状态写回后是否已清理合并前状态残留？
 
 请输出：
-- Decision: GO / NEEDS-FIX / NO-GO
+- Decision: GO_TO_ARCHIVE / NEEDS-FIX / NO-GO
 - Blocking findings
 - Non-blocking findings
 - Evidence checked
@@ -334,8 +336,10 @@ git diff --name-status
 ## 完成记录
 
 * 建档日期：2026-07-07。正式提交前独立只读复核已完成，结论为 `GO`，无 blocking findings。
+* PR 合并记录：PR #24 已合并，merge commit 为 `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`。
 * 变更文件：`tasks/active/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`、`docs/VERIFY.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
 * 验证结果：本轮执行 `git diff --check`、`git status --short`、`git diff --name-status`，结果以交付摘要为准。
 * 独立只读复核：已完成，Decision 为 `GO`。
-* 遗留问题：等待 PR #24 merge 授权判断；本任务仍不授权实现、不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+* 归档前独立只读审计：已完成，Decision 为 `NEEDS_POST_MERGE_SYNC`；本次状态写回用于清理该阻塞项。
+* 遗留问题：post-merge 状态写回合并后，需由 Codex 执行归档 Review Intake；本任务仍不授权实现、不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 * 备注：本任务仅冻结规格，不运行完整验收，不修改代码、测试、fixture、expected JSON、workflow、ADR 或 PRD。
