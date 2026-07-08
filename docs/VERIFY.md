@@ -64,7 +64,7 @@
 
 ## MVP 端到端样本验收规格
 
-`TASK-033` 负责冻结 MVP 端到端样本验收规格，任务文件为 `tasks/active/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`。
+`TASK-033` 负责冻结 MVP 端到端样本验收规格，任务文件为 `tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`。
 
 验收规格必须满足：
 
