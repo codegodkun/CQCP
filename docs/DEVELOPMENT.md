@@ -70,6 +70,8 @@ docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example 
 - 普通任务默认只做一次完成态复核；执行完成后一次性提交 `diff`、测试输出、`git status`、风险说明和 Memory Writeback 状态供 Codex 判断是否接纳。
 - 独立 agent 只在完成态或关键门禁点介入，只做只读事实核查，不参与每个小步骤，不替代 Codex 总控职责。
 - 低风险文档动作默认由 Codex 自查；证据不足、工作区不清或触发高风险节点时，再请求独立只读复核。
+- 低风险文档同步、状态摘要、changelog 补录、路径修正和 post-merge 状态写回不需要单独建 TASK，可合并为一次文档批处理和一次 Memory Writeback。
+- Next Task Handoff 只在存在明确下一任务文件、编号、目标和边界时输出可复制 Prompt；没有明确任务时只写建议、待确认或暂不生成 Prompt。
 
 以下高风险节点必须追加独立 agent 只读复核：
 
@@ -81,6 +83,7 @@ docker compose -f deploy/compose/compose.yml --env-file deploy/env/.env.example 
 - 涉及 workflow / CI / required checks / branch protection。
 - Codex 自己写代码又自己审查。
 - 工作区状态或远程同步状态不清。
+- 人工 anchor ground truth 可能被 AI/parser 输出替代或混淆。
 
 ## Git 操作规则
 

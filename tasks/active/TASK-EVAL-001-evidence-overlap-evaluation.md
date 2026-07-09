@@ -189,6 +189,20 @@ NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN
 - Final recommendation:
 ```
 
+#### 2026-07-09 独立审计后状态收口
+
+用户确认 `TASK-EVAL-001` 归档前独立只读审计已完成。Codex Review Intake Decision：`NO-GO TO ARCHIVE / KEEP ACTIVE`。
+
+收口结论：
+
+* `TASK-EVAL-001` 继续保持 `REBASELINED / Active / 不归档 / 不进入 TASK-028`。
+* DoD #12 固定为未通过、不可由补写文档或 `TASK-GOV-005` 补足。
+* `TASK-GOV-005` 仅记录历史 commit / push 授权证据债务，不支撑父任务归档。
+* 真实 DOCX positive baseline `TABLE_CELL` 仍是覆盖盲区，不得写成已验证。
+* 当前 expected / anchor 只证明 parser-backed 输出与 expected JSON 的一致性和回归稳定性，不证明独立人工 ground truth 正确。
+* `TASK-028` / `TASK-031` / `TASK-032` 继续 `NO-GO`，不得抢跑。
+* 后续实际推进方向合并为 `TASK-DATA-001` / MVP E2E 人工 anchor 准备；不再围绕 `TASK-EVAL-001` 反复补写归档文档。
+
 #### Rebaseline 后禁止事项
 
 * 不恢复 `GO TO ARCHIVE WITH CONDITIONS`。

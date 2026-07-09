@@ -90,6 +90,7 @@
 * Claude Code / DeepSeek 执行代码修改前，必须先提交“编码前规格映射计划”，说明验收断言理解、关键字段或信号的真实输入计算方式、明确不修改路径、范围外风险和预计测试；经 Codex 审查放行后才能实现。
 * 独立 agent 只做只读事实核查，不得实现、修复代码或编写业务逻辑。
 * 每个父任务归档前必须经过独立 agent 只读审计；没有独立审计和 Codex 单独 Review Intake Decision，不得归档。
+* 低风险文档动作（状态摘要、changelog 补录、路径修正、post-merge 状态写回、无行为变化的项目记忆压缩）默认由 Codex 自查并可合并式批量处理；不单独建 TASK，不默认派独立 agent。
 * `TASK_SPEC` 的验收断言必须可证伪，不得只写“完成优化”“修复问题”等描述性目标。
 * 同根因分批修复时，后续 `TASK_SPEC` 必须对照前一批修复原则，明确一致点、差异点及差异理由，并由 Codex 审查接受或拒绝。
 * 评测、fixture、expected JSON 必须说明 expected 值的来源、是否依赖被测系统输出、是否存在循环验证；如依赖被测系统输出，只能声明一致性，不得声明独立正确性。
@@ -140,8 +141,9 @@
 
 按 docs/context-management.md 执行项目记忆写回，并在交付摘要中说明 Memory Writeback。
 
-* 每次任务结束后必须输出 Next Task Handoff。
-* 如果存在明确的下一执行任务，必须输出 Next Task Handoff Prompt。
+* 低风险文档批处理可以把多个状态摘要、changelog 补录和 post-merge 写回合并为一次 Memory Writeback，不要求每个小状态变化单独收尾。
+* 每次任务结束后必须输出 Next Task Handoff 说明，但这不等于创建新任务。
+* 只有存在明确的下一执行任务文件、任务编号、目标和边界时，才输出 Next Task Handoff Prompt。
 * Next Task Handoff Prompt 必须放在独立 fenced code block 中，方便复制到新 Codex 窗口。
 * Prompt 开头使用系统时间 YY/MM/DD HH:mm:ss。
 * 如果下一步只是建议、征求意见、需要人工确认或没有明确任务编号，不得放入代码块。
@@ -150,6 +152,7 @@
 
 * 不依赖聊天上下文保存关键决策，长期信息必须写入项目记忆文件。
 * 任务结束必须更新 CURRENT\_CONTEXT.md、changelog/当前月份.md 和当前 TASK 文件。
+* 低风险文档同步、状态摘要、changelog 补录、路径修正和 post-merge 状态写回可合并式批量写入；没有明确当前 TASK 时说明“本次为低风险文档批处理，无新 TASK”。
 * CURRENT\_CONTEXT.md 只保存当前阶段、活跃任务、已完成任务、已接受 ADR、当前阻塞项、待确认事项和下一步任务的摘要及引用路径，不复制其他文档的详细内容。如出现大量历史内容堆积，应定期进行瘦身。
 * 没有当前 TASK 时需说明原因。
 * 只记录已确认事实、任务结果、风险、待确认事项和后续任务线索。
