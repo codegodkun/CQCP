@@ -11,18 +11,17 @@
 - `TASK-027` 最小主实现已完成并归档
 - `TASK-GOV-003` 已完成、已独立审计、已 push、远程同步确认
 - `TASK-DEBT-001` 已归档，文件为 `tasks/done/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`。该父任务已完成 4 条代码缺陷和 1 条覆盖盲区的标准记录、A/B/C 批次落地记录、父任务归档前独立只读审计 `GO`、Codex Review Intake Decision `GO TO ARCHIVE WITH CONDITIONS`、PR #14 / PR #15 文档同步和用户授权归档流程；归档不解锁 parser provenance、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 或 `TASK-032`
-- `TASK-EVAL-001` 父任务归档前独立审计随后给出 `GO WITH CONDITIONS`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`
-  【回滚批注】以上为历史记录，该决定已按用户要求回滚，不再作为当前状态依据。
 - `TASK-EVAL-001-A` 已完成并 push（`4bac2f4`）
 - Git 历史显示 `TASK-EVAL-001-B` 对应 commit 为 `672d97f`；事后独立复核、定向测试 `30/30 PASS` 和父任务归档前独立审计已形成补偿证据，但不能追溯性等同于提交前复核
 - `TASK-EVAL-001` 已于 2026-07-04 执行 rebaseline：旧 `GO TO ARCHIVE WITH CONDITIONS` 口径已回滚，不再作为当前状态依据；DoD #1 至 #11 仅保留为既有独立确认摘要，DoD #12 固定为未通过、未补足并作为永久治理债务保留
-- 2026-07-04 用户要求先处理 `TASK-EVAL-001` 归档前审计 / 收口判断；Codex 预审结论为 `NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN`，当前必须等待独立 agent 只读审计，不能由 Codex 自审替代
+- 2026-07-09 用户确认 `TASK-EVAL-001` 独立只读审计已完成；Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`。DoD #12 固定未通过、不可补足；`TASK-GOV-005` 不补足 DoD #12；真实 DOCX `TABLE_CELL` 仍未验证；expected / anchor 当前只证明 parser-backed 一致性，不证明独立人工 ground truth；`TASK-028` / `TASK-031` / `TASK-032` 继续 `NO-GO`
 - 2026-07-04 归档路径复判结论为 `ARCHIVE BLOCKED`；不采用 `ARCHIVE WITH EXPLICIT DEBT SPLIT`；rebaseline 后本父任务仍 active，不归档，不解除 `TASK-028`
 - `TASK-028` Readiness Gate 只读结论为 `NO-GO`；仍不是实现授权，也不是 `TASK_SPEC` 派发授权
 - 2026-07-04 用户确认：不单独创建 MVP 上线 / readiness 任务；后续按正常开发顺序推进，不代表进入 `TASK-029`
 - `TASK-GOV-005` 已拆出并定界为历史 commit / push 授权证据治理债务；处理决定为 `BOUNDARY RECORDED / NO RECOVERY PATH / NO IMPLEMENTATION AUTHORIZATION`；2026-07-04 独立只读审计结论为 `GO`；该债务不追溯否定已 merge / push 内容，但阻止其作为后续绕过授权门禁的先例
 - `TASK-GOV-006` 已通过 PR #18 合并完成云端 PR 触发验证，用于建立提交前授权证据模板、PR 模板和 `Authorization evidence check` PR body 文本门禁；PR #18 head commit 为 `432a63a25b0352e5ba9768f68f32c95a266474e4`，merge commit 为 `d3d5d1b507d233b5ff9a20350fad7b0c05a36cf9`，PR 触发的 CI 已通过。`Authorization evidence check` 已在 PR #18 中成功运行，但它不是 required status check，也不证明真实授权事实；该任务不配置 branch protection、repository ruleset 或 required status checks，不补足 `TASK-EVAL-001` DoD #12，不支撑父任务归档
 - `TASK-033` 已完成 MVP 端到端样本验收规格冻结并归档到 `tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`。PR #24 已合并规格冻结建档，merge commit 为 `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`；PR #25 已合并 post-merge 状态写回，merge commit 为 `a60fc9f`；Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_POST_MERGE_SYNC_SATISFIED`；2026-07-09 用户确认独立只读审计已对归档迁移与 Memory Writeback 给出 `GO`，并授权精确 stage、commit 与 push。归档不运行完整验收，不修改代码、测试、fixture、expected JSON，不解除 `TASK-EVAL-001` / `TASK-028` 门禁
+- 2026-07-09 治理规则收敛口径：低风险文档同步、状态摘要、changelog 补录、路径修正和 post-merge 状态写回可合并式批处理，不单独建 TASK，不默认派独立 agent；v3 强门禁不自动泛化到普通文档状态同步。
 - `TASK-030` A/B/C 当前批次已通过 PR #20 合并，PR #21 已合并 post-merge 状态写回，独立审计结论 `GO_WITH_CONDITIONS` 的 B1-B5 条件已满足，Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`，父任务已归档到 `tasks/done/TASK-030-review-assets-versioning-governance.md`；后续只可按单独 `TASK_SPEC` 或任务授权推进，不自动进入 `TASK-028` / `TASK-031` / `TASK-032`
 - `TASK-GOV-004` 已完成并进入归档写回准备：2026-06-27 Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地，2026-06-28 Phase 5 第一阶段 GitHub branch protection / required checks 已配置并验证，Phase 5 post-implementation 独立只读审计结论为 `GO`；PR #8 已合并，merge commit 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f`，PR head 为 `e9812bc118aa5a2f33294dcc9507566703da7517`。当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks，未进入 `TASK-028` / `TASK-031` / `TASK-032`
 - Step 2 原始逐条认领报告未入库，作为治理债务保留；父任务归档判断依据为归档前独立审计对本父任务相关关键断言的重新覆盖，不得表述为原始 Step 2 报告已入库。
@@ -51,7 +50,7 @@
 | `TASK-GOV-003` | 五类问题整改与角色执行门禁 | Governance | 已完成并归档 | 已独立审计、push、远程同步确认；完成前置治理，不等于 `TASK-EVAL-001-B` 可提交或 `TASK-028` 可进入 |
 | `TASK-GOV-004` | PR 化多 Agent 开发治理与机制化门禁 | Governance | 已完成并归档写回准备 | 当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；Phase 3 minimal CI 已通过 PR #5 合并落地；Phase 4 规格已定义且外部 GLM 5.2 Code Review 与 Spec & Docs Review 均为 `GO`；Phase 5 第一阶段已配置 branch protection / required checks / PR-only direct push 拒绝；Phase 5 post-implementation 独立只读审计 `GO`；PR #8 已合并，merge commit `5d73ea22c42971df848dbacb49c86d40e2143e1f`，head `e9812bc118aa5a2f33294dcc9507566703da7517`；任务文件已移动到 `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks；未进入 `TASK-028` / `TASK-031` / `TASK-032` |
 | `TASK-DEBT-001` | Review Engine 已确认缺陷与覆盖盲区记录 | Governance / Debt | 已完成并归档 | 已登记 5 条标准记录；`TASK_SPEC-DEBT-001-A/B/C` 均已落地并完成对应审计记录；2026-07-02 父任务归档前独立只读审计为 `GO`，Codex Review Intake Decision 为 `GO TO ARCHIVE WITH CONDITIONS`；PR #14 记录归档前审计写回，PR #15 同步归档前文档状态；2026-07-03 经用户授权执行归档流程。归档不授权 parser provenance、real DOCX `TABLE_CELL`、`TASK-028`、`TASK-031` 或 `TASK-032` |
-| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | REBASELINED / Active / 不归档 / 独立审计待执行 | 2026-07-04 已重新定义父任务 DoD 与归档门禁；DoD #1 至 #11 仅保留为既有独立确认摘要，DoD #12 固定为未通过、未补足；A/B 历史 commit / push 授权记录无法完整核实并永久保留为治理债务；旧条件归档口径已回滚；2026-07-04 Codex 预审为 `NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN`；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
+| `TASK-EVAL-001` | Parser-backed 证据重合度评测基线 | A | REBASELINED / Active / 不归档 / 独立审计已完成 / KEEP ACTIVE | 2026-07-09 Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`；DoD #12 固定未通过、不可补足；`TASK-GOV-005` 不补足 DoD #12；真实 DOCX `TABLE_CELL` 仍未验证；expected / anchor 当前只证明 parser-backed 一致性；文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md` |
 | `TASK-GOV-005` | 历史 commit / push 授权证据治理债务 | Governance / Debt | Active / 已定界 / 独立只读审计 GO / 长期治理边界保留 | 文件：`tasks/active/TASK-GOV-005-historical-commit-authorization-evidence-debt.md`；从 `TASK-EVAL-001` 拆出 A/B 历史授权链不可完整核实问题；处理决定为 `BOUNDARY RECORDED / NO RECOVERY PATH / NO IMPLEMENTATION AUTHORIZATION`；不追溯否定已 merge / push 内容，但不得成为后续绕过授权门禁的先例；不写业务代码；任务仍长期保留 active，不表示已归档 |
 | `TASK-GOV-006` | 提交前授权证据模板与 PR 文本门禁 | Governance | Active / PR #18 已合并 / 云端 PR 触发验证已通过 / 不配置 required status checks | 文件：`tasks/active/TASK-GOV-006-submit-authorization-evidence-gate.md`；PR #18 head commit 为 `432a63a25b0352e5ba9768f68f32c95a266474e4`，merge commit 为 `d3d5d1b507d233b5ff9a20350fad7b0c05a36cf9`，PR 触发的 CI 已通过；`Authorization evidence check` 已在 PR #18 中成功运行，但它不是 required status check，也不证明真实授权事实；不配置 branch protection、ruleset 或 required status checks |
 | `TASK-033` | MVP 端到端样本验收规格冻结 | A / Governance | 已完成并归档 | 文件：`tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`；PR #24 merge commit `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`；PR #25 post-merge 状态写回 merge commit `a60fc9f`；Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_POST_MERGE_SYNC_SATISFIED`；2026-07-09 用户确认独立只读审计已对归档迁移与 Memory Writeback 给出 `GO`。仅冻结 2-3 份 DOCX 样本选择原则、输入字段、验收命令、证据口径和 expected 来源说明；不修改代码、测试、fixture、expected JSON，不把 AI/parser 输出当作人工 anchor 标准答案；不解除 `TASK-EVAL-001` / `TASK-028` 门禁 |
@@ -152,7 +151,7 @@
 
 - 定位：parser-backed fixture 的证据定位质量评测基线
 - 当前收口判断：`REBASELINED / Active / 不归档 / 不进入 TASK-028`。旧 `GO TO ARCHIVE WITH CONDITIONS` 不再作为当前状态依据；后续不得恢复旧归档口径。
-- 2026-07-04 归档前审计启动前收口判断：`NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN`。用户已触发归档判断，但当前缺少独立 agent 只读审计，且主工作区不是干净审计基线；不得由 Codex 自审替代独立审计。
+- 2026-07-09 独立审计后状态收口：独立只读审计已完成；Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`。DoD #12 固定未通过、不可补足；`TASK-GOV-005` 不补足 DoD #12；真实 DOCX `TABLE_CELL` 仍未验证；expected / anchor 当前只证明 parser-backed 一致性，不证明独立人工 ground truth。
 - 2026-07-04 归档路径复判：`ARCHIVE BLOCKED`；治理债务拆出不足以支撑 `ARCHIVE WITH EXPLICIT DEBT SPLIT`；随后已执行 rebaseline，重新定义父任务 DoD 与归档门禁。
 - 重新定界 Review Intake Decision：`NO-GO TO ARCHIVE / SPLIT GOVERNANCE DEBT`。历史授权链证据进入不可恢复 / 不可完整核实分支；DoD #12 不可支撑，父任务不得归档。
 - Rebaseline 后 DoD：DoD #1 至 #11 仅保留为既有独立确认摘要；DoD #12 固定为未通过、未补足；A/B 实现结果可作为历史技术质量信号，不作为父任务归档通过证据；若后续重新申请归档，必须先经过独立 agent 只读审计和 Codex 单独 Review Intake。
@@ -351,10 +350,11 @@
 1. `TASK-GOV-004` 已完成 post-merge 归档写回准备；Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）。`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks；不得因此进入 `TASK-028` / `TASK-031` / `TASK-032`。
 2. `TASK-GOV-003` 已完成并归档。
 3. v3 Step 1 已通过 `TASK-DEBT-001` 完成五条问题标准记录，`TASK-DEBT-001` 已经用户授权归档；该归档不代表后续修复任务获准启动，不得直接派发实现 TASK_SPEC。
-4. `TASK-EVAL-001` 已执行 rebaseline；2026-07-04 Codex 预审为 `NO-GO TO ARCHIVE / INDEPENDENT AUDIT REQUIRED / BASELINE NOT CLEAN`；后续如需重新申请归档，必须先做独立只读审计和 Codex Review Intake。
+4. `TASK-EVAL-001` 已完成独立审计后状态收口，Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`；后续不再围绕该父任务反复补写归档文档。
 5. `TASK-GOV-006` 已通过 PR #18 完成云端 PR 触发验证；该结果仍不自动纳入 required status checks。
-6. `TASK-033` 已归档；后续正式 MVP 端到端验收、`TASK-DATA-001` 人工 anchor 标注、required status checks 或 `TASK-028` / `TASK-031` / `TASK-032` 均需另行定界或人工确认。
-7. `TASK-030` 已归档；runtime loader 评审、model / budget profile 源定义等仍只是后续候选建议，不等于实现授权，需用户另行确认。
-8. 用户已确认不单独创建 MVP 上线 / readiness 任务；后续按正常开发顺序推进，当前不进入 `TASK-029`。
-9. 后续如需处理 parser provenance 或 real DOCX `TABLE_CELL`，必须另行定界任务；TABLE_CELL 必须先取得独立人工 anchor 标注。
-10. 继续禁止 `TASK-028` / `TASK-031` / `TASK-032` 抢跑。
+6. 后续实际推进方向合并为 `TASK-DATA-001` / MVP E2E 人工 anchor 准备；不创建新的 `TASK-EVAL-001` 文档收口小任务。
+7. 低风险文档动作采用合并式批处理：Codex 自查、精确 diff、一次 Memory Writeback；不因普通状态同步单独建 TASK 或派独立 agent。
+8. `TASK-030` 已归档；runtime loader 评审、model / budget profile 源定义等仍只是后续候选建议，不等于实现授权，需用户另行确认。
+9. 用户已确认不单独创建 MVP 上线 / readiness 任务；后续按正常开发顺序推进，当前不进入 `TASK-029`。
+10. 后续如需处理 parser provenance 或 real DOCX `TABLE_CELL`，必须另行定界任务；TABLE_CELL 必须先取得独立人工 anchor 标注。
+11. 继续禁止 `TASK-028` / `TASK-031` / `TASK-032` 抢跑。
