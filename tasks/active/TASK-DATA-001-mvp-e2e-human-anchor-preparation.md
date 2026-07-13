@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 实现已接受 / 独立审计 GO / 已 commit 并 push / PR #28 checks passed / 未授权合并
+状态：Active / READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / 人工 anchor 与转换实现已完成 / PR #28 已合并
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -16,7 +16,7 @@
 
 `TASK-033` 已冻结 MVP 端到端样本验收规格，并明确后续正式验收前需要 `TASK-DATA-001` 准备真实 DOCX `TABLE_CELL` 人工 anchor 标准答案。
 
-当前 `TASK-EVAL-001` 独立审计后状态为 `NO-GO TO ARCHIVE / KEEP ACTIVE`：DoD #12 固定未通过、不可补足。该任务当时的 parser-backed expected / anchor 只证明一致性，不证明独立人工 ground truth。此后 `TASK-DATA-001` 已独立形成并接受真实 DOCX 的人工 `BLOCK` / `TABLE_CELL` ground truth；尚未完成的是 fixture / expected JSON / 测试转换和完整 MVP E2E 验证。
+当前 `TASK-EVAL-001` 独立审计后状态为 `NO-GO TO ARCHIVE / KEEP ACTIVE`：DoD #12 固定未通过、不可补足。该任务当时的 parser-backed expected / anchor 只证明一致性，不证明独立人工 ground truth。此后 `TASK-DATA-001` 已独立形成并接受真实 DOCX 的人工 `BLOCK` / `TABLE_CELL` ground truth，并已完成 fixture / expected JSON 引用 / 定向测试转换；尚未完成的是完整 MVP E2E 验证。
 
 本任务只做人工 anchor 准备与标注规则冻结，不实现 parser、不修改 fixture、不生成 expected JSON、不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
@@ -279,7 +279,7 @@ git diff --name-status
 
 `ZK` 已完成“anchor明细待确认”工作表的逐条确认和最终接受，63 条均为 `MATCH`，6 条标题/前言名称已排除，来源和状态已更新为 `MANUAL_DOCX_REVIEW / ACCEPTED_HUMAN_GROUND_TRUTH`。
 
-转换执行规格已冻结为 `tasks/active/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`。2026-07-13 第二修订版编码前规格映射计划已获 Codex `GO`；仅允许执行者在隔离 worktree 修改 §0.3 文件、运行两个定向测试并填写实现报告，不得 commit 或 push。
+转换执行规格已完成并归档为 `tasks/done/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`。2026-07-13 第二修订版编码前规格映射计划获 Codex `GO`，实现通过 Codex 与独立 agent 复核后由 PR #28 合并。
 
 ## 风险
 
@@ -307,7 +307,7 @@ git diff --name-status
 * 人工 XLSX SHA-256：`3DC0DABE37DF2556B5F48B68600A0E24F092373FBD96B1E65B696FF0B9AEBA0B`。该哈希用于锁定本轮 63 条已接受 ground truth 的源文件版本。
 
 * 初始建档与规则冻结日期：2026-07-09；人工 ground truth 最终接受日期：2026-07-12。
-* 变更文件：`outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`、`packages/test-fixtures/docx/3、星辰建设集团南山科技园项目二标段土建总承包工程合同_缩减版.docx`（用户侧修正例外）、`tasks/active/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`、`tasks/active/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
+* 变更文件：`outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`、`packages/test-fixtures/docx/3、星辰建设集团南山科技园项目二标段土建总承包工程合同_缩减版.docx`（用户侧修正例外）、`tasks/active/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`、`tasks/done/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
 * 验证结果：本任务仅运行文档边界验证命令；结果以交付摘要中的 `git status --short`、`git diff --name-status`、`git diff --stat`、`git diff --check` 为准。
 * 补充执行日期：2026-07-12；`001` / `002` / `003` 共 63 条逐出处明细已由 `ZK` 接受为 `ACCEPTED_HUMAN_GROUND_TRUTH`；`004` 本轮不选。
 * 补充执行日期：2026-07-12；`TASK_SPEC-DATA-001-A` 已创建并冻结；首次编码前基线核对为 `NO-GO`，计划请求未派发，不构成实现授权。
@@ -318,5 +318,6 @@ git diff --name-status
 * 第二修订版计划复审：前两轮八项要求均已覆盖；Codex 只读确认 `occurrenceNo` 为 `001-PA-01` 等字符串追溯 ID，并冻结为 JSON string。Decision 为 `GO / CODING-PLAN ACCEPTED WITH BINDING CLARIFICATION / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH`。
 * 首轮实现 Review Intake：8 个实现路径均在允许范围，当前 fixture / expected 内容与人工 XLSX 一致，两个定向测试通过，独立 agent 对范围、独立性和 baseline 给出 `GO`；但新测试未有效锁定 JSON 类型、occurrence 顺序、全部 required columns、精确 18-key schema 和完整 positive-case baseline。Codex Decision 为 `NO-GO / TEST CONTRACT REVISION REQUIRED / DATA ARTIFACTS RETAINED / NO COMMIT OR PUSH`。
 * test-only revision 再审：四项 blocking findings 均已解除；Codex 重跑定向测试为 10/10 与 4/4，独立 agent delta 审计 `GO`，无 blocking finding。Codex Decision 为 `GO / IMPLEMENTATION ACCEPTED / AWAITING CODEX COMMIT AUTHORIZATION / NO PUSH`。
-* 提交、push 与 PR：用户明确授权后，Codex 精确提交 8 个实现路径为 `32b4c414349118b9225a65fa08eb4e3466f82a2e`（`test: add accepted human anchor fixtures`），并 push 到 `origin/codex/task-data-001-a-human-anchor-conversion`；PR #28 三项 checks 已通过，未获合并授权。
+* 提交、push 与 PR：用户明确授权后，Codex 精确提交 8 个实现路径为 `32b4c414349118b9225a65fa08eb4e3466f82a2e`（`test: add accepted human anchor fixtures`），并 push 到 `origin/codex/task-data-001-a-human-anchor-conversion`；PR #28 三项 checks 已通过并于 2026-07-13 合并，merge commit 为 `23c66aaed34326f242f9fb395d784518421f1575`。
+* Post-merge 状态：`TASK_SPEC-DATA-001-A` 已迁移到 `tasks/done/`；父任务等待独立 agent 归档前只读审计和 Codex 单独 Review Intake，不得直接归档。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
