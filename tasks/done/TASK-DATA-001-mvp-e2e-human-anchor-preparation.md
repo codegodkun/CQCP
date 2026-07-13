@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / READY_FOR_INDEPENDENT_PRE_ARCHIVE_AUDIT / 人工 anchor 与转换实现已完成 / PR #28 已合并
+状态：Done / 已归档 / 独立归档前审计 GO / Codex Review Intake GO_TO_ARCHIVE
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -30,6 +30,18 @@ Decision：`GO TO TASK-DATA-001 TASK BUILD / NO IMPLEMENTATION AUTHORIZATION`
 * `TASK-EVAL-001` 已停止围绕归档反复补文档，后续实际推进方向合并为 `TASK-DATA-001` / MVP E2E 人工 anchor 准备。
 * 当前缺口是 data / evaluation ground truth 准备，不是代码修复任务。
 * 本任务不解除 `TASK-028` / `TASK-031` / `TASK-032` 门禁。
+
+### 归档 Review Intake Decision
+
+2026-07-13 Codex Decision：`GO_TO_ARCHIVE / INDEPENDENT PRE_ARCHIVE AUDIT SATISFIED / FULL MVP E2E NOT VERIFIED`。
+
+归档依据：
+
+* PR #28 已合并人工 ground truth fixture / expected JSON 引用 / 定向测试转换，merge commit 为 `23c66aaed34326f242f9fb395d784518421f1575`。
+* PR #29 已合并 post-merge 状态写回，merge commit 为 `2b30bf303642d10156eec5844ee09718adb595b3`。
+* 独立 agent 完整归档前审计首次因一处过期状态记录给出 `NO-GO`；该单行状态修正后，聚焦复核结论为 `GO`，无剩余 blocking finding。
+* Codex 在与 `origin/master` tree hash 一致的基线上重跑定向测试：`HumanAnchorGroundTruthFixtureTest` 10/10、`ParserBackedEvidenceOverlapBaselineTest` 4/4，均 0 failures / 0 errors。
+* 归档只表示本数据准备父任务目标及转换子任务完成，不表示完整 MVP E2E 已通过，不归档 `TASK-EVAL-001`，不补足 DoD #12，不解除 `TASK-028` / `TASK-031` / `TASK-032` 门禁。
 
 ## 目标
 
@@ -293,7 +305,7 @@ git diff --name-status
 * 已确认：补选 `CQCP-MVP-DOCX-003` 作为第 3 份候选，其表格结构可补充 `TABLE_CELL` 人工定位；AI 预提取草稿不属于 ground truth。
 * 已确认：人工标注输出使用 `outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`。
 * 已确认：`CQCP-MVP-DOCX-003` 样本可用、脱敏合规，data owner 为 `ZK`；三份合同的 63 条逐出处明细已由 `ZK` 接受为 `ACCEPTED_HUMAN_GROUND_TRUTH`。
-* 已确认：后续由 `TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md` 承接 fixture / expected JSON / 测试转换；编码前计划已获 GO，仅授权 §0.3 实现并等待 Codex 后续审查。
+* 已确认：`TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md` 已完成 fixture / expected JSON 引用 / 定向测试转换并通过 PR #28 合并；父任务归档前独立只读审计最终为 `GO`，Codex 归档 Review Intake 为 `GO_TO_ARCHIVE`。
 
 ## 完成记录
 
@@ -307,7 +319,7 @@ git diff --name-status
 * 人工 XLSX SHA-256：`3DC0DABE37DF2556B5F48B68600A0E24F092373FBD96B1E65B696FF0B9AEBA0B`。该哈希用于锁定本轮 63 条已接受 ground truth 的源文件版本。
 
 * 初始建档与规则冻结日期：2026-07-09；人工 ground truth 最终接受日期：2026-07-12。
-* 变更文件：`outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`、`packages/test-fixtures/docx/3、星辰建设集团南山科技园项目二标段土建总承包工程合同_缩减版.docx`（用户侧修正例外）、`tasks/active/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`、`tasks/done/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
+* 变更文件：`outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`、`packages/test-fixtures/docx/3、星辰建设集团南山科技园项目二标段土建总承包工程合同_缩减版.docx`（用户侧修正例外）、`tasks/done/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`、`tasks/done/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md`、`changelog/2026-07.md`。
 * 验证结果：本任务仅运行文档边界验证命令；结果以交付摘要中的 `git status --short`、`git diff --name-status`、`git diff --stat`、`git diff --check` 为准。
 * 补充执行日期：2026-07-12；`001` / `002` / `003` 共 63 条逐出处明细已由 `ZK` 接受为 `ACCEPTED_HUMAN_GROUND_TRUTH`；`004` 本轮不选。
 * 补充执行日期：2026-07-12；`TASK_SPEC-DATA-001-A` 已创建并冻结；首次编码前基线核对为 `NO-GO`，计划请求未派发，不构成实现授权。
@@ -319,5 +331,7 @@ git diff --name-status
 * 首轮实现 Review Intake：8 个实现路径均在允许范围，当前 fixture / expected 内容与人工 XLSX 一致，两个定向测试通过，独立 agent 对范围、独立性和 baseline 给出 `GO`；但新测试未有效锁定 JSON 类型、occurrence 顺序、全部 required columns、精确 18-key schema 和完整 positive-case baseline。Codex Decision 为 `NO-GO / TEST CONTRACT REVISION REQUIRED / DATA ARTIFACTS RETAINED / NO COMMIT OR PUSH`。
 * test-only revision 再审：四项 blocking findings 均已解除；Codex 重跑定向测试为 10/10 与 4/4，独立 agent delta 审计 `GO`，无 blocking finding。Codex Decision 为 `GO / IMPLEMENTATION ACCEPTED / AWAITING CODEX COMMIT AUTHORIZATION / NO PUSH`。
 * 提交、push 与 PR：用户明确授权后，Codex 精确提交 8 个实现路径为 `32b4c414349118b9225a65fa08eb4e3466f82a2e`（`test: add accepted human anchor fixtures`），并 push 到 `origin/codex/task-data-001-a-human-anchor-conversion`；PR #28 三项 checks 已通过并于 2026-07-13 合并，merge commit 为 `23c66aaed34326f242f9fb395d784518421f1575`。
-* Post-merge 状态：`TASK_SPEC-DATA-001-A` 已迁移到 `tasks/done/`；父任务等待独立 agent 归档前只读审计和 Codex 单独 Review Intake，不得直接归档。
+* Post-merge 状态：`TASK_SPEC-DATA-001-A` 已通过 PR #29 迁移到 `tasks/done/`，merge commit 为 `2b30bf303642d10156eec5844ee09718adb595b3`。
+* 父任务归档前独立审计：完整审计首先发现“待确认”段落保留过期执行中状态，Decision 为 `NO-GO`；单行修正后聚焦复核 Decision 为 `GO`，允许进入父任务归档 Review Intake。
+* Codex 归档 Review Intake：`GO_TO_ARCHIVE / INDEPENDENT PRE_ARCHIVE AUDIT SATISFIED / FULL MVP E2E NOT VERIFIED`；本文件迁移到 `tasks/done/`。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
