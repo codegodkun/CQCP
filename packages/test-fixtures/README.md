@@ -85,6 +85,43 @@ TABLE_CELL:<blockId>:<rowIndex>:<cellIndex>
 - 字符级 span 不属于当前 MVP overlap baseline。
 - `negativeCandidates[]` 继续用于结构化输入与业务状态回归，不直接等价为 wrong-anchor 样本。
 
+## 人工 Anchor Ground Truth Fixture
+
+`human-anchors/` 目录存放独立于 parser / AI 输出的人工 DOCX anchor 标准答案 fixture。
+
+### 来源
+
+- 唯一来源：`outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`，sheet `anchor明细待确认`。
+- 63 条逐出处明细已由 data owner `ZK` 逐条接受为 `ACCEPTED_HUMAN_GROUND_TRUTH`，`groundTruthSource = MANUAL_DOCX_REVIEW`。
+- 标注过程未参考 parser / AI / 被测系统 actual 输出；所有位置信息均由人工直接阅读 DOCX 确定。
+
+### 数量
+
+| sampleId | acceptedOccurrenceCount | includedOccurrenceCount | excludedOccurrenceCount |
+|---|---|---|---|
+| CQCP-MVP-DOCX-001 | 22 | 20 | 2 |
+| CQCP-MVP-DOCX-002 | 19 | 17 | 2 |
+| CQCP-MVP-DOCX-003 | 22 | 20 | 2 |
+| **合计** | **63** | **57** | **6** |
+
+6 条排除项为合同标题或前言中的合同名称，不纳入甲乙方名称一致性判断，但保留完整 occurrence 记录用于追溯。
+
+### 独立性边界
+
+- human-anchor fixture 不包含 `blockId`、`rowIndex`、`cellIndex`、`previewElementRef`、`expectedCanonicalAnchors` 或任何 parser actual 派生字段。
+- 现有 `expected/*.json` 中的 `expectedCanonicalAnchors[]` 继续作为 parser-backed 回归基线，不声明为本次人工 ground truth。
+- 人工 anchor 不直接参与 `EvidenceOverlapEvaluator` 的 canonical key 匹配；人工位置描述 → parser canonical key 的 bridge 任务不在当前范围。
+
+### 文件清单
+
+- `human-anchors/CQCP-MVP-DOCX-001.json`
+- `human-anchors/CQCP-MVP-DOCX-002.json`
+- `human-anchors/CQCP-MVP-DOCX-003.json`
+
+### expected JSON 引用
+
+每份 `expected/CQCP-MVP-DOCX-00{1,2,3}.json` 的 `goldenExpected` 下新增 `humanAnchorGroundTruth` 引用对象，包含 schema 版本、fixture 路径、来源工作簿/工作表、data owner、状态和各数量，不复制 63 条 occurrence 明细。
+
 ## 使用边界
 
 - CQCP 不负责判断样例是否完成脱敏合规处理。
