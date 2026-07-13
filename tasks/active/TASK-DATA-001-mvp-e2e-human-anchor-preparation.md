@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 修订版计划复审 NO-GO / 待第二次修订 / 未授权实现
+状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 编码前计划 GO / 仅授权 §0.3 实现 / 禁止 commit 与 push
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -279,7 +279,7 @@ git diff --name-status
 
 `ZK` 已完成“anchor明细待确认”工作表的逐条确认和最终接受，63 条均为 `MATCH`，6 条标题/前言名称已排除，来源和状态已更新为 `MANUAL_DOCX_REVIEW / ACCEPTED_HUMAN_GROUND_TRUTH`。
 
-转换执行规格已冻结为 `tasks/active/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`。2026-07-12 首次编码前基线核对 Decision 为 `NO-GO / EXECUTION BASELINE NOT READY / PLAN REQUEST NOT DISPATCHED`。2026-07-13 已完成独立审计、精确提交和隔离 worktree 准备，当前 Decision 更新为 `GO TO CODING-PLAN MAPPING / NO IMPLEMENTATION AUTHORIZATION`；只允许执行者输出计划并停止。
+转换执行规格已冻结为 `tasks/active/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`。2026-07-13 第二修订版编码前规格映射计划已获 Codex `GO`；仅允许执行者在隔离 worktree 修改 §0.3 文件、运行两个定向测试并填写实现报告，不得 commit 或 push。
 
 ## 风险
 
@@ -293,7 +293,7 @@ git diff --name-status
 * 已确认：补选 `CQCP-MVP-DOCX-003` 作为第 3 份候选，其表格结构可补充 `TABLE_CELL` 人工定位；AI 预提取草稿不属于 ground truth。
 * 已确认：人工标注输出使用 `outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx`。
 * 已确认：`CQCP-MVP-DOCX-003` 样本可用、脱敏合规，data owner 为 `ZK`；三份合同的 63 条逐出处明细已由 `ZK` 接受为 `ACCEPTED_HUMAN_GROUND_TRUTH`。
-* 已确认：后续由 `TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md` 承接 fixture / expected JSON / 测试转换；当前只冻结规格，尚未授权实现。
+* 已确认：后续由 `TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md` 承接 fixture / expected JSON / 测试转换；编码前计划已获 GO，仅授权 §0.3 实现并等待 Codex 后续审查。
 
 ## 完成记录
 
@@ -315,4 +315,5 @@ git diff --name-status
 * 可重建基线：commit `a2e9c085cd4a073d7f9dcba55cf891ace3d556da`；隔离分支 / worktree：`codex/task-data-001-a-human-anchor-conversion` / `C:\Users\1\Documents\CQCP-worktrees\task-data-001-a`。
 * 编码前计划审查：2026-07-13 已收到 Claude Code / DeepSeek §0.2 计划；Codex Decision 为 `NO-GO / CODING-PLAN REVISION REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。需按 `TASK_SPEC-DATA-001-A` §10.1 六项要求修订后重审。
 * 修订版计划复审：前述六项已响应，但仍需区分 16 个 XLSX 直接字段与 2 个 notes 派生字段，并禁止把直接字段空字符串转为 `null`；Decision 为 `NO-GO / CODING-PLAN REVISION ROUND 2 REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。
+* 第二修订版计划复审：前两轮八项要求均已覆盖；Codex 只读确认 `occurrenceNo` 为 `001-PA-01` 等字符串追溯 ID，并冻结为 JSON string。Decision 为 `GO / CODING-PLAN ACCEPTED WITH BINDING CLARIFICATION / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH`。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。

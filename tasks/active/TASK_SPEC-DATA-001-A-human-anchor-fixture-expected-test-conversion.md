@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：CODING-PLAN MAPPING NO-GO / REVISION REQUIRED / NO IMPLEMENTATION AUTHORIZATION
+> **状态**：CODING-PLAN GO / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH
 > **创建日期**：2026-07-12
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -23,11 +23,11 @@
 ### 0.1 角色与执行门禁
 
 - 本 `TASK_SPEC` 关联父任务 `TASK-DATA-001`；Claude Code / DeepSeek 不得直接执行父任务。
-- 当前只授权读取本规格并输出 §0.2 的“编码前规格映射计划”。**不得直接修改 fixture、expected JSON、测试或其他文件。**
+- 2026-07-13，Codex 已审查并接受第二修订版 §0.2“编码前规格映射计划”；当前只授权修改 §0.3 明确允许的文件。
 - Codex 必须先审查并明确放行编码前规格映射计划，之后执行者才可修改 §0.3 的允许文件。
 - Codex 负责审查实现报告和 `git diff`，不得由执行者自行宣布验收通过。
 - Claude Code / DeepSeek 不得 commit，不得 push。
-- 2026-07-13，Codex 已从审计通过的 `a2e9c085cd4a073d7f9dcba55cf891ace3d556da` 基线提供干净隔离 worktree；当前只允许在该 worktree 读取规格并输出 §0.2 计划，不得在 `master` 主工作区执行本规格。
+- 2026-07-13，Codex 已从审计通过的 `a2e9c085cd4a073d7f9dcba55cf891ace3d556da` 基线提供干净隔离 worktree；实现只能在该 worktree 执行，不得在 `master` 主工作区执行本规格。
 - 独立 agent 只做后续只读事实核查，不得实施或修复本规格。
 
 ### 0.2 编码前规格映射计划（实现前硬门禁）
@@ -206,6 +206,7 @@ exclusionReason
 
 转换规则：
 
+- 16 个 XLSX 直接字段均按 Apache POI `DataFormatter` 的人工可见值保存为 JSON string；`occurrenceNo` 也是字符串追溯 ID（例如 `001-PA-01`），不得转换为 JSON number，也不得新增数字序号字段。
 - `includedInConsistencyEvaluation = false`：仅当 XLSX `notes` 以已接受的“排除：”语义开头。
 - 排除项 `exclusionReason` 必须保存排除原因；纳入项必须为 `null`。
 - 不把 XLSX `notes` 中普通确认话术复制为新的业务字段。
@@ -438,13 +439,12 @@ git diff --check
 ```text
 你正在 Claude Code + DeepSeek 环境执行 TASK_SPEC-DATA-001-A。
 
-当前只允许：
-1. 阅读本 TASK_SPEC、父 TASK 和 §0.3 只读文件；
-2. 检查分支与 git status；
-3. 输出 §0.2 编码前规格映射计划；
-4. 停止并等待 Codex 明确放行。
+Codex 已对第二修订版编码前规格映射计划给出 GO。当前只允许：
+1. 在 §0.3 允许范围内创建 3 份 human-anchor fixture、更新 001-003 expected JSON、fixture README，并新增指定测试；
+2. 严格执行 §2、§3、§8 和 §9；
+3. 填写 §10.2-§10.6 实现报告并停止，等待 Codex 审查。
 
-当前禁止修改任何文件。必须位于 Codex 提供的 `codex/task-data-001-a-human-anchor-conversion` 隔离 worktree；若分支、worktree、基线 commit、XLSX 跟踪状态或 `git status --short` 任一不符合，输出：
+必须位于 Codex 提供的 `codex/task-data-001-a-human-anchor-conversion` 隔离 worktree；若分支、worktree、基线 commit、XLSX 跟踪状态或 `git status --short` 任一不符合，输出：
 [STOP: 工作区不干净 — TASK_SPEC-DATA-001-A 不得在当前工作区执行 — 需要 CODEX 准备隔离分支或 worktree]
 
 任何时候如需从 parser / AI / actual 输出反推人工 expected 或 canonical key，立即输出：
@@ -508,6 +508,13 @@ git diff --check
 1. 18 个 occurrence 字段中，前 16 个字段直接来自 XLSX 同名列；`includedInConsistencyEvaluation` 与 `exclusionReason` 由 XLSX `notes` 派生。测试不得尝试把这两个派生字段与不存在的 XLSX 同名列直接比较，应分别验证 16 个直接字段和 2 个派生字段。
 2. Apache POI `DataFormatter` 对 XLSX 空单元格返回的空字符串必须原样保存为 JSON `""`；不得把直接来源字段的空字符串改成 `null`。只有纳入项的派生字段 `exclusionReason` 固定为 JSON `null`。
 
+2026-07-13 第二修订版计划复审：
+
+- 第二修订版已明确把 occurrence 的 18 个字段拆为 16 个 XLSX 直接字段和 2 个 `notes` 派生字段，并明确直接字段空字符串保留为 JSON `""`；前两轮八项修订要求均已覆盖。
+- Codex 只读检查人工 XLSX `anchor明细待确认`，确认 `occurrenceNo` 是 `001-PA-01` 等字符串追溯 ID。第二修订版中“额外写入 JSON number”的孤立表述不被接受；以 §2.2 绑定澄清为准：`occurrenceNo` 只保存为 JSON string，不新增数字序号字段。
+- 计划复审期间主工作区和隔离 worktree 均为 clean，HEAD 为 `80fe5377be34a92ba5c30d36005940fdf2dc1dc2`，未发现计划阶段文件修改。
+- Codex Decision：`GO / CODING-PLAN ACCEPTED WITH BINDING CLARIFICATION / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH`。
+
 ### 10.2 实际修改文件
 
 待填写。
@@ -532,18 +539,18 @@ git diff --check
 
 ## 11. Codex Review Intake
 
-当前 Decision：`NO-GO / CODING-PLAN REVISION ROUND 2 REQUIRED / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION`。
+当前 Decision：`GO / CODING-PLAN ACCEPTED WITH BINDING CLARIFICATION / CLEAN ISOLATED BASELINE VERIFIED / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH`。
 
 首次 `NO-GO` 的解除条件及状态：
 
 1. 已完成：人工 XLSX、父任务、项目记忆和用户侧 DOCX 003 修正已进入 commit `a2e9c085cd4a073d7f9dcba55cf891ace3d556da`。
 2. 已完成：DOCX 003 的用户修改来源、三处可见文本、9 个 OOXML 部件和哈希已记录，未回退或隐藏。
 3. 已完成：隔离分支 / worktree 已创建并确认 `git status --short` 为空。
-4. 当前允许：要求 Claude Code / DeepSeek 按 §10.1 六项要求输出修订版 §0.2 编码前规格映射计划并停止；仍不得修改文件。
+4. 已完成：第二修订版计划覆盖前两轮八项修订要求；`occurrenceNo` 字符串类型已由 Codex 依据人工 XLSX 作绑定澄清。
 
 Codex 后续必须分别完成：
 
-1. 等待 Claude Code / DeepSeek 按 §10.1 剩余两项要求提交第二修订版编码前规格映射计划；Codex 重新审查并给出 `GO` 或 `NO-GO`。
+1. Claude Code / DeepSeek 仅按 §0.3 和本次绑定澄清执行实现，填写 §10.2-§10.6 后停止；不得 commit 或 push。
 2. 实现完成后审查实现报告、`git diff`、测试输出和范围。
 3. 必要时派独立 agent 只读复核。
 4. 单独给出接纳、返工或停止决定；执行者自述不自动代表通过。
@@ -554,5 +561,5 @@ Codex 后续必须分别完成：
 
 - 本规格建档由 Codex 同步 `TASK-DATA-001`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md` 和 `changelog/2026-07.md`。
 - 执行者不得修改长期项目记忆。
-- 当前下一步是编码前规格映射计划，不是实现；不得把本文件直接当作实现授权。
+- 当前下一步是 Claude Code / DeepSeek 在隔离 worktree 内执行 §0.3 实现并提交实现报告；授权不扩展到任何禁止路径、commit 或 push。
 - 本规格不归档 `TASK-DATA-001` 或 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
