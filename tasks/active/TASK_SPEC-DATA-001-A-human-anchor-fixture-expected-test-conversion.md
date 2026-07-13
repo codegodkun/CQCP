@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：IMPLEMENTATION ACCEPTED / AWAITING CODEX COMMIT AUTHORIZATION / NO PUSH
+> **状态**：IMPLEMENTATION ACCEPTED / COMMITTED AND PUSHED / NO PR CREATED
 > **创建日期**：2026-07-12
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -439,10 +439,10 @@ git diff --check
 ```text
 你正在 Claude Code + DeepSeek 环境执行 TASK_SPEC-DATA-001-A。
 
-Codex 已完成 test-only revision 再审并接受实现。执行者当前必须停止：
+Codex 已完成 test-only revision 再审、实现提交和远端 push。执行者当前必须停止：
 1. 不得继续修改任何实现或数据文件；
 2. 不得编辑本 TASK_SPEC 或其他 `tasks/` 文件；
-3. 不得 commit、push；等待用户对 Codex 提交动作的明确授权。
+3. 不得新增 commit、push 或创建 PR；等待 Codex / 用户下一步决定。
 
 必须位于 Codex 提供的 `codex/task-data-001-a-human-anchor-conversion` 隔离 worktree；若分支、worktree、基线 commit、XLSX 跟踪状态或 `git status --short` 任一不符合，输出：
 [STOP: 工作区不干净 — TASK_SPEC-DATA-001-A 不得在当前工作区执行 — 需要 CODEX 准备隔离分支或 worktree]
@@ -457,7 +457,7 @@ Codex 已完成 test-only revision 再审并接受实现。执行者当前必须
 
 ## 10. 实现报告
 
-状态：test-only revision 已回传 / Codex 与独立 agent 复核 GO / 实现已接受 / 待提交授权。
+状态：test-only revision 已回传 / Codex 与独立 agent 复核 GO / 实现已提交并 push / 未创建 PR。
 
 执行者完成后必须填写：
 
@@ -546,12 +546,14 @@ Codex 已完成 test-only revision 再审并接受实现。执行者当前必须
 - 禁止路径无改动；未运行完整 MVP E2E。
 - 当前只允许 test-only revision；不得修改 fixture、expected JSON、README、人工 XLSX、DOCX、sample matrix、生产代码或既有测试。
 - test-only revision 已完成：四项 blocking findings 均已解除，当前没有未完成实现项。
+- 实现提交：`32b4c414349118b9225a65fa08eb4e3466f82a2e`（`test: add accepted human anchor fixtures`）。
+- 远端分支：`origin/codex/task-data-001-a-human-anchor-conversion`；push 成功，未创建 PR。
 
 ---
 
 ## 11. Codex Review Intake
 
-当前 Decision：`GO / IMPLEMENTATION ACCEPTED / INDEPENDENT READ-ONLY AUDIT GO / AWAITING CODEX COMMIT AUTHORIZATION / NO PUSH`。
+当前 Decision：`GO / IMPLEMENTATION ACCEPTED / INDEPENDENT READ-ONLY AUDIT GO / COMMITTED AND PUSHED / NO PR CREATED`。
 
 2026-07-13 首轮实现 Review Intake blocking findings：
 
@@ -570,7 +572,7 @@ Codex 已完成 test-only revision 再审并接受实现。执行者当前必须
 - 每条 occurrence 精确断言 18-key set；`positiveCases` 数量、`caseId`、`reviewPointCode`、`expectedCandidateValue` 和 canonical anchors 均已冻结。
 - Codex 重跑 `HumanAnchorGroundTruthFixtureTest`：10/10；`ParserBackedEvidenceOverlapBaselineTest`：4/4；均 0 failures / 0 errors。
 - 独立 agent test-only delta 审计结论为 `GO`，无 blocking findings；其他 7 个实现路径内容保持正确，禁止路径无改动。
-- Codex 最终接纳：实现可以进入提交准备，但未经用户明确授权不得 commit，且本轮不 push。
+- Codex 最终接纳后，用户明确授权精确 stage、commit，并在无问题时 push；8 个实现路径已提交为 `32b4c414349118b9225a65fa08eb4e3466f82a2e` 并 push 到远端同名分支。
 
 首次 `NO-GO` 的解除条件及状态：
 
@@ -584,7 +586,7 @@ Codex 后续必须分别完成：
 1. 已完成：Claude Code / DeepSeek test-only revision。
 2. 已完成：Codex 重新审查测试、两个定向测试输出和完整范围。
 3. 已完成：独立 agent 只读复核，结论 `GO`。
-4. 待用户明确授权后，由 Codex 精确 stage 并 commit 8 个实现路径；本规格不授权 push。
+4. 已完成：用户明确授权后，Codex 精确 stage、commit 并 push 8 个实现路径；未创建 PR。
 
 ---
 
@@ -592,5 +594,5 @@ Codex 后续必须分别完成：
 
 - 本规格建档由 Codex 同步 `TASK-DATA-001`、`CURRENT_CONTEXT.md`、`tasks/MVP_TASK_MAP.md` 和 `changelog/2026-07.md`。
 - 执行者不得修改长期项目记忆。
-- 当前下一步是等待用户明确授权 Codex 对 8 个实现路径执行精确 stage 和 commit；不是新的实现任务，不得继续修改文件或 push。
+- 当前实现和 push 已完成；下一步仅是用户决定是否创建 PR，不是新的实现任务，不得继续修改实现文件。
 - 本规格不归档 `TASK-DATA-001` 或 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
