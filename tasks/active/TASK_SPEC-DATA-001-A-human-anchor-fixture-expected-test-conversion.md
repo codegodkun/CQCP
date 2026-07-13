@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：READY FOR CODING-PLAN MAPPING / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION
+> **状态**：CODING-PLAN MAPPING NO-GO / REVISION REQUIRED / NO IMPLEMENTATION AUTHORIZATION
 > **创建日期**：2026-07-12
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -481,7 +481,22 @@ git diff --check
 - 已接受 XLSX 已进入 Git 基线；隔离 worktree 的 `git status --short` 为空。
 - 当前只解除“计划请求未派发”前的基线阻塞，不构成 fixture、expected JSON、测试或实现修改授权。
 
-当前门禁结论：`GO TO CODING-PLAN MAPPING / NO IMPLEMENTATION AUTHORIZATION`。
+当时门禁结论：`GO TO CODING-PLAN MAPPING / NO IMPLEMENTATION AUTHORIZATION`。
+
+2026-07-13 Claude Code / DeepSeek 编码前规格映射计划审查：
+
+- 计划已由用户从隔离 worktree 回传；Codex 复核时主工作区和隔离 worktree 均为 clean，HEAD 为 `61dde2ee5703f2f6fa8010f31b449b9c9a223b25`，未发现计划阶段文件修改。
+- 计划正确覆盖 22/19/22、63/57/6、XLSX → fixture → expected 追溯、TABLE_CELL context、canonical baseline 不倒填、两个定向测试和禁止修改路径。
+- Codex Decision：`NO-GO / CODING-PLAN REVISION REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。
+
+必须修订后重新提交计划：
+
+1. occurrence 冻结 schema 是 §2.2 的 18 个字段，不是计划所写的 20 个；白名单必须逐字段列出并以 18 个为准。
+2. 排除项 `exclusionReason` 只能保存 XLSX 已接受的原始原因；如 `notes` 只有“排除：”而无原因，必须 STOP，不得生成“未记录原因”等新文本，也不得只 WARNING 后继续。
+3. `humanAnchorGroundTruth` 只能新增为 `goldenExpected` 的 sibling；不得表述或实现为 `evidenceEvaluation.positiveCases` 内字段。`positiveCases` 必须原样不变。
+4. 所有 candidate / context / text 字段均按 XLSX 人工可见字符串读取并写为 JSON string；必须明确使用 Apache POI `DataFormatter` 等等价的显示值读取方式，使 `70%` 不变为 `0.7`，`12800` 不写成 JSON number。
+5. “既有 structuredFields / displayValues / negativeCandidates 未变”不得通过修改后的 expected JSON 自我比较证明。计划必须明确：新测试验证冻结 canonical key 与新引用；既有 parser-backed 测试做行为回归；Codex 通过 `git diff` 确认 expected patch 仅新增 `goldenExpected.humanAnchorGroundTruth`。
+6. 补充 `sourceDocx` 的真实来源计算：每个 sample 的 XLSX `docxPath` 必须唯一一致，并转换为相对 `packages/test-fixtures/` 的 `docx/...docx`；不一致或前缀异常时 STOP，不得从 expected/parser 推断。
 
 ### 10.2 实际修改文件
 
@@ -507,18 +522,18 @@ git diff --check
 
 ## 11. Codex Review Intake
 
-当前 Decision：`GO TO CODING-PLAN MAPPING / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION`。
+当前 Decision：`NO-GO / CODING-PLAN REVISION REQUIRED / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION`。
 
 首次 `NO-GO` 的解除条件及状态：
 
 1. 已完成：人工 XLSX、父任务、项目记忆和用户侧 DOCX 003 修正已进入 commit `a2e9c085cd4a073d7f9dcba55cf891ace3d556da`。
 2. 已完成：DOCX 003 的用户修改来源、三处可见文本、9 个 OOXML 部件和哈希已记录，未回退或隐藏。
 3. 已完成：隔离分支 / worktree 已创建并确认 `git status --short` 为空。
-4. 当前允许：要求 Claude Code / DeepSeek 输出 §0.2 编码前规格映射计划并停止；仍不得修改文件。
+4. 当前允许：要求 Claude Code / DeepSeek 按 §10.1 六项要求输出修订版 §0.2 编码前规格映射计划并停止；仍不得修改文件。
 
 Codex 后续必须分别完成：
 
-1. 审查编码前规格映射计划，给出 `GO` 或 `NO-GO`。
+1. 等待 Claude Code / DeepSeek 按 §10.1 六项要求提交修订版编码前规格映射计划；Codex 重新审查并给出 `GO` 或 `NO-GO`。
 2. 实现完成后审查实现报告、`git diff`、测试输出和范围。
 3. 必要时派独立 agent 只读复核。
 4. 单独给出接纳、返工或停止决定；执行者自述不自动代表通过。
