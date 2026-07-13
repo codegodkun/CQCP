@@ -60,6 +60,18 @@
           ]
         }
       ]
+    },
+    "humanAnchorGroundTruth": {
+      "schemaVersion": "v1",
+      "fixture": "human-anchors/CQCP-MVP-DOCX-002.json",
+      "sourceWorkbook": "outputs/task-data-001-anchor-template/TASK-DATA-001-human-anchor-template.xlsx",
+      "sourceSheet": "anchor明细待确认",
+      "groundTruthSource": "MANUAL_DOCX_REVIEW",
+      "dataOwner": "ZK",
+      "status": "ACCEPTED_HUMAN_GROUND_TRUTH",
+      "acceptedOccurrenceCount": 19,
+      "includedOccurrenceCount": 17,
+      "excludedOccurrenceCount": 2
     }
   },
   "negativeCandidates": [
