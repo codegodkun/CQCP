@@ -3,14 +3,14 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：NO-GO / EXECUTION BASELINE NOT READY / NO IMPLEMENTATION AUTHORIZATION
+> **状态**：READY FOR CODING-PLAN MAPPING / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION
 > **创建日期**：2026-07-12
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
 > **TASK_SPEC 类型**：execution
 > **父任务**：TASK-DATA-001
 > **关联 ADR**：N/A（本任务不改变架构、审核链路或 SourceAnchor 契约）
-> **计划执行分支**：codex/task-data-001-a-human-anchor-conversion（base: master；须由 Codex 后续明确准备）
+> **执行分支 / worktree**：`codex/task-data-001-a-human-anchor-conversion` / `C:\Users\1\Documents\CQCP-worktrees\task-data-001-a`（基线 commit：`a2e9c085cd4a073d7f9dcba55cf891ace3d556da`）
 
 ---
 
@@ -27,7 +27,7 @@
 - Codex 必须先审查并明确放行编码前规格映射计划，之后执行者才可修改 §0.3 的允许文件。
 - Codex 负责审查实现报告和 `git diff`，不得由执行者自行宣布验收通过。
 - Claude Code / DeepSeek 不得 commit，不得 push。
-- 当前主工作区存在 `TASK-DATA-001` 未提交文件和用户侧 DOCX 003 变更；不得在该脏工作区直接执行本规格。执行前必须由 Codex 提供干净、隔离且包含已接受 XLSX 的执行分支或 worktree。
+- 2026-07-13，Codex 已从审计通过的 `a2e9c085cd4a073d7f9dcba55cf891ace3d556da` 基线提供干净隔离 worktree；当前只允许在该 worktree 读取规格并输出 §0.2 计划，不得在 `master` 主工作区执行本规格。
 - 独立 agent 只做后续只读事实核查，不得实施或修复本规格。
 
 ### 0.2 编码前规格映射计划（实现前硬门禁）
@@ -444,7 +444,7 @@ git diff --check
 3. 输出 §0.2 编码前规格映射计划；
 4. 停止并等待 Codex 明确放行。
 
-当前禁止修改任何文件。当前 master 工作区有未提交变更，不满足执行条件；若未获得 Codex 提供的干净隔离执行基线，输出：
+当前禁止修改任何文件。必须位于 Codex 提供的 `codex/task-data-001-a-human-anchor-conversion` 隔离 worktree；若分支、worktree、基线 commit、XLSX 跟踪状态或 `git status --short` 任一不符合，输出：
 [STOP: 工作区不干净 — TASK_SPEC-DATA-001-A 不得在当前工作区执行 — 需要 CODEX 准备隔离分支或 worktree]
 
 任何时候如需从 parser / AI / actual 输出反推人工 expected 或 canonical key，立即输出：
@@ -473,6 +473,16 @@ git diff --check
 
 门禁结论：`NO-GO / EXECUTION BASELINE NOT READY / PLAN REQUEST NOT DISPATCHED`。
 
+2026-07-13 Codex 基线复核：
+
+- `TASK-DATA-001` 提交前独立只读审计最终结论为 `GO`，允许的 7 个路径已精确提交。
+- 可重建基线 commit：`a2e9c085cd4a073d7f9dcba55cf891ace3d556da`。
+- 隔离分支 / worktree：`codex/task-data-001-a-human-anchor-conversion` / `C:\Users\1\Documents\CQCP-worktrees\task-data-001-a`。
+- 已接受 XLSX 已进入 Git 基线；隔离 worktree 的 `git status --short` 为空。
+- 当前只解除“计划请求未派发”前的基线阻塞，不构成 fixture、expected JSON、测试或实现修改授权。
+
+当前门禁结论：`GO TO CODING-PLAN MAPPING / NO IMPLEMENTATION AUTHORIZATION`。
+
 ### 10.2 实际修改文件
 
 待填写。
@@ -497,14 +507,14 @@ git diff --check
 
 ## 11. Codex Review Intake
 
-当前 Decision：`NO-GO / EXECUTION BASELINE NOT READY / PLAN REQUEST NOT DISPATCHED / NO IMPLEMENTATION AUTHORIZATION`。
+当前 Decision：`GO TO CODING-PLAN MAPPING / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION`。
 
-解除本次 `NO-GO` 的必要条件：
+首次 `NO-GO` 的解除条件及状态：
 
-1. 先完成 `TASK-DATA-001` 当前成果的提交前审查和精确提交，使人工 XLSX、父任务和项目记忆进入可重建 Git 基线。
-2. 保留用户侧 DOCX 003 的真实修改来源，不得为获得 clean status 而回退或隐藏该修改。
-3. 由 Codex 从已审查基线准备 `codex/task-data-001-a-human-anchor-conversion` 隔离分支或 worktree，并确认 `git status --short` 为空。
-4. 基线满足后，才可要求 Claude Code / DeepSeek 输出 §0.2 编码前规格映射计划。
+1. 已完成：人工 XLSX、父任务、项目记忆和用户侧 DOCX 003 修正已进入 commit `a2e9c085cd4a073d7f9dcba55cf891ace3d556da`。
+2. 已完成：DOCX 003 的用户修改来源、三处可见文本、9 个 OOXML 部件和哈希已记录，未回退或隐藏。
+3. 已完成：隔离分支 / worktree 已创建并确认 `git status --short` 为空。
+4. 当前允许：要求 Claude Code / DeepSeek 输出 §0.2 编码前规格映射计划并停止；仍不得修改文件。
 
 Codex 后续必须分别完成：
 

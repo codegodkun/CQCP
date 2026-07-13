@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / 提交前独立只读审计 GO / 待形成可重建 Git 基线 / TASK_SPEC-DATA-001-A 尚未授权实现
+状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / 可重建 Git 基线与隔离 worktree 已准备 / TASK_SPEC-DATA-001-A 仅开放编码前计划门禁
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -279,7 +279,7 @@ git diff --name-status
 
 `ZK` 已完成“anchor明细待确认”工作表的逐条确认和最终接受，63 条均为 `MATCH`，6 条标题/前言名称已排除，来源和状态已更新为 `MANUAL_DOCX_REVIEW / ACCEPTED_HUMAN_GROUND_TRUTH`。
 
-转换执行规格已冻结为 `tasks/active/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`。2026-07-12 编码前基线核对 Decision 为 `NO-GO / EXECUTION BASELINE NOT READY / PLAN REQUEST NOT DISPATCHED`：当前 `master` 工作区不干净，已接受 XLSX 仍未被 Git 跟踪，尚不存在可重建的干净隔离执行基线。本轮未要求 Claude Code / DeepSeek 输出计划，也未授权实现。
+转换执行规格已冻结为 `tasks/active/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`。2026-07-12 首次编码前基线核对 Decision 为 `NO-GO / EXECUTION BASELINE NOT READY / PLAN REQUEST NOT DISPATCHED`。2026-07-13 已完成独立审计、精确提交和隔离 worktree 准备，当前 Decision 更新为 `GO TO CODING-PLAN MAPPING / NO IMPLEMENTATION AUTHORIZATION`；只允许执行者输出计划并停止。
 
 ## 风险
 
@@ -312,5 +312,6 @@ git diff --name-status
 * 补充执行日期：2026-07-12；`001` / `002` / `003` 共 63 条逐出处明细已由 `ZK` 接受为 `ACCEPTED_HUMAN_GROUND_TRUTH`；`004` 本轮不选。
 * 补充执行日期：2026-07-12；`TASK_SPEC-DATA-001-A` 已创建并冻结；首次编码前基线核对为 `NO-GO`，计划请求未派发，不构成实现授权。
 * 提交前审计日期：2026-07-13；独立只读审计首次与第二次均因状态记录问题给出 `NO-GO`，阻塞修正后最终结论为 `GO`，允许提交范围精确为本节列出的 7 个路径。
-* 遗留问题：需先完成当前人工 XLSX、任务文档、项目记忆和用户侧 DOCX 003 变更的提交前审查及可重建基线准备，再由执行者提交编码前规格映射计划。
+* 可重建基线：commit `a2e9c085cd4a073d7f9dcba55cf891ace3d556da`；隔离分支 / worktree：`codex/task-data-001-a-human-anchor-conversion` / `C:\Users\1\Documents\CQCP-worktrees\task-data-001-a`。
+* 遗留问题：由 Claude Code / DeepSeek 在隔离 worktree 输出 §0.2 编码前规格映射计划，Codex 审查并给出单独 `GO` / `NO-GO`；未明确 `GO` 前不得实现。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
