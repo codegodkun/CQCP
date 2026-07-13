@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 编码前计划 GO / 仅授权 §0.3 实现 / 禁止 commit 与 push
+状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 首轮实现 Review NO-GO / 仅测试返工 / 禁止 commit 与 push
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -316,4 +316,5 @@ git diff --name-status
 * 编码前计划审查：2026-07-13 已收到 Claude Code / DeepSeek §0.2 计划；Codex Decision 为 `NO-GO / CODING-PLAN REVISION REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。需按 `TASK_SPEC-DATA-001-A` §10.1 六项要求修订后重审。
 * 修订版计划复审：前述六项已响应，但仍需区分 16 个 XLSX 直接字段与 2 个 notes 派生字段，并禁止把直接字段空字符串转为 `null`；Decision 为 `NO-GO / CODING-PLAN REVISION ROUND 2 REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。
 * 第二修订版计划复审：前两轮八项要求均已覆盖；Codex 只读确认 `occurrenceNo` 为 `001-PA-01` 等字符串追溯 ID，并冻结为 JSON string。Decision 为 `GO / CODING-PLAN ACCEPTED WITH BINDING CLARIFICATION / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH`。
+* 首轮实现 Review Intake：8 个实现路径均在允许范围，当前 fixture / expected 内容与人工 XLSX 一致，两个定向测试通过，独立 agent 对范围、独立性和 baseline 给出 `GO`；但新测试未有效锁定 JSON 类型、occurrence 顺序、全部 required columns、精确 18-key schema 和完整 positive-case baseline。Codex Decision 为 `NO-GO / TEST CONTRACT REVISION REQUIRED / DATA ARTIFACTS RETAINED / NO COMMIT OR PUSH`。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
