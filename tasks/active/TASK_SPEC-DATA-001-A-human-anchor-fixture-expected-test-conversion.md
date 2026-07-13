@@ -498,6 +498,16 @@ git diff --check
 5. “既有 structuredFields / displayValues / negativeCandidates 未变”不得通过修改后的 expected JSON 自我比较证明。计划必须明确：新测试验证冻结 canonical key 与新引用；既有 parser-backed 测试做行为回归；Codex 通过 `git diff` 确认 expected patch 仅新增 `goldenExpected.humanAnchorGroundTruth`。
 6. 补充 `sourceDocx` 的真实来源计算：每个 sample 的 XLSX `docxPath` 必须唯一一致，并转换为相对 `packages/test-fixtures/` 的 `docx/...docx`；不一致或前缀异常时 STOP，不得从 expected/parser 推断。
 
+2026-07-13 修订版计划复审：
+
+- 前述六项要求均已响应；Codex 复核时主工作区和隔离 worktree 仍为 clean，HEAD 为 `9b24c936ff9bb396ce14e86f987206f944da4902`，未发现计划阶段文件修改。
+- Codex Decision：`NO-GO / CODING-PLAN REVISION ROUND 2 REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。
+
+剩余两项必须修订：
+
+1. 18 个 occurrence 字段中，前 16 个字段直接来自 XLSX 同名列；`includedInConsistencyEvaluation` 与 `exclusionReason` 由 XLSX `notes` 派生。测试不得尝试把这两个派生字段与不存在的 XLSX 同名列直接比较，应分别验证 16 个直接字段和 2 个派生字段。
+2. Apache POI `DataFormatter` 对 XLSX 空单元格返回的空字符串必须原样保存为 JSON `""`；不得把直接来源字段的空字符串改成 `null`。只有纳入项的派生字段 `exclusionReason` 固定为 JSON `null`。
+
 ### 10.2 实际修改文件
 
 待填写。
@@ -522,7 +532,7 @@ git diff --check
 
 ## 11. Codex Review Intake
 
-当前 Decision：`NO-GO / CODING-PLAN REVISION REQUIRED / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION`。
+当前 Decision：`NO-GO / CODING-PLAN REVISION ROUND 2 REQUIRED / CLEAN ISOLATED BASELINE VERIFIED / NO IMPLEMENTATION AUTHORIZATION`。
 
 首次 `NO-GO` 的解除条件及状态：
 
@@ -533,7 +543,7 @@ git diff --check
 
 Codex 后续必须分别完成：
 
-1. 等待 Claude Code / DeepSeek 按 §10.1 六项要求提交修订版编码前规格映射计划；Codex 重新审查并给出 `GO` 或 `NO-GO`。
+1. 等待 Claude Code / DeepSeek 按 §10.1 剩余两项要求提交第二修订版编码前规格映射计划；Codex 重新审查并给出 `GO` 或 `NO-GO`。
 2. 实现完成后审查实现报告、`git diff`、测试输出和范围。
 3. 必要时派独立 agent 只读复核。
 4. 单独给出接纳、返工或停止决定；执行者自述不自动代表通过。

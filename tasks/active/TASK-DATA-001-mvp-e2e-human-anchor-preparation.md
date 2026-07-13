@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 编码前计划审查 NO-GO / 待修订 / 未授权实现
+状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 修订版计划复审 NO-GO / 待第二次修订 / 未授权实现
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -314,4 +314,5 @@ git diff --name-status
 * 提交前审计日期：2026-07-13；独立只读审计首次与第二次均因状态记录问题给出 `NO-GO`，阻塞修正后最终结论为 `GO`，允许提交范围精确为本节列出的 7 个路径。
 * 可重建基线：commit `a2e9c085cd4a073d7f9dcba55cf891ace3d556da`；隔离分支 / worktree：`codex/task-data-001-a-human-anchor-conversion` / `C:\Users\1\Documents\CQCP-worktrees\task-data-001-a`。
 * 编码前计划审查：2026-07-13 已收到 Claude Code / DeepSeek §0.2 计划；Codex Decision 为 `NO-GO / CODING-PLAN REVISION REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。需按 `TASK_SPEC-DATA-001-A` §10.1 六项要求修订后重审。
+* 修订版计划复审：前述六项已响应，但仍需区分 16 个 XLSX 直接字段与 2 个 notes 派生字段，并禁止把直接字段空字符串转为 `null`；Decision 为 `NO-GO / CODING-PLAN REVISION ROUND 2 REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
