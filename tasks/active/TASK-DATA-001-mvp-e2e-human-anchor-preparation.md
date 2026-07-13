@@ -1,6 +1,6 @@
 # TASK-DATA-001：MVP E2E 人工 anchor 准备
 
-状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 实现已接受 / 独立审计 GO / 已 commit 并 push / 未创建 PR
+状态：Active / 人工 anchor 准备完成 / 63 条逐出处明细已接受 / TASK_SPEC-DATA-001-A 实现已接受 / 独立审计 GO / 已 commit 并 push / PR #28 checks pending / 未授权合并
 
 类型：Data / Evaluation / Codex 主控任务
 
@@ -318,5 +318,5 @@ git diff --name-status
 * 第二修订版计划复审：前两轮八项要求均已覆盖；Codex 只读确认 `occurrenceNo` 为 `001-PA-01` 等字符串追溯 ID，并冻结为 JSON string。Decision 为 `GO / CODING-PLAN ACCEPTED WITH BINDING CLARIFICATION / IMPLEMENTATION AUTHORIZED WITHIN §0.3 / NO COMMIT OR PUSH`。
 * 首轮实现 Review Intake：8 个实现路径均在允许范围，当前 fixture / expected 内容与人工 XLSX 一致，两个定向测试通过，独立 agent 对范围、独立性和 baseline 给出 `GO`；但新测试未有效锁定 JSON 类型、occurrence 顺序、全部 required columns、精确 18-key schema 和完整 positive-case baseline。Codex Decision 为 `NO-GO / TEST CONTRACT REVISION REQUIRED / DATA ARTIFACTS RETAINED / NO COMMIT OR PUSH`。
 * test-only revision 再审：四项 blocking findings 均已解除；Codex 重跑定向测试为 10/10 与 4/4，独立 agent delta 审计 `GO`，无 blocking finding。Codex Decision 为 `GO / IMPLEMENTATION ACCEPTED / AWAITING CODEX COMMIT AUTHORIZATION / NO PUSH`。
-* 提交与 push：用户明确授权后，Codex 精确提交 8 个实现路径为 `32b4c414349118b9225a65fa08eb4e3466f82a2e`（`test: add accepted human anchor fixtures`），并 push 到 `origin/codex/task-data-001-a-human-anchor-conversion`；未创建 PR。
+* 提交、push 与 PR：用户明确授权后，Codex 精确提交 8 个实现路径为 `32b4c414349118b9225a65fa08eb4e3466f82a2e`（`test: add accepted human anchor fixtures`），并 push 到 `origin/codex/task-data-001-a-human-anchor-conversion`；PR #28 已创建并等待 checks，未获合并授权。
 * 备注：Codex 本任务不修改代码、测试、DOCX 样本、expected JSON、`cqcp-mvp-sample-matrix.xlsx`、parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor` 或 Review Engine；用户侧 DOCX 003 修正按上述例外保留。不运行完整 MVP E2E；不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
