@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,6 +45,8 @@ import org.junit.jupiter.api.io.TempDir;
 class Task034MvpE2eAcceptanceHarnessTest {
 
     private static final String SCHEMA_VERSION = "task034-acceptance-v1";
+    private static final String CANDIDATE_COMPARISON_VERSION =
+            "mvp-e2e-candidate-comparison-v2";
     private static final String FORMAL_PROPERTY = "cqcp.task034.formal";
     private static final String FORMAL_INPUT_PROPERTY = "cqcp.task034.formalInput";
     private static final String QUERY_PATH_TEMPLATE = "/api/v1/tasks/%s/result";
@@ -66,6 +69,24 @@ class Task034MvpE2eAcceptanceHarnessTest {
     private static final Pattern TABLE_REF = Pattern.compile(
             "table:([^/]+)/row:(\\d+)(?:/cell:(\\d+))?");
     private static final Pattern BLOCK_REF = Pattern.compile("block:([^/]+)");
+    private static final String UNSIGNED_INTEGER_BODY = "(?:0|[1-9][0-9]*)";
+    private static final String GROUPED_INTEGER_BODY =
+            "(?:[1-9][0-9]{0,2}(?:,[0-9]{3})+)";
+    private static final String CNY_BODY =
+            "-?(?:" + UNSIGNED_INTEGER_BODY + "|" + GROUPED_INTEGER_BODY
+                    + ")(?:\\.[0-9]{1,2})?";
+    private static final String PERCENTAGE_BODY =
+            UNSIGNED_INTEGER_BODY + "(?:\\.[0-9]{1,2})?";
+    private static final String PERCENTAGE_RATE_BODY =
+            UNSIGNED_INTEGER_BODY + "(?:\\.[0-9]{1,4})?";
+    private static final Pattern CNY_PATTERN = Pattern.compile(CNY_BODY);
+    private static final Pattern PERCENTAGE_PATTERN = Pattern.compile(PERCENTAGE_BODY);
+    private static final Pattern TAX_EXPECTED_PATTERN = Pattern.compile(
+            "1、taxRate=(" + PERCENTAGE_RATE_BODY + ")%；\\n"
+                    + "2、totalAmount=(" + CNY_BODY + ")；\\n"
+                    + "3、netAmount=(" + CNY_BODY + ")；\\n"
+                    + "4、taxAmount=(" + CNY_BODY + ")。"
+    );
     private static final List<String> EXPECTED_STAGE_EVENTS = List.of(
             "PARSING:STARTED", "PARSING:COMPLETED",
             "INDEXING:STARTED", "INDEXING:COMPLETED",
@@ -196,12 +217,204 @@ class Task034MvpE2eAcceptanceHarnessTest {
     }
 
     @Test
-    void candidateComparisonUsesOnlyStringStripAndPreservesNull() {
-        assertThat(compareCandidate("70%", "70")).isEqualTo(CandidateComparison.MISMATCH);
-        assertThat(compareCandidate("1,130", "1130")).isEqualTo(CandidateComparison.MISMATCH);
-        assertThat(compareCandidate("ABC", "abc")).isEqualTo(CandidateComparison.MISMATCH);
-        assertThat(compareCandidate("  奔腾公司  ", "奔腾公司")).isEqualTo(CandidateComparison.MATCH);
-        assertThat(compareCandidate("奔腾公司", null)).isEqualTo(CandidateComparison.NOT_OBSERVABLE);
+    void candidateComparisonV2CoversFrozenProfilesAndFailureSemantics() {
+        assertThat(ReviewPointCode.values()).containsExactly(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY,
+                ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY);
+
+        assertProfile(ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                CandidateComparisonProfile.TEXT_STRIP_EXACT_V1);
+        assertProfile(ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
+                CandidateComparisonProfile.TEXT_STRIP_EXACT_V1);
+        assertProfile(ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                CandidateComparisonProfile.CNY_DECIMAL_V1);
+        assertProfile(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                CandidateComparisonProfile.TAX_AMOUNT_COMPONENT_V1);
+        assertProfile(ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                CandidateComparisonProfile.PERCENTAGE_POINT_V1);
+        assertProfile(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                CandidateComparisonProfile.PERCENTAGE_POINT_V1);
+        assertProfile(ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY,
+                CandidateComparisonProfile.PERCENTAGE_POINT_V1);
+        assertProfile(ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                CandidateComparisonProfile.PERCENTAGE_POINT_V1);
+        assertProfile(ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY,
+                CandidateComparisonProfile.PERCENTAGE_POINT_V1);
+
+        assertComparison(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "  奔腾公司  ", "奔腾公司", "奔腾公司", "奔腾公司",
+                CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "ABC", "abc", "ABC", "abc", CandidateComparison.MISMATCH);
+        assertComparison(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "甲 方", "甲方", "甲 方", "甲方", CandidateComparison.MISMATCH);
+        assertNotObservable(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, null, "奔腾公司");
+        assertNotObservable(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "  ", "奔腾公司");
+
+        assertComparison(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "1,130.00", "1130", "1130", "1130", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                " -70.00 ", "-70.0", "-70", "-70", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "0.00", "0", "0", "0", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "70.1", "70.10", "70.1", "70.1", CandidateComparison.MATCH);
+        for (String invalid : List.of(
+                "+70", "01", ".70", "70.", "7E1", "７０", "7 0", "1,00", "70.001")) {
+            assertNotObservable(
+                    ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY, invalid, "70");
+        }
+
+        assertComparison(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "0%", "0", "0", "0", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "100.00%", "100", "100", "100", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "70%", "70.00", "70", "70", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "0.7%", "0.70", "0.7", "0.7", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "70%", "0.7", "70", "0.7", CandidateComparison.MISMATCH);
+        for (String invalidExpected : List.of(
+                "100.01%", "70.001%", "70", "+70%", "-1%", "1,000%", "7E1%")) {
+            assertNotObservable(
+                    ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, invalidExpected, "70");
+        }
+        for (String invalidActual : List.of(
+                "100.01", "70.001", "70%", "+70", "-1", "1,000", "7E1")) {
+            assertNotObservable(
+                    ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, "70%", invalidActual);
+        }
+
+        String taxLf = taxExpected("13.1234", "113.00", "100.00", "13.00", "\n");
+        String taxCrlf = taxExpected("13.1234", "113.00", "100.00", "13.00", "\r\n");
+        assertComparison(
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf, "13", "13", "13", CandidateComparison.MATCH);
+        assertComparison(
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                "\n" + taxCrlf + "\r\n", "13.00", "13", "13", CandidateComparison.MATCH);
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxExpected("13.12345", "113.00", "100.00", "13.00", "\n"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxExpected("13.1234", "113.001", "100.00", "13.00", "\n"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replace("2、totalAmount", "2、TotalAmount"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replace("2、totalAmount=113.00；\n3、netAmount=100.00；",
+                        "3、netAmount=100.00；\n2、totalAmount=113.00；"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replace("taxAmount=", "taxAmount:"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replace("13.00。", "13.00；"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replace("3、netAmount=100.00；\n", ""), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf + "\n4、taxAmount=13.00。", "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replace("\n3、", "\n\n3、"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf + "\n5、extra=1。", "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replaceFirst("\\n", "\\r\\n"), "13");
+        assertNotObservable(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                taxLf.replaceFirst("\\n", "\\r"), "13");
+    }
+
+    @Test
+    void candidateComparisonV2ExpectedProjectionIsIndependentFromActual() {
+        String taxExpected = taxExpected("13", "113", "100", "13", "\n");
+        CandidateComparisonResult matching = compareCandidate(
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, taxExpected, "13");
+        CandidateComparisonResult different = compareCandidate(
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, taxExpected, "999");
+        CandidateComparisonResult unavailable = compareCandidate(
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, taxExpected, null);
+
+        assertThat(List.of(
+                matching.expectedCandidateComparable(),
+                different.expectedCandidateComparable(),
+                unavailable.expectedCandidateComparable())).containsOnly("13");
+        assertThat(List.of(
+                matching.candidateComparisonProfile(),
+                different.candidateComparisonProfile(),
+                unavailable.candidateComparisonProfile()))
+                .containsOnly(CandidateComparisonProfile.TAX_AMOUNT_COMPONENT_V1);
+        assertThat(matching.candidateComparison()).isEqualTo(CandidateComparison.MATCH);
+        assertThat(different.candidateComparison()).isEqualTo(CandidateComparison.MISMATCH);
+        assertThat(unavailable.candidateComparison()).isEqualTo(CandidateComparison.NOT_OBSERVABLE);
+
+        CandidateComparisonResult ratioExpected = compareCandidate(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, "70%", "0.7");
+        assertThat(ratioExpected.expectedCandidateComparable()).isEqualTo("70");
+        assertThat(ratioExpected.actualCandidateComparable()).isEqualTo("0.7");
+    }
+
+    @Test
+    void candidateComparisonV2OutputPreservesRawAndSerializesComparable() {
+        String expectedRaw = " 70.00% ";
+        String actualRaw = "70.0";
+        CandidateComparisonResult comparison = compareCandidate(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, expectedRaw, actualRaw);
+        PointAcceptanceResult point = new PointAcceptanceResult(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                expectedRaw,
+                actualRaw,
+                comparison.expectedCandidateComparable(),
+                comparison.actualCandidateComparable(),
+                comparison.candidateComparisonProfile(),
+                comparison.candidateComparison(),
+                PointStatus.PASS,
+                List.of(),
+                List.of(),
+                List.of());
+        JsonNode serialized = objectMapper.valueToTree(point);
+
+        assertThat(CANDIDATE_COMPARISON_VERSION).isEqualTo("mvp-e2e-candidate-comparison-v2");
+        assertThat(serialized.path("expectedCandidateValueRaw").asText()).isEqualTo(expectedRaw);
+        assertThat(serialized.path("actualCandidateValueRaw").asText()).isEqualTo(actualRaw);
+        assertThat(serialized.path("expectedCandidateComparable").isTextual()).isTrue();
+        assertThat(serialized.path("expectedCandidateComparable").asText()).isEqualTo("70");
+        assertThat(serialized.path("actualCandidateComparable").isTextual()).isTrue();
+        assertThat(serialized.path("actualCandidateComparable").asText()).isEqualTo("70");
+        assertThat(serialized.path("candidateComparisonProfile").asText())
+                .isEqualTo("PERCENTAGE_POINT_V1");
+        assertThat(serialized.path("candidateComparison").asText()).isEqualTo("MATCH");
+        assertThat(serialized.has("expectedCandidateValue")).isFalse();
+        assertThat(serialized.has("actualCandidateValue")).isFalse();
+
+        CandidateComparisonResult failed = compareCandidate(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY, "70.001", "70");
+        PointAcceptanceResult failedPoint = new PointAcceptanceResult(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "70.001", "70",
+                failed.expectedCandidateComparable(), failed.actualCandidateComparable(),
+                failed.candidateComparisonProfile(), failed.candidateComparison(),
+                PointStatus.PASS, List.of(), List.of(), List.of());
+        JsonNode failedSerialized = objectMapper.valueToTree(failedPoint);
+        assertThat(failedSerialized.path("expectedCandidateComparable").isNull()).isTrue();
+        assertThat(failedSerialized.path("actualCandidateComparable").isTextual()).isTrue();
+        assertThat(failedSerialized.path("candidateComparison").asText())
+                .isEqualTo("NOT_OBSERVABLE");
     }
 
     @Test
@@ -568,6 +781,8 @@ class Task034MvpE2eAcceptanceHarnessTest {
             PointEvidence evidence = reviewInput.pointEvidences().get(point.reviewPointCode());
             String expected = expectedCandidates.get(point.reviewPointCode());
             String actual = evidence == null ? null : evidence.candidateValue();
+            CandidateComparisonResult comparison =
+                    compareCandidate(point.reviewPointCode(), expected, actual);
             List<String> evidenceSummary = point.sourceAnchors().stream()
                     .map(SourceAnchorSummary::evidenceSummary)
                     .toList();
@@ -576,7 +791,11 @@ class Task034MvpE2eAcceptanceHarnessTest {
                     .filter(Task034MvpE2eAcceptanceHarnessTest::isSysDiagnostic)
                     .toList();
             points.add(new PointAcceptanceResult(
-                    point.reviewPointCode(), expected, actual, compareCandidate(expected, actual),
+                    point.reviewPointCode(), expected, actual,
+                    comparison.expectedCandidateComparable(),
+                    comparison.actualCandidateComparable(),
+                    comparison.candidateComparisonProfile(),
+                    comparison.candidateComparison(),
                     point.pointStatus(), evidenceSummary, point.sourceAnchors(), sysDiagnostics));
         }
         SampleManifestEntry executionMetadata = new SampleManifestEntry(
@@ -938,15 +1157,194 @@ class Task034MvpE2eAcceptanceHarnessTest {
         return code != null && (code.startsWith("SYS-") || code.startsWith("SYS_"));
     }
 
-    private static CandidateComparison compareCandidate(String expected, String actual) {
-        if (actual == null) {
-            return CandidateComparison.NOT_OBSERVABLE;
+    private static CandidateComparisonResult compareCandidate(
+            ReviewPointCode reviewPointCode,
+            String expectedCandidateValueRaw,
+            String actualCandidateValueRaw) {
+        CandidateComparisonProfile profile = comparisonProfile(reviewPointCode);
+        String expectedComparable = projectExpected(profile, expectedCandidateValueRaw);
+        String actualComparable = projectActual(profile, actualCandidateValueRaw);
+        CandidateComparison comparison;
+        if (expectedComparable == null || actualComparable == null) {
+            comparison = CandidateComparison.NOT_OBSERVABLE;
+        } else if (expectedComparable.equals(actualComparable)) {
+            comparison = CandidateComparison.MATCH;
+        } else {
+            comparison = CandidateComparison.MISMATCH;
         }
-        if (expected == null) {
-            return CandidateComparison.MISMATCH;
+        return new CandidateComparisonResult(
+                expectedComparable, actualComparable, profile, comparison);
+    }
+
+    private static CandidateComparisonProfile comparisonProfile(ReviewPointCode reviewPointCode) {
+        return switch (reviewPointCode) {
+            case PARTY_A_NAME_CONSISTENCY, PARTY_B_NAME_CONSISTENCY ->
+                    CandidateComparisonProfile.TEXT_STRIP_EXACT_V1;
+            case CONTRACT_TOTAL_AMOUNT_CONSISTENCY ->
+                    CandidateComparisonProfile.CNY_DECIMAL_V1;
+            case TAX_AMOUNT_FORMULA_CONSISTENCY ->
+                    CandidateComparisonProfile.TAX_AMOUNT_COMPONENT_V1;
+            case PREPAYMENT_RATIO_CONSISTENCY,
+                    PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                    COMPLETION_PAYMENT_RATIO_CONSISTENCY,
+                    SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                    WARRANTY_RETENTION_RATIO_CONSISTENCY ->
+                    CandidateComparisonProfile.PERCENTAGE_POINT_V1;
+        };
+    }
+
+    private static String projectExpected(
+            CandidateComparisonProfile profile, String expectedCandidateValueRaw) {
+        return switch (profile) {
+            case TEXT_STRIP_EXACT_V1 -> projectText(expectedCandidateValueRaw);
+            case CNY_DECIMAL_V1 -> projectCny(expectedCandidateValueRaw);
+            case TAX_AMOUNT_COMPONENT_V1 -> projectTaxExpected(expectedCandidateValueRaw);
+            case PERCENTAGE_POINT_V1 -> projectPercentageExpected(expectedCandidateValueRaw);
+        };
+    }
+
+    private static String projectActual(
+            CandidateComparisonProfile profile, String actualCandidateValueRaw) {
+        return switch (profile) {
+            case TEXT_STRIP_EXACT_V1 -> projectText(actualCandidateValueRaw);
+            case CNY_DECIMAL_V1, TAX_AMOUNT_COMPONENT_V1 -> projectCny(actualCandidateValueRaw);
+            case PERCENTAGE_POINT_V1 -> projectPercentageActual(actualCandidateValueRaw);
+        };
+    }
+
+    private static String projectText(String raw) {
+        if (raw == null) {
+            return null;
         }
-        return expected.strip().equals(actual.strip())
-                ? CandidateComparison.MATCH : CandidateComparison.MISMATCH;
+        String stripped = raw.strip();
+        return stripped.isEmpty() ? null : stripped;
+    }
+
+    private static String projectCny(String raw) {
+        String stripped = strippedOrNull(raw);
+        if (stripped == null || !CNY_PATTERN.matcher(stripped).matches()) {
+            return null;
+        }
+        return canonicalDecimal(stripped.replace(",", ""));
+    }
+
+    private static String projectPercentageExpected(String raw) {
+        String stripped = strippedOrNull(raw);
+        if (stripped == null || !stripped.endsWith("%")) {
+            return null;
+        }
+        return projectPercentageBody(stripped.substring(0, stripped.length() - 1));
+    }
+
+    private static String projectPercentageActual(String raw) {
+        return projectPercentageBody(strippedOrNull(raw));
+    }
+
+    private static String projectPercentageBody(String body) {
+        if (body == null || !PERCENTAGE_PATTERN.matcher(body).matches()) {
+            return null;
+        }
+        BigDecimal value = new BigDecimal(body);
+        if (value.compareTo(BigDecimal.ZERO) < 0
+                || value.compareTo(BigDecimal.valueOf(100)) > 0) {
+            return null;
+        }
+        return canonicalDecimal(value);
+    }
+
+    private static String projectTaxExpected(String raw) {
+        String stripped = strippedOrNull(raw);
+        if (stripped == null || !hasUniformSupportedLineEndings(stripped)) {
+            return null;
+        }
+        String normalized = stripped.replace("\r\n", "\n");
+        Matcher matcher = TAX_EXPECTED_PATTERN.matcher(normalized);
+        if (!matcher.matches()) {
+            return null;
+        }
+        BigDecimal taxRate = new BigDecimal(matcher.group(1));
+        if (taxRate.compareTo(BigDecimal.ZERO) < 0
+                || taxRate.compareTo(BigDecimal.valueOf(100)) > 0) {
+            return null;
+        }
+        return canonicalDecimal(matcher.group(4).replace(",", ""));
+    }
+
+    private static boolean hasUniformSupportedLineEndings(String value) {
+        boolean containsCr = value.indexOf('\r') >= 0;
+        for (int index = 0; index < value.length(); index++) {
+            char current = value.charAt(index);
+            if (current == '\r'
+                    && (index + 1 >= value.length() || value.charAt(index + 1) != '\n')) {
+                return false;
+            }
+            if (current == '\n'
+                    && containsCr
+                    && (index == 0 || value.charAt(index - 1) != '\r')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String strippedOrNull(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        String stripped = raw.strip();
+        return stripped.isEmpty() ? null : stripped;
+    }
+
+    private static String canonicalDecimal(String value) {
+        return canonicalDecimal(new BigDecimal(value));
+    }
+
+    private static String canonicalDecimal(BigDecimal value) {
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return "0";
+        }
+        return value.stripTrailingZeros().toPlainString();
+    }
+
+    private static void assertProfile(
+            ReviewPointCode reviewPointCode, CandidateComparisonProfile expectedProfile) {
+        CandidateComparisonResult result = compareCandidate(reviewPointCode, "1", "1");
+        assertThat(result.candidateComparisonProfile()).isEqualTo(expectedProfile);
+    }
+
+    private static void assertComparison(
+            ReviewPointCode reviewPointCode,
+            String expectedRaw,
+            String actualRaw,
+            String expectedComparable,
+            String actualComparable,
+            CandidateComparison expectedComparison) {
+        CandidateComparisonResult result = compareCandidate(reviewPointCode, expectedRaw, actualRaw);
+        assertThat(result.expectedCandidateComparable()).isEqualTo(expectedComparable);
+        assertThat(result.actualCandidateComparable()).isEqualTo(actualComparable);
+        assertThat(result.candidateComparison()).isEqualTo(expectedComparison);
+    }
+
+    private static void assertNotObservable(
+            ReviewPointCode reviewPointCode, String expectedRaw, String actualRaw) {
+        CandidateComparisonResult result = compareCandidate(reviewPointCode, expectedRaw, actualRaw);
+        assertThat(result.candidateComparison()).isEqualTo(CandidateComparison.NOT_OBSERVABLE);
+        assertThat(result.expectedCandidateComparable() == null
+                        || result.actualCandidateComparable() == null)
+                .isTrue();
+    }
+
+    private static String taxExpected(
+            String taxRate,
+            String totalAmount,
+            String netAmount,
+            String taxAmount,
+            String lineSeparator) {
+        return String.join(lineSeparator,
+                "1、taxRate=" + taxRate + "%；",
+                "2、totalAmount=" + totalAmount + "；",
+                "3、netAmount=" + netAmount + "；",
+                "4、taxAmount=" + taxAmount + "。");
     }
 
     private static String normalizeAnchorText(String value) {
@@ -1168,8 +1566,10 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 "block", "NATIVE_WORD", "STRUCTURED", "NORMAL", "summary",
                 List.of(), "BODY", "HIGH", "BLOCK_LEVEL", "block:block");
         var point = new PointAcceptanceResult(
-                ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "expected", "actual",
-                candidateComparison, PointStatus.PASS, List.of("summary"), List.of(anchor), List.of());
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "expected", "actual", "expected", "actual",
+                CandidateComparisonProfile.TEXT_STRIP_EXACT_V1, candidateComparison,
+                PointStatus.PASS, List.of("summary"), List.of(anchor), List.of());
         return new SampleAcceptanceResult(
                 sampleId, "task", "execution", "/api/v1/tasks/task/result", "snapshot",
                 List.of(point), List.of(), List.of(),
@@ -1299,8 +1699,11 @@ class Task034MvpE2eAcceptanceHarnessTest {
 
     record PointAcceptanceResult(
             ReviewPointCode reviewPointCode,
-            String expectedCandidateValue,
-            String actualCandidateValue,
+            String expectedCandidateValueRaw,
+            String actualCandidateValueRaw,
+            String expectedCandidateComparable,
+            String actualCandidateComparable,
+            CandidateComparisonProfile candidateComparisonProfile,
             CandidateComparison candidateComparison,
             PointStatus pointStatus,
             List<String> evidenceSummary,
@@ -1402,6 +1805,20 @@ class Task034MvpE2eAcceptanceHarnessTest {
         MATCH,
         MISMATCH,
         NOT_OBSERVABLE
+    }
+
+    private record CandidateComparisonResult(
+            String expectedCandidateComparable,
+            String actualCandidateComparable,
+            CandidateComparisonProfile candidateComparisonProfile,
+            CandidateComparison candidateComparison) {
+    }
+
+    private enum CandidateComparisonProfile {
+        TEXT_STRIP_EXACT_V1,
+        CNY_DECIMAL_V1,
+        TAX_AMOUNT_COMPONENT_V1,
+        PERCENTAGE_POINT_V1
     }
 
     enum CoverageResult {
