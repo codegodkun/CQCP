@@ -1,6 +1,7 @@
 package com.cqcp.apiserver.reviewengine;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -121,5 +122,88 @@ class MinimalCandidateResolverTest {
         assertThat(result.selectedCandidate()).isEmpty();
         assertThat(result.diagnosticCode()).isEqualTo("SYS_ROLE_CONFLICT");
         assertThat(result.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+    }
+
+    @Test
+    void sameExactValueRetainsDistinctBlockAndCellOccurrences() {
+        var firstCell = candidate("block-table", "table:table-1/row:2/cell:0", "含税总价 884800 元");
+        var secondCell = candidate("block-table", "table:table-1/row:2/cell:1", "含税总价 884800 元");
+        var rowFallback = candidate("block-table", "table:table-1/row:2", "含税总价 884800 元");
+        var otherBlock = candidate("block-summary", null, "合同总金额为 884800 元");
+        var rawCandidates = new java.util.ArrayList<>(List.of(firstCell, secondCell, rowFallback, otherBlock));
+
+        var result = resolver.resolve(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "CONTRACT_TOTAL_AMOUNT",
+                rawCandidates);
+
+        assertThat(result.confidenceLevel()).isEqualTo(EvidenceConfidenceLevel.HIGH);
+        assertThat(result.selectedCandidate()).contains(firstCell);
+        assertThat(result.retainedOccurrences())
+                .containsExactly(firstCell, secondCell, rowFallback, otherBlock);
+        assertThat(result.selectedValueOccurrences())
+                .containsExactly(firstCell, secondCell, rowFallback, otherBlock);
+
+        rawCandidates.clear();
+        assertThat(result.retainedOccurrences()).hasSize(4);
+        assertThatThrownBy(() -> result.retainedOccurrences().add(firstCell))
+                .isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> result.selectedValueOccurrences().add(firstCell))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        var firstBlock = candidate("block-first", null, "第一处合同总金额为 884800 元");
+        var secondBlock = candidate("block-second", null, "第二处合同总金额为 884800 元");
+        var distinctBlockResult = resolver.resolve(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "CONTRACT_TOTAL_AMOUNT",
+                List.of(firstBlock, secondBlock));
+
+        assertThat(distinctBlockResult.confidenceLevel()).isEqualTo(EvidenceConfidenceLevel.HIGH);
+        assertThat(distinctBlockResult.selectedValueOccurrences())
+                .containsExactly(firstBlock, secondBlock);
+    }
+
+    @Test
+    void distinctValuesRemainConflictedWithoutSelectedValueOccurrences() {
+        var left = candidate("block-left", null, "合同总金额为 884800 元");
+        var right = new EvidenceCandidate(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "CONTRACT_TOTAL_AMOUNT",
+                "990000",
+                "block-right",
+                "合同总金额为 990000 元",
+                true,
+                true,
+                true);
+
+        var result = resolver.resolve(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "CONTRACT_TOTAL_AMOUNT",
+                List.of(left, right));
+
+        assertThat(result.confidenceLevel()).isEqualTo(EvidenceConfidenceLevel.CONFLICTED);
+        assertThat(result.selectedCandidate()).isEmpty();
+        assertThat(result.retainedOccurrences()).containsExactly(left, right);
+        assertThat(result.selectedValueOccurrences()).isEmpty();
+        assertThat(result.diagnosticCode()).isEqualTo("SYS_ROLE_CONFLICT");
+        assertThat(result.notConcludedReason()).isEqualTo(NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+    }
+
+    private EvidenceCandidate candidate(String blockId, String previewElementRef, String blockText) {
+        return new EvidenceCandidate(
+                ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY,
+                "CONTRACT_TOTAL_AMOUNT",
+                "884800",
+                blockId,
+                blockText,
+                true,
+                true,
+                true,
+                List.of("合同价款"),
+                "BODY",
+                "table-1",
+                2,
+                previewElementRef != null && previewElementRef.contains("/cell:") ? 1 : null,
+                previewElementRef);
     }
 }

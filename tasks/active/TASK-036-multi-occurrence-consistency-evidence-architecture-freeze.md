@@ -1,6 +1,6 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / ADR-016 Accepted / ARCHITECTURE v0.10 Synchronized / Independent Audit GO / NO IMPLEMENTATION AUTHORIZATION
+状态：Active / TASK_SPEC-036-A Implemented / Codex ACCEPT_IMPLEMENTATION / Independent Implementation Audit GO / EXACT COMMIT AUTHORIZED / B-C NOT AUTHORIZED
 
 类型：A 类主链路架构治理父任务
 
@@ -31,11 +31,11 @@
 * 冻结一致性审核点对多出处同值、可靠异值、归属歧义和截断的不同处理。
 * 冻结多 SourceAnchor 输出、精确 row/cell 定位与快照兼容边界。
 * 冻结 occurrence scope / exclusion policy 的版本归属，禁止硬编码样本编号或人工 fixture。
-* ADR 未接受前不创建实现 `TASK_SPEC`。
+* ADR 未接受前不创建实现 `TASK_SPEC`；现已按用户单独授权冻结第一批未激活 carrier foundation 规格。
 
 ## 非目标
 
-* 不在本任务中修改生产代码、测试、fixture、expected JSON、DOCX、XLSX 或 matrix。
+* 架构冻结阶段不直接修改生产代码或测试；后续实现只能经独立冻结、审计和授权的局部 `TASK_SPEC` 执行。fixture、expected JSON、DOCX、XLSX 与 matrix 始终不在 A 范围。
 * 不直接实现 57 条 occurrence coverage。
 * 不修改 `TASK-034` v1 验收结果。
 * 不接入 Gemma、不引入全文 RAG、不回灌全文。
@@ -99,8 +99,8 @@
 
 ## 约束
 
-* `ADR-016` 已由用户明确接受；接受只授权架构同步，不构成生产实现授权。
-* `docs/ARCHITECTURE.md` v0.10 已完成同步；未获得单独生产实现任务授权前不得冻结或派发实现型 `TASK_SPEC`。
+* `ADR-016` 已由用户明确接受；接受本身只授权架构同步。
+* 用户随后已单独授权进入 TASK-036 生产实现治理流程；Codex 已冻结 `TASK_SPEC-036-A`，执行方编码前规格映射计划已经 Codex 审查为 `GO / IMPLEMENTATION AUTHORIZED`，当前只允许按冻结范围实现 A。
 * 独立 agent 必须只读审计架构事实、ADR 与任务边界。
 * 任何生产实现必须保持 `SYS-*` 与 Finding 分流、Evidence 不足不裁判、历史快照不回填。
 * 对完整一致性检查，occurrence provenance 被截断时不得继续输出业务 `PASS`。
@@ -110,7 +110,7 @@
 * `decisions/ADR-016-multi-occurrence-consistency-evidence-preservation.md` Draft。
 * 本任务父任务包。
 * 独立只读审计报告与 Codex Review Intake Decision。
-* ADR 接受后才可拆解的局部 `TASK_SPEC` 计划。
+* 已冻结的局部 `TASK_SPEC-036-A` 及其独立规格审计记录。
 
 ## 验收标准
 
@@ -122,11 +122,11 @@
 6. 每个参与裁判的 occurrence 能输出独立 SourceAnchor；TABLE_CELL 只接受真实 cell identity。
 7. occurrence scope / exclusion policy 版本化，不硬编码 001/002/003 或人工 occurrenceNo。
 8. 点级 `pointResults[].sourceAnchors[]` 是 occurrence 输出真源；现有 Result API / snapshot 能承载多 anchor，顶层聚合不得作为点级 coverage 真源。
-9. 不修改生产代码、fixture、expected、DOCX、XLSX、matrix、workflow 或已接受 ADR。
+9. 架构冻结交付不夹带实现；后续生产改动只允许进入独立 `TASK_SPEC`。fixture、expected、DOCX、XLSX、matrix、workflow 与已接受 ADR 不得修改。
 
 ## 测试与验证
 
-本轮仅执行：
+架构冻结阶段仅执行：
 
 * 正式 sample JSON anchor 基数与 `previewElementRef` 统计。
 * 63 行 occurrence 的 57/6、39 BLOCK / 18 TABLE_CELL 纳入统计。
@@ -146,7 +146,7 @@
 
 ## Next Task Handoff
 
-`ADR-016` 已被用户接受，`docs/ARCHITECTURE.md` v0.10 已同步且独立审计 `GO`。当前没有生产实现授权，不生成实现型 Next Task Handoff Prompt，也不直接修改 CandidateResolver / EvidenceSlot / Review Engine / SourceAnchor。
+`TASK_SPEC-036-A` 已实现并经 Codex Review Intake 接纳，独立只读实现审计最终 `GO`；最终定向 XML 为第一组 47/47、第二组 25/25。用户已授权精确提交本轮 7 个实现文件和 5 个治理文档；该提交不授权 B/C、正式 E2E、push 或 merge。
 
 ## 独立审计与 Codex Review Intake
 
@@ -158,6 +158,12 @@
 * 2026-07-14 用户明确接受 `ADR-016`，并要求先同步 `docs/ARCHITECTURE.md`、不得直接进入生产实现。
 * 接受后同步独立审计：`GO`，无 blocking / non-blocking finding；确认 v0.10 与 ADR 等价，未引入公共 API、migration 或实现授权。
 * Codex Review Intake：`ADR_ACCEPTED / ARCHITECTURE_SYNCHRONIZED / NO_IMPLEMENTATION_AUTHORIZATION`。
+* 2026-07-14 用户单独授权进入 TASK-036 生产实现治理流程。Codex 建立分支 `codex/task-036-a-consistency-set-provenance` 并冻结 `TASK_SPEC-036-A`。
+* TASK_SPEC-036-A 第一轮独立规格审计：`NO_GO`；三项阻断为无 lineage 删除不同 identity、未绑定版本却改变普通任务 anchor 基数、把只读 persistent adapter 误称写入 round-trip。
+* Codex 接受 findings 并将 A 收窄为未激活 carrier foundation；第二轮独立规格审计：`GO`。该阶段 Decision：`SPEC_FROZEN / INDEPENDENT_SPEC_AUDIT_GO / PRE-CODING_PLAN_PENDING / NO CODE AUTHORIZATION`。
+* Claude Code / DeepSeek 编码前规格映射计划已提交；Codex 审查接受并附加 raw snapshot、preflight 先行、nonempty carrier 不回退 legacy anchor、现有 preparer 不改四项强制条件。Decision：`GO / IMPLEMENTATION AUTHORIZED`。
+* TASK_SPEC-036-A 实现完成；Codex 审查实际 diff 并重跑两组冻结测试。独立实现审计发现一项精确双 block 测试向量缺口，补充同一测试方法后最终审计 `GO`、无 blocking finding。
+* Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION`。该接纳仅覆盖未激活 carrier foundation；现有 preparer / RuleSetVersion / 普通任务仍输出 legacy 单 anchor。
 
 ## 风险
 
@@ -169,13 +175,13 @@
 ## 待确认
 
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
-* 待后续单独生产任务冻结新 RuleSetVersion 标识。
+* 待后续 B 批次单独冻结新 RuleSetVersion 标识与 carrier activation；A 不改变当前规则集输出。
 * occurrence scope policy 的最终字段名与 RuleSetVersion 承载位置。
 
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：本任务包、已接受的 ADR-016、`docs/ARCHITECTURE.md` v0.10 与项目记忆文档。
-* 测试结果：两轮独立只读审计及最终 delta 核对完成，最终 `GO`；未运行代码测试。
-* 遗留问题：生产实现拆分、具体 RuleSetVersion / scope policy 值与实现授权均未完成。
-* 备注：当前没有任何生产实现授权。
+* 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`。
+* 遗留问题：B/C 的 RuleSetVersion / scope policy / readiness 仍未冻结。
+* 备注：用户已授权精确提交 A 的 7 个实现文件和 5 个治理文档；最终 commit hash 以 Git 历史为准。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过，不得自动进入 B/C、push 或 merge。

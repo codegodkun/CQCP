@@ -253,6 +253,77 @@ class ResultComposerTest {
                         "table:table-1/row:2/cell:1");
     }
 
+    @Test
+    void findingAndSnapshotRetainAllPointOccurrenceAnchors() {
+        var firstCell = new SourceAnchorSummary(
+                "block-table-row",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "甲方单元格 1",
+                List.of("合同主体"),
+                "BODY",
+                "HIGH",
+                "BLOCK_LEVEL",
+                "table:party-table/row:1/cell:0");
+        var secondCell = new SourceAnchorSummary(
+                "block-table-row",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "甲方单元格 2",
+                List.of("合同主体"),
+                "BODY",
+                "HIGH",
+                "BLOCK_LEVEL",
+                "table:party-table/row:1/cell:1");
+        var pointResults = List.of(new PointReviewResult(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                PointStatus.ERROR,
+                "甲方名称与合同证据不一致。",
+                FindingSeverity.ERROR,
+                List.of(firstCell, secondCell),
+                null,
+                null,
+                PointCoverageStatus.COMPLETE,
+                null,
+                List.of()));
+        var summary = new ReviewSummary(1, 0, 1, 0, 0, 0);
+        var completeness = new ReviewCompleteness(
+                ReviewCoverageStatus.FULL_REVIEWED,
+                1,
+                1,
+                0,
+                BigDecimal.ONE,
+                ConfidenceLevel.HIGH);
+        var result = new ReviewEngineResult(
+                pointResults,
+                summary,
+                completeness,
+                new ReviewResultSnapshotDraft(
+                        "task-001",
+                        "execution-001",
+                        "sample-001",
+                        "SUCCESS",
+                        summary,
+                        completeness,
+                        pointResults,
+                        List.of()),
+                List.of());
+
+        var snapshot = composer.compose(defaultInput(), result);
+
+        assertThat(snapshot.pointResults().getFirst().sourceAnchors())
+                .extracting(SourceAnchorSummary::previewElementRef)
+                .containsExactly(
+                        "table:party-table/row:1/cell:0",
+                        "table:party-table/row:1/cell:1");
+        assertThat(snapshot.findings().getFirst().sourceAnchors())
+                .containsExactly(firstCell, secondCell);
+        assertThat(snapshot.sourceAnchors())
+                .containsExactly(firstCell, secondCell);
+    }
+
     private ResultComposerInput defaultInput() {
         return new ResultComposerInput(
                 "task-001",

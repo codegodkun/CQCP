@@ -18,21 +18,24 @@ final class MinimalCandidateResolver {
         Objects.requireNonNull(candidateRole, "candidateRole");
         Objects.requireNonNull(rawCandidates, "rawCandidates");
 
+        var retainedOccurrences = List.copyOf(rawCandidates);
         var candidates = deduplicate(rawCandidates);
         if (candidates.isEmpty()) {
-            return new CandidateResolutionResult(
+            return resolutionResult(
                     EvidenceConfidenceLevel.UNKNOWN,
                     Optional.empty(),
                     "SYS_INDEX_INCOMPLETE",
-                    NotConcludedReasonCode.EVIDENCE_NOT_FOUND);
+                    NotConcludedReasonCode.EVIDENCE_NOT_FOUND,
+                    retainedOccurrences);
         }
 
         if (hasSameBlockRoleConflict(candidates)) {
-            return new CandidateResolutionResult(
+            return resolutionResult(
                     EvidenceConfidenceLevel.CONFLICTED,
                     Optional.empty(),
                     "SYS_ROLE_CONFLICT",
-                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                    retainedOccurrences);
         }
 
         var fullyAttributed = candidates.stream()
@@ -45,18 +48,20 @@ final class MinimalCandidateResolver {
                 .distinct()
                 .toList();
         if (fullyAttributedDistinctValues.size() == 1) {
-            return new CandidateResolutionResult(
+            return resolutionResult(
                     EvidenceConfidenceLevel.HIGH,
                     Optional.of(fullyAttributed.getFirst()),
                     null,
-                    null);
+                    null,
+                    retainedOccurrences);
         }
         if (fullyAttributedDistinctValues.size() > 1) {
-            return new CandidateResolutionResult(
+            return resolutionResult(
                     EvidenceConfidenceLevel.CONFLICTED,
                     Optional.empty(),
                     "SYS_ROLE_CONFLICT",
-                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                    retainedOccurrences);
         }
 
         var roleLabeled = candidates.stream()
@@ -68,25 +73,55 @@ final class MinimalCandidateResolver {
                 .distinct()
                 .toList();
         if (roleLabeledDistinctValues.size() == 1) {
-            return new CandidateResolutionResult(
+            return resolutionResult(
                     EvidenceConfidenceLevel.MEDIUM,
                     Optional.of(roleLabeled.getFirst()),
                     "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
-                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                    retainedOccurrences);
         }
         if (roleLabeledDistinctValues.size() > 1) {
-            return new CandidateResolutionResult(
+            return resolutionResult(
                     EvidenceConfidenceLevel.CONFLICTED,
                     Optional.empty(),
                     "SYS_ROLE_CONFLICT",
-                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+                    NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                    retainedOccurrences);
         }
 
-        return new CandidateResolutionResult(
+        return resolutionResult(
                 EvidenceConfidenceLevel.LOW,
                 Optional.of(candidates.getFirst()),
                 "SYS_EVIDENCE_LOW_CONFIDENCE",
-                NotConcludedReasonCode.EVIDENCE_AMBIGUOUS);
+                NotConcludedReasonCode.EVIDENCE_AMBIGUOUS,
+                retainedOccurrences);
+    }
+
+    private CandidateResolutionResult resolutionResult(
+            EvidenceConfidenceLevel confidenceLevel,
+            Optional<EvidenceCandidate> selectedCandidate,
+            String diagnosticCode,
+            NotConcludedReasonCode notConcludedReason,
+            List<EvidenceCandidate> retainedOccurrences) {
+        List<EvidenceCandidate> selectedValueOccurrences = List.of();
+        if (confidenceLevel == EvidenceConfidenceLevel.HIGH && selectedCandidate.isPresent()) {
+            var selected = selectedCandidate.orElseThrow();
+            selectedValueOccurrences = retainedOccurrences.stream()
+                    .filter(candidate -> candidate.reviewPointCode() == selected.reviewPointCode())
+                    .filter(candidate -> Objects.equals(candidate.candidateRole(), selected.candidateRole()))
+                    .filter(candidate -> Objects.equals(candidate.candidateValue(), selected.candidateValue()))
+                    .filter(EvidenceCandidate::roleLabelSignal)
+                    .filter(EvidenceCandidate::valueFormatSignal)
+                    .filter(EvidenceCandidate::blockAttributionSignal)
+                    .toList();
+        }
+        return new CandidateResolutionResult(
+                confidenceLevel,
+                selectedCandidate,
+                retainedOccurrences,
+                selectedValueOccurrences,
+                diagnosticCode,
+                notConcludedReason);
     }
 
     private List<EvidenceCandidate> deduplicate(List<EvidenceCandidate> rawCandidates) {
@@ -175,6 +210,22 @@ record EvidenceCandidate(
 record CandidateResolutionResult(
         EvidenceConfidenceLevel confidenceLevel,
         Optional<EvidenceCandidate> selectedCandidate,
+        List<EvidenceCandidate> retainedOccurrences,
+        List<EvidenceCandidate> selectedValueOccurrences,
         String diagnosticCode,
         NotConcludedReasonCode notConcludedReason) {
+
+    CandidateResolutionResult(
+            EvidenceConfidenceLevel confidenceLevel,
+            Optional<EvidenceCandidate> selectedCandidate,
+            String diagnosticCode,
+            NotConcludedReasonCode notConcludedReason) {
+        this(confidenceLevel, selectedCandidate, List.of(), List.of(), diagnosticCode, notConcludedReason);
+    }
+
+    CandidateResolutionResult {
+        selectedCandidate = selectedCandidate == null ? Optional.empty() : selectedCandidate;
+        retainedOccurrences = retainedOccurrences == null ? List.of() : List.copyOf(retainedOccurrences);
+        selectedValueOccurrences = selectedValueOccurrences == null ? List.of() : List.copyOf(selectedValueOccurrences);
+    }
 }
