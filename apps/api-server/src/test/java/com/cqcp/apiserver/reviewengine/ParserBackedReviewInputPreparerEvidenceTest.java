@@ -363,6 +363,58 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         });
     }
 
+    @Test
+    void currentRuleSetPathDoesNotActivateOccurrenceAnchors() {
+        var parser = new SameValueProgressContractParser();
+        var runtimePreparer = new ParserBackedReviewInputPreparer(parser);
+        var fixtureCase = new FixtureCase(
+                "same-value-occurrences-not-activated",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "甲方公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "70")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+        var candidates = runtimePreparer.collectPatternCandidates(
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                "PROGRESS_PAYMENT_RATIO",
+                parser.parse(fixtureCase.docxPath()).blocks(),
+                List.of("进度"),
+                List.of(Pattern.compile("进度款[^\\d]{0,60}(\\d{1,3}(?:\\.\\d+)?)\\s*%")),
+                false);
+        var resolution = new MinimalCandidateResolver().resolve(
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                "PROGRESS_PAYMENT_RATIO",
+                candidates);
+
+        assertThat(resolution.confidenceLevel()).isEqualTo(EvidenceConfidenceLevel.HIGH);
+        assertThat(resolution.selectedValueOccurrences()).hasSizeGreaterThanOrEqualTo(2);
+
+        var reviewInput = buildReviewInput(
+                runtimePreparer,
+                fixtureCase);
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
+        assertThat(evidence.candidateValue()).isEqualTo("70");
+        assertThat(evidence.occurrences()).isEmpty();
+
+        var point = new MinimalReviewEngine().review(reviewInput).pointResults().stream()
+                .filter(result -> result.reviewPointCode() == ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY)
+                .findFirst()
+                .orElseThrow();
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.PASS);
+        assertThat(point.sourceAnchors()).singleElement();
+    }
+
     private ReviewEngineInput buildReviewInput(FixtureCaseLike fixtureCase) {
         return buildReviewInput(preparer, fixtureCase);
     }
@@ -840,6 +892,47 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                                     1, secondCell, secondCellStart, text.length())),
                     com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
                     com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
+        }
+    }
+
+    private static final class SameValueProgressContractParser extends DocxWordParserSpike {
+
+        @Override
+        public com.cqcp.apiserver.wordparser.WordParserSpikeDocument parse(Path docxPath) {
+            var first = progressBlock("progress-block-1", "进度款按形象进度产值的70%支付");
+            var second = progressBlock("progress-block-2", "本期进度款为形象进度产值的70%");
+            var fullText = first.text() + "\n" + second.text();
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument(
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.Metadata(
+                            "same-value-progress", "same-value-progress.docx"),
+                    List.of(first, second),
+                    List.of(),
+                    List.of(),
+                    new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN", fullText.length(), 2, 0, 0, 0, 0, false,
+                            com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
+        }
+
+        private com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock progressBlock(
+                String blockId,
+                String text) {
+            return new com.cqcp.apiserver.wordparser.WordParserSpikeDocument.DocumentBlock(
+                    blockId,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.BlockType.PARAGRAPH,
+                    text,
+                    text,
+                    List.of("付款条款"),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.RegionType.BODY,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ContextType.NORMAL,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "same-value-progress.docx",
+                    null,
+                    null,
+                    List.of(),
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.cqcp.apiserver.reviewengine;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.cqcp.apiserver.tuning.PointDiagnostic;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -227,6 +228,143 @@ class MinimalReviewEngineTest {
         assertThat(result.pointDiagnostics())
                 .extracting(PointDiagnostic::diagnosticCode)
                 .contains("SYS_EVIDENCE_BUNDLE_INVALID");
+    }
+
+    @Test
+    void explicitCarrierPreservesAllEvidenceOccurrenceAnchorsForPassAndError() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
+        var exactValue = fixtureCase.goldenStructuredFields().getRequired("partyAName");
+        var occurrences = new ArrayList<>(List.of(
+                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1/cell:0"),
+                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1/cell:1"),
+                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1/cell:0"),
+                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1"))
+                .stream()
+                .map(PointEvidenceOccurrence::fromSelectedCandidate)
+                .toList());
+        var passEvidence = explicitPartyEvidence(exactValue, occurrences);
+        occurrences.clear();
+
+        assertThat(passEvidence.occurrences()).hasSize(4);
+        assertThatThrownBy(() -> passEvidence.occurrences().add(passEvidence.occurrences().getFirst()))
+                .isInstanceOf(UnsupportedOperationException.class);
+
+        var passPoint = pointFor(
+                engine.review(fixtureCase.toGoldenInput().withEvidenceOverride(
+                        ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                        passEvidence)),
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+        assertThat(passPoint.pointStatus()).isEqualTo(PointStatus.PASS);
+        assertThat(passPoint.sourceAnchors())
+                .extracting(SourceAnchorSummary::previewElementRef)
+                .containsExactly(
+                        "table:party-table/row:1/cell:0",
+                        "table:party-table/row:1/cell:1",
+                        "table:party-table/row:1");
+
+        var mismatch = "另一家甲方公司";
+        var errorOccurrences = List.of(
+                        occurrenceCandidate(mismatch, "party-table-row", "table:party-table/row:1/cell:0"),
+                        occurrenceCandidate(mismatch, "party-table-row", "table:party-table/row:1/cell:1"),
+                        occurrenceCandidate(mismatch, "party-table-row", null))
+                .stream()
+                .map(PointEvidenceOccurrence::fromSelectedCandidate)
+                .toList();
+        var errorPoint = pointFor(
+                engine.review(fixtureCase.toGoldenInput().withEvidenceOverride(
+                        ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                        explicitPartyEvidence(mismatch, errorOccurrences))),
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+        assertThat(errorPoint.pointStatus()).isEqualTo(PointStatus.ERROR);
+        assertThat(errorPoint.findingSeverity()).isEqualTo(FindingSeverity.ERROR);
+        assertThat(errorPoint.sourceAnchors()).hasSize(3);
+    }
+
+    @Test
+    void unreliableExplicitOccurrenceDowngradesWithoutEmptyAnchor() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
+        var exactValue = fixtureCase.goldenStructuredFields().getRequired("partyAName");
+        var occurrences = List.of(
+                        occurrenceCandidate(exactValue, "reliable-party-block", null),
+                        occurrenceCandidate(exactValue, "", "table:party-table/row:1/cell:1"))
+                .stream()
+                .map(PointEvidenceOccurrence::fromSelectedCandidate)
+                .toList();
+
+        var result = engine.review(fixtureCase.toGoldenInput().withEvidenceOverride(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                explicitPartyEvidence(exactValue, occurrences)));
+        var point = pointFor(result, ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.NOT_CONCLUDED);
+        assertThat(point.findingSeverity()).isNull();
+        assertThat(point.notConcludedReason()).isEqualTo(NotConcludedReasonCode.INTERNAL_RULE_ERROR);
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.PARTIAL);
+        assertThat(point.sourceAnchors())
+                .singleElement()
+                .satisfies(anchor -> assertThat(anchor.blockId()).isEqualTo("reliable-party-block"));
+        assertThat(point.sourceAnchors()).noneSatisfy(anchor -> assertThat(anchor.blockId()).isBlank());
+        assertThat(result.pointDiagnostics())
+                .extracting(PointDiagnostic::diagnosticCode)
+                .contains("SYS_EVIDENCE_BUNDLE_INVALID");
+    }
+
+    private PointReviewResult pointFor(ReviewEngineResult result, ReviewPointCode reviewPointCode) {
+        return result.pointResults().stream()
+                .filter(point -> point.reviewPointCode() == reviewPointCode)
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private PointEvidence explicitPartyEvidence(
+            String candidateValue,
+            List<PointEvidenceOccurrence> occurrences) {
+        return new PointEvidence(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "PARTY_A",
+                candidateValue,
+                EvidenceStatus.CONFIRMED,
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "party-table-row",
+                "HIGH",
+                "甲方名称证据",
+                null,
+                null,
+                List.of(new EvidenceSlotCoverage(
+                        "party_a",
+                        true,
+                        true,
+                        EvidenceSlotCoverageStatus.SATISFIED,
+                        null,
+                        true)),
+                List.of("合同主体"),
+                "BODY",
+                "BLOCK_LEVEL",
+                "table:party-table/row:1/cell:0",
+                occurrences);
+    }
+
+    private EvidenceCandidate occurrenceCandidate(
+            String candidateValue,
+            String blockId,
+            String previewElementRef) {
+        return new EvidenceCandidate(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "PARTY_A",
+                candidateValue,
+                blockId,
+                "甲方：" + candidateValue,
+                true,
+                true,
+                true,
+                List.of("合同主体"),
+                "BODY",
+                "party-table",
+                1,
+                previewElementRef != null && previewElementRef.contains("/cell:") ? 1 : null,
+                previewElementRef);
     }
 
     private Map<ReviewPointCode, PointStatus> statusByPoint(List<PointReviewResult> pointResults) {

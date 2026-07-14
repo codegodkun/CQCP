@@ -5,16 +5,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class MinimalReviewEngine {
 
     private static final BigDecimal AMOUNT_TOLERANCE = new BigDecimal("0.01");
     private static final BigDecimal ONE_HUNDRED = new BigDecimal("100");
+    private static final Pattern TABLE_CELL_REF = Pattern.compile("^table:[^/]+/row:[0-9]+/cell:[0-9]+$");
     private static final List<ReviewPointCode> MONTHLY_ONLY_POINTS = List.of(
             ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
             ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY,
@@ -128,6 +131,22 @@ public class MinimalReviewEngine {
     }
 
     private PointPreflight preflight(ReviewPointCode reviewPointCode, PointEvidence evidence) {
+        if (hasUnreliableExplicitOccurrence(evidence)) {
+            var slotCoverages = List.of(new EvidenceSlotCoverage(
+                    slotKeyOf(reviewPointCode),
+                    true,
+                    true,
+                    EvidenceSlotCoverageStatus.PARTIAL,
+                    "SYS_EVIDENCE_BUNDLE_INVALID",
+                    false));
+            return failurePreflight(
+                    PointCoverageStatus.PARTIAL,
+                    "SYS_EVIDENCE_BUNDLE_INVALID",
+                    NotConcludedReasonCode.INTERNAL_RULE_ERROR,
+                    null,
+                    "关键证据缺少可靠原文定位，当前无法形成正式结论。",
+                    slotCoverages);
+        }
         var slotCoverages = evidence == null
                 ? List.of(missingRequiredSlot(reviewPointCode))
                 : !evidence.slotCoverages().isEmpty()
@@ -348,7 +367,34 @@ public class MinimalReviewEngine {
     }
 
     private List<SourceAnchorSummary> anchorsFor(PointEvidence evidence) {
-        if (evidence == null || evidence.blockId() == null || evidence.blockId().isBlank()) {
+        if (evidence == null) {
+            return List.of();
+        }
+        if (!evidence.occurrences().isEmpty()) {
+            Map<String, SourceAnchorSummary> anchors = new LinkedHashMap<>();
+            for (PointEvidenceOccurrence occurrence : evidence.occurrences()) {
+                if (occurrence.blockId() == null || occurrence.blockId().isBlank()) {
+                    continue;
+                }
+                var identityRef = isExactTableCellRef(occurrence.previewElementRef())
+                        ? occurrence.previewElementRef()
+                        : "";
+                var identity = occurrence.blockId() + "|" + identityRef;
+                anchors.putIfAbsent(identity, new SourceAnchorSummary(
+                        occurrence.blockId(),
+                        evidence.sourceOrigin(),
+                        evidence.sourceExtractionMode(),
+                        evidence.contextType(),
+                        occurrence.evidenceSummary(),
+                        occurrence.sectionPath(),
+                        occurrence.regionType(),
+                        occurrence.confidence(),
+                        occurrence.locationLevel(),
+                        occurrence.previewElementRef()));
+            }
+            return List.copyOf(anchors.values());
+        }
+        if (evidence.blockId() == null || evidence.blockId().isBlank()) {
             return List.of();
         }
         return List.of(new SourceAnchorSummary(
@@ -515,7 +561,24 @@ public class MinimalReviewEngine {
     }
 
     private boolean hasReliableAnchor(PointEvidence evidence) {
-        return evidence != null && evidence.blockId() != null && !evidence.blockId().isBlank();
+        if (evidence == null) {
+            return false;
+        }
+        if (!evidence.occurrences().isEmpty()) {
+            return !hasUnreliableExplicitOccurrence(evidence);
+        }
+        return evidence.blockId() != null && !evidence.blockId().isBlank();
+    }
+
+    private boolean hasUnreliableExplicitOccurrence(PointEvidence evidence) {
+        return evidence != null
+                && !evidence.occurrences().isEmpty()
+                && evidence.occurrences().stream()
+                        .anyMatch(occurrence -> occurrence.blockId() == null || occurrence.blockId().isBlank());
+    }
+
+    private boolean isExactTableCellRef(String previewElementRef) {
+        return previewElementRef != null && TABLE_CELL_REF.matcher(previewElementRef).matches();
     }
 
     private String slotKeyOf(ReviewPointCode reviewPointCode) {
@@ -677,7 +740,8 @@ record PointEvidence(
         List<String> sectionPath,
         String regionType,
         String locationLevel,
-        String previewElementRef) {
+        String previewElementRef,
+        List<PointEvidenceOccurrence> occurrences) {
 
     PointEvidence(
             ReviewPointCode reviewPointCode,
@@ -710,11 +774,81 @@ record PointEvidence(
                 List.of(),
                 null,
                 blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
-                null);
+                null,
+                List.of());
+    }
+
+    PointEvidence(
+            ReviewPointCode reviewPointCode,
+            String candidateRole,
+            String candidateValue,
+            EvidenceStatus status,
+            String sourceOrigin,
+            String sourceExtractionMode,
+            String contextType,
+            String blockId,
+            String confidence,
+            String evidenceSummary,
+            String diagnosticCode,
+            NotConcludedReasonCode notConcludedReason,
+            List<EvidenceSlotCoverage> slotCoverages,
+            List<String> sectionPath,
+            String regionType,
+            String locationLevel,
+            String previewElementRef) {
+        this(
+                reviewPointCode,
+                candidateRole,
+                candidateValue,
+                status,
+                sourceOrigin,
+                sourceExtractionMode,
+                contextType,
+                blockId,
+                confidence,
+                evidenceSummary,
+                diagnosticCode,
+                notConcludedReason,
+                slotCoverages,
+                sectionPath,
+                regionType,
+                locationLevel,
+                previewElementRef,
+                List.of());
     }
 
     PointEvidence {
         slotCoverages = slotCoverages == null ? List.of() : List.copyOf(slotCoverages);
+        sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
+        occurrences = occurrences == null ? List.of() : List.copyOf(occurrences);
+    }
+}
+
+record PointEvidenceOccurrence(
+        String candidateValue,
+        String blockId,
+        String evidenceSummary,
+        List<String> sectionPath,
+        String regionType,
+        String confidence,
+        String locationLevel,
+        String previewElementRef) {
+
+    static PointEvidenceOccurrence fromSelectedCandidate(EvidenceCandidate candidate) {
+        Objects.requireNonNull(candidate, "candidate");
+        var blockId = candidate.blockId();
+        return new PointEvidenceOccurrence(
+                candidate.candidateValue(),
+                blockId,
+                candidate.blockText(),
+                candidate.sectionPath(),
+                candidate.regionType(),
+                EvidenceConfidenceLevel.HIGH.name(),
+                blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
+                candidate.previewElementRef());
+    }
+
+    PointEvidenceOccurrence {
         sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
     }
 }

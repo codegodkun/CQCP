@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,25 @@ class PersistentTaskResultStoreTest {
                 .isEqualTo("BLOCK_LEVEL");
         assertThat(result.orElseThrow().pointResults().getFirst().sourceAnchors().getFirst().previewElementRef())
                 .isEqualTo("table:table-1/row:0/cell:1");
+    }
+
+    @Test
+    void multiAnchorPersistenceJsonRemainsQueryable() {
+        when(jdbcTemplate.queryForList(anyString(), eq("task-001")))
+                .thenReturn(List.of(multiAnchorSnapshotRow()));
+
+        var result = new TaskResultQueryService(store).getResult("task-001");
+
+        assertThat(result.pointResults().getFirst().sourceAnchors())
+                .extracting(SourceAnchorSummary::previewElementRef)
+                .containsExactly(
+                        "table:party-table/row:1/cell:0",
+                        "table:party-table/row:1/cell:1");
+        assertThat(result.sourceAnchors())
+                .extracting(SourceAnchorSummary::previewElementRef)
+                .containsExactly(
+                        "table:party-table/row:1/cell:0",
+                        "table:party-table/row:1/cell:1");
     }
 
     private ReviewResultSnapshot snapshot() {
@@ -206,5 +226,17 @@ class PersistentTaskResultStoreTest {
                 Map.entry("field_lexicon_version", snapshot.fieldLexiconVersion()),
                 Map.entry("evidence_selector_version", snapshot.evidenceSelectorVersion()),
                 Map.entry("created_at", Timestamp.from(snapshot.createdAt())));
+    }
+
+    private Map<String, Object> multiAnchorSnapshotRow() {
+        var row = new HashMap<>(snapshotRow(snapshot()));
+        var anchors = """
+                [{"blockId":"block-table-row","sourceOrigin":"NATIVE_WORD","sourceExtractionMode":"STRUCTURED","contextType":"NORMAL","evidenceSummary":"甲方单元格 1","sectionPath":["合同主体"],"regionType":"BODY","confidence":"HIGH","locationLevel":"BLOCK_LEVEL","previewElementRef":"table:party-table/row:1/cell:0"},{"blockId":"block-table-row","sourceOrigin":"NATIVE_WORD","sourceExtractionMode":"STRUCTURED","contextType":"NORMAL","evidenceSummary":"甲方单元格 2","sectionPath":["合同主体"],"regionType":"BODY","confidence":"HIGH","locationLevel":"BLOCK_LEVEL","previewElementRef":"table:party-table/row:1/cell:1"}]
+                """.trim();
+        row.put("point_results_json", """
+                [{"reviewPointCode":"PARTY_A_NAME_CONSISTENCY","pointStatus":"PASS","businessMessage":"甲方名称一致。","findingSeverity":null,"sourceAnchors":%s,"notConcludedReason":null,"skippedReason":null,"pointCoverageStatus":"COMPLETE","notConcludedDetail":null,"missingOptionalSlots":[]}]
+                """.formatted(anchors).trim());
+        row.put("source_anchors_json", anchors);
+        return row;
     }
 }

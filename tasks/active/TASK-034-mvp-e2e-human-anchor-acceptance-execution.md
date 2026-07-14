@@ -1,6 +1,6 @@
 # TASK-034：MVP E2E 人工 anchor 正式验收执行
 
-状态：待开始 / Phase 0 执行入口门禁未完成
+状态：Active / Phase 1 已执行 / 最终判定 `FAIL`
 
 类型：Codex 主控正式验收任务
 
@@ -118,6 +118,33 @@
 * harness 不得生成、修订或倒填人工 ground truth。
 * `TASK_SPEC-034-A` 落地并经独立复核前，本任务保持 active，不运行正式验收。
 
+### Phase 0 执行记录（2026-07-14）
+
+唯一门禁结论：`NO_GO_TEST_ONLY_HARNESS_REQUIRED`。
+
+Phase 0 当时的父任务结果：`STOPPED_FOR_TASK_SPEC_034_A`；该阶段未进入 Phase 1，未运行 001/002/003 正式 MVP E2E。后续状态见 Phase 1 执行记录。
+
+| # | 能力 | 直接证据 | 结论 |
+|---|---|---|---|
+| 1 | 真实 DOCX 输入 | `TaskExecutionStateMachineTest` 的 parser-backed 路径使用 expected JSON 的 `sourceDocx` 构造 `TaskExecutionDocumentReference`，真实调用状态机。 | 组件存在，但没有正式单一验收入口。 |
+| 2 | parser 与 block/row/cell 定位 | `TaskExecutionStateMachine.runPreparationStages` 依次执行 `parse → index → plan → build`；`SourceAnchorSummary` 可携带 `blockId`、`locationLevel`、`previewElementRef`。 | 组件证据通过。 |
+| 3 | 状态机与结果快照 | `execute` 经 `REVIEWING_RULES`、`COMPOSING` 保存 `ReviewResultSnapshot`；定向测试通过。 | 组件证据通过。 |
+| 4 | 同 task 结果查询 | `GET /api/v1/tasks/{taskId}/result` 存在；controller 测试 mock service，service 串联测试使用预构造 `ReviewEngineInput`，没有真实 DOCX；生产代码没有提交/执行任务入口。 | 缺失。 |
+| 5 | PointStatus/candidate/证据/anchor/URL/SYS | snapshot 可见 PointStatus、证据摘要、anchor、diagnostics；actual `candidateValue` 只存在于内部 `PointEvidence`，未进入 `PointReviewResult` 或 snapshot/query 输出。 | 缺失。 |
+| 6 | 63 条 occurrence 显式比较 | 现有测试只验证 XLSX→fixture 的 63/57/6 契约；human fixture 不含 parser canonical key，人工位置→actual anchor bridge 不存在。 | 缺失。 |
+
+上述任一缺失即不得判为 `GO_EXISTING_ENTRYPOINT`。不能把真实 DOCX 状态机测试、预构造 input 查询测试、mock controller 测试和 parser-backed canonical overlap 手工拼接为一次完整执行。
+
+验证证据：
+
+* 后端四类定向测试合并复跑：27 tests / 0 failures / 0 errors / 0 skipped，其中 human fixture 10、parser-backed overlap 4、状态机 10、结果查询 controller 3。
+* 环境版本：OpenJDK 21.0.11、Gradle 8.10.2、Node 24.16.0、npm 11.13.0。
+* `npm.cmd run test:admin-web` 环境失败：`vitest` 不可识别；`npm.cmd run build:admin-web` 环境失败：`tsc` 不可识别。未安装依赖或修改环境规避。
+* 前端依赖缺失不是本次唯一门禁结论的依据；入口在代码契约层已不满足六项，因此结论不是 `BLOCKED_ENVIRONMENT`。
+* 完整证据：`outputs/task-034-mvp-e2e-acceptance/entrypoint-audit.md`。
+
+已冻结并完成 `tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`。Claude Code / DeepSeek 的编码前规格映射计划经 Codex 放行后完成实现；Codex Review Intake 与独立只读复核均接纳，随后由 Codex 进入 Phase 1。
+
 ## Phase 1：正式执行
 
 仅当 Phase 0 为 `GO_EXISTING_ENTRYPOINT`，或后续 `TASK_SPEC-034-A` 已按门禁落地并通过 Codex Review Intake 后执行：
@@ -129,6 +156,20 @@
 5. 对 57 条纳入 occurrence 逐条记录 actual anchor 覆盖结果；对 6 条排除 occurrence 记录 `EXCLUDED`。
 6. 保存负向或冲突验证时，只能使用仓库中已冻结的 negative / conflict 数据；不得临时制造 expected。
 7. 执行后再次记录 `git status --short`，证明验收未改动受保护数据与实现文件。
+
+### Phase 1 执行记录（2026-07-14）
+
+* test-only harness 实现提交：`99bea3a6a3ce0cbecf337e76692aac3a6c428228`；manifest `Instant` 序列化最小修复提交：`46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`。
+* harness 实现与序列化修复均经 Codex diff / 测试审查和独立 agent 只读复核接纳；未修改生产 parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor`、Review Engine、公共 API、数据库、workflow、ADR、DOCX、XLSX、matrix、fixture 或 expected JSON。
+* 正式运行使用分支 `codex/task-034-a-test-only-e2e-harness`、commit `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`、OpenJDK 21.0.11、Gradle 8.10.2，并通过双 system property 门禁开启 formal mode。
+* 实际入口为 test-only JUnit 方法 `formalAcceptanceEntryPointIsPropertyAndInputGated`；命令使用 `--rerun-tasks --tests "*.formalAcceptanceEntryPointIsPropertyAndInputGated"`。测试先写出完整验收证据，再因总结果 `FAIL` 触发 JUnit 断言失败；这属于验收失败，不是环境阻塞。
+* 首次正式尝试在写 manifest 时因 Jackson 未注册 Java Time module 失败，只留下截断文件；该文件已删除，最小修复增加 `findAndRegisterModules()` 与非正式 round-trip 自测后重新从干净输出目录执行。最终交付物均来自修复后的单次正式运行。
+* 3 个样本均完成 parser → index → plan → build → review → compose → 同 store 查询；每份样本使用唯一 taskId / executionId，snapshot 均为 `SUCCESS`。
+* review point 共 27 项，真实 `PointStatus` 全部为 `PASS`；candidate comparison 为 9 `MATCH`、18 `MISMATCH`。名称与总金额 3 类点在每个样本均命中；税额复合 expected 与 actual 标量、以及 5 类百分比 expected 含 `%` 而 actual 为无 `%` 标量，按冻结的 strip-only 规则判为不一致。
+* occurrence 严格输出 63 行：57 条纳入全部为 `NOT_OBSERVABLE`，6 条排除全部为 `EXCLUDED`；样本计数为 22/19/22、纳入为 20/17/20、排除均为 2。actual point anchors 存在，但多数 block anchor 缺 `previewElementRef`，表格名称 anchor 仅有 row 定位而无 cell index，无法建立冻结规则要求的精确 occurrence bridge，未使用宽松匹配伪造命中。
+* 三份结果均无业务 Finding、无 `SYS-*` / query diagnostic；`SYS-*` 与 Finding 分流要求得到保持。没有系统失败可替代上述 candidate / anchor 验收失败。
+* 精确提交检查中，`occurrence-comparison.csv` 的两处多行 `actualEvidenceText` 保留了真实 parser 文本末尾空格，导致 `git diff --check` 仅对该数据工件报告 2 条 trailing whitespace；未手工清洗或改写正式证据。排除该 CSV 后其余 staged 文档与 JSON diff check 通过。
+* 最终判定：`FAIL`。父任务保持 active；不得据此进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ## 比较与判定口径
 
@@ -248,30 +289,36 @@ git diff --check
 
 ## Next Task Handoff
 
-本任务建档后可在新 Codex 窗口直接从 Phase 0 执行入口门禁开始。若 Phase 0 为 `NO_GO_TEST_ONLY_HARNESS_REQUIRED`，下一步不是继续正式验收，而是由 Codex 单独冻结 `TASK_SPEC-034-A` 并走编码前规格映射计划门禁。
+后续已拆分为两个独立父任务：`TASK_SPEC-035-A` 已获创建/派发授权、冻结并通过独立审计，当前只允许提交编码前规格映射计划；`ADR-016` 已被用户接受，`docs/ARCHITECTURE.md` v0.10 已同步且审计 `GO`，但 TASK-036 生产实现未授权。两条路线均未完成，不授权正式重跑。
 
 ## 风险
 
-* 分立测试均通过不代表真实 DOCX、状态机和结果查询已被同一次执行串联。
-* human anchor 是自然语言位置描述，actual canonical anchor 是结构化 key；映射不足会产生 `NOT_OBSERVABLE`，不得通过宽松文本包含关系伪造命中。
-* 单个候选值正确不代表全文所有一致性出处都被覆盖。
-* 结果查询若读取的不是本次 task 快照，会造成跨执行污染。
+* 正式运行已证明同一次执行串联成立，但不代表 candidate 表示与人工 expected 的比较契约一致。
+* human anchor 是自然语言位置描述，actual canonical anchor 缺少精确 block/cell reference；57 条纳入项因此全部 `NOT_OBSERVABLE`，不得通过宽松文本包含关系伪造命中。
+* 27 个 `PointStatus=PASS` 只反映当前生产裁判，不等于 27 个 candidate comparison 或 57 条 occurrence coverage 通过。
 * 完整合同原文不应复制到验收输出，避免扩大数据暴露面。
 
 ## 待确认
 
-* 待 Phase 0 确认：现有仓库是否已有满足六项条件的单一执行入口。
-* 待 Phase 0 确认：当前结果对象能否直接导出 63 条 occurrence 级比较所需的 actual anchor；不能时必须 STOP 并冻结 `TASK_SPEC-034-A`。
+* 已确认：`TASK_SPEC-034-A` test-only harness 能在不修改生产类、不二次执行 parser/review、不宽松匹配的条件下完成同 run 观察与正式输出。
+* 已确认：人工 expected 与 actual candidate 的表示契约存在 18/27 不一致；不得通过修改 expected 或放宽 strip-only 比较消除失败。
+* 已确认：当前 actual anchor 精度不足以建立 57 条纳入 occurrence 的可靠 bridge，结果为 57/57 `NOT_OBSERVABLE`。
+* 已确认：candidate 表示差异由 `TASK-035` 以 test-only、版本化 typed projection 重基线，不修改生产 `CandidateResolver`，不需要 ADR；`TASK_SPEC-035-A` 已冻结并审计 `GO`，当前等待 Claude Code / DeepSeek 编码前计划和 Codex 放行。
+* 已确认：多出处 evidence 缺口由 `TASK-036` / `ADR-016` Draft 承接；根因是 occurrence-insensitive dedup 与 selected-candidate 投影双重折叠，只补 `cellIndex` 不能解决 27 actual anchors 对 57 纳入 occurrence 的基数缺口；Draft 独立最终审计 `GO`。
+* 已确认：现有 point result / snapshot / OpenAPI / JSONB query 使用列表结构，可承载一点评多 anchors；若实现发现事实不同必须停止并拆兼容任务。
+* 已确认：用户授权创建/派发 `TASK_SPEC-035-A`；用户接受 `ADR-016` 并已完成 ARCHITECTURE 同步。
+* 待确认：Codex 是否放行 TASK_SPEC-035-A 编码前计划；TASK-036 生产实现是否另行授权。
 
 ## 完成记录
 
-* 完成日期：待填写。
+* 完成日期：未完成；Phase 1 于 2026-07-14 执行结束，父任务因正式判定 `FAIL` 保持 active。
 * 建档独立只读复核：2026-07-13，Decision 为 `GO`，无 blocking findings；复核未修改、stage、commit 或 push 任何文件。
-* Phase 0 结论：待填写。
-* 实际执行入口 / 命令：待填写。
-* 变更文件：待填写。
-* 测试结果：待填写。
-* 样本结果：待填写。
-* occurrence 统计：待填写。
-* 最终判定：待填写。
-* 遗留问题：待填写。
+* Phase 0 结论：`NO_GO_TEST_ONLY_HARNESS_REQUIRED`。
+* `TASK_SPEC-034-A`：实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`；Codex Review Intake 与独立只读复核均为接纳。
+* 实际执行入口 / 命令：formal 双门禁 + `gradle test --rerun-tasks --tests "*.formalAcceptanceEntryPointIsPropertyAndInputGated"`；完整链路执行后按设计以失败断言返回非零。
+* 变更文件：仅 test-only harness、TASK-034 验收输出和项目记忆文档；未修改任何生产代码、fixture、expected 或受保护数据。
+* 测试结果：harness 13/13、既有四类定向回归 27/27；正式方法 1/1 完成证据写出后因验收总结果 `FAIL` 失败。
+* 样本结果：3 份均完成查询；27 个 `PointStatus` 全为 `PASS`，candidate 为 9 `MATCH` / 18 `MISMATCH`，Finding / SYS 均为 0。
+* occurrence 统计：63 条、57 纳入、6 排除；57 条纳入均 `NOT_OBSERVABLE`，6 条排除均 `EXCLUDED`。
+* 最终判定：`FAIL`。
+* 遗留问题：`TASK_SPEC-035-A` 待编码前计划、实现放行与实现；TASK-036 待单独生产实现授权与后续实现。两者完成且 Codex 单独授权前不得重跑正式验收。
