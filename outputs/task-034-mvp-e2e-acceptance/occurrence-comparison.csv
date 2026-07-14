@@ -1,0 +1,87 @@
+occurrenceNo,includedInConsistencyEvaluation,humanAnchorText,humanLocationDescription,humanAnchorGranularity,actualEvidenceText,actualAnchorGranularity,actualAnchorReference,coverageResult,notes
+"001-PA-01",true,"发包方（甲方）：奔腾公司","第1页：  发包方（甲方）：            奔腾公司        、","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PA-02",true,"发包方(以下简称甲方)：      奔腾公司","第2页： 发包方(以下简称甲方)：      奔腾公司    、","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PA-03",true,"甲方：   奔腾公司","第8页 甲方：   奔腾公司                       （公章） 、","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PA-04",true,"甲方：      奔腾公司","第9页 甲方：      奔腾公司                      (盖章) 法定代表人：            日期：   年    月     日 、","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PA-05",true,"甲方（全称）： 奔腾公司","第13页 阳光合作协议 (2025年10月起签署版本)  甲方（全称）：      奔腾公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PA-06",true,"甲方:      奔腾公司","第13页 ;（以下无正文，为《阳光合作协议》签署页）甲方:      奔腾公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PA-07",false,"奔腾公司企鹅岛项目三标段","第1页，合同标题中的公司名称提及","BLOCK",,"UNAVAILABLE",,EXCLUDED,"人工冻结排除项；不读取 actual、不影响 PointStatus"
+"001-PA-08",false,"甲乙双方签署了《 奔腾公司企鹅岛项目三标段","第13页，阳光合作协议前言中的合同名称提及","BLOCK",,"UNAVAILABLE",,EXCLUDED,"人工冻结排除项；不读取 actual、不影响 PointStatus"
+"001-PB-01",true,"承包方（乙方）：	           前水公司","第1页 承包方（乙方）：	           前水公司","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PB-02",true,"承包方(以下简称乙方)：      前水公司","第3页 承包方(以下简称乙方)：      前水公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PB-03",true,"乙方：       前水公司                    （公章）","第8页 乙方：       前水公司                    （公章）","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PB-04",true,"尊敬的前水公司","第9页 尊敬的前水公司","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PB-05",true,"乙方（全称）：     前水公司","第24页 乙方（全称）：     前水公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-PB-06",true,"乙方:        前水公司","第24页  乙方:        前水公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-AMT-01",true,"1、 合同固定总价：¥ 8848      元","第3页 合同固定总价：¥ 8848      元，大写：人民币   捌仟捌佰肆拾捌元整      元","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-AMT-02",true,"8848","第9页，签约通知书表格“金额（元）”列","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-05-01",true,"1、 合同固定总价：¥ 8848      元
+2、不含增值税合同价款：¥  7,830.09    
+3、税款¥  1,017.91","1、第三页 增值税专用发票 （13%/£9%/£6%/£3%）
+2、甲乙双方约定的签约合同价为不含增值税合同价款及增值税税款总金额。合同计价模式为： 固定总价   暂定总价   
+3、第3页 合同固定总价：¥ 8848      元，大写：人民币   捌仟捌佰肆拾捌元整      元；其中不含增值税合同价款：¥  7,830.09     元，大写：人民币  柒仟捌佰叁拾元零玖分       元；增值税税款¥  1,017.91     元，大写：人民币  壹仟零壹拾柒元玖角壹分       元。","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-06-01",true,"本工程无预付款。","1、第16页 本工程无预付款。","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-07-01",true,"1、 进度款： A模式 □ B模式
+2、 A模式：按月形象进度付款，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；","1、第16页 进度款： A模式 □ B模式
+2、第16页 A模式：按月形象进度付款，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-08-01",true,"1、28.2 竣工款：竣工验收完成工后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付至已完工程量的80%；","1、第17页 28.2 竣工款：竣工验收完成工后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付至已完工程量的80%","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-09-01",true,"结算款：乙方向甲方提交齐全完整的结算书并经甲方确认，工程结算完毕且整体工程交付使用后，甲方完成结算审核，乙方向甲方提交付款申请及结算金额100%的增值税专用发票等请款资料，甲方在收到上述请款资料后三个月内支付至结算金额的97%；","1、第17页 结算款：乙方向甲方提交齐全完整的结算书并经甲方确认，工程结算完毕且整体工程交付使用后，甲方完成结算审核，乙方向甲方提交付款申请及结算金额100%的增值税专用发票等请款资料，甲方在收到上述请款资料后三个月内支付至结算金额的97%；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"001-10-01",true,"质保金：工程质保金为工程结算总价的3%，保修期以工程总体竣工验收，完善整改意见并正式移交甲方，甲方开始办理集中客户入住之日起计算（分批集中入住的，按每批入住时间，分批计算。质保金按同比例支付）。","1、第17页  质保金：工程质保金为工程结算总价的3%，保修期以工程总体竣工验收，完善整改意见并正式移交甲方，甲方开始办理集中客户入住之日起计算（分批集中入住的，按每批入住时间，分批计算。质保金按同比例支付）。","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PA-01",true,"甲       方 ：	     达利安造船厂","第1页 甲       方 ：	     达利安造船厂","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PA-02",true,"甲方（全称）：   达利安造船厂","第3页 甲方（全称）：   达利安造船厂","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PA-03",true,"甲方：达利安造船厂","第6页 甲方：达利安造船厂","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PA-04",true,"甲方（全称）：  达利安造船厂","第17页 甲方（全称）：  达利安造船厂","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PA-05",true,"甲方:   达利安造船厂","第18页 甲方:   达利安造船厂","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PA-06",false,"达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同","第1页，合同标题中的公司名称提及","BLOCK",,"UNAVAILABLE",,EXCLUDED,"人工冻结排除项；不读取 actual、不影响 PointStatus"
+"002-PA-07",false,"甲乙双方签署了《达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同》","第17页，阳光合作协议前言中的合同名称提及","BLOCK",,"UNAVAILABLE",,EXCLUDED,"人工冻结排除项；不读取 actual、不影响 PointStatus"
+"002-PB-01",true,"乙       方 ：	      天下会装饰工程有限公司","第1页 乙       方 ：	      天下会装饰工程有限公司","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PB-02",true,"乙方（全称）：  天下会装饰工程有限公司","第3页 乙方（全称）：  天下会装饰工程有限公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PB-03",true,"乙方：天下会装饰工程有限公司  （公章）","第6页 乙方：天下会装饰工程有限公司  （公章）","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PB-04",true,"乙方（全称）： 天下会装饰工程有限公司","第17页 乙方（全称）： 天下会装饰工程有限公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-PB-05",true,"乙方: 天下会装饰工程有限公司  （公章）	                             （公章）","第18页 乙方: 天下会装饰工程有限公司  （公章）	                             （公章）","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-AMT-01",true,"1、√ 固定总价  £ 暂定总价
+2、材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；","1、第3页√ 固定总价  £ 暂定总价
+2、第3页 材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-14-01",true,"1、 本合同增值税税率为 13 %，
+2、 材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分 】，（小写）：￥：【101,791.15】 元。","1、第4页 本合同增值税税率为 13 %，
+2、第3页 材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分 】，（小写）：￥：【101,791.15】 元。","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-15-01",true,"1、√月度付款
+2、 预付款：无预付款；","1、第11页 √月度付款
+2、第11页 预付款：无预付款；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-16-01",true,"1、√月度付款
+2、 到货验收款：每笔订单在乙方完成交货、货物经验收合格且甲方确认接收后，乙方须提
+供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的80%，乙方开具完成产值额100%的发票；","1、第11页 √月度付款
+2、第11页 到货验收款：每笔订单在乙方完成交货、货物经验收合格且甲方确认接收后，乙方须提
+供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的80%，乙方开具完成产值额100%的发票；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-17-01",true,"1、 √月度付款
+2、 安装完工款：完工并验收合格后，乙方须提供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、完工验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至该批安装完工款（按含安装费的综合单价计算）的95%，乙方开具完成产值额100%的发票；","1、第12页  √月度付款
+2、第12页 安装完工款：完工并验收合格后，乙方须提供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、完工验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至该批安装完工款（按含安装费的综合单价计算）的95%，乙方开具完成产值额100%的发票；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-18-01",true,"1、√月度付款
+2、  结算款：结算完成后，付款文件齐全支付至结算总价的95%。","1、第12页  √月度付款
+2、第12页  结算款：结算完成后，付款文件齐全支付至结算总价的95%。","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"002-19-01",true,"1、 √月度付款
+2、 单项目合同签署完毕，乙方应向甲方提交保证金额为单项目采购合同金额的的 5% 的《质量保函》","1、第12页  √月度付款
+2、第12页   单项目合同签署完毕，乙方应向甲方提交保证金额为单项目采购合同金额的的 5% 的《质量保函》","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-01",true,"发包方（甲方）：	           星辰建设集团","第1页   发包方（甲方）：	           星辰建设集团","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-02",true,"发包方(以下简称甲方)：      星辰建设集团","第3页 发包方(以下简称甲方)：      星辰建设集团","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-03",true,"甲方：   星辰建设集团                       （公章）","第7页 甲方：   星辰建设集团                       （公章）","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-04",true,"甲方：      星辰建设集团                      (盖章)","第8页 甲方：      星辰建设集团                      (盖章)","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-05",true,"甲方（全称）：      星辰建设集团","第23页 甲方（全称）：      星辰建设集团","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-06",true,"甲方:      星辰建设集团","第23页 甲方:      星辰建设集团","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PA-07",false,"星辰建设集团南山科技园项目二标段土建总承包工程合同","第1页，合同标题中的公司名称提及","BLOCK",,"UNAVAILABLE",,EXCLUDED,"人工冻结排除项；不读取 actual、不影响 PointStatus"
+"003-PA-08",false,"甲乙双方签署了《 星辰建设集团南山科技园项目二标段","第23页，阳光合作协议前言中的合同名称提及","BLOCK",,"UNAVAILABLE",,EXCLUDED,"人工冻结排除项；不读取 actual、不影响 PointStatus"
+"003-PB-01",true,"承包方（乙方）：	           远航建筑工程有限公司","第1页   承包方（乙方）：	           远航建筑工程有限公司","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PB-02",true,"承包方(以下简称乙方)：      远航建筑工程有限公司","第3页 承包方(以下简称乙方)：      远航建筑工程有限公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PB-03",true,"乙方：       远航建筑工程有限公司                    （公章）","第7页 乙方：       远航建筑工程有限公司                    （公章）","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PB-04",true,"尊敬的远航建筑工程有限公司：","第8页 尊敬的远航建筑工程有限公司：","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PB-05",true,"乙方（全称）：     远航建筑工程有限公司","第23页 乙方（全称）：     远航建筑工程有限公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-PB-06",true,"乙方:        远航建筑工程有限公司","第23页  乙方:        远航建筑工程有限公司","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-AMT-01",true,"合同固定总价：¥ 12800 元，大写：人民币 壹万贰仟捌佰元整 元；其中不含增值税合同价款：¥ 11,327.43 元；增值税税款 ¥ 1,472.57 元。","第3页，合同协议书“签约合同价与合同计价模式”正文条款","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-AMT-02",true,"12800","第8页，签约通知书表格“金额（元）”列","TABLE_CELL",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-23-01",true,"增值税专用发票（13%/9%/6%/3%）
+合同固定总价：¥ 12800 元；其中不含增值税合同价款：¥ 11,327.43 元；增值税税款 ¥ 1,472.57 元。","合同协议书“签约合同价与合同计价模式”附近；页码待人工确认","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-24-01",true,"本工程无预付款。","1、第15页，付款条款“预付款”段落；","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-25-01",true,"A模式：按月形象进度付款，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；","1、第15页，付款条款“进度款：A模式”段落","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-26-01",true,"竣工款：竣工验收完成工后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付至已完工程量的80%；","1、第16页，付款条款“竣工款”段落","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-27-01",true,"结算款：乙方向甲方提交齐全完整的结算书并经甲方确认，工程结算完毕且整体工程交付使用后，甲方完成结算审核，乙方向甲方提交付款申请及结算金额100%的增值税专用发票等请款资料，甲方在收到上述请款资料后三个月内支付至结算金额的97%；","1、第16页 付款条款“结算款”段落","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"
+"003-28-01",true,"质保金：工程质保金为工程结算总价的3%，保修期以工程总体竣工验收，完善整改意见并正式移交甲方，甲方开始办理集中客户入住之日起计算（分批集中入住的，按每批入住时间，分批计算。质保金按同比例支付）。","1、第16页 付款条款“质保金”段落","BLOCK",,"UNAVAILABLE",,NOT_OBSERVABLE,"human location/context 无法唯一投影到 actual element"

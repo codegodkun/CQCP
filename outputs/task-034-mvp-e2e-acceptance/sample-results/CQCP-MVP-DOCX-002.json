@@ -1,0 +1,211 @@
+{
+  "sampleId" : "CQCP-MVP-DOCX-002",
+  "taskId" : "task-034-CQCP-MVP-DOCX-002",
+  "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+  "queryPath" : "/api/v1/tasks/task-034-CQCP-MVP-DOCX-002/result",
+  "snapshotIdentity" : "task-034-CQCP-MVP-DOCX-002:execution-034-CQCP-MVP-DOCX-002:2026-07-14T00:00:00Z",
+  "points" : [ {
+    "reviewPointCode" : "PARTY_A_NAME_CONSISTENCY",
+    "expectedCandidateValue" : "达利安造船厂",
+    "actualCandidateValue" : "达利安造船厂",
+    "candidateComparison" : "MATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=甲方；命中值=达利安造船厂；证据片段：甲方（全称）： 达利安造船厂" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-22",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=甲方；命中值=达利安造船厂；证据片段：甲方（全称）： 达利安造船厂",
+      "sectionPath" : [ "第一部分 协议书" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "PARTY_B_NAME_CONSISTENCY",
+    "expectedCandidateValue" : "天下会装饰工程有限公司",
+    "actualCandidateValue" : "天下会装饰工程有限公司",
+    "candidateComparison" : "MATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=乙方；命中值=天下会装饰工程有限公司；证据片段：乙方（全称）： 天下会装饰工程有限公司" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-23",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=乙方；命中值=天下会装饰工程有限公司；证据片段：乙方（全称）： 天下会装饰工程有限公司",
+      "sectionPath" : [ "第一部分 协议书" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+    "expectedCandidateValue" : "884800",
+    "actualCandidateValue" : "884800",
+    "candidateComparison" : "MATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=合同总金额；命中值=884800；证据片段：材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-38",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=合同总金额；命中值=884800；证据片段：材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分",
+      "sectionPath" : [ "第一部分 协议书" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "TAX_AMOUNT_FORMULA_CONSISTENCY",
+    "expectedCandidateValue" : "1、taxRate=13%；\n2、totalAmount=884800；\n3、netAmount=783,008.85；\n4、taxAmount=101,791.15。",
+    "actualCandidateValue" : "101791.15",
+    "candidateComparison" : "MISMATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=税额；命中值=101791.15；证据片段：材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-38",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=税额；命中值=101791.15；证据片段：材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分",
+      "sectionPath" : [ "第一部分 协议书" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "expectedCandidateValue" : "0%",
+    "actualCandidateValue" : "0",
+    "candidateComparison" : "MISMATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=预付款；命中值=0；证据片段：预付款：无预付款；" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-134",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=预付款；命中值=0；证据片段：预付款：无预付款；",
+      "sectionPath" : [ "第二部分 合同条款" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "expectedCandidateValue" : "80%",
+    "actualCandidateValue" : "80",
+    "candidateComparison" : "MISMATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=进度款；命中值=80；证据片段：供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的80%，乙方开具完成产值额100%的发票；" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-143",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=进度款；命中值=80；证据片段：供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的80%，乙方开具完成产值额100%的发票；",
+      "sectionPath" : [ "第二部分 合同条款" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "expectedCandidateValue" : "95%",
+    "actualCandidateValue" : "95",
+    "candidateComparison" : "MISMATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=竣工款；命中值=95；证据片段：安装完工款：完工并验收合格后，乙方须提供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、完工验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至该批安装完工款（按含安装费的综合单价计算）" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-145",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=竣工款；命中值=95；证据片段：安装完工款：完工并验收合格后，乙方须提供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、完工验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至该批安装完工款（按含安装费的综合单价计算）",
+      "sectionPath" : [ "第二部分 合同条款" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "expectedCandidateValue" : "95%",
+    "actualCandidateValue" : "95",
+    "candidateComparison" : "MISMATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=结算款；命中值=95；证据片段：结算款：结算完成后，付款文件齐全支付至结算总价的95%。" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-146",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=结算款；命中值=95；证据片段：结算款：结算完成后，付款文件齐全支付至结算总价的95%。",
+      "sectionPath" : [ "第二部分 合同条款" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  }, {
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "expectedCandidateValue" : "5%",
+    "actualCandidateValue" : "5",
+    "candidateComparison" : "MISMATCH",
+    "pointStatus" : "PASS",
+    "evidenceSummary" : [ "审核标签=质保；命中值=5；证据片段：单项目合同签署完毕，乙方应向甲方提交保证金额为单项目采购合同金额的的 5% 的《质量保函》，质量保函有效期 3 年（按集中交付之日起一个月后开始计算）。质量保函应为不可撤销的、见索即付的独立保函，乙方未提交《质量保函》的，甲方有权延期支付结" ],
+    "actualAnchors" : [ {
+      "blockId" : "block-147",
+      "sourceOrigin" : "NATIVE_WORD",
+      "sourceExtractionMode" : "STRUCTURED",
+      "contextType" : "NORMAL",
+      "evidenceSummary" : "审核标签=质保；命中值=5；证据片段：单项目合同签署完毕，乙方应向甲方提交保证金额为单项目采购合同金额的的 5% 的《质量保函》，质量保函有效期 3 年（按集中交付之日起一个月后开始计算）。质量保函应为不可撤销的、见索即付的独立保函，乙方未提交《质量保函》的，甲方有权延期支付结",
+      "sectionPath" : [ "第二部分 合同条款" ],
+      "regionType" : "BODY",
+      "confidence" : "HIGH",
+      "locationLevel" : "BLOCK_LEVEL",
+      "previewElementRef" : null
+    } ],
+    "sysDiagnostics" : [ ]
+  } ],
+  "findings" : [ ],
+  "queryDiagnostics" : [ ],
+  "executionMetadata" : {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "queryPath" : "/api/v1/tasks/task-034-CQCP-MVP-DOCX-002/result",
+    "snapshotIdentity" : "task-034-CQCP-MVP-DOCX-002:execution-034-CQCP-MVP-DOCX-002:2026-07-14T00:00:00Z",
+    "snapshotStatus" : "SUCCESS",
+    "snapshotCreatedAt" : 1783987200.000000000,
+    "versionReferences" : {
+      "contractTypeProfileVersion" : "contract-type-v1",
+      "ruleSetVersion" : "ruleset-v1",
+      "reviewBudgetProfileVersion" : "budget-v1",
+      "modelProfileVersion" : "model-v1",
+      "parserVersion" : "parser-v1",
+      "promptVersion" : "prompt-v1",
+      "schemaVersion" : "schema-v1",
+      "patternLibraryVersion" : "pattern-v1",
+      "fieldLexiconVersion" : "lexicon-v1",
+      "evidenceSelectorVersion" : "selector-v1"
+    }
+  }
+}

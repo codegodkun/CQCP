@@ -3,14 +3,14 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Frozen / Ready for Coding-Plan Mapping / NO IMPLEMENTATION AUTHORIZATION
+> **状态**：Implemented / Codex Review Intake ACCEPT / Independent Audit ACCEPT / Formal Phase 1 executed
 > **创建日期**：2026-07-14
 > **起草**：CODEX
 > **执行环境**：Claude Code（DeepSeek 模型）
 > **TASK_SPEC 类型**：execution
 > **父任务**：TASK-034
 > **关联 ADR**：ADR-015（只读遵守；本规格不修改架构边界）
-> **目标实现分支**：`codex/task-034-a-test-only-e2e-harness`（尚未创建；不得在当前文档分支编码）
+> **目标实现分支**：`codex/task-034-a-test-only-e2e-harness`
 
 ---
 
@@ -373,15 +373,19 @@ outputs/task-034-mvp-e2e-acceptance/entrypoint-audit.md。
 
 ## 10. 实现报告
 
-待 Claude Code / DeepSeek 在编码前计划获 Codex `GO` 后填写。当前无实现、无测试、无授权。
+Claude Code / DeepSeek 的编码前规格映射计划经 Codex `GO / IMPLEMENTATION AUTHORIZED` 后完成实现。实际修改仅为 `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/Task034MvpE2EAcceptanceHarnessTest.java`。
+
+实现提交为 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`；正式首次写 manifest 暴露 Java Time module 未注册后，执行同一规格下的最小序列化修复，提交为 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`。修复只增加 Jackson module 自动注册及非正式 manifest round-trip 自测。
+
+最终验证：harness 13/13，既有四类定向回归 27/27。未修改生产 tree、既有 fixture / expected、DOCX、XLSX、matrix、API、数据库、workflow 或 ADR。
 
 ---
 
 ## 11. CODEX 审查记录
 
-当前结论：`NOT_STARTED / TASK_SPEC FROZEN / CODING-PLAN REQUIRED / NO IMPLEMENTATION AUTHORIZATION`。
+当前结论：`ACCEPT / IMPLEMENTATION AND SERIALIZATION FIX REVIEWED / INDEPENDENT READ-ONLY AUDIT ACCEPT`。
 
-实现报告与 diff 未就绪，不可选择 A/B/C，不可进入父任务 Phase 1。
+Codex 已审查同 run 对象身份、阶段顺序、formal 双门禁、63/57/6、candidate 来源、occurrence 一对一映射、SYS/Finding 分流、输出完整性和失败后留证行为。独立 agent 对最终实现与序列化修复均给出 `ACCEPT`，允许父任务进入 Phase 1。正式运行最终结果为 `FAIL`，属于父任务验收结论，不回滚本 test-only harness 的实现接纳。
 
 ---
 
@@ -389,7 +393,7 @@ outputs/task-034-mvp-e2e-acceptance/entrypoint-audit.md。
 
 | 后续任务 | 依赖 | 状态 |
 |---|---|---|
-| `TASK-034` Phase 1 | 本规格实现获 Codex 接纳，且独立只读复核无 blocking finding | 🔒 |
+| `TASK-034` Phase 1 | 本规格实现获 Codex 接纳，且独立只读复核无 blocking finding | 已执行，结果 `FAIL` |
 | `TASK-028` / `TASK-031` / `TASK-032` | 不由本规格解锁 | 🔒 |
 
 ---

@@ -1,8 +1,8 @@
-# 合同质量控制中台 V2 架构设计 v0.9
+# 合同质量控制中台 V2 架构设计 v0.10
 
-日期：2026-06-06
+日期：2026-07-14
 
-状态：Draft for implementation planning review - architecture hardening incorporated
+状态：Draft for implementation planning review - architecture hardening and ADR-016 incorporated
 
 ## 1. 背景
 
@@ -855,6 +855,8 @@ Candidate
 - confidenceSignals
 ```
 
+Candidate 的 occurrence provenance 必须在任何 dedup、canonical distinct grouping 和 selected-candidate 投影之前捕获。至少保留稳定 block identity、section/region、真实可用的 table row/cell identity、evidence text 与可构造 SourceAnchor 的字段。同 role、同 canonical value 可以在后续形成 semantic value group，但不得用忽略 row/cell/ref identity 的 key 删除独立 occurrence。
+
 `confidenceSignals` 至少包含：
 
 ```text
@@ -923,6 +925,23 @@ GemmaAssistedRoleResolution
 - 产出 GemmaExtractionArtifact
 - 不能回写改变 CandidateIndex，只能作为该 execution 的辅助 artifact
 ```
+
+#### 全文多出处一致性审核点的窄例外
+
+ADR-016 只为在不可变 `RuleSetVersion` 中显式声明“全文多出处一致性”且 `cardinalityMode=CONSISTENCY_SET` 的审核点增加窄例外。普通 role selection、普通 EvidenceSlot、`HIGH / MEDIUM / LOW / CONFLICTED / UNKNOWN` gate 和模型消歧语义保持不变。
+
+该类审核点不得把普通 `CONFLICTED` fallback 提升为伪 `HIGH`。resolver / preflight 必须先基于完整 occurrence 集合形成点级 `CONSISTENCY_SET_READY`，并同时证明：
+
+```text
+- versioned scope / strong exclusion 已完整扫描，无 parser 区域缺失或 coverage 缺口
+- 每个潜在 in-scope occurrence 独立通过 source/parse confidence、ValueGrammar、role label 与 section/region/table context
+- 全部 occurrence 使用同一版本 canonicalization / unit policy
+- 全部参与 occurrence 有可靠 anchor；TABLE_CELL 使用 parser 真实 row/cell identity
+- 低置信、归属冲突或无法确定纳入/排除的 occurrence 没有被静默忽略
+- distinct semantic value group 与 occurrence 数量均未超过各自上限
+```
+
+只有 `CONSISTENCY_SET_READY` 成立后，一个 semantic value 才进入结构化字段比较，多个 reliable distinct semantic values 才可由该审核点自身的 point-local deterministic rule 输出业务 `ERROR` 与 Finding。任一门槛不满足时输出相应 `SYS-* / NOT_CONCLUDED`，不得保留业务 `PASS / ERROR / WARNING`。
 
 GemmaAssistedRoleResolution 禁止行为：
 
@@ -1025,7 +1044,11 @@ EvidenceSlot
 - confidenceRequired
 - resolverPolicy: deterministicOnly / gemmaIfAmbiguous / sysIfMissing
 - fallbackPolicy: allowSingleUnknownCandidate / noFallback
+- cardinalityMode?: CONSISTENCY_SET
+- occurrenceBudget?
 ```
+
+`cardinalityMode` 缺省时继续使用 ADR-015 的普通 EvidenceSlot 语义；不得为普通 slot 隐式启用 `CONSISTENCY_SET`。
 
 `allowSingleUnknownCandidate` 只能在满足附加上下文条件时启用：
 
@@ -1049,6 +1072,17 @@ guaranteedTopK <= maxCandidates
 
 因此“MEDIUM/CONFLICTED 至少保留 top-2”是最低基线；当 `minCandidates > 2` 时，实际保底数量提升为 `minCandidates`。若硬 token 预算无法保障某个 core/required slot 的 `guaranteedTopK`，规则集发布评测必须失败或明确降低该 slot 基数，不能等到运行时持续产生 `INVALID` bundle。
 
+对 `cardinalityMode=CONSISTENCY_SET` 的 required slot，发布时还必须校验：
+
+```text
+minCandidates = 1
+maxCandidates >= 2
+occurrenceBudget is a required positive integer
+occurrenceBudget >= maxCandidates
+```
+
+其中 `maxCandidates` 约束完整收集后的 distinct semantic value group 数，`occurrenceBudget` 独立约束 provenance occurrence 数；不得用一个字段同时表达两类基数。任一配置缺失或非法时拒绝发布。运行时任一数量超过上限，统一映射为 `slotCoverage=BUDGET_TRUNCATED`、`pointCoverageStatus=PARTIAL`、`PointStatus=NOT_CONCLUDED`，不得因已观察到异值而输出业务 `ERROR`。
+
 执行前必须 preflight：
 
 | 情况 | 行为 |
@@ -1063,6 +1097,8 @@ guaranteedTopK <= maxCandidates
 | 因 token 预算截断导致 slot 缺失 | `SYS-EVIDENCE-BUDGET-EXCEEDED` |
 
 `acceptedRoles` 不应随意扩展。角色别名应在 `RoleAliasMap` 中统一维护，避免审核点定义频繁同步角色名称。
+
+全文多出处一致性审核点的 occurrence scope / strong exclusion、canonicalization / unit、anchor identity、`cardinalityMode`、`maxCandidates` 和 `occurrenceBudget` 必须绑定不可变 `RuleSetVersion` 或其引用的不可变 policy version。禁止硬编码样本编号、人工 occurrenceNo、fixture 路径或把人工 `includedInConsistencyEvaluation` 当作生产运行时输入。
 
 `RoleAliasMap` 属于 `RuleSetVersion`：
 
@@ -1188,6 +1224,8 @@ GlobalConsistencyCheck
 ```
 
 管理台展示更详细的冲突来源。平台不自动隐藏或合并业务方可能需要看到的审核点。
+
+`CONSISTENCY_SET_READY` 的 point-local deterministic rule 不属于 `GlobalConsistencyCheck`：它只服务于明确声明多出处一致性语义的审核点自身，不跨点覆盖结论，也不改变 `GlobalConsistencyCheck` optional、只诊断、不自动裁决的性质。
 
 ### 10.8 Quality Copilot 降低调优频率的边界
 
@@ -1522,6 +1560,10 @@ SourceAnchor
 - locationLevel: EXACT_TEXT_RANGE / BLOCK_LEVEL / PAGE_LEVEL / SECTION_LEVEL / UNAVAILABLE
 - failureReason?
 ```
+
+点级 `pointResults[].sourceAnchors[]` 是 occurrence 输出与 coverage 的唯一真源。每个实际参与裁判的 occurrence 必须有独立 anchor；顶层聚合列表可以为跨审核点导航按完全相同 source identity 去重，但不得用于计算点级 occurrence coverage，也不得反向折叠点级列表。
+
+MVP occurrence identity 固定为：`BLOCK` 按 `reviewPointCode + stable blockId`；`TABLE_CELL` 按 `reviewPointCode + stable blockId + parser-issued row/cell previewElementRef`。没有稳定字符 range 时，同一 block 或 cell 内重复 mention 不拆分为多个 occurrence；不同 identity 即使 canonical value 相同也不得在点级列表中去重。禁止由 candidateValue 反向搜索或伪造 row/cell identity。
 
 定位等级：
 
@@ -2415,6 +2457,8 @@ RawCandidate: 每个来源独立保存
 ResolvedCandidateGroup: 只有 role + value + compatible context 一致才合并
 ```
 
+`RawCandidate` 的独立来源 identity 必须在合并前包含可用的 block、row/cell/ref provenance；分组只聚合 semantic value，不删除组内 occurrences。
+
 同值但标签不同、section 不同、role hint 不同或来源置信度冲突时，不合并。冲突粒度包括：
 
 ```text
@@ -2425,7 +2469,7 @@ section conflict
 source confidence conflict
 ```
 
-CandidateResolver 的 HIGH 必须满足值语法、解析置信、标签、上下文和无竞争高置信候选；多个 HIGH 指向同一 role 且无法声明式消歧时，输出 `CONFLICTED`。
+CandidateResolver 的 HIGH 必须满足值语法、解析置信、标签、上下文和无竞争高置信候选；多个 HIGH 指向同一 role 且无法声明式消歧时，输出 `CONFLICTED`。唯一窄例外是第 10.1 节定义的 `CONSISTENCY_SET_READY`：它不是选出一个 HIGH，而是对完整、可靠、未截断的多 occurrence 集合执行点级一致性裁判。
 
 第 10.4 节 `allowSingleUnknownCandidate` 的弱回退条件继续有效。第 22 节只加固候选置信与合并边界，不放宽 weak fallback；弱回退仍必须满足附近标签、章节/表格上下文、值类型匹配、且无冲突 HIGH/MEDIUM 候选，并且不得直接生成 `ERROR`。
 
@@ -2809,6 +2853,8 @@ inputConsistencyStatus
 ```
 
 系统不替用户判断哪个冲突候选更可信，只解释为何无法裁判。
+
+上述“无法裁判”适用于普通 role attribution conflict。若审核点已满足第 10.1 节全部 `CONSISTENCY_SET_READY` 门槛，多个 reliable distinct values 表示已证实的合同内部不一致；系统不选择其中一个值，而是输出该审核点的业务 `ERROR`、全部冲突 anchors 与解释。
 
 API 的 `notConcludedDetail` 是诊断提示，不是外部系统流程控制契约。外部系统可以请求重跑或请求更高 budget profile，但后端仍按 caller policy、system load 和审批策略决定是否批准。
 

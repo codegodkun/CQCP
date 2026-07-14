@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : "task034-acceptance-v1",
+  "sampleOrder" : [ "CQCP-MVP-DOCX-001", "CQCP-MVP-DOCX-002", "CQCP-MVP-DOCX-003" ],
+  "formalMode" : true,
+  "commit" : "46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a",
+  "branch" : "codex/task-034-a-test-only-e2e-harness",
+  "javaVersion" : "21.0.11",
+  "gradleVersion" : "8.10.2",
+  "metadataProvenance" : "FORMAL_SYSTEM_PROPERTIES",
+  "startedAt" : 1784024350.729163200,
+  "completedAt" : 1784024352.863756400,
+  "timingSource" : "Instant.now around formal harness run",
+  "samples" : [ {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "queryPath" : "/api/v1/tasks/task-034-CQCP-MVP-DOCX-001/result",
+    "snapshotIdentity" : "task-034-CQCP-MVP-DOCX-001:execution-034-CQCP-MVP-DOCX-001:2026-07-14T00:00:00Z",
+    "snapshotStatus" : "SUCCESS",
+    "snapshotCreatedAt" : 1783987200.000000000,
+    "versionReferences" : {
+      "contractTypeProfileVersion" : "contract-type-v1",
+      "ruleSetVersion" : "ruleset-v1",
+      "reviewBudgetProfileVersion" : "budget-v1",
+      "modelProfileVersion" : "model-v1",
+      "parserVersion" : "parser-v1",
+      "promptVersion" : "prompt-v1",
+      "schemaVersion" : "schema-v1",
+      "patternLibraryVersion" : "pattern-v1",
+      "fieldLexiconVersion" : "lexicon-v1",
+      "evidenceSelectorVersion" : "selector-v1"
+    }
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "queryPath" : "/api/v1/tasks/task-034-CQCP-MVP-DOCX-002/result",
+    "snapshotIdentity" : "task-034-CQCP-MVP-DOCX-002:execution-034-CQCP-MVP-DOCX-002:2026-07-14T00:00:00Z",
+    "snapshotStatus" : "SUCCESS",
+    "snapshotCreatedAt" : 1783987200.000000000,
+    "versionReferences" : {
+      "contractTypeProfileVersion" : "contract-type-v1",
+      "ruleSetVersion" : "ruleset-v1",
+      "reviewBudgetProfileVersion" : "budget-v1",
+      "modelProfileVersion" : "model-v1",
+      "parserVersion" : "parser-v1",
+      "promptVersion" : "prompt-v1",
+      "schemaVersion" : "schema-v1",
+      "patternLibraryVersion" : "pattern-v1",
+      "fieldLexiconVersion" : "lexicon-v1",
+      "evidenceSelectorVersion" : "selector-v1"
+    }
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "queryPath" : "/api/v1/tasks/task-034-CQCP-MVP-DOCX-003/result",
+    "snapshotIdentity" : "task-034-CQCP-MVP-DOCX-003:execution-034-CQCP-MVP-DOCX-003:2026-07-14T00:00:00Z",
+    "snapshotStatus" : "SUCCESS",
+    "snapshotCreatedAt" : 1783987200.000000000,
+    "versionReferences" : {
+      "contractTypeProfileVersion" : "contract-type-v1",
+      "ruleSetVersion" : "ruleset-v1",
+      "reviewBudgetProfileVersion" : "budget-v1",
+      "modelProfileVersion" : "model-v1",
+      "parserVersion" : "parser-v1",
+      "promptVersion" : "prompt-v1",
+      "schemaVersion" : "schema-v1",
+      "patternLibraryVersion" : "pattern-v1",
+      "fieldLexiconVersion" : "lexicon-v1",
+      "evidenceSelectorVersion" : "selector-v1"
+    }
+  } ],
+  "candidateSource" : "same-run ReviewEngineInput.pointEvidences",
+  "statusAndDiagnosticsSource" : "same-store TaskResultQueryService snapshot",
+  "anchorSource" : "same-run parsed document + queried snapshot SourceAnchorSummary",
+  "groundTruthSource" : "accepted human-anchor fixture grouped uniquely by reviewPointCode"
+}
