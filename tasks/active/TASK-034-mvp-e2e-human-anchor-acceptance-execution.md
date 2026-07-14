@@ -289,7 +289,7 @@ git diff --check
 
 ## Next Task Handoff
 
-后续已拆分为两个独立父任务：`TASK_SPEC-035-A` 已获创建/派发授权、冻结并通过独立审计，当前只允许提交编码前规格映射计划；`ADR-016` 已被用户接受，`docs/ARCHITECTURE.md` v0.10 已同步且审计 `GO`，但 TASK-036 生产实现未授权。两条路线均未完成，不授权正式重跑。
+后续两条路线中，`TASK_SPEC-035-A` 与 `TASK_SPEC-036-A` 已实现、接纳并随 PR #32 合并；A 仍只是未激活 carrier。TASK-036 继续按 B1、B2、C 分批推进。B1/B2/C 全部完成自身门禁并经 Codex 单独授权前，不得正式重跑。
 
 ## 风险
 
@@ -321,4 +321,4 @@ git diff --check
 * 样本结果：3 份均完成查询；27 个 `PointStatus` 全为 `PASS`，candidate 为 9 `MATCH` / 18 `MISMATCH`，Finding / SYS 均为 0。
 * occurrence 统计：63 条、57 纳入、6 排除；57 条纳入均 `NOT_OBSERVABLE`，6 条排除均 `EXCLUDED`。
 * 最终判定：`FAIL`。
-* 遗留问题：`TASK_SPEC-035-A` 待编码前计划、实现放行与实现；TASK-036 待单独生产实现授权与后续实现。两者完成且 Codex 单独授权前不得重跑正式验收。
+* 遗留问题：TASK-036 B1/B2/C 尚未完成；全部批次完成且 Codex 单独授权前不得重跑正式验收。PR #32 merge commit 为 `97ef08f1cae88e8a702069eb0e07c2035b3b063f`。

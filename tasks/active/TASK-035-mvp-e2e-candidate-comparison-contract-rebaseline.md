@@ -214,7 +214,7 @@ PERCENTAGE_BODY  := UNSIGNED_INTEGER(.[0-9]{1,2})?
 * Claude Code / DeepSeek 编码前规格映射计划经 Codex 审查后获得 `GO / IMPLEMENTATION AUTHORIZED`；执行者仅修改冻结的 test-only harness，未运行正式模式，未 commit、push 或 merge。
 * Codex 实质审查确认 raw 来源、四类 profile、精确 grammar、expected/actual 独立 projection、string/null 序列化和 `samplePasses` 门槛符合冻结契约；定向 XML 计数为 harness `15/15`、既有四类回归 `27/27`，均为 0 failures / 0 errors / 0 skipped。
 * 2026-07-14 独立只读实现审计：`GO`，无 blocking 或 non-blocking finding；Codex Review Intake：`ACCEPT_IMPLEMENTATION / READY_FOR_PRECISE_COMMIT`。
-* 用户授权后，Codex 仅提交唯一 harness 文件；实现提交为 `52d73b3`（`test: implement task 035 candidate comparison v2`）。未 push、未 merge、未改写 `TASK-034` v1 正式输出。
+* 用户授权后，Codex 仅提交唯一 harness 文件；实现提交为 `52d73b3`（`test: implement task 035 candidate comparison v2`），随后随 PR #32 合并；未改写 `TASK-034` v1 正式输出。
 
 ## 风险
 
@@ -230,8 +230,8 @@ PERCENTAGE_BODY  := UNSIGNED_INTEGER(.[0-9]{1,2})?
 ## 完成记录
 
 * 实现完成日期：2026-07-14；父任务保持 active，尚未执行归档流程。
-* 实现文件：`apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/Task034MvpE2EAcceptanceHarnessTest.java`；提交 `52d73b3`。
+* 实现文件：`apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/Task034MvpE2EAcceptanceHarnessTest.java`；提交 `52d73b3`，已随 PR #32 合并，merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f`。
 * 测试结果：harness `15/15`、既有四类回归 `27/27`，均 0 failures / 0 errors / 0 skipped；`git diff --check` 通过。
 * 审查结果：Codex `ACCEPT_IMPLEMENTATION`；独立只读实现审计 `GO`，无 findings。
-* 遗留问题：正式 MVP E2E 未重跑；57 条 occurrence 的多 anchor 缺口仍由 `TASK-036` 承接且未获生产实现授权。
+* 遗留问题：正式 MVP E2E 未重跑；57 条 occurrence 的多 anchor 缺口仍由 `TASK-036` B1/B2/C 承接。
 * 备注：本任务未修改生产链路、人工 fixture / expected 或 `TASK-034` 已留存的 v1 正式失败证据。

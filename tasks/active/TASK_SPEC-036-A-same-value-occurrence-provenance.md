@@ -3,7 +3,7 @@
 # 同一本地项目文件夹下与 CODEX 协作
 
 > **版本**：v0.1
-> **状态**：Implemented / Codex ACCEPT_IMPLEMENTATION / Independent Implementation Audit GO / EXACT COMMIT AUTHORIZED
+> **状态**：Merged via PR #32 / Codex ACCEPT_IMPLEMENTATION / Independent Implementation Audit GO
 > **创建日期**：2026-07-14
 > **起草**：Codex
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -426,7 +426,7 @@ git diff --stat
 - 独立实现审计最终结论：`GO`，无 blocking finding。
 - Non-blocking：resolver 捕获快照后仍对原 `rawCandidates` dedup，在调用方并发修改输入时存在理论时序风险；当前接口无并发共享证据，且冻结要求保持现有裁判逻辑，本批不修改。
 - Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION`。该接纳只覆盖未激活 carrier foundation；不授权 B/C、RuleSetVersion activation、57/57 coverage 声明、正式 E2E、commit、push 或 merge。
-- 用户随后明确授权精确提交本轮 7 个实现文件和 5 个治理文档；该授权不包含 push、merge、B/C 或正式 E2E。最终 commit hash 以本次 Git 历史为准，不在提交后追加第二次自述提交。
+- 用户随后明确授权精确提交本轮 7 个实现文件和 5 个治理文档；实现提交 `c2fd17e` 已随 PR #32 合并，merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f`。该合并不授权正式 E2E，也不表示 B1/B2/C 已完成。
 
 ## 12. 后续任务联动
 

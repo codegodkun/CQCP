@@ -1,6 +1,6 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / TASK_SPEC-036-A Implemented / Codex ACCEPT_IMPLEMENTATION / Independent Implementation Audit GO / EXACT COMMIT AUTHORIZED / B-C NOT AUTHORIZED
+状态：Active / TASK_SPEC-036-A Merged via PR #32 / B1-B2-C Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -146,7 +146,7 @@
 
 ## Next Task Handoff
 
-`TASK_SPEC-036-A` 已实现并经 Codex Review Intake 接纳，独立只读实现审计最终 `GO`；最终定向 XML 为第一组 47/47、第二组 25/25。用户已授权精确提交本轮 7 个实现文件和 5 个治理文档；该提交不授权 B/C、正式 E2E、push 或 merge。
+`TASK_SPEC-036-A` 已实现并经 Codex Review Intake 接纳，独立只读实现审计最终 `GO`；最终定向 XML 为第一组 47/47、第二组 25/25。提交 `c2fd17e` 已随 PR #32 合并。下一步按 B1 静态不可变策略、B2 runtime binding/activation、C 真实 collector 与裁判集成推进；正式 E2E 仍需单独授权。
 
 ## 独立审计与 Codex Review Intake
 
@@ -175,13 +175,13 @@
 ## 待确认
 
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
-* 待后续 B 批次单独冻结新 RuleSetVersion 标识与 carrier activation；A 不改变当前规则集输出。
-* occurrence scope policy 的最终字段名与 RuleSetVersion 承载位置。
+* 已确认：B 拆为 B1 静态不可变策略与 B2 runtime binding/activation；A 不改变当前规则集输出。
+* 待 B1 规格冻结：新 RuleSetVersion 标识、policy 字段、校验和首批明确预算值。
 
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：本任务包、已接受的 ADR-016、`docs/ARCHITECTURE.md` v0.10 与项目记忆文档。
 * 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`。
-* 遗留问题：B/C 的 RuleSetVersion / scope policy / readiness 仍未冻结。
-* 备注：用户已授权精确提交 A 的 7 个实现文件和 5 个治理文档；最终 commit hash 以 Git 历史为准。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过，不得自动进入 B/C、push 或 merge。
+* 遗留问题：B1/B2/C 的 RuleSetVersion / scope policy / readiness 与真实 collector 尚未完成。
+* 备注：A 实现提交 `c2fd17e` 已随 PR #32 合并，merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f`。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过。
