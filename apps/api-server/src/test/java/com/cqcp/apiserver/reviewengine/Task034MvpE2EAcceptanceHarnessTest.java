@@ -74,7 +74,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
             "REVIEWING_RULES:STARTED", "REVIEWING_RULES:COMPLETED",
             "COMPOSING:STARTED", "COMPOSING:COMPLETED");
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Test
     void syntheticDocxProvesSingleRunReferenceChainStageOrderAndSameStoreQuery(@TempDir Path tempDir)
@@ -339,6 +339,35 @@ class Task034MvpE2eAcceptanceHarnessTest {
         assertThat(manifest.startedAt()).isEqualTo(started);
         assertThat(manifest.completedAt()).isEqualTo(completed);
         assertThat(manifest.timingSource()).isEqualTo("TEST_ONLY_EXPLICIT_TIMES");
+    }
+
+    @Test
+    void runManifestWriterRoundTripsInstantsInNonFormalMode(@TempDir Path outputRoot)
+            throws Exception {
+        Instant started = Instant.parse("2026-07-14T02:00:00Z");
+        Instant completed = Instant.parse("2026-07-14T02:00:05Z");
+        Instant snapshotCreatedAt = Instant.parse("2026-07-14T02:00:03Z");
+        RunMetadata metadata = new RunMetadata(
+                "TEST_ONLY_COMMIT", "TEST_ONLY_BRANCH", "TEST_ONLY_GRADLE", "TEST_ONLY");
+        HarnessRunInput input = new HarnessRunInput(
+                FROZEN_SAMPLE_IDS, FIXTURE_ROOT, outputRoot, false, metadata);
+        List<SampleAcceptanceResult> samples = List.of(verdictSample(
+                FROZEN_SAMPLE_IDS.get(0), CandidateComparison.MATCH, versions("writer-round-trip"),
+                SnapshotStatus.SUCCESS, snapshotCreatedAt));
+        RunManifest manifest = aggregateRunManifest(
+                input, samples, started, completed, "TEST_ONLY_WRITER_ROUND_TRIP");
+
+        writeFormalEvidence(outputRoot, samples, List.of(), manifest);
+
+        Path manifestPath = outputRoot.resolve("run-manifest.json");
+        RunManifest reloaded = objectMapper.readValue(manifestPath.toFile(), RunManifest.class);
+        assertThat(reloaded.formalMode()).isFalse();
+        assertThat(reloaded.startedAt()).isEqualTo(started);
+        assertThat(reloaded.completedAt()).isEqualTo(completed);
+        assertThat(reloaded.timingSource()).isEqualTo("TEST_ONLY_WRITER_ROUND_TRIP");
+        assertThat(reloaded.samples()).singleElement()
+                .extracting(SampleManifestEntry::sampleId, SampleManifestEntry::snapshotCreatedAt)
+                .containsExactly(FROZEN_SAMPLE_IDS.get(0), snapshotCreatedAt);
     }
 
     @Test
