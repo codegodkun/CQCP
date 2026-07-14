@@ -1,6 +1,6 @@
 # TASK-035：MVP E2E candidate comparison 契约重基线
 
-状态：Active / Contract Frozen / TASK_SPEC-035-A Frozen / Independent Spec Audit GO / PRE-CODING PLAN PENDING / NO CODE AUTHORIZATION
+状态：Active / Contract Frozen / TASK_SPEC-035-A Implemented / Codex ACCEPT / Independent Implementation Audit GO / Commit 52d73b3 / Formal E2E Not Run
 
 类型：A 类 Evaluation / Governance 父任务
 
@@ -199,7 +199,7 @@ PERCENTAGE_BODY  := UNSIGNED_INTEGER(.[0-9]{1,2})?
 
 ## Next Task Handoff
 
-用户已授权创建并派发 `TASK_SPEC-035-A`。规格已冻结并通过独立只读审计；下一步只允许 Claude Code / DeepSeek 提交编码前规格映射计划，Codex 未明确 `GO / IMPLEMENTATION AUTHORIZED` 前不得编码或重跑正式验收。
+`TASK_SPEC-035-A` 已按角色门禁完成编码前规格映射计划、Codex 实现放行、单文件实现、定向测试、Codex Review Intake、独立只读实现审计和精确提交。正式 MVP E2E 仍须等待 `TASK-036 / ADR-016` 全部自身实现门禁完成，并由 Codex 获得单独正式重跑授权；当前不得直接进入生产实现或正式重跑。
 
 ## 独立审计与 Codex Review Intake
 
@@ -211,6 +211,10 @@ PERCENTAGE_BODY  := UNSIGNED_INTEGER(.[0-9]{1,2})?
 * Codex Review Intake：`ACCEPT_REVIEW / CONTRACT_FROZEN`。
 * 2026-07-14 用户明确授权创建并派发 `TASK_SPEC-035-A`；该授权首先只放行编码前规格映射计划。
 * `TASK_SPEC-035-A` 首轮独立审计 `NO_GO` 的测试发现命令与正式重跑门禁已整改，第二轮复审 `GO`；Codex Review Intake 为 `SPEC_FROZEN / READY_FOR_CODING_PLAN_SUBMISSION / NO_CODE_AUTHORIZATION`。
+* Claude Code / DeepSeek 编码前规格映射计划经 Codex 审查后获得 `GO / IMPLEMENTATION AUTHORIZED`；执行者仅修改冻结的 test-only harness，未运行正式模式，未 commit、push 或 merge。
+* Codex 实质审查确认 raw 来源、四类 profile、精确 grammar、expected/actual 独立 projection、string/null 序列化和 `samplePasses` 门槛符合冻结契约；定向 XML 计数为 harness `15/15`、既有四类回归 `27/27`，均为 0 failures / 0 errors / 0 skipped。
+* 2026-07-14 独立只读实现审计：`GO`，无 blocking 或 non-blocking finding；Codex Review Intake：`ACCEPT_IMPLEMENTATION / READY_FOR_PRECISE_COMMIT`。
+* 用户授权后，Codex 仅提交唯一 harness 文件；实现提交为 `52d73b3`（`test: implement task 035 candidate comparison v2`）。未 push、未 merge、未改写 `TASK-034` v1 正式输出。
 
 ## 风险
 
@@ -220,13 +224,14 @@ PERCENTAGE_BODY  := UNSIGNED_INTEGER(.[0-9]{1,2})?
 
 ## 待确认
 
-* 待 Codex 审查：Claude Code / DeepSeek 编码前规格映射计划。
-* 待后续实现验证：按 v2 重新计算后 candidate comparison 的实际统计。
+* 待后续正式重跑验证：按 v2 重新计算后 candidate comparison 的实际统计。
+* 待人工另行授权：`TASK-036` 生产实现及其自身门禁；ADR-016 接受与 ARCHITECTURE 同步不构成实现授权。
 
 ## 完成记录
 
-* 完成日期：未完成。
-* 变更文件：本任务包及项目记忆文档。
-* 测试结果：两轮独立只读审计及最终 delta 核对完成，最终 `GO`；未运行代码测试。
-* 遗留问题：编码前规格映射计划、Codex 实现放行、实现与正式重跑均未执行。
-* 备注：本任务不修改 `TASK-034` 已留存的 v1 正式失败证据。
+* 实现完成日期：2026-07-14；父任务保持 active，尚未执行归档流程。
+* 实现文件：`apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/Task034MvpE2EAcceptanceHarnessTest.java`；提交 `52d73b3`。
+* 测试结果：harness `15/15`、既有四类回归 `27/27`，均 0 failures / 0 errors / 0 skipped；`git diff --check` 通过。
+* 审查结果：Codex `ACCEPT_IMPLEMENTATION`；独立只读实现审计 `GO`，无 findings。
+* 遗留问题：正式 MVP E2E 未重跑；57 条 occurrence 的多 anchor 缺口仍由 `TASK-036` 承接且未获生产实现授权。
+* 备注：本任务未修改生产链路、人工 fixture / expected 或 `TASK-034` 已留存的 v1 正式失败证据。
