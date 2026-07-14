@@ -1,6 +1,6 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / TASK_SPEC-036-A Merged via PR #32 / B1-B2-C Pending
+状态：Active / A Merged / B1 Spec Frozen and Audited GO / B2-C Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -146,7 +146,7 @@
 
 ## Next Task Handoff
 
-`TASK_SPEC-036-A` 已实现并经 Codex Review Intake 接纳，独立只读实现审计最终 `GO`；最终定向 XML 为第一组 47/47、第二组 25/25。提交 `c2fd17e` 已随 PR #32 合并。下一步按 B1 静态不可变策略、B2 runtime binding/activation、C 真实 collector 与裁判集成推进；正式 E2E 仍需单独授权。
+`TASK_SPEC-036-B1` 已冻结并通过第二轮独立规格审计 `GO`；当前只允许 CC 提交编码前规格映射计划，Codex 明确放行前无代码授权。B2/C 与正式 E2E 均未解锁。
 
 ## 独立审计与 Codex Review Intake
 
@@ -176,7 +176,7 @@
 
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
 * 已确认：B 拆为 B1 静态不可变策略与 B2 runtime binding/activation；A 不改变当前规则集输出。
-* 待 B1 规格冻结：新 RuleSetVersion 标识、policy 字段、校验和首批明确预算值。
+* 已确认：B1 冻结新 RuleSetVersion `v20260715.1`、九点 policy、`maxCandidates=8`、`occurrenceBudget=64` 与未激活校验；当前等待 CC 编码前计划。
 
 ## 完成记录
 

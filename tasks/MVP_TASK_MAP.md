@@ -62,7 +62,7 @@
 | `TASK-034` | MVP E2E 人工 anchor 正式验收执行 | A / Evaluation | Active / Phase 1 executed / FAIL | 文件：`tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`；证据：`outputs/task-034-mvp-e2e-acceptance/`；3 份样本均完成同 run 查询，27 个 `PointStatus` 全为 `PASS`，candidate 9 `MATCH` / 18 `MISMATCH`；63 条 occurrence 保持 57 纳入 / 6 排除，57 条纳入全 `NOT_OBSERVABLE`、6 条排除全 `EXCLUDED`；不修改生产链路，不进入 `TASK-028` / `TASK-031` / `TASK-032` |
 | `TASK_SPEC-034-A` | test-only MVP E2E harness | A / Test-only | Implemented / Codex ACCEPT / Independent Audit ACCEPT | 文件：`tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`；实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`；harness 13/13、既有回归 27/27；仅 test-only observer、同 task 查询和 63 occurrence 比较，未修改受保护生产或人工数据路径 |
 | `TASK-035` | MVP E2E candidate comparison 契约重基线 | A / Evaluation / Governance | Active / TASK_SPEC-035-A Merged via PR #32 / Formal E2E Not Run | 文件：`tasks/active/TASK-035-mvp-e2e-candidate-comparison-contract-rebaseline.md`；harness 15/15、四类回归 27/27；实现提交 `52d73b3`；PR #32 merge commit `97ef08f` |
-| `TASK-036` | 多出处一致性证据架构冻结与分批实现治理 | A / Architecture | Active / A Merged / B1-B2-C Pending | 文件：`tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`；ADR-016 Accepted、ARCHITECTURE v0.10 已同步；A 仅为未激活 carrier，现有规则集 anchor 基数不变 |
+| `TASK-036` | 多出处一致性证据架构冻结与分批实现治理 | A / Architecture | Active / A Merged / B1 Spec Audit GO / B2-C Pending | 文件：`tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`；B1 文件：`tasks/active/TASK_SPEC-036-B1-versioned-consistency-policy.md`；现有规则集仍未激活 |
 | `TASK_SPEC-036-A` | 同值 occurrence provenance carrier foundation | A / Production Foundation | Merged via PR #32 / Codex ACCEPT / Independent Audit GO | 文件：`tasks/active/TASK_SPEC-036-A-same-value-occurrence-provenance.md`；实现提交 `c2fd17e`；47/47 与 25/25；不修改现有 preparer，不激活 RuleSetVersion，不运行正式 E2E |
 | `TASK_SPEC-035-A` | test-only candidate comparison v2 | A / Test-only | Merged via PR #32 / Codex ACCEPT / Independent Audit GO | 唯一实现文件为 `Task034MvpE2EAcceptanceHarnessTest.java`；提交 `52d73b3`；harness 15/15、四类回归 27/27；未运行 formal E2E，未修改 fixture/expected/production |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
@@ -309,6 +309,7 @@
 - A 规格审计：第一轮 `NO_GO` 的三项阻断（无 lineage 删除不同 identity、未绑定版本却改变普通任务 anchor 基数、误称 persistence 写入 round-trip）已整改；第二轮 `GO`。
 - A 接纳：Codex 已审查实际 diff 并复验第一组 47/47、第二组 25/25；独立实现审计先指出双 block 精确测试向量缺口，补充后最终 `GO`，Review Intake 为 `ACCEPT_IMPLEMENTATION`。
 - 当前门禁：A 已随 PR #32 合并。B 拆为 B1 静态不可变策略与 B2 runtime binding/activation；随后才冻结 C。各批均须独立规格审计、CC 编码前计划、Codex GO 和实现复核；不得据 A 宣称 57/57 coverage、激活生产多 anchor 或重跑正式 E2E。
+- B1 规格：`v20260715.1`、九点 `CONSISTENCY_SET`、`maxCandidates=8`、`occurrenceBudget=64` 与未激活校验已冻结；第二轮独立规格审计 `GO`，当前仅允许 CC 编码前计划。
 
 ### `TASK-EVAL-001-A`
 
