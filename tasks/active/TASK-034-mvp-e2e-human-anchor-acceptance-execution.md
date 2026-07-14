@@ -1,6 +1,6 @@
 # TASK-034：MVP E2E 人工 anchor 正式验收执行
 
-状态：待开始 / Phase 0 执行入口门禁未完成
+状态：Active / Phase 0 `NO_GO_TEST_ONLY_HARNESS_REQUIRED` / `STOPPED_FOR_TASK_SPEC_034_A`
 
 类型：Codex 主控正式验收任务
 
@@ -117,6 +117,33 @@
 * 禁止修改生产 parser、`CandidateResolver`、`EvidenceSlot`、`SourceAnchor`、Review Engine、公共 API、数据库、workflow 或生产数据结构。
 * harness 不得生成、修订或倒填人工 ground truth。
 * `TASK_SPEC-034-A` 落地并经独立复核前，本任务保持 active，不运行正式验收。
+
+### Phase 0 执行记录（2026-07-14）
+
+唯一门禁结论：`NO_GO_TEST_ONLY_HARNESS_REQUIRED`。
+
+父任务当前结果：`STOPPED_FOR_TASK_SPEC_034_A`；未进入 Phase 1，未运行 001/002/003 正式 MVP E2E。
+
+| # | 能力 | 直接证据 | 结论 |
+|---|---|---|---|
+| 1 | 真实 DOCX 输入 | `TaskExecutionStateMachineTest` 的 parser-backed 路径使用 expected JSON 的 `sourceDocx` 构造 `TaskExecutionDocumentReference`，真实调用状态机。 | 组件存在，但没有正式单一验收入口。 |
+| 2 | parser 与 block/row/cell 定位 | `TaskExecutionStateMachine.runPreparationStages` 依次执行 `parse → index → plan → build`；`SourceAnchorSummary` 可携带 `blockId`、`locationLevel`、`previewElementRef`。 | 组件证据通过。 |
+| 3 | 状态机与结果快照 | `execute` 经 `REVIEWING_RULES`、`COMPOSING` 保存 `ReviewResultSnapshot`；定向测试通过。 | 组件证据通过。 |
+| 4 | 同 task 结果查询 | `GET /api/v1/tasks/{taskId}/result` 存在；controller 测试 mock service，service 串联测试使用预构造 `ReviewEngineInput`，没有真实 DOCX；生产代码没有提交/执行任务入口。 | 缺失。 |
+| 5 | PointStatus/candidate/证据/anchor/URL/SYS | snapshot 可见 PointStatus、证据摘要、anchor、diagnostics；actual `candidateValue` 只存在于内部 `PointEvidence`，未进入 `PointReviewResult` 或 snapshot/query 输出。 | 缺失。 |
+| 6 | 63 条 occurrence 显式比较 | 现有测试只验证 XLSX→fixture 的 63/57/6 契约；human fixture 不含 parser canonical key，人工位置→actual anchor bridge 不存在。 | 缺失。 |
+
+上述任一缺失即不得判为 `GO_EXISTING_ENTRYPOINT`。不能把真实 DOCX 状态机测试、预构造 input 查询测试、mock controller 测试和 parser-backed canonical overlap 手工拼接为一次完整执行。
+
+验证证据：
+
+* 后端四类定向测试合并复跑：27 tests / 0 failures / 0 errors / 0 skipped，其中 human fixture 10、parser-backed overlap 4、状态机 10、结果查询 controller 3。
+* 环境版本：OpenJDK 21.0.11、Gradle 8.10.2、Node 24.16.0、npm 11.13.0。
+* `npm.cmd run test:admin-web` 环境失败：`vitest` 不可识别；`npm.cmd run build:admin-web` 环境失败：`tsc` 不可识别。未安装依赖或修改环境规避。
+* 前端依赖缺失不是本次唯一门禁结论的依据；入口在代码契约层已不满足六项，因此结论不是 `BLOCKED_ENVIRONMENT`。
+* 完整证据：`outputs/task-034-mvp-e2e-acceptance/entrypoint-audit.md`。
+
+已冻结 `tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`，状态为 `Ready for Coding-Plan Mapping / NO IMPLEMENTATION AUTHORIZATION`。下一步必须先由 Claude Code / DeepSeek 提交编码前规格映射计划，并经 Codex 明确 `GO`；不得直接实现 harness。
 
 ## Phase 1：正式执行
 
@@ -248,7 +275,7 @@ git diff --check
 
 ## Next Task Handoff
 
-本任务建档后可在新 Codex 窗口直接从 Phase 0 执行入口门禁开始。若 Phase 0 为 `NO_GO_TEST_ONLY_HARNESS_REQUIRED`，下一步不是继续正式验收，而是由 Codex 单独冻结 `TASK_SPEC-034-A` 并走编码前规格映射计划门禁。
+Phase 0 已停止，下一执行任务为 `tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md` 的编码前规格映射计划审查。当前只允许 Claude Code / DeepSeek 输出计划并停止；Codex 未明确 `GO` 前不得实现 harness，也不得回到 Phase 1。
 
 ## 风险
 
@@ -260,18 +287,19 @@ git diff --check
 
 ## 待确认
 
-* 待 Phase 0 确认：现有仓库是否已有满足六项条件的单一执行入口。
-* 待 Phase 0 确认：当前结果对象能否直接导出 63 条 occurrence 级比较所需的 actual anchor；不能时必须 STOP 并冻结 `TASK_SPEC-034-A`。
+* 已确认：现有仓库没有满足六项条件的单一执行入口。
+* 已确认：当前查询结果对象不能直接导出 actual `candidateValue`，也不存在 63 条 occurrence 所需的人工位置→actual anchor bridge；已按门禁 STOP 并冻结 `TASK_SPEC-034-A`。
+* 待确认：`TASK_SPEC-034-A` 编码前规格映射计划能否在不修改生产类、不二次执行 parser/review、不宽松匹配的条件下实现同 run test-only 观察。
 
 ## 完成记录
 
-* 完成日期：待填写。
+* 完成日期：未完成；父任务保持 active，Phase 0 于 2026-07-14 停止在 `TASK_SPEC-034-A` 门禁。
 * 建档独立只读复核：2026-07-13，Decision 为 `GO`，无 blocking findings；复核未修改、stage、commit 或 push 任何文件。
-* Phase 0 结论：待填写。
-* 实际执行入口 / 命令：待填写。
-* 变更文件：待填写。
-* 测试结果：待填写。
-* 样本结果：待填写。
-* occurrence 统计：待填写。
-* 最终判定：待填写。
-* 遗留问题：待填写。
+* Phase 0 结论：`NO_GO_TEST_ONLY_HARNESS_REQUIRED`。
+* 实际执行入口 / 命令：未发现满足六项的单一正式入口；只运行本任务列出的四类后端定向测试和前端基础命令，未运行正式三样本命令。
+* 变更文件：Phase 0 审计证据、`TASK_SPEC-034-A`、本父任务与项目记忆文档；未修改任何生产代码、测试、fixture、expected 或受保护数据。
+* 测试结果：后端 27/27，0 failures / 0 errors；前端测试因缺 `vitest`、构建因缺 `tsc` 环境失败。
+* 样本结果：未执行正式 001/002/003，不存在可宣称的样本 PASS/FAIL。
+* occurrence 统计：人工输入契约保持 63 条、57 纳入、6 排除；actual occurrence comparison 未执行。
+* 最终判定：`STOPPED_FOR_TASK_SPEC_034_A`。
+* 遗留问题：test-only harness 尚未实现；必须先完成编码前规格映射计划、Codex 放行、实现 Review Intake 与独立只读复核，之后才可重新进入 Phase 1。
