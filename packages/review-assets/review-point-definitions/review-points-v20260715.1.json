@@ -1,0 +1,328 @@
+{
+  "assetId": "cqcp.review-points.mvp.consistency-set.v20260715.1",
+  "assetType": "REVIEW_POINT_DEFINITION",
+  "version": "v20260715.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "architecture-approved-policy",
+    "paths": [
+      "decisions/ADR-016-multi-occurrence-consistency-evidence-preservation.md",
+      "docs/ARCHITECTURE.md",
+      "tasks/active/TASK_SPEC-036-B1-versioned-consistency-policy.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "B1 静态 consistency policy 源；未绑定 runtime，不对任何任务生效。审核点定义来自 ADR-016 冻结的九点多出处一致性语义。"
+  },
+  "changeReason": "ADR-016 版本化 consistency policy：为全部九个 MVP 审核点冻结 CONSISTENCY_SET cardinality、双预算、scope/exclusion/canonicalization/anchor identity policy。B1 不激活 runtime。",
+  "createdAt": "2026-07-15",
+  "contractTypes": [
+    "ENGINEERING_PROCUREMENT"
+  ],
+  "reviewPoints": [
+    {
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "name": "甲方名称一致性",
+      "family": "PARTY_FIELDS",
+      "candidateRole": "PARTY_A",
+      "requiredStructuredFields": ["partyAName"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "normalizeText(structured partyAName) == normalizeText(candidateValue)",
+      "currentRuntimeSource": "MinimalReviewEngine.compareText + ParserBackedReviewInputPreparer.resolvePartyA",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": [
+            "CONTRACT_TITLE_NAME_MENTION",
+            "AGREEMENT_PREAMBLE_CONTRACT_NAME_MENTION"
+          ]
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "TEXT",
+          "unit": "NONE"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "name": "乙方名称一致性",
+      "family": "PARTY_FIELDS",
+      "candidateRole": "PARTY_B",
+      "requiredStructuredFields": ["partyBName"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "normalizeText(structured partyBName) == normalizeText(candidateValue)",
+      "currentRuntimeSource": "MinimalReviewEngine.compareText + ParserBackedReviewInputPreparer.resolvePartyB",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "TEXT",
+          "unit": "NONE"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "name": "合同总金额一致性",
+      "family": "AMOUNT_TAX",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "requiredStructuredFields": ["contractTotalAmount"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + ParserBackedReviewInputPreparer.resolveNumericEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "CNY"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "name": "税额公式一致性",
+      "family": "AMOUNT_TAX",
+      "candidateRole": "TAX_AMOUNT",
+      "requiredStructuredFields": ["contractTotalAmount", "taxExcludedAmount", "taxAmount"],
+      "optionalStructuredFields": ["taxRate"],
+      "executionStrategy": "FORMULA_RULE",
+      "deterministicRule": "contractTotalAmount = taxExcludedAmount + taxAmount; optional weak check taxAmount = taxExcludedAmount * taxRate / 100",
+      "currentRuntimeSource": "MinimalReviewEngine.reviewTaxFormula + ParserBackedReviewInputPreparer.resolveNumericEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "CNY"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "name": "预付款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "prepaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + ParserBackedReviewInputPreparer.resolveRatioEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "PERCENT"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "name": "进度款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "progressPaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "PERCENT"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+      "name": "竣工款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "COMPLETION_PAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "completionPaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "PERCENT"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "name": "结算款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "settlementPaymentRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "PERCENT"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    },
+    {
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "name": "质保款比例一致性",
+      "family": "PAYMENT_TERMS",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "requiredStructuredFields": ["paymentMethod", "warrantyRetentionRatio"],
+      "executionStrategy": "PATTERN_EXTRACT_THEN_COMPARE",
+      "applicabilityPolicy": "paymentMethod=MILESTONE 时 SKIPPED",
+      "deterministicRule": "absolute difference <= 0.01",
+      "currentRuntimeSource": "MinimalReviewEngine.compareDecimal + MinimalReviewEngine.MONTHLY_ONLY_POINTS + ParserBackedReviewInputPreparer.resolveRatioEvidence",
+      "consistencyPolicy": {
+        "cardinalityMode": "CONSISTENCY_SET",
+        "minCandidates": 1,
+        "maxCandidates": 8,
+        "occurrenceBudget": 64,
+        "scopePolicy": {
+          "version": "consistency-scope-v20260715.1",
+          "includedRegionTypes": ["BODY", "APPENDIX"],
+          "strongExcludedContextTypes": ["TOC", "HEADER_FOOTER", "DELETED", "VOIDED"],
+          "requiredAttributionSignals": ["SOURCE_CONFIDENCE", "PARSE_CONFIDENCE", "VALUE_GRAMMAR", "ROLE_LABEL", "REGION_CONTEXT", "ANCHOR_IDENTITY"],
+          "strongExcludedSemanticContexts": []
+        },
+        "canonicalizationPolicy": {
+          "version": "consistency-canonicalization-v20260715.1",
+          "valueType": "DECIMAL",
+          "unit": "PERCENT"
+        },
+        "anchorIdentityPolicy": {
+          "version": "mvp-occurrence-identity-v1",
+          "blockIdentity": ["reviewPointCode", "blockId"],
+          "tableCellIdentity": ["reviewPointCode", "blockId", "previewElementRef"]
+        }
+      }
+    }
+  ]
+}

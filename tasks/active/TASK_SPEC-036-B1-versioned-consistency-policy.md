@@ -1,7 +1,7 @@
 # TASK SPEC — TASK_SPEC-036-B1 版本化 consistency policy 静态源与发布前校验
 
 > **版本**：v0.1  
-> **状态**：SPEC_FROZEN / Independent Spec Audit GO / Pre-coding Plan Pending / No Code Authorization  
+> **状态**：IMPLEMENTATION_ACCEPTED / Independent Implementation Audit GO / Awaiting Precise Commit Authorization / Runtime Not Bound
 > **创建日期**：2026-07-15  
 > **起草**：Codex  
 > **执行环境**：Claude Code（DeepSeek 模型）  
@@ -227,4 +227,8 @@ git diff --stat
 - Codex Review Intake：`ACCEPT_FINDINGS`。已补齐 `false/false/NONE`、逐点精确 policy、样本硬编码禁入、基于 policy 内容与 manifest 引用的 source 分类，以及分别破坏 legacy/new manifest 的负测。
 - 第二轮独立增量复审：`GO`，无剩余 blocking finding，无需补充 ADR。
 - Non-blocking：PARTY_A 专属合同名称语义排除与 PARTY_B 空数组存在跨合同泛化风险；B2/C 必须依靠可靠 role attribution，无法区分时进入 `SYS-* / NOT_CONCLUDED`，不得仅按标题/前言位置直接排除。
-- Codex Decision：`SPEC_FROZEN / INDEPENDENT_SPEC_AUDIT_GO / PRE-CODING_PLAN_PENDING / NO CODE AUTHORIZATION`。
+- 编码前规格映射计划：真实 Claude Code 在正确分支与 `HEAD 125dc2a` 提交；Codex 以 source.type 完整负测矩阵、逐 policy 禁入扫描、无 shell `spawnSync`、精确资产身份和 README 双分类说明为附加条件给出 `GO / IMPLEMENTATION AUTHORIZED WITH CONDITIONS`。
+- 首轮实现：严格形成五个允许路径；Codex 复验 87/87、validator 9/9 与 `git diff --check` 通过。独立只读实现审计结论 `NO_GO_TO_ACCEPT`，三项阻断为冻结预算/版本缺少独立契约断言、`reviewPoints.push({})` 可绕过九点检查、六模块整体互换仍可自洽通过。
+- 修正轮：Codex 仅授权修改 validator 与 Node test；CC 增加九点 frozen-policy 硬编码契约、六模块完整固定映射、严格九元素/元素类型/code 校验、空对象和 tableCellIdentity 乱序负测。
+- 最终验证：Codex 复验 Node tests `100/100`、15 suites、0 fail/skip；`node scripts/validate-review-assets.mjs` 为 9/9；`git diff --check` 退出 0。第二轮独立审计对全部 `maxCandidates=9`、`occurrenceBudget=65`、三个任意 policy version、追加 `{}`、模块整体交换和 table-cell 乱序执行真实变异探针，结论 `GO_TO_ACCEPT`。
+- Codex Decision：`ACCEPT_IMPLEMENTATION / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / AWAITING_PRECISE_COMMIT_AUTHORIZATION / RUNTIME_NOT_BOUND`。该接纳不解锁 B2/C、TASK-034 正式 E2E 或 TASK-028/029/031/032。

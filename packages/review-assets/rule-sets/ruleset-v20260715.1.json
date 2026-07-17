@@ -1,0 +1,60 @@
+{
+  "assetId": "cqcp.ruleset.mvp.consistency-set.v20260715.1",
+  "assetType": "RULE_SET",
+  "version": "v20260715.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "architecture-approved-policy",
+    "paths": [
+      "decisions/ADR-016-multi-occurrence-consistency-evidence-preservation.md",
+      "docs/ARCHITECTURE.md",
+      "tasks/active/TASK_SPEC-036-B1-versioned-consistency-policy.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "B1 静态 policy 源；未绑定 runtime loader，不对任何任务生效。"
+  },
+  "changeReason": "ADR-016 版本化 consistency policy 静态源：冻结九点 CONSISTENCY_SET 策略、maxCandidates=8、occurrenceBudget=64、scope/exclusion/canonicalization/anchor identity。未激活 runtime。",
+  "createdAt": "2026-07-15",
+  "moduleVersions": {
+    "reviewPointDefinitions": {
+      "assetId": "cqcp.review-points.mvp.consistency-set.v20260715.1",
+      "version": "v20260715.1",
+      "path": "../review-point-definitions/review-points-v20260715.1.json"
+    },
+    "patternLibrary": {
+      "assetId": "cqcp.pattern-library.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../pattern-libraries/pattern-library-v20260705.1.json"
+    },
+    "fieldLexicon": {
+      "assetId": "cqcp.field-lexicon.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../field-lexicons/field-lexicon-v20260705.1.json"
+    },
+    "promptTemplates": {
+      "assetId": "cqcp.prompts.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../prompts/prompts-v20260705.1.json"
+    },
+    "contractTypeProfiles": {
+      "assetId": "cqcp.contract-type-profile.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../contract-type-profiles/contract-type-profile-v20260705.1.json"
+    },
+    "evidenceSelectors": {
+      "assetId": "cqcp.evidence-selector.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../evidence-selectors/evidence-selector-v20260705.1.json"
+    }
+  },
+  "runtimePolicy": {
+    "loaderEnabled": false,
+    "databasePersistence": false,
+    "productionEffect": "NONE",
+    "notes": [
+      "B1 仅建立静态 policy 源；不绑定 runtime loader。",
+      "loaderEnabled=false、databasePersistence=false、productionEffect=NONE 由校验器强制执行。",
+      "B2 才进入 runtime binding / activation；B1 不解锁 B2。"
+    ]
+  }
+}
