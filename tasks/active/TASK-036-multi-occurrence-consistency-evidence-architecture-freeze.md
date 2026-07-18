@@ -1,6 +1,6 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / A Merged / B1 Committed at 137c202 / B2 Implementation Accepted and Awaiting Commit / C Pending
+状态：Active / A Merged / B1 Committed at 137c202 / B2 Committed and Pushed at e18f7a4 / C Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -146,7 +146,7 @@
 
 ## Next Task Handoff
 
-`TASK_SPEC-036-B2` loader / fail-closed activation gate foundation 已实现、通过 Codex Review、最终独立实现审计 `GO` 与真实 Linux Docker image build，当前等待用户对 B2 十路径及治理写回路径的精确 commit 授权。C 仍须另行冻结、审计和授权；正式 E2E 继续锁定。
+`TASK_SPEC-036-B2` loader / fail-closed activation gate foundation 已实现、通过 Codex Review、最终独立实现审计 `GO` 与真实 Linux Docker image build，并通过 commit `e18f7a4` 推送到远端同名分支。下一步候选为另行创建和冻结 C；正式 E2E 继续锁定。
 
 ## 独立审计与 Codex Review Intake
 
@@ -175,6 +175,7 @@
 * B2 实现首轮审查与独立实现审计暴露全局 reason 优先级、schema 类型门禁和 `reviewPointDefinitions` 引用整体异常映射缺口；各轮 finding 均经 Codex 接受后定点修正，最终补齐 209 个 loader/gate 定向测试。
 * B2 最终验证：`RuntimeRuleSetLoaderTest` 200/200、`RuleSetActivationGateTest` 9/9，B1 Node tests 100/100、validator 9/9，`bootJar` 与两条精确 JAR entry 断言通过，Compose config 与真实 Linux `api-server` image build 通过；最终增量独立审计 `GO`，无 findings。
 * B2 Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION / B2_FOUNDATION_ONLY / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / DOCKER_BUILD_GO / AWAITING_PRECISE_COMMIT_AUTHORIZATION`。不接线 execution/snapshot，不生产激活，不解锁 C 或正式 E2E。
+* 2026-07-18 用户授权后，Codex 精确 stage 15 个 B2 实现与治理写回路径，提交 `e18f7a49bbc2508cca45ab93fed9532db82bbbac` 并推送到 `origin/codex/task-036-consistency-set-runtime`；本地、upstream tracking ref 与远端 `ls-remote` 均确认同一 commit，工作区 clean。
 
 ## 风险
 
@@ -188,12 +189,12 @@
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
 * 已确认：B 拆为 B1 静态不可变策略与 B2 runtime binding/activation；A 不改变当前规则集输出。
 * 已确认：B1 冻结并实现新 RuleSetVersion `v20260715.1`、九点 policy、`maxCandidates=8`、`occurrenceBudget=64` 与未激活校验；实现已通过提交 `137c202` 形成可重建基线。
-* 已确认：B2 runtime loader / fail-closed activation gate foundation 已实现并经 Codex、独立审计和真实 Linux Docker build 接纳；B2 不直接接线 execution/snapshot，也不解锁 C。
+* 已确认：B2 runtime loader / fail-closed activation gate foundation 已实现并经 Codex、独立审计和真实 Linux Docker build 接纳，提交 `e18f7a4` 已推送；B2 不直接接线 execution/snapshot，也不解锁 C。
 
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：本任务包、已接受的 ADR-016、`docs/ARCHITECTURE.md` v0.10 与项目记忆文档。
 * 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`；TASK_SPEC-036-B1 Node tests 100/100、review-assets validator 9/9，第二轮独立实现审计 `GO_TO_ACCEPT`；TASK_SPEC-036-B2 loader/gate 209/209、Node 100/100、validator 9/9、boot JAR 与真实 Linux Docker build 通过，最终独立实现审计 `GO`。
-* 遗留问题：B2 已接纳但尚未 commit；C 的真实 collector/readiness/verdict 集成尚未冻结和实现，正式 MVP E2E 继续锁定。
+* 遗留问题：C 的真实 collector/readiness/verdict 集成尚未创建冻结规格或实现，正式 MVP E2E 继续锁定。
 * 备注：A 实现提交 `c2fd17e` 已随 PR #32 合并，merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f`。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过。

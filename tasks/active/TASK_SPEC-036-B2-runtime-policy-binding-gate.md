@@ -1,7 +1,7 @@
 # TASK SPEC — TASK_SPEC-036-B2 consistency policy runtime binding 与激活门禁
 
 > **版本**：v0.2
-> **状态**：IMPLEMENTATION_ACCEPTED / Independent Implementation Audit GO / Docker Build GO / Awaiting Precise Commit Authorization / B2 Foundation Only
+> **状态**：IMPLEMENTATION_COMMITTED_AND_PUSHED / Independent Implementation Audit GO / Docker Build GO / Commit e18f7a4 / B2 Foundation Only
 > **创建日期**：2026-07-16
 > **起草**：Codex
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -338,6 +338,7 @@ Codex Review Intake Decision：`SPEC_FROZEN / INDEPENDENT_SPEC_AUDIT_GO / CODE_B
 - 全量后端测试为 275 tests / 1 failure；唯一失败仍是 `contextLoads()` 连接 PostgreSQL hostname 时的环境依赖错误，不属于 B2 定向回归。
 - 最终增量独立只读审计结论 `GO`，无 blocking / non-blocking finding。真实 Linux Docker Compose build 成功，build stage 的两条 `jar tf | grep -Fx` 断言分别输出目标 RuleSet 与 ReviewPointDefinition entry，镜像 `cqcp-api-server:latest` 构建完成。
 - Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION / B2_FOUNDATION_ONLY / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / DOCKER_BUILD_GO / AWAITING_PRECISE_COMMIT_AUTHORIZATION`。该接纳不表示生产激活完成，不解锁 C、正式 MVP E2E、`TASK-028`、`TASK-031` 或 `TASK-032`。
+- 2026-07-18 用户授权精确 stage、commit，并在提交后检查无问题时 push。Codex 精确提交 15 个授权路径，commit 为 `e18f7a49bbc2508cca45ab93fed9532db82bbbac`（`feat(review-engine): add consistency policy runtime gate`），随后推送到 `origin/codex/task-036-consistency-set-runtime`；远端分支与本地均指向该 commit，ahead/behind 为 0/0，工作区 clean。
 
 ## 13. 风险与停止条件
 
@@ -349,4 +350,4 @@ Codex Review Intake Decision：`SPEC_FROZEN / INDEPENDENT_SPEC_AUDIT_GO / CODE_B
 
 ## 14. Next Task Handoff
 
-B2 实现、最终独立审计与真实 Linux 镜像构建均已通过。下一步仅为 Codex 列出 B2 十个实现路径及本次治理写回路径的精确 stage 清单，并等待用户单独授权 commit；不得自动 push。B2 形成可重建提交后，C 仍须另行创建、冻结、独立审计并获得实现授权；正式 MVP E2E 继续锁定。
+B2 实现、最终独立审计、真实 Linux 镜像构建、精确 commit `e18f7a4` 与远端 push 均已完成。下一步候选为 Codex 创建并冻结 `TASK_SPEC-036-C`，但当前尚无 C 任务文件或实现授权；C 必须另行定界、独立规格审计和编码前放行，正式 MVP E2E 继续锁定。
