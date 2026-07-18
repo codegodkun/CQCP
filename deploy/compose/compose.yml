@@ -12,7 +12,8 @@ services:
 
   api-server:
     build:
-      context: ../../apps/api-server
+      context: ../..
+      dockerfile: apps/api-server/Dockerfile
     environment:
       CQCP_DB_URL: jdbc:postgresql://postgres:5432/${CQCP_DB_NAME:-cqcp}
       CQCP_DB_USERNAME: ${CQCP_DB_USERNAME:-cqcp}

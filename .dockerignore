@@ -1,0 +1,11 @@
+**
+!apps/
+!apps/api-server/
+!apps/api-server/**
+!packages/
+!packages/review-assets/
+!packages/review-assets/**
+apps/api-server/.gradle/
+apps/api-server/.gradle/**
+apps/api-server/build/
+apps/api-server/build/**

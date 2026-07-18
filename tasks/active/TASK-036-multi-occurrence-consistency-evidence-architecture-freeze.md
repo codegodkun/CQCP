@@ -1,6 +1,6 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / A Merged / B1 Implementation Accepted and Awaiting Commit / B2 Spec Audit GO and Code Blocked / C Pending
+状态：Active / A Merged / B1 Committed at 137c202 / B2 Implementation Accepted and Awaiting Commit / C Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -146,7 +146,7 @@
 
 ## Next Task Handoff
 
-`TASK_SPEC-036-B2` 已创建、冻结并通过增量独立规格审计 `GO`，但 B1 五路径尚未形成精确 commit，因此 B2 编码保持阻断。B1 提交形成可重建基线后，下一步才是执行方提交 B2 编码前规格映射计划并等待 Codex 单独 Review；C 与正式 E2E 均未解锁。
+`TASK_SPEC-036-B2` loader / fail-closed activation gate foundation 已实现、通过 Codex Review、最终独立实现审计 `GO` 与真实 Linux Docker image build，当前等待用户对 B2 十路径及治理写回路径的精确 commit 授权。C 仍须另行冻结、审计和授权；正式 E2E 继续锁定。
 
 ## 独立审计与 Codex Review Intake
 
@@ -171,6 +171,10 @@
 * 2026-07-16 Codex 创建并冻结 `TASK_SPEC-036-B2`。首轮独立规格审计 `NO_GO`，阻断为 Docker context 无法看见仓库级 review-assets、跨包不可访问 package-private `ReviewPointCode`、错误使用不存在的 Gradle Wrapper，以及 loader reason code / expected 未冻结。
 * Codex 接受全部 findings：纳入最小 Docker context/Dockerfile/.dockerignore 边界；新类移入 `reviewengine`；改用系统 `gradle`；冻结 runtime source/release state、reason codes、优先级与镜像 boot JAR fail-fast 证据。增量独立复审最终为 `GO`，无剩余 findings。
 * B2 Codex Review Intake Decision：`SPEC_FROZEN / INDEPENDENT_SPEC_AUDIT_GO / CODE_BLOCKED_BY_B1_COMMIT / PRE_CODING_PLAN_NOT_AUTHORIZED / NO_IMPLEMENTATION_AUTHORIZATION`。B2 只冻结 loader/gate foundation；C 前不得把 `v20260715.1` 写为已生效 execution 版本。
+* B1 已形成精确基线提交 `137c202` 并推送到同名远端分支；B2 编码前规格映射计划随后经 Codex 放行，Claude Code / DeepSeek 仅修改冻结的十个允许路径。
+* B2 实现首轮审查与独立实现审计暴露全局 reason 优先级、schema 类型门禁和 `reviewPointDefinitions` 引用整体异常映射缺口；各轮 finding 均经 Codex 接受后定点修正，最终补齐 209 个 loader/gate 定向测试。
+* B2 最终验证：`RuntimeRuleSetLoaderTest` 200/200、`RuleSetActivationGateTest` 9/9，B1 Node tests 100/100、validator 9/9，`bootJar` 与两条精确 JAR entry 断言通过，Compose config 与真实 Linux `api-server` image build 通过；最终增量独立审计 `GO`，无 findings。
+* B2 Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION / B2_FOUNDATION_ONLY / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / DOCKER_BUILD_GO / AWAITING_PRECISE_COMMIT_AUTHORIZATION`。不接线 execution/snapshot，不生产激活，不解锁 C 或正式 E2E。
 
 ## 风险
 
@@ -183,13 +187,13 @@
 
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
 * 已确认：B 拆为 B1 静态不可变策略与 B2 runtime binding/activation；A 不改变当前规则集输出。
-* 已确认：B1 冻结并实现新 RuleSetVersion `v20260715.1`、九点 policy、`maxCandidates=8`、`occurrenceBudget=64` 与未激活校验；实现已接纳，当前等待精确 commit 授权。
-* 已确认：B2 runtime loader / fail-closed activation gate foundation 规格已冻结并经独立审计 `GO`；B1 精确 commit 前不得编码，B2 不直接接线 execution/snapshot，也不解锁 C。
+* 已确认：B1 冻结并实现新 RuleSetVersion `v20260715.1`、九点 policy、`maxCandidates=8`、`occurrenceBudget=64` 与未激活校验；实现已通过提交 `137c202` 形成可重建基线。
+* 已确认：B2 runtime loader / fail-closed activation gate foundation 已实现并经 Codex、独立审计和真实 Linux Docker build 接纳；B2 不直接接线 execution/snapshot，也不解锁 C。
 
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：本任务包、已接受的 ADR-016、`docs/ARCHITECTURE.md` v0.10 与项目记忆文档。
-* 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`；TASK_SPEC-036-B1 Node tests 100/100、review-assets validator 9/9，第二轮独立实现审计 `GO_TO_ACCEPT`；TASK_SPEC-036-B2 首轮规格审计 `NO_GO` 整改后增量复审 `GO`。
-* 遗留问题：B1 尚未提交；B2 尚未提交编码前规格映射计划或获得实现授权；C 的真实 collector/readiness/verdict 集成尚未冻结和实现。
+* 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`；TASK_SPEC-036-B1 Node tests 100/100、review-assets validator 9/9，第二轮独立实现审计 `GO_TO_ACCEPT`；TASK_SPEC-036-B2 loader/gate 209/209、Node 100/100、validator 9/9、boot JAR 与真实 Linux Docker build 通过，最终独立实现审计 `GO`。
+* 遗留问题：B2 已接纳但尚未 commit；C 的真实 collector/readiness/verdict 集成尚未冻结和实现，正式 MVP E2E 继续锁定。
 * 备注：A 实现提交 `c2fd17e` 已随 PR #32 合并，merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f`。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过。

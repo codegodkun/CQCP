@@ -29,6 +29,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
+tasks.processResources {
+    from(file("../../packages/review-assets")) {
+        into("cqcp/review-assets")
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
