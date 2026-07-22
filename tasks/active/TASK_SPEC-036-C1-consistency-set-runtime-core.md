@@ -1,7 +1,7 @@
 # TASK SPEC — TASK_SPEC-036-C1 consistency-set runtime core
 
 > **版本**：v0.3
-> **状态**：IMPLEMENTATION_ACCEPTED / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / C1_INACTIVE_RUNTIME_CORE_ONLY / AWAITING_PRECISE_COMMIT_AUTHORIZATION
+> **状态**：IMPLEMENTATION_ACCEPTED_AND_COMMITTED / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / C1_INACTIVE_RUNTIME_CORE_ONLY / C2_AWAITING_SEPARATE_AUTHORIZATION
 > **创建日期**：2026-07-18
 > **起草**：Codex
 > **执行环境**：Claude Code（DeepSeek 模型）
@@ -693,7 +693,7 @@ ACCEPT_IMPLEMENTATION / C1_INACTIVE_RUNTIME_CORE_ONLY
 - 完整 `gradle test` 共执行 `472 tests`，唯一失败为 `CqcpApiServerApplicationTests.contextLoads()`，根因为 Flyway/PostgreSQL hostname `UnknownHostException`。该结果按 §8 特殊条款记录为环境依赖失败，不声明 full suite 通过；定向 C1 与相关回归均为 green。
 - B1 Node tests 本轮为 `100/100`，review-assets validator 为 `9/9`；`git diff --check` 无 whitespace error，仅有 LF→CRLF 警告。边界 diff 与 activation scan 均通过。
 - Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION / TASK_SPEC-036-C1 / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / C1_INACTIVE_RUNTIME_CORE_ONLY`。该接纳仅证明未接入 production execution 的 runtime core；不激活 `v20260715.1`，不声明 57/57 正式覆盖，不解锁正式 MVP E2E。
-- 当前等待用户精确 stage/commit 授权。C2 仍须在 C1 形成可重建 commit 后，由用户另行授权创建、冻结与审计；本轮不 commit、不 push、不进入 C2。
+- 2026-07-22 用户授权后，Codex 精确 stage 19 个 C1 实现、PowerShell 7 治理和项目记忆路径，创建可重建提交 `de20de86667785a2e1a3f7be099f7f9f5def4b57`（`feat(review-engine): add inactive consistency set runtime core`）。提交后核查确认恰含 19 个授权路径、commit diff check 通过、工作区 clean，相对 upstream 为 0 behind / 1 ahead；尚未 push。C2 仍须用户另行授权创建、冻结与审计，本轮不进入 C2。
 
 ## 12. 后续任务联动
 
