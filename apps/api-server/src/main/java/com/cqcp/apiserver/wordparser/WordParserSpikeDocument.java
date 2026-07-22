@@ -7,7 +7,17 @@ public record WordParserSpikeDocument(
         List<DocumentBlock> blocks,
         List<TableBlock> tables,
         List<FormControlBlock> controls,
-        ParseQualityReport parseQualityReport) {
+        ParseQualityReport parseQualityReport,
+        ScopeCoverageReport scopeCoverageReport) {
+
+    public WordParserSpikeDocument(
+            Metadata metadata,
+            List<DocumentBlock> blocks,
+            List<TableBlock> tables,
+            List<FormControlBlock> controls,
+            ParseQualityReport parseQualityReport) {
+        this(metadata, blocks, tables, controls, parseQualityReport, ScopeCoverageReport.unverified());
+    }
 
     public record Metadata(String sourceFileId, String sourceFileName) {
     }
@@ -86,6 +96,30 @@ public record WordParserSpikeDocument(
             int lowConfidenceBlockCount,
             int lowConfidenceTableCount,
             List<String> warnings) {
+    }
+
+    public record ScopeCoverageReport(
+            boolean verified,
+            List<String> handledStrongContextTypes,
+            List<ExcludedSourceRegion> excludedSourceRegions,
+            List<String> unresolvedSignals) {
+
+        public static ScopeCoverageReport unverified() {
+            return new ScopeCoverageReport(false, List.of(), List.of(), List.of());
+        }
+
+        public ScopeCoverageReport {
+            handledStrongContextTypes = List.copyOf(handledStrongContextTypes);
+            excludedSourceRegions = List.copyOf(excludedSourceRegions);
+            unresolvedSignals = List.copyOf(unresolvedSignals);
+        }
+    }
+
+    public record ExcludedSourceRegion(
+            String contextType,
+            String blockId,
+            String sourcePart,
+            String reason) {
     }
 
     public enum BlockType {

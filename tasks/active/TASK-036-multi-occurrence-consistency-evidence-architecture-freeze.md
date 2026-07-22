@@ -1,6 +1,6 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / A Merged / B1 Committed at 137c202 / B2 Committed and Pushed at e18f7a4 / C Pending
+状态：Active / A Merged / B1 Committed at 137c202 / B2 Committed and Pushed at e18f7a4 / C1 Accepted and Awaiting Commit / C2 Locked
 
 类型：A 类主链路架构治理父任务
 
@@ -176,6 +176,9 @@
 * B2 最终验证：`RuntimeRuleSetLoaderTest` 200/200、`RuleSetActivationGateTest` 9/9，B1 Node tests 100/100、validator 9/9，`bootJar` 与两条精确 JAR entry 断言通过，Compose config 与真实 Linux `api-server` image build 通过；最终增量独立审计 `GO`，无 findings。
 * B2 Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION / B2_FOUNDATION_ONLY / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / DOCKER_BUILD_GO / AWAITING_PRECISE_COMMIT_AUTHORIZATION`。不接线 execution/snapshot，不生产激活，不解锁 C 或正式 E2E。
 * 2026-07-18 用户授权后，Codex 精确 stage 15 个 B2 实现与治理写回路径，提交 `e18f7a49bbc2508cca45ab93fed9532db82bbbac` 并推送到 `origin/codex/task-036-consistency-set-runtime`；本地、upstream tracking ref 与远端 `ls-remote` 均确认同一 commit，工作区 clean。
+* `TASK_SPEC-036-C1` 已实现未接入 execution 的 consistency-set collector、parser scope observability、readiness admission 与 point-local deterministic verdict core。多轮修正关闭 parser、lineage、policy identity、readiness、canonicalization、attribution、预算与测试门禁 findings。
+* C1 最终独立实现审计为 `GO / NO_BLOCKING_FINDINGS / C1_INACTIVE_RUNTIME_CORE_ONLY`。C1 六类定向测试 `188/188`，相关四类回归 `223/223`，B1 Node `100/100`、validator `9/9`、`bootJar` 与静态边界门禁通过；完整 Gradle `472 tests / 1 environment failure`，唯一失败为 PostgreSQL/Flyway `contextLoads()` hostname 依赖。
+* C1 Codex Review Intake Decision：`ACCEPT_IMPLEMENTATION / TASK_SPEC-036-C1 / INDEPENDENT_IMPLEMENTATION_AUDIT_GO / C1_INACTIVE_RUNTIME_CORE_ONLY`。C1 尚未 commit；C2 继续锁定，须先形成可重建 C1 commit 并由用户另行授权冻结。正式 MVP E2E 继续锁定。
 
 ## 风险
 
@@ -190,6 +193,7 @@
 * 已确认：B 拆为 B1 静态不可变策略与 B2 runtime binding/activation；A 不改变当前规则集输出。
 * 已确认：B1 冻结并实现新 RuleSetVersion `v20260715.1`、九点 policy、`maxCandidates=8`、`occurrenceBudget=64` 与未激活校验；实现已通过提交 `137c202` 形成可重建基线。
 * 已确认：B2 runtime loader / fail-closed activation gate foundation 已实现并经 Codex、独立审计和真实 Linux Docker build 接纳，提交 `e18f7a4` 已推送；B2 不直接接线 execution/snapshot，也不解锁 C。
+* 已确认：C1 inactive runtime core 已通过独立实现审计和 Codex Review Intake 接纳，当前等待精确 commit 授权；该接纳不生产激活、不解锁 C2 或正式 MVP E2E。
 
 ## 完成记录
 

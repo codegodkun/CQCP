@@ -49,6 +49,13 @@
 
 除非明确要求，不主动生成英文内容。
 
+## 命令行执行环境
+
+* 后续所有任务的仓库命令必须在 PowerShell 7（`pwsh`）中执行，不得使用 Windows PowerShell 5.1（`powershell.exe`）作为外层 shell。
+* 每个任务开始执行命令前，必须确认 `$PSVersionTable.PSVersion.Major -ge 7`；PowerShell 7 不可用时应立即停止并报告，不得静默回退到 Windows PowerShell 5.1。
+* 如果执行工具不能直接选择 shell，必须显式使用 `pwsh -NoLogo -NoProfile -Command <command>` 包裹仓库命令。
+* `git`、`docker`、`gradle`、`npm` 等程序以及 Docker 容器内的 Linux 命令可以由 PowerShell 7 调用；本条约束的是宿主机仓库操作的外层 shell。
+
 ## 长期工作规则
 
 * 本项目以 PROJECT\_BRIEF.md、CURRENT\_CONTEXT.md、ROADMAP.md、docs/、tasks/、decisions/ 和 changelog/ 作为长期项目记忆，不依赖聊天上下文保存关键决策。

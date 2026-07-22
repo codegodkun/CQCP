@@ -655,4 +655,484 @@ class MinimalReviewEngineTest {
             String matrixRowId,
             StructuredFieldSet structuredFields) {
     }
+
+    private static String evidenceRole(ReviewPointCode code) {
+        return switch (code) {
+            case PARTY_A_NAME_CONSISTENCY -> "PARTY_A";
+            case PARTY_B_NAME_CONSISTENCY -> "PARTY_B";
+            case CONTRACT_TOTAL_AMOUNT_CONSISTENCY -> "CONTRACT_TOTAL_AMOUNT";
+            case TAX_AMOUNT_FORMULA_CONSISTENCY -> "TAX_AMOUNT";
+            case PREPAYMENT_RATIO_CONSISTENCY -> "PREPAYMENT_RATIO";
+            case PROGRESS_PAYMENT_RATIO_CONSISTENCY -> "PROGRESS_PAYMENT_RATIO";
+            case COMPLETION_PAYMENT_RATIO_CONSISTENCY -> "COMPLETION_PAYMENT_RATIO";
+            case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY -> "SETTLEMENT_PAYMENT_RATIO";
+            case WARRANTY_RETENTION_RATIO_CONSISTENCY -> "WARRANTY_RETENTION_RATIO";
+        };
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // Consistency runtime (snapshot-present) verdict tests
+    // ════════════════════════════════════════════════════════════════
+
+    private static RuntimeRuleSetSnapshot textSnapshot(String value, String candidateValue) {
+        var pol = new ConsistencyPolicySnapshot(
+                "CONSISTENCY_SET", 1, 8, 64,
+                "consistency-scope-v20260715.1",
+                List.of("BODY", "APPENDIX"), List.of("TOC"), List.of(), List.of(),
+                "consistency-canonicalization-v20260715.1", "TEXT", "NONE",
+                "mvp-occurrence-identity-v1", List.of(), List.of());
+        var map = new EnumMap<ReviewPointCode, ConsistencyPolicySnapshot>(ReviewPointCode.class);
+        for (var code : ReviewPointCode.values()) {
+            var c = code == ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY
+                        || code == ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY
+                    ? new ConsistencyPolicySnapshot(
+                            "CONSISTENCY_SET", 1, 8, 64,
+                            "consistency-scope-v20260715.1",
+                            List.of("BODY", "APPENDIX"), List.of("TOC"), List.of(), List.of(),
+                            "consistency-canonicalization-v20260715.1", "DECIMAL", "CNY",
+                            "mvp-occurrence-identity-v1", List.of(), List.of())
+                    : code.name().contains("RATIO")
+                            ? new ConsistencyPolicySnapshot(
+                                    "CONSISTENCY_SET", 1, 8, 64,
+                                    "consistency-scope-v20260715.1",
+                                    List.of("BODY", "APPENDIX"), List.of("TOC"), List.of(), List.of(),
+                                    "consistency-canonicalization-v20260715.1", "DECIMAL", "PERCENT",
+                                    "mvp-occurrence-identity-v1", List.of(), List.of())
+                            : pol;
+            map.put(code, c);
+        }
+        return new RuntimeRuleSetSnapshot("test", "v20260715.1", "rp-test", "v20260715.1", map);
+    }
+
+    private static RuntimeRuleSetSnapshot textSnapshot() {
+        return textSnapshot(null, null);
+    }
+
+    private PointEvidence singleValueEvidence(
+            ReviewPointCode code, String candidateValue, String blockId) {
+        var canonical = canonicalizeForTest(candidateValue, code);
+        return new PointEvidence(
+                code, evidenceRole(code), canonical,
+                EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",
+                blockId, "HIGH", "Test evidence",
+                null, null,
+                List.of(new EvidenceSlotCoverage(
+                        slotKeyForTest(code), true, true,
+                        EvidenceSlotCoverageStatus.SATISFIED, null, true)),
+                List.of("Section"), "BODY", "BLOCK_LEVEL", null,
+                List.of(new PointEvidenceOccurrence(
+                        canonical, blockId, "block text",
+                        List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null)));
+    }
+
+    private PointEvidence multiValueEvidence(
+            ReviewPointCode code, String v1, String v2, String b1, String b2) {
+        var c1 = canonicalizeForTest(v1, code);
+        var c2 = canonicalizeForTest(v2, code);
+        return new PointEvidence(
+                code, evidenceRole(code), null,
+                EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",
+                b1, "HIGH", "Multi-value evidence",
+                null, null,
+                List.of(new EvidenceSlotCoverage(
+                        slotKeyForTest(code), true, true,
+                        EvidenceSlotCoverageStatus.SATISFIED, null, true)),
+                List.of("Section"), "BODY", "BLOCK_LEVEL", null,
+                List.of(
+                        new PointEvidenceOccurrence(
+                                c1, b1, "block1 text",
+                                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null),
+                        new PointEvidenceOccurrence(
+                                c2, b2, "block2 text",
+                                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null)));
+    }
+
+    private static String canonicalizeForTest(String value, ReviewPointCode code) {
+        if (code == ReviewPointCode.PARTY_A_NAME_CONSISTENCY
+                || code == ReviewPointCode.PARTY_B_NAME_CONSISTENCY) {
+            return value.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+        }
+        if (code == ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY
+                || code == ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY) {
+            return value.replace(",", "").trim();
+        }
+        // ratio points: strip trailing %
+        var cleaned = value.trim();
+        if (cleaned.endsWith("%")) cleaned = cleaned.substring(0, cleaned.length() - 1).trim();
+        return cleaned;
+    }
+
+    private String slotKeyForTest(ReviewPointCode code) {
+        return evidenceRole(code).toLowerCase(Locale.ROOT);
+    }
+
+    @Test
+    void consistencySnapshotNullDoesNotChangeLegacyTaxFormula() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
+        // Create evidence with candidateValue=999 which doesn't match structured taxAmount
+        // With snapshot=null, evidence-tax check is skipped
+        var mismatchEvidence = new PointEvidence(
+                ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY,
+                "TAX_AMOUNT",
+                "999.99",
+                EvidenceStatus.CONFIRMED,
+                "NATIVE_WORD", "STRUCTURED", "NORMAL",
+                "block-tax", "HIGH",
+                "税额证据", null, null,
+                List.of(new EvidenceSlotCoverage(
+                        "tax_amount", true, true,
+                        EvidenceSlotCoverageStatus.SATISFIED, null, true)));
+        var input = fixtureCase.toGoldenInput()
+                .withEvidenceOverride(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, mismatchEvidence);
+
+        var result = engine.review(input);
+        var point = pointFor(result, ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY);
+
+        // With snapshot=null, evidence-tax check is skipped; strong formula runs and should pass
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.PASS);
+    }
+
+    @Test
+    void consistencyMultiValueProducesBusinessErrorForAllNinePoints() {
+        var records = List.of(
+                new NinePointMultiRecord(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "partyAName", "甲方公司", "甲方公司A", "甲方公司B"),
+                new NinePointMultiRecord(ReviewPointCode.PARTY_B_NAME_CONSISTENCY, "partyBName", "乙方公司", "乙方公司A", "乙方公司B"),
+                new NinePointMultiRecord(ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY, "contractTotalAmount", "100", "100", "200"),
+                new NinePointMultiRecord(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, "taxAmount", "11.5", "11", "12"),
+                new NinePointMultiRecord(ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, "prepaymentRatio", "20", "20", "30"),
+                new NinePointMultiRecord(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY, "progressPaymentRatio", "70", "70", "80"),
+                new NinePointMultiRecord(ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY, "completionPaymentRatio", "80", "80", "90"),
+                new NinePointMultiRecord(ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY, "settlementPaymentRatio", "95", "95", "97"),
+                new NinePointMultiRecord(ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY, "warrantyRetentionRatio", "5", "5", "3"));
+
+        for (var rec : records) {
+            var sf = StructuredFieldSet.builder()
+                    .put("partyAName", "甲方公司")
+                    .put("partyBName", "乙方公司")
+                    .put("contractTotalAmount", "100")
+                    .put("taxExcludedAmount", "88.5")
+                    .put("taxAmount", "11.5")
+                    .put("paymentMethod", "MONTHLY")
+                    .put("prepaymentRatio", "20")
+                    .put("progressPaymentRatio", "70")
+                    .put("completionPaymentRatio", "80")
+                    .put("settlementPaymentRatio", "95")
+                    .put("warrantyRetentionRatio", "5")
+                    .build();
+            var evidence = multiValueEvidence(rec.code(), rec.v1(), rec.v2(), "block-a", "block-b");
+            var input = new ReviewEngineInput(
+                    "task-test", "exec-test", "test", sf,
+                    defaultEvidence(sf), textSnapshot());
+
+            // Override the test point with multi-value evidence
+            var overridden = input.withEvidenceOverride(rec.code(), evidence);
+
+            var result = engine.review(overridden);
+            var point = pointFor(result, rec.code());
+
+            assertThat(point.pointStatus())
+                    .as(rec.code() + " multi-value should be ERROR")
+                    .isEqualTo(PointStatus.ERROR);
+            assertThat(point.findingSeverity())
+                    .as(rec.code() + " severity should be ERROR")
+                    .isEqualTo(FindingSeverity.ERROR);
+            assertThat(point.pointCoverageStatus())
+                    .as(rec.code() + " coverage should be COMPLETE")
+                    .isEqualTo(PointCoverageStatus.COMPLETE);
+            assertThat(point.sourceAnchors())
+                    .as(rec.code() + " should preserve both occurrence anchors")
+                    .hasSize(2);
+        }
+    }
+
+    @Test
+    void consistencySingleValueMatchPassesForAllPoints() {
+        var records = List.of(
+                new NinePointRecord(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "partyAName", "甲方公司", "甲方公司", "甲方公司"),
+                new NinePointRecord(ReviewPointCode.PARTY_B_NAME_CONSISTENCY, "partyBName", "乙方公司", "乙方公司", "乙方公司"),
+                new NinePointRecord(ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY, "contractTotalAmount", "100", "100", "100"),
+                new NinePointRecord(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, "taxAmount", "11.5", "11.5", "11.5"),
+                new NinePointRecord(ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, "prepaymentRatio", "20", "20", "20"),
+                new NinePointRecord(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY, "progressPaymentRatio", "70", "70", "70"),
+                new NinePointRecord(ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY, "completionPaymentRatio", "80", "80", "80"),
+                new NinePointRecord(ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY, "settlementPaymentRatio", "95", "95", "95"),
+                new NinePointRecord(ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY, "warrantyRetentionRatio", "5", "5", "5"));
+
+        for (var rec : records) {
+            var sf = StructuredFieldSet.builder()
+                    .put("partyAName", "甲方公司")
+                    .put("partyBName", "乙方公司")
+                    .put("contractTotalAmount", "100")
+                    .put("taxExcludedAmount", "88.5")
+                    .put("taxAmount", "11.5")
+                    .put("paymentMethod", "MONTHLY")
+                    .put("prepaymentRatio", "20")
+                    .put("progressPaymentRatio", "70")
+                    .put("completionPaymentRatio", "80")
+                    .put("settlementPaymentRatio", "95")
+                    .put("warrantyRetentionRatio", "5")
+                    .build();
+            var evidence = singleValueEvidence(rec.code(), rec.evidenceValue(), "block-main");
+            var input = new ReviewEngineInput(
+                    "task-test", "exec-test", "test", sf,
+                    defaultEvidence(sf), textSnapshot());
+
+            var overridden = input.withEvidenceOverride(rec.code(), evidence);
+            var result = engine.review(overridden);
+            var point = pointFor(result, rec.code());
+
+            assertThat(point.pointStatus())
+                    .as(rec.code() + " single match should be PASS")
+                    .isEqualTo(PointStatus.PASS);
+            assertThat(point.pointCoverageStatus())
+                    .as(rec.code() + " coverage should be COMPLETE")
+                    .isEqualTo(PointCoverageStatus.COMPLETE);
+        }
+    }
+
+    @Test
+    void consistencySingleValueMismatchErrorsForAllPoints() {
+        var records = List.of(
+                new NinePointRecord(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "partyAName", "甲方公司", "其他公司", "其他公司"),
+                new NinePointRecord(ReviewPointCode.PARTY_B_NAME_CONSISTENCY, "partyBName", "乙方公司", "不同公司", "不同公司"),
+                new NinePointRecord(ReviewPointCode.CONTRACT_TOTAL_AMOUNT_CONSISTENCY, "contractTotalAmount", "100", "999", "999"),
+                new NinePointRecord(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, "taxAmount", "11.5", "20", "20"),
+                new NinePointRecord(ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, "prepaymentRatio", "20", "99", "99"),
+                new NinePointRecord(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY, "progressPaymentRatio", "70", "50", "50"),
+                new NinePointRecord(ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY, "completionPaymentRatio", "80", "60", "60"),
+                new NinePointRecord(ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY, "settlementPaymentRatio", "95", "85", "85"),
+                new NinePointRecord(ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY, "warrantyRetentionRatio", "5", "10", "10"));
+
+        for (var rec : records) {
+            var sf = StructuredFieldSet.builder()
+                    .put("partyAName", "甲方公司")
+                    .put("partyBName", "乙方公司")
+                    .put("contractTotalAmount", "100")
+                    .put("taxExcludedAmount", "88.5")
+                    .put("taxAmount", "11.5")
+                    .put("paymentMethod", "MONTHLY")
+                    .put("prepaymentRatio", "20")
+                    .put("progressPaymentRatio", "70")
+                    .put("completionPaymentRatio", "80")
+                    .put("settlementPaymentRatio", "95")
+                    .put("warrantyRetentionRatio", "5")
+                    .build();
+            var evidence = singleValueEvidence(rec.code(), rec.evidenceValue(), "block-main");
+            var input = new ReviewEngineInput(
+                    "task-test", "exec-test", "test", sf,
+                    defaultEvidence(sf), textSnapshot());
+
+            var overridden = input.withEvidenceOverride(rec.code(), evidence);
+            var result = engine.review(overridden);
+            var point = pointFor(result, rec.code());
+
+            assertThat(point.pointStatus())
+                    .as(rec.code() + " single mismatch should be ERROR")
+                    .isEqualTo(PointStatus.ERROR);
+            assertThat(point.findingSeverity())
+                    .as(rec.code() + " severity should be ERROR")
+                    .isEqualTo(FindingSeverity.ERROR);
+            assertThat(point.pointCoverageStatus())
+                    .as(rec.code() + " coverage should be COMPLETE")
+                    .isEqualTo(PointCoverageStatus.COMPLETE);
+        }
+    }
+
+    @Test
+    void consistencyTaxFormulaEvidenceTaxBeforeStrongFormula() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
+        var sf = StructuredFieldSet.builder()
+                .put("partyAName", "甲方公司")
+                .put("partyBName", "乙方公司")
+                .put("contractTotalAmount", "100")
+                .put("taxExcludedAmount", "88.5")
+                .put("taxAmount", "11.5")
+                .put("paymentMethod", "MONTHLY")
+                .put("prepaymentRatio", "20")
+                .put("progressPaymentRatio", "70")
+                .put("completionPaymentRatio", "80")
+                .put("settlementPaymentRatio", "95")
+                .put("warrantyRetentionRatio", "5")
+                .build();
+        // evidence.candidateValue=999 doesn't match structured taxAmount=11.5
+        var evidence = singleValueEvidence(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, "999", "block-tax");
+        var input = new ReviewEngineInput(
+                "task-test", "exec-test", "test", sf,
+                defaultEvidence(sf), textSnapshot())
+                .withEvidenceOverride(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, evidence);
+
+        var result = engine.review(input);
+        var point = pointFor(result, ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY);
+
+        // evidence-tax mismatch → ERROR before strong formula
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.ERROR);
+        assertThat(point.findingSeverity()).isEqualTo(FindingSeverity.ERROR);
+    }
+
+    @Test
+    void consistencyTaxFormulaEvidenceTaxMatchThenStrongFormula() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
+        var sf = StructuredFieldSet.builder()
+                .put("partyAName", "甲方公司")
+                .put("partyBName", "乙方公司")
+                .put("contractTotalAmount", "100")
+                .put("taxExcludedAmount", "88.5")
+                .put("taxAmount", "11.5")
+                .put("paymentMethod", "MONTHLY")
+                .put("prepaymentRatio", "20")
+                .put("progressPaymentRatio", "70")
+                .put("completionPaymentRatio", "80")
+                .put("settlementPaymentRatio", "95")
+                .put("warrantyRetentionRatio", "5")
+                .build();
+        // evidence.candidateValue=11.5 matches structured taxAmount=11.5 → strong formula runs
+        var evidence = singleValueEvidence(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, "11.5", "block-tax");
+        var input = new ReviewEngineInput(
+                "task-test", "exec-test", "test", sf,
+                defaultEvidence(sf), textSnapshot())
+                .withEvidenceOverride(ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY, evidence);
+
+        var result = engine.review(input);
+        var point = pointFor(result, ReviewPointCode.TAX_AMOUNT_FORMULA_CONSISTENCY);
+
+        // evidence-tax match → strong formula 88.5+11.5=100 vs total=100 → PASS
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.PASS);
+    }
+
+    @Test
+    void consistencySnapshotPresentMilestoneStillSkipsMonthlyOnly() throws IOException {
+        var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
+        var sf = StructuredFieldSet.builder()
+                .put("partyAName", "甲方公司")
+                .put("partyBName", "乙方公司")
+                .put("contractTotalAmount", "100")
+                .put("taxExcludedAmount", "88.5")
+                .put("taxAmount", "11.5")
+                .put("paymentMethod", "MILESTONE")
+                .put("prepaymentRatio", "20")
+                .put("progressPaymentRatio", "70")
+                .put("completionPaymentRatio", "80")
+                .put("settlementPaymentRatio", "95")
+                .put("warrantyRetentionRatio", "5")
+                .build();
+        var input = new ReviewEngineInput(
+                "task-test", "exec-test", "test", sf,
+                defaultEvidence(sf), textSnapshot());
+
+        var result = engine.review(input);
+        assertThat(statusByPoint(result.pointResults()))
+                .containsEntry(ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY, PointStatus.SKIPPED)
+                .containsEntry(ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY, PointStatus.SKIPPED)
+                .containsEntry(ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY, PointStatus.SKIPPED)
+                .containsEntry(ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY, PointStatus.SKIPPED)
+                .containsEntry(ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY, PointStatus.PASS);
+    }
+
+    private Map<ReviewPointCode, PointEvidence> defaultEvidence(StructuredFieldSet sf) {
+        var result = new EnumMap<ReviewPointCode, PointEvidence>(ReviewPointCode.class);
+        for (var code : ReviewPointCode.values()) {
+            result.put(code, new PointEvidence(
+                    code, evidenceRole(code), evidenceValue(code, sf),
+                    EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",
+                    "block-" + code.name().toLowerCase(Locale.ROOT), "HIGH",
+                    "Default evidence", null, null,
+                    List.of(new EvidenceSlotCoverage(
+                            slotKeyForTest(code), true, true,
+                            EvidenceSlotCoverageStatus.SATISFIED, null, true))));
+        }
+        return result;
+    }
+
+    private static String evidenceValue(ReviewPointCode code, StructuredFieldSet sf) {
+        return switch (code) {
+            case PARTY_A_NAME_CONSISTENCY -> sf.getRequired("partyAName");
+            case PARTY_B_NAME_CONSISTENCY -> sf.getRequired("partyBName");
+            case CONTRACT_TOTAL_AMOUNT_CONSISTENCY -> sf.getRequired("contractTotalAmount");
+            case TAX_AMOUNT_FORMULA_CONSISTENCY -> sf.getRequired("taxAmount");
+            case PREPAYMENT_RATIO_CONSISTENCY -> sf.getRequired("prepaymentRatio");
+            case PROGRESS_PAYMENT_RATIO_CONSISTENCY -> sf.getRequired("progressPaymentRatio");
+            case COMPLETION_PAYMENT_RATIO_CONSISTENCY -> sf.getRequired("completionPaymentRatio");
+            case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY -> sf.getRequired("settlementPaymentRatio");
+            case WARRANTY_RETENTION_RATIO_CONSISTENCY -> sf.getRequired("warrantyRetentionRatio");
+        };
+    }
+
+    private record NinePointRecord(
+            ReviewPointCode code,
+            String structuredFieldKey,
+            String structuredValue,
+            String evidenceValue,
+            String evidenceBlockId) {
+    }
+
+    private record NinePointMultiRecord(
+            ReviewPointCode code,
+            String structuredFieldKey,
+            String structuredValue,
+            String v1,
+            String v2) {
+    }
+
+    // ────────── Anti-circular multi-value cases ──────────
+
+    @Test
+    void antiCircularSameValueTwoIdentitiesCandidateValueNullDoesNotTriggerMultiValueError() {
+        var sf = StructuredFieldSet.builder()
+                .put("partyAName", "甲方公司").put("partyBName", "乙方公司")
+                .put("contractTotalAmount", "100").put("taxExcludedAmount", "88.5")
+                .put("taxAmount", "11.5").put("paymentMethod", "MONTHLY")
+                .put("prepaymentRatio", "20").put("progressPaymentRatio", "70")
+                .put("completionPaymentRatio", "80").put("settlementPaymentRatio", "95")
+                .put("warrantyRetentionRatio", "5").build();
+        // Two different identities (block-a, block-b) with SAME canonical value
+        var occ1 = new PointEvidenceOccurrence("甲方公司", "block-a", "textA",
+                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+        var occ2 = new PointEvidenceOccurrence("甲方公司", "block-b", "textB",
+                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+        var evidence = new PointEvidence(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "PARTY_A", null,
+                EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",
+                null, "HIGH", "Evidence", null, null,
+                List.of(new EvidenceSlotCoverage("party_a", true, true, EvidenceSlotCoverageStatus.SATISFIED, null, true)),
+                List.of(), "BODY", null, null, List.of(occ1, occ2));
+        var input = new ReviewEngineInput("t", "e", "s", sf, defaultEvidence(sf), textSnapshot())
+                .withEvidenceOverride(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, evidence);
+        var result = engine.review(input);
+        var point = pointFor(result, ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+        // Distinct values from occurrences = {"甲方公司"} → size=1 → NOT multi-value conflict
+        assertThat(point.businessMessage()).doesNotContain("多个不同值");
+    }
+
+    @Test
+    void antiCircularDifferentValueTwoIdentitiesCandidateValueNonNullStillErrors() {
+        var sf = StructuredFieldSet.builder()
+                .put("partyAName", "甲方公司").put("partyBName", "乙方公司")
+                .put("contractTotalAmount", "100").put("taxExcludedAmount", "88.5")
+                .put("taxAmount", "11.5").put("paymentMethod", "MONTHLY")
+                .put("prepaymentRatio", "20").put("progressPaymentRatio", "70")
+                .put("completionPaymentRatio", "80").put("settlementPaymentRatio", "95")
+                .put("warrantyRetentionRatio", "5").build();
+        // Two identities, DIFFERENT canonical values, candidateValue is non-null (projection from first)
+        var occ1 = new PointEvidenceOccurrence("甲方公司A", "block-a", "textA",
+                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+        var occ2 = new PointEvidenceOccurrence("甲方公司B", "block-b", "textB",
+                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+        var evidence = new PointEvidence(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "PARTY_A", "甲方公司A",
+                EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",
+                "block-a", "HIGH", "Evidence", null, null,
+                List.of(new EvidenceSlotCoverage("party_a", true, true, EvidenceSlotCoverageStatus.SATISFIED, null, true)),
+                List.of("Section"), "BODY", "BLOCK_LEVEL", null, List.of(occ1, occ2));
+        var input = new ReviewEngineInput("t", "e", "s", sf, defaultEvidence(sf), textSnapshot())
+                .withEvidenceOverride(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, evidence);
+        var result = engine.review(input);
+        var point = pointFor(result, ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+        // Distinct values = {"甲方公司A", "甲方公司B"} → size=2 → multi-value conflict
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.ERROR);
+        assertThat(point.findingSeverity()).isEqualTo(FindingSeverity.ERROR);
+        assertThat(point.pointCoverageStatus()).isEqualTo(PointCoverageStatus.COMPLETE);
+        assertThat(point.sourceAnchors()).hasSize(2);
+        assertThat(point.businessMessage()).contains("多个不同值");
+        assertThat(result.pointDiagnostics()).isEmpty();
+    }
 }

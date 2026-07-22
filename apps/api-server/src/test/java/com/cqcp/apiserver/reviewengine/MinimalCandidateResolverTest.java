@@ -206,4 +206,56 @@ class MinimalCandidateResolverTest {
                 previewElementRef != null && previewElementRef.contains("/cell:") ? 1 : null,
                 previewElementRef);
     }
+
+    @Test
+    void twentyParamConstructorPreservesNewFields() {
+        var candidate = new EvidenceCandidate(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "PARTY_A",
+                "测试公司",
+                "block-1",
+                "甲方：测试公司",
+                true,
+                true,
+                true,
+                List.of("合同主体"),
+                "BODY",
+                null,
+                null,
+                null,
+                null,
+                "NORMAL",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "HIGH",
+                "BLOCK_LEVEL",
+                List.of());
+
+        assertThat(candidate.contextType()).isEqualTo("NORMAL");
+        assertThat(candidate.sourceOrigin()).isEqualTo("NATIVE_WORD");
+        assertThat(candidate.sourceExtractionMode()).isEqualTo("STRUCTURED");
+        assertThat(candidate.blockConfidence()).isEqualTo("HIGH");
+        assertThat(candidate.previewAnchorLevel()).isEqualTo("BLOCK_LEVEL");
+        assertThat(candidate.semanticContextTypes()).isEmpty();
+    }
+
+    @Test
+    void legacyFourteenParamConstructorSentinelsAreNull() {
+        var candidate = new EvidenceCandidate(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "PARTY_A",
+                "测试公司",
+                "block-1",
+                "甲方：测试公司",
+                true,
+                true,
+                true);
+
+        assertThat(candidate.contextType()).isNull();
+        assertThat(candidate.sourceOrigin()).isNull();
+        assertThat(candidate.sourceExtractionMode()).isNull();
+        assertThat(candidate.blockConfidence()).isNull();
+        assertThat(candidate.previewAnchorLevel()).isNull();
+        assertThat(candidate.semanticContextTypes()).isEmpty();
+    }
 }

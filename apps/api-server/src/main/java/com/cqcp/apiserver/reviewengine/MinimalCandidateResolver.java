@@ -174,7 +174,13 @@ record EvidenceCandidate(
         String tableId,
         Integer rowIndex,
         Integer cellIndex,
-        String previewElementRef) {
+        String previewElementRef,
+        String contextType,
+        String sourceOrigin,
+        String sourceExtractionMode,
+        String blockConfidence,
+        String previewAnchorLevel,
+        List<String> semanticContextTypes) {
 
     EvidenceCandidate(
             ReviewPointCode reviewPointCode,
@@ -199,11 +205,56 @@ record EvidenceCandidate(
                 null,
                 null,
                 null,
-                null);
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of());
+    }
+
+    EvidenceCandidate(
+            ReviewPointCode reviewPointCode,
+            String candidateRole,
+            String candidateValue,
+            String blockId,
+            String blockText,
+            boolean roleLabelSignal,
+            boolean valueFormatSignal,
+            boolean blockAttributionSignal,
+            List<String> sectionPath,
+            String regionType,
+            String tableId,
+            Integer rowIndex,
+            Integer cellIndex,
+            String previewElementRef) {
+        this(
+                reviewPointCode,
+                candidateRole,
+                candidateValue,
+                blockId,
+                blockText,
+                roleLabelSignal,
+                valueFormatSignal,
+                blockAttributionSignal,
+                sectionPath,
+                regionType,
+                tableId,
+                rowIndex,
+                cellIndex,
+                previewElementRef,
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of());
     }
 
     EvidenceCandidate {
         sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
+        semanticContextTypes = semanticContextTypes == null ? List.of() : List.copyOf(semanticContextTypes);
     }
 }
 
