@@ -31,6 +31,52 @@
 - `decisions/ADR-xxx.md`：写重大架构、数据、审核链路、模型职责、集成、权限或治理决策。
 - `changelog/YYYY-MM.md`：写当月项目记忆变更摘要、文档治理、架构沉淀和重要任务完成记录。
 
+GitHub 是 PR、checks、head SHA 和 merge 状态的事实源。项目记忆应记录会影响后续执行的结果和引用，不在 `CURRENT_CONTEXT.md`、TASK、MVP_TASK_MAP 和 changelog 中重复维护完整 Git 流水账。
+
+## Task Level 与写回频率
+
+项目记忆写回频率由 Task Level 决定：
+
+| Task Level | 默认记忆动作 | 何时升级 |
+|---|---|---|
+| `L0 探索` | 不创建 TASK、不写 changelog；在当前对话或父 TASK 中报告只读结论 | 形成已确认决策、风险、后续执行边界或 ADR 候选时 |
+| `L1 小文档` | 多项状态摘要、路径、链接、post-merge 引用和记忆压缩合并为一次文档批处理 | 变更规则、治理语义、任务顺序或下一执行门禁时升级为 L2/L3 |
+| `L2 Feature` | Feature 完成态一次性更新父 TASK、CURRENT_CONTEXT 和 changelog | 触发架构、评测正确性、生产激活、安全等高风险边界时升级为 L3 |
+| `L3 高风险治理` | 在关键门禁形成稳定结论时写入父 TASK，最终收口时统一同步长期记忆 | 不降级；已有明确强门禁不得被新分级追溯解除 |
+
+`TASK_SPEC` 的编码前计划、实现报告、Review Intake 和局部验证优先记录在父 TASK / TASK_SPEC 所在 Feature 分支中，不要求每个中间状态立即形成独立 commit 或同步全部长期记忆。
+
+## Feature / Milestone 收口
+
+Feature 是默认 PR 集成单位，Milestone 是默认任务归档和长期记忆收口单位。
+
+Feature 收口至少记录：
+
+- 交付能力和用户/调用方可见结果；
+- 关联父 TASK 与已完成 TASK_SPEC；
+- 验收和测试结论；
+- 风险、遗留问题和是否触发独立审计；
+- PR 或 merge 的必要引用。
+
+Milestone 收口至少记录：
+
+- Milestone 退出条件是否满足；
+- 哪些 Feature 被纳入；
+- 未满足项和阻塞项；
+- 需要批量迁移到 `tasks/done/` 的任务；
+- 下一 Milestone 的明确入口。
+
+以下内容默认不单独形成长期记忆提交：
+
+- “编码前计划已接纳”；
+- “独立审计已开始/等待中”；
+- “已 commit / 已 push”；
+- “PR 已创建 / checks 运行中”；
+- 不改变下一门禁的普通 post-merge 状态；
+- 单个 TASK_SPEC 的 active/done 目录迁移。
+
+如果上述事实改变下一执行门禁、授权范围、审计有效性或可回滚边界，则应立即写回父 TASK；否则并入下一 Feature/Milestone 批次。
+
 ## 任务文档命名与语言规范
 
 - 任务文件名可使用英文 slug，以保持工程兼容和稳定路径，推荐格式为 `TASK-xxx-english-slug.md`。
@@ -77,18 +123,20 @@
 
 ADR 不用于记录普通任务进度、轻量文案修订、无行为变化的格式调整或临时待确认事项。
 
-## 每次任务结束如何输出 Memory Writeback
+## 收口时如何输出 Memory Writeback
 
-交付摘要中必须包含 `Memory Writeback` 小节，至少说明：
+L1 文档批次、L2 Feature 和 L3 高风险治理收口时，交付摘要必须包含 `Memory Writeback` 小节，至少说明：
 
 - `CURRENT_CONTEXT.md`：是否更新；更新了什么；如未更新，说明原因。
 - `changelog/YYYY-MM.md`：是否更新；记录了什么。
-- `tasks/active/TASK-xxx.md`：是否更新；没有当前任务包时说明“本次无当前 TASK 文件”。
+- 父 `TASK`：是否更新；没有当前任务包时说明 Task Level 和原因。TASK_SPEC 中间状态不要求重复更新全部长期记忆。
 - `docs/*.md` / `PROJECT_BRIEF.md` / `ROADMAP.md` / `decisions/*.md`：如有更新，逐项说明；如无相关更新，可合并说明。
 - `待确认`：本次新增或保留的待确认事项。
 - `ADR`：本次是否需要 ADR；如不需要，说明没有触发重大决策。
 
-低风险文档批处理可以把状态摘要、changelog 补录、路径修正和 post-merge 状态写回合并为一次 Memory Writeback；不要求每个小状态变化单独建 TASK、单独收尾或单独派独立 agent。若没有当前 TASK 文件，应说明“本次为低风险文档批处理，无新 TASK”。
+低风险文档批处理可以把状态摘要、changelog 补录、路径修正和 post-merge 状态写回合并为一次 Memory Writeback；不要求每个小状态变化单独建 TASK、单独收尾或单独派独立 agent。若没有当前 TASK 文件，应说明“本次为 L1 小文档批处理，无新 TASK”。
+
+L0 探索如果没有形成长期结论，只需在交付摘要中说明“L0 探索，无 Memory Writeback”；这不属于遗漏项目记忆。
 
 推荐输出格式：
 
@@ -149,7 +197,7 @@ Memory Writeback:
 - 根据任务需要按需读取 `docs/context-management.md`、相关模块文档和相关 ADR 的提示。
 - 工作范围约束：只完成当前 TASK 范围，不顺手扩展，不把未确认内容写成已确认事实。
 - 若当前 TASK 未明确要求，不写业务代码、不创建脚手架、不安装依赖。
-- 完成后必须执行 Memory Writeback，并更新 `CURRENT_CONTEXT.md`、`changelog/当前月份.md`、当前 TASK 文件；如触发重大决策，创建或更新 ADR。
+- 完成后必须按 Task Level 执行 Memory Writeback：L0 默认不写回，L1 并入文档批次，L2 在 Feature 收口时、L3 在关键门禁或最终收口时更新父 TASK、`CURRENT_CONTEXT.md` 和 `changelog/当前月份.md`；如触发重大决策，创建或更新 ADR。
 - 输出要求至少包含：完成内容、修改文件、测试或验证结果、风险与遗留问题、Memory Writeback、Next Task Handoff。
 
 ### 如果没有明确下一任务怎么办
@@ -185,3 +233,6 @@ Memory Writeback:
 - 不确定的信息统一标记为“待确认”。
 - 文档更新要区分事实、判断、风险、遗留问题和建议下一步任务。
 - 变更记录应说明本次未创建业务代码、未搭建脚手架、未安装依赖，除非任务本身明确相反。
+- `CURRENT_CONTEXT.md` 不维护“最近 PR”流水账；只保留当前活跃能力、阻塞、待确认和下一步所需的最小 Git 引用。
+- changelog 默认每个 Feature 或 Milestone 记录一条结果摘要，不逐条记录计划、审计、commit、push 和 checks 状态。
+- 开发期间以任务文件 `状态` 字段为实时状态真源；`tasks/active/` 到 `tasks/done/` 的物理迁移可在 Feature/Milestone 收口时批量执行。
