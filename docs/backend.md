@@ -391,11 +391,26 @@ MVP 管理台模型配置相关 API 只读：
 - 最终提示词预览不返回完整 prompt，延后到后续治理/技术视图。
 - 任务日志 API 属于任务详情能力，不属于配置审核规则模块。
 - 后端必须在每个 execution 绑定当次 `modelProfileCode`、provider 类型、模型名称、endpoint alias 和 `modelConfigVersion`。任务详情 API 顶部概览返回“审核模型”摘要；历史快照不随后续模型配置切换变化。
-- `Model Profile` 可配置本地模型、公网兼容 OpenAI API 模型和 mock fallback。公网模型 profile 是否可用于真实合同由业务方、管理员和部署环境承担配置责任；后端至少校验 profile 已启用、密钥已配置，并记录使用范围和配置版本。
+- `Model Profile` 可配置本地模型、公网兼容 OpenAI API 模型和 mock fallback。公网模型 profile 是否可用于真实合同由业务方、管理员和部署环境承担配置责任；后端必须校验 profile 已启用、使用范围、配置版本和 provider-specific readiness。需要 secret 的 provider 必须校验密钥 readiness；MOCK 使用 `secretRequired=false`，不得伪造 `secretConfigured=true`。
 - 管理台创建任务时可以传入 `modelProfileCode`；外部 API MVP 不允许调用方直接指定 `modelProfileCode`。外部 API 创建任务统一使用当前默认启用的 `Model Profile`。如后续需要开放，必须通过 caller policy 白名单和独立 API 契约扩展。
 - 模型不论来自本地还是公网，都不得直接决定最终业务 finding；后端仍负责结构化比对、确定性裁判和点级结果合成。
 - MVP 任务日志 API 只暴露阶段级事件，不暴露每个内部函数调用。阶段级事件按 `taskId + executionId + stageName + attempt` 记录，至少包含事件类型、发生时间、耗时、摘要状态、业务化原因和摘要级 `SYS-*` 诊断。
 - 模型阶段日志可返回模型调用状态、token 用量、耗时、模型版本、schema 校验状态和诊断码摘要；不得返回完整 prompt、完整模型 raw output、endpoint secret、stack trace 或逐函数调试日志。
+
+## Execution Binding Release
+
+新 Task Creation 不得自行拼装 execution 的版本与模型字段。后端通过 ADR-017 定义的 resolver，以 `purpose + deploymentScope + contractTypeCode` 查询全部 raw binding rows，再按 `enabled && effectiveFrom<=Clock.instant()` 得到有效 candidates：
+
+* raw rows 为 0：`NOT_FOUND`；
+* 有 raw rows 但有效 candidate 为 0：`INACTIVE_OR_NOT_EFFECTIVE`；
+* 有效 candidates 超过 1：`AMBIGUOUS`；
+* 恰好 1 条时继续校验 budget/model 引用、legacy alias、MOCK readiness、parser/schema release 和 content digest。
+
+正常 lifecycle 切换后允许“旧 disabled row + 新 enabled row”共存，不得按 raw row 数量误判 ambiguity。resolver 不 fallback、不取第一条、不解析异常 message；消费者使用稳定 reason enum。
+
+一期 Demo 只允许 `MVP_DEMO / DEMO / ENGINEERING` binding，显式验证 `ENGINEERING -> ENGINEERING_PROCUREMENT -> v20260705.1` legacy alias。静态 review-assets 不参与 runtime loading；`MVP_DEMO_MOCK` 只用于 Demo，不代表 Production Ready。
+
+resolver 返回完整 14 字段 tuple。后续 Task Creation 必须在一个 PostgreSQL 事务中完成 binding 校验、Task 插入和首个 `QUEUED` Execution 插入；任一失败整体回滚。`execution.model_config_version` 写入 snapshot 时映射为同值 `model_profile_version`。
 
 ## 基线冻结文档
 

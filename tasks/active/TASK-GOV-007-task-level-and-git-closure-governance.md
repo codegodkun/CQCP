@@ -1,6 +1,6 @@
 # TASK-GOV-007：Task Level 与 Git 收口治理优化
 
-状态：Active / 规则重建完成 / 独立审计 GO / Codex Review Intake ACCEPT / PR 待创建
+状态：Completed / PR #33 已合并 / 独立审计 GO / CI PASS
 
 类型：治理流程
 
@@ -155,14 +155,14 @@ rg -n "push.*独立|父任务归档.*独立|每次任务结束.*CURRENT_CONTEXT"
 
 ## 完成记录
 
-* 完成日期：未完成。
-* 变更文件：以允许修改范围内的实际 diff 为准。
+* 完成日期：2026-07-24。
+* 变更文件：允许范围内 16 个治理文档与模板文件。
 * 验证结果：`git diff --check` 通过；冻结快照仅包含允许范围内 16 个文件。
 * 独立审计：`GO_TO_CODEX_REVIEW_INTAKE`；12 项验收全部通过，无 blocking findings；审计前冻结 manifest SHA-256 为 `45b528a24dc750dbd8fadb5ce3ed99af5788357c1e68a9b24c35d798e109faac`。
-* Codex Review Intake：`ACCEPT_GOVERNANCE_DIFF / GO_TO_COMMIT_AND_PR`；审计后仅允许写回本审计与接纳状态，须经聚焦增量复核。
-* Integration unit / PR：独立高风险 PR / 待创建。
+* Codex Review Intake：`ACCEPT_GOVERNANCE_DIFF / GO_TO_COMMIT_AND_PR`；审计状态增量复核结论为 `GO`。
+* Integration unit / PR：独立高风险 PR / PR #33 已合并；head `e997c77e9c31ac9a78662679037b26551b8e5829`，merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`，三项 CI 全部通过。
 * 独立审计触发依据：治理门禁、授权包络和 Git 收口规则变化。
 
 ## Next Task Handoff
 
-当前明确下一步为：完成审计状态增量复核、提交、PR、CI 和 merge。合并后再从新的 `origin/master` 冻结 `TASK-037 / ADR-017`；不得把两个 L3 风险边界合并成一个 PR。
+下一任务已明确为独立 L3 `TASK-037 / ADR-017`；该任务已从 PR #33 后的新主线创建，不把两个 L3 风险边界合并成一个 PR。
