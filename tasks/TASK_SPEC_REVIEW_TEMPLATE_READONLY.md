@@ -18,6 +18,10 @@
 
 **执行模式**：只读复查，不修改文件，不产生实现改动。
 
+**被复查 Task Level**：`L2 Feature` / `L3 高风险治理`
+
+**审计基线**：[冻结 diff / commit SHA / PR head SHA]
+
 **一句话任务**：
 > 对 [被复查 TASK_SPEC / 交付物] 执行 claim-based 只读复查，识别工作区状态、验证关键 claim，并输出复查报告，供 Codex 做 Review Intake Decision。
 
@@ -303,7 +307,7 @@ STOP 输出格式：
 
 ### 7.8 父任务归档 GO / NO-GO
 
-当本复查用于父任务归档前审计时，必须额外输出：
+当本复查用于 L3 父任务、正式 Milestone 或风险触发型 L2 父任务归档前审计时，必须额外输出：
 
 - `GO` 或 `NO-GO`；
 - 父任务 DoD 逐条证据；
@@ -312,7 +316,7 @@ STOP 输出格式：
 - 是否存在 Codex 自写自审绕过 TASK_SPEC；
 - 当前工作区是否满足归档条件。
 
-没有独立 agent 只读审计，不得归档父任务。
+L3 父任务、正式 Milestone、风险触发型 L2 以及已有任务明确要求的父任务，没有独立 agent 只读审计不得归档。普通未触发风险的 L2 可以由 Codex Review Intake、测试与 CI 收口。
 
 ---
 
@@ -322,6 +326,7 @@ STOP 输出格式：
 - 不等于最终验收通过。
 - 复查者不得自行决定提交、归档、push 或接纳结果。
 - Codex 必须单独输出 Review Intake Decision。
+- 审计结论绑定第 0 节冻结基线；受审内容变化后不得继续沿用原结论。单纯 push 且远端 head SHA 与审计基线一致时，不需要重复完整内容审计。
 
 ---
 

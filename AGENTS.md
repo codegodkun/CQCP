@@ -49,6 +49,13 @@
 
 除非明确要求，不主动生成英文内容。
 
+## 命令行执行环境
+
+* 后续所有任务的仓库命令必须在 PowerShell 7（`pwsh`）中执行，不得使用 Windows PowerShell 5.1（`powershell.exe`）作为外层 shell。
+* 每个任务开始执行命令前，必须确认 `$PSVersionTable.PSVersion.Major -ge 7`；PowerShell 7 不可用时应立即停止并报告，不得静默回退到 Windows PowerShell 5.1。
+* 如果执行工具不能直接选择 shell，必须显式使用 `pwsh -NoLogo -NoProfile -Command <command>` 包裹仓库命令。
+* `git`、`docker`、`gradle`、`npm` 等程序以及 Docker 容器内的 Linux 命令可以由 PowerShell 7 调用；本条约束的是宿主机仓库操作的外层 shell。
+
 ## 长期工作规则
 
 * 本项目以 PROJECT\_BRIEF.md、CURRENT\_CONTEXT.md、ROADMAP.md、docs/、tasks/、decisions/ 和 changelog/ 作为长期项目记忆，不依赖聊天上下文保存关键决策。
@@ -82,6 +89,25 @@
 
 不得默认全量读取项目文档。
 
+## Task Level 与收口单位
+
+任务、执行规格和 Git 集成不是同一个单位。所有新工作先按风险和交付形态选择 Task Level：
+
+* `L0 探索`：只读盘点、诊断、可行性调查或不进入主线的 throwaway spike。默认不创建 TASK、不 commit、不执行完整 Memory Writeback；只有形成已确认决策、风险或后续执行边界时才写入项目记忆。
+* `L1 小文档`：无行为变化的状态摘要、changelog 补录、链接/路径修正、post-merge 状态引用和项目记忆压缩。默认不创建 TASK，由 Codex 自查并合并为文档批处理。
+* `L2 Feature`：一个可演示用户能力或完整技术能力。使用一个父 TASK，可包含多个局部 TASK_SPEC；默认以一个 Feature 分支、一个 PR 和一次 merge 收口。
+* `L3 高风险治理`：架构、核心审核语义、模型职责、SYS/Finding、EvidenceSlot、ReviewPointFamily、CandidateResolver、SourceAnchor、评测正确性、生产激活、数据库/API/CI/安全等高风险变化。必须有父 TASK；触发架构规则时先记录 ADR；按可回滚风险边界收口并执行独立只读审计。
+
+收口规则：
+
+* `TASK_SPEC` 是局部执行和 Review Intake 单位，不自动等于独立 commit、push、PR 或 merge。
+* commit 只承载有意义、可理解、可回滚的变化；不得为计划已接纳、审查已完成、已 push、checks 已通过或普通状态同步机械创建提交。
+* `push` 是传输动作。冻结 diff/head SHA 未变化时，不因 push 本身重复完整内容审计。
+* Feature 是默认 PR 集成单位；Milestone 是默认任务归档和项目记忆收口单位。
+* post-merge 状态只有在会改变下一执行门禁时才即时写回；否则并入下一相关 Feature 或 Milestone 文档批次。
+* `tasks/active/` 到 `tasks/done/` 的物理迁移默认在 Feature 或 Milestone 收口时批量完成；任务文件中的 `状态` 字段是开发期间的实时状态真源。
+* GitHub 是 PR、checks 和 merge 状态的事实源。项目记忆只记录影响后续工作的结果、风险、门禁和必要引用，不复制完整 Git 流水账。
+
 ## 角色分离与证据门禁
 
 * Codex 负责父任务边界、冻结 `TASK_SPEC`、实现报告与 `git diff` 审查、Review Intake Decision 和提交前判断。
@@ -89,7 +115,7 @@
 * Claude Code / DeepSeek 只能执行 Codex 已冻结且关联现有父 `TASK` 的局部 `TASK_SPEC`，不得直接承接父 `TASK`，不得 commit，不得 push。
 * Claude Code / DeepSeek 执行代码修改前，必须先提交“编码前规格映射计划”，说明验收断言理解、关键字段或信号的真实输入计算方式、明确不修改路径、范围外风险和预计测试；经 Codex 审查放行后才能实现。
 * 独立 agent 只做只读事实核查，不得实现、修复代码或编写业务逻辑。
-* 每个父任务归档前必须经过独立 agent 只读审计；没有独立审计和 Codex 单独 Review Intake Decision，不得归档。
+* L3 父任务、正式 Milestone 和触发高风险条件的 L2 父任务归档前，必须经过独立 agent 只读审计；普通 L2 Feature 在风险未触发时可由 Codex Review Intake + CI 收口。已有任务文件明确要求的独立归档审计继续有效，不追溯解除。
 * 低风险文档动作（状态摘要、changelog 补录、路径修正、post-merge 状态写回、无行为变化的项目记忆压缩）默认由 Codex 自查并可合并式批量处理；不单独建 TASK，不默认派独立 agent。
 * `TASK_SPEC` 的验收断言必须可证伪，不得只写“完成优化”“修复问题”等描述性目标。
 * 同根因分批修复时，后续 `TASK_SPEC` 必须对照前一批修复原则，明确一致点、差异点及差异理由，并由 Codex 审查接受或拒绝。
@@ -142,6 +168,7 @@
 按 docs/context-management.md 执行项目记忆写回，并在交付摘要中说明 Memory Writeback。
 
 * 低风险文档批处理可以把多个状态摘要、changelog 补录和 post-merge 写回合并为一次 Memory Writeback，不要求每个小状态变化单独收尾。
+* L0 默认不写回；L1 按批次写回；L2 在 Feature 收口时写回；L3 在关键门禁和最终收口时写回。TASK_SPEC 的中间状态不要求逐项同步全部长期记忆。
 * 每次任务结束后必须输出 Next Task Handoff 说明，但这不等于创建新任务。
 * 只有存在明确的下一执行任务文件、任务编号、目标和边界时，才输出 Next Task Handoff Prompt。
 * Next Task Handoff Prompt 必须放在独立 fenced code block 中，方便复制到新 Codex 窗口。
@@ -151,7 +178,7 @@
 ## 项目记忆写入
 
 * 不依赖聊天上下文保存关键决策，长期信息必须写入项目记忆文件。
-* 任务结束必须更新 CURRENT\_CONTEXT.md、changelog/当前月份.md 和当前 TASK 文件。
+* L2 Feature 与 L3 高风险治理收口必须更新 `CURRENT_CONTEXT.md`、`changelog/当前月份.md` 和父 TASK；L0/L1/TASK_SPEC 中间状态按 Task Level 与写回批次处理，不再机械要求每次都更新三个文件。
 * 低风险文档同步、状态摘要、changelog 补录、路径修正和 post-merge 状态写回可合并式批量写入；没有明确当前 TASK 时说明“本次为低风险文档批处理，无新 TASK”。
 * CURRENT\_CONTEXT.md 只保存当前阶段、活跃任务、已完成任务、已接受 ADR、当前阻塞项、待确认事项和下一步任务的摘要及引用路径，不复制其他文档的详细内容。如出现大量历史内容堆积，应定期进行瘦身。
 * 没有当前 TASK 时需说明原因。
@@ -167,9 +194,8 @@
 ## 文档更新规则
 
 * `README.md` 只作为项目入口和导航，不承载实时任务状态。
-* 当前任务状态、阻塞项和下一步以 `CURRENT_CONTEXT.md` 为准。
-* 任务完成后必须更新 `CURRENT_CONTEXT.md`。
-* 任务完成后必须追加当月 `changelog`，例如 `changelog/2026-06.md`。
+* 当前阶段、跨任务阻塞项和下一步以 `CURRENT_CONTEXT.md` 为准；开发期间的任务内状态以对应 TASK 文件的 `状态` 字段为准。
+* L2 Feature 与 L3 收口必须更新 `CURRENT_CONTEXT.md` 并追加当月 `changelog`；L0 默认不写回，L1 按文档批次写回。
 * `docs/DEVELOPMENT.md` 是开发流程、角色分工和 Git 规则入口。
 * `docs/VERIFY.md` 是验收规则、验证清单和提交前检查入口。
 * 只有架构变化才允许更新 `docs/ARCHITECTURE.md`。

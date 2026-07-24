@@ -49,6 +49,10 @@
 
 **执行模式**：Claude Code 软件壳 + DeepSeek API 推理，运行于本地项目文件夹
 
+**父 TASK Level**：`L2 Feature` / `L3 高风险治理`
+
+**Integration unit**：[所属 Feature / Milestone / 独立高风险 PR]
+
 **一句话任务**：
 > [由 CODEX 填写：实现什么 / 输入是什么 / 输出是什么 / 不涉及什么]
 > 示例格式："实现 [模块名]，输入 [输入描述]，输出 [输出描述]，不涉及 [明确排除的范围]。"
@@ -60,6 +64,7 @@
 - Claude Code / DeepSeek 只能修改授权文件，不得 commit，不得 push。
 - 独立 agent 只做只读核查，不得承担本 `TASK_SPEC` 的实现。
 - 不得以 `CURRENT_CONTEXT.md` 的完成自述替代真实代码、测试、原始 console 输出或 commit 证据。
+- 本 `TASK_SPEC` 是局部执行和 Review Intake 单位，不自动创建独立 commit、push、PR 或 merge。
 
 ### 0.2 编码前规格映射计划（实现前硬门禁）
 
@@ -295,8 +300,9 @@ interface [TaskOutput] {
 ```
 执行前：
   ✅ 必须确认当前分支为：[由 CODEX 填写分支名]
-  ✅ 必须确认 git status --short 输出为空（工作区干净）
-  ✅ 如工作区不干净，立即 STOP，不得自行处理未提交内容
+  ✅ 必须记录 git status --short
+  ✅ 工作区可包含 Codex 已声明、属于同一 Feature 且位于允许范围内的既有改动
+  ✅ 如出现未知来源、范围外或无法解释的未提交内容，立即 STOP，不得自行处理
 
 执行中：
   ❌ 不得执行 git commit
@@ -432,9 +438,10 @@ interface [TaskOutput] {
 
 确认：
   - 当前分支为 [由 CODEX 填写分支名]
-  - git status --short 输出为空
+  - git status --short 已记录
+  - 其中既有改动均由 Codex 声明、属于同一 Feature，且位于本 TASK_SPEC 允许范围内
 
-任一条件不满足，立即 STOP：
+如分支不符，或出现未知来源、范围外、无法解释的工作区改动，立即 STOP：
   [STOP: Git 工作区异常 — <具体描述> — 需要人工处理后再继续]
 
 【第三步：执行任务】
@@ -621,7 +628,7 @@ C. 禁止合并，必须回滚或重做
 
 *本 Task Spec 由 CODEX 起草，你审核定稿后，将执行指令块粘贴进 Claude Code 启动任务。*
 *DeepSeek 完成后将实现报告粘贴至第 10 节，CODEX 审查后填写第 11 节。*
-*结论 A 后，由 CODEX 按父 TASK 要求更新 CURRENT_CONTEXT.md、父 TASK 完成记录、changelog/当前月份.md；如项目使用 context_history.md，也同步更新。*
+*结论 A 后，由 CODEX 更新父 TASK / TASK_SPEC 的 Feature 状态；CURRENT_CONTEXT.md 与 changelog 默认在 Feature/Milestone 收口时统一写回，不为每个 TASK_SPEC 中间状态机械创建提交。*
 
 ---
 
@@ -650,3 +657,4 @@ C. 禁止合并，必须回滚或重做
 * `TASK_SPEC 类型` 字段只能由 Codex 设定。
 * 外部顾问不得替代 Codex 设定该字段。
 * readonly-review 输出只作为 Codex 的 Review Intake Decision 输入，不自动代表接纳。
+* TASK_SPEC 类型不决定 Git 集成单位；多个 execution TASK_SPEC 可以属于同一 Feature PR。

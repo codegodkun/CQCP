@@ -4,6 +4,10 @@
 
 类型：待确认
 
+Task Level：`L2 Feature` / `L3 高风险治理`，待确认
+
+Integration unit：Feature / Milestone / 独立高风险 PR，待确认
+
 优先级：待确认
 
 负责人：待确认
@@ -78,6 +82,9 @@
 * 如涉及模型，Gemma/A30 只做局部抽取、证据选择或复杂语义辅助；后端做确定性裁判。
 * 如涉及外部系统，不得创建 SAP-only、OA-only 或管理台-only 审核路径。
 * 如涉及规则、正则、Prompt、模型、合同类型画像或 EvidenceSelector，必须考虑版本化。
+* TASK 是计划与责任边界，不自动等于独立 commit、push、PR 或 merge。
+* 同一 Feature 下可拆多个 TASK_SPEC；默认在一个 Feature 分支和 PR 中集成。
+* L3 必须按可回滚风险边界收口，并在冻结 diff/head SHA 上执行独立只读审计。
 
 ## 交付物
 
@@ -93,7 +100,8 @@
 
 ## 文档更新要求
 
-* 是否需要更新 `CURRENT_CONTEXT.md`：待确认。
+* 写回时机：Feature / Milestone / L3 关键门禁，待确认。
+* 是否需要更新 `CURRENT_CONTEXT.md`：待确认；不要求每个 TASK_SPEC 中间状态同步。
 * 是否需要更新 `docs/*.md`：待确认。
 * 是否需要更新 `changelog/当前月份.md`：是。
 * 是否需要新增或更新 ADR：待确认。
@@ -121,3 +129,5 @@
 * 测试结果：待填写。
 * 遗留问题：待填写。
 * 备注：待填写。
+* Integration unit / PR：待填写。
+* 独立审计触发依据：待填写。

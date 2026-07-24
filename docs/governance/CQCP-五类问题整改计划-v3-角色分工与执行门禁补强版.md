@@ -840,11 +840,13 @@ test-only / mock / isolated unit test 验证
 
 #### 规则三：父任务归档前独立审计
 
-每个父任务归档前必须经过一次独立 agent 只读审计。
+`L3 高风险治理`、正式 Milestone、风险触发型 `L2 Feature`，以及已有任务明确要求独立审计的父任务，归档前必须经过一次独立 agent 只读审计。
 
-没有独立审计，不得归档。
+上述范围没有独立审计，不得归档。未触发风险门禁的普通 `L2 Feature` 可以由 Codex 审查与 CI 验证后，在 Feature 或 Milestone 收口时归档。
 
 普通低风险文档状态同步、changelog 补录、路径修正和 post-merge 状态写回不属于父任务归档，不默认触发独立 agent 审计。
+
+独立审计绑定冻结 diff 或明确 head SHA；内容未变化时，不因 commit、push 或 checks 状态更新重复执行完整审计。人工 ground truth、expected / fixture、核心审核链路、生产激活、数据库 / API / CI / 安全，以及任务文件已有的显式强门禁，仍按高风险范围执行，不得用 Task Level 追溯解除。
 
 审计至少确认：
 

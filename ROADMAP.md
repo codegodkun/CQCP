@@ -118,6 +118,16 @@ Production Readiness 可纳入：
 
 以下里程碑只按架构文档中的能力顺序拆分，不代表最终排期。
 
+里程碑同时是默认的任务归档和项目记忆收口单位。里程碑内部可以包含多个父 TASK、Feature 和 TASK_SPEC；TASK_SPEC 仍可保持细粒度执行和审查，但不要求逐个形成 PR、post-merge PR 或归档 PR。
+
+收口原则：
+
+- 一个可演示用户能力或完整技术能力作为一个 Feature 集成；
+- 一个 Feature 默认一个 PR；
+- 多个 Feature 达到共同退出条件后执行一次 Milestone 收口；
+- L3 高风险变化仍按可回滚风险边界独立审计和集成，不因 Milestone 合并而降低门禁；
+- Milestone 收口统一更新 ROADMAP/CURRENT_CONTEXT/changelog 和任务归档状态，不维护逐步骤 Git 流水账。
+
 1. 项目基础与接口边界
    - 确认目录结构、数据库迁移细节和环境边界。
    - 定义 Task / Execution / Result URL 的最小 API 契约。
