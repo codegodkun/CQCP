@@ -1,8 +1,8 @@
-# 合同质量控制中台 V2 架构设计 v0.10
+# 合同质量控制中台 V2 架构设计 v0.11
 
-日期：2026-07-14
+日期：2026-07-24
 
-状态：Draft for implementation planning review - architecture hardening and ADR-016 incorporated
+状态：Draft for implementation planning review - architecture hardening, ADR-016 and ADR-017 incorporated
 
 ## 1. 背景
 
@@ -2228,6 +2228,63 @@ budgetPriority
 ```
 
 `ContractTypeProfile` 不得覆盖执行逻辑、模型 prompt、后端裁判规则或任意脚本，避免变成第二套规则引擎。
+
+#### 22.1.1 Execution Binding Release 与 Demo profile readiness
+
+`Execution Binding Release` 是部署/迁移发布的不可变内容记录，用于为新 execution 一次性选择完整版本 tuple；它不是第四类业务配置包，也不允许业务管理员自由组合版本。
+
+V1 execution 的以下 14 个 `NOT NULL` 字段必须来自同一条有效 binding：
+
+```text
+contractTypeProfileVersion
+ruleSetVersion
+reviewBudgetProfileVersion
+modelProfileCode
+modelConfigVersion
+parserVersion
+promptVersion
+schemaVersion
+patternLibraryVersion
+fieldLexiconVersion
+evidenceSelectorVersion
+providerType
+modelName
+endpointAlias
+```
+
+Task Creation 必须在单个数据库事务内选择恰好一条 binding、验证引用/readiness/runtime version、创建 Task 与首个 `QUEUED` Execution，并复制全部 14 字段。缺失、重复、未生效、引用漂移、readiness 或 digest 失败时整体 fail closed，不允许回退到内存默认。
+
+版本 identity 与配置 content immutable；`enabled / isDefaultForNewTask / readinessStatus` 是可审计 lifecycle state。发布和回滚必须在同一事务内锁定选择域、撤销旧 enabled/default，再启用新版本。唯一索引只使用稳定 selector 与 `WHERE enabled=true`；`effectiveFrom` 由 resolver 基于注入 `Clock` 校验，不得在 partial index 中使用 `now()`。
+
+一期 Demo binding 冻结：
+
+```text
+purpose = MVP_DEMO
+deploymentScope = DEMO
+contractTypeCode = ENGINEERING
+contractTypeProfileCode = ENGINEERING_PROCUREMENT
+ruleSetVersion = v20260705.1
+modelProfileCode = MVP_DEMO_MOCK
+providerType = MOCK
+usageScope = DEMO
+secretRequired = false
+readinessStatus = READY
+```
+
+`ENGINEERING -> ENGINEERING_PROCUREMENT -> v20260705.1` 是仅用于 code-current legacy traceability 的窄 alias，不改变 OpenAPI 枚举或启用 profile routing。`v20260705.1` manifest 及其 module references 继续保持 `DRAFT / NOT_BOUND / loaderEnabled=false`；execution 绑定的是当前代码中的 legacy 行为，不表示 runtime loader 或 TASK-036-C2 已激活。
+
+平台首次 migration 必须 seed `STANDARD / DEEP_REVIEW / EVALUATION` 三类 `ReviewBudgetProfile` version；Demo binding 只消费 enabled `STANDARD`。三类 seed 可以共享第 9.3 节的保守启动 `ModelBudget`，但这不构成差异化质量或 SLA 承诺；`standardToDeepRatio` 为 `5:1`。
+
+`MVP_DEMO_MOCK` 使用 provider-specific readiness：MOCK 只有在 `secretRequired=false && readinessStatus=READY` 时可用，不得伪造 `secretConfigured=true`。LOCAL / PUBLIC profile 必须有独立的 secret/endpoint readiness 真源；在该真源未实现前不能仅凭 `READY` 字符串放行。
+
+parser 与 model-output schema 使用独立 code-owned release，不得复用 OpenAPI、fixture 或 RuleSetVersion。V1 命名兼容映射固定为：
+
+```text
+execution.model_config_version
+    == ReviewResultSnapshot.model_profile_version
+```
+
+binding digest、稳定 failure reason、lifecycle 切换与 seed 常量的规范见 ADR-017。
 
 ### 22.2 任务级可信度与缺证据归因
 
