@@ -8,6 +8,15 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 26MB
+
+cqcp:
+  review:
+    upload-root: ${CQCP_UPLOAD_ROOT:./data/uploads}
+    max-upload-bytes: ${CQCP_MAX_UPLOAD_BYTES:26214400}
 
 management:
   endpoints:

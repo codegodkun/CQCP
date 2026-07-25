@@ -14,7 +14,7 @@
     "/api/review/tasks": {
       "post": {
         "summary": "创建审核任务",
-        "description": "外部系统或管理台通过同一入口创建审核任务。MVP 只接受 DOCX，外部 API 不允许调用方指定 modelProfileCode。",
+        "description": "当前 MVP Demo 仅由受控管理台入口创建审核任务，并按服务端部署上下文记录 callerType=ADMIN。MVP 只接受 DOCX，不允许调用方指定 callerType、modelProfileCode 或任何执行版本字段。外部系统 caller 的可信身份接入不在当前 Feature 范围。",
         "operationId": "createReviewTask",
         "requestBody": {
           "required": true,
@@ -69,6 +69,16 @@
           },
           "409": {
             "description": "当前规则集或任务状态不允许创建。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BusinessErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "文档存储当前不可用。",
             "content": {
               "application/json": {
                 "schema": {
@@ -794,7 +804,6 @@
       },
       "BaseStructuredFields": {
         "type": "object",
-        "additionalProperties": false,
         "required": [
           "contractName",
           "partyAName",
@@ -810,16 +819,25 @@
         ],
         "properties": {
           "contractName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "pattern": ".*\\S.*"
           },
           "partyAName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
           },
           "partyBName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
           },
           "projectName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "pattern": ".*\\S.*"
           },
           "contractTotalAmount": {
             "type": "number",
@@ -860,6 +878,7 @@
         }
       },
       "MonthlyStructuredFields": {
+        "type": "object",
         "allOf": [
           {
             "$ref": "#/components/schemas/BaseStructuredFields"
@@ -913,9 +932,11 @@
               }
             }
           }
-        ]
+        ],
+        "unevaluatedProperties": false
       },
       "MilestoneStructuredFields": {
+        "type": "object",
         "allOf": [
           {
             "$ref": "#/components/schemas/BaseStructuredFields"
@@ -941,11 +962,14 @@
                 "multipleOf": 0.01
               },
               "milestonePaymentTerms": {
-                "type": "string"
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
               }
             }
           }
-        ]
+        ],
+        "unevaluatedProperties": false
       },
       "ValidationErrorResponse": {
         "type": "object",
@@ -995,7 +1019,14 @@
               "INVALID_DECIMAL_SCALE",
               "INVALID_PERCENT_RANGE",
               "UNSUPPORTED_CURRENCY",
-              "UNSUPPORTED_FILE_TYPE"
+              "UNSUPPORTED_FILE_TYPE",
+              "INVALID_JSON",
+              "EMPTY_FILE",
+              "INVALID_DOCUMENT_CONTENT",
+              "FILE_TOO_LARGE",
+              "UNKNOWN_FIELD",
+              "INVALID_STRING_LENGTH",
+              "INVALID_FIELD_TYPE"
             ]
           },
           "message": {
