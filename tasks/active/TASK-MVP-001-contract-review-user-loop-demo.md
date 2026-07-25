@@ -1,6 +1,6 @@
 # TASK-MVP-001：合同审核用户闭环 Demo
 
-状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A ACCEPTED / TASK_SPEC-MVP-001-B UNLOCKED
+状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A ACCEPTED / TASK_SPEC-MVP-001-B SPEC ACCEPTED / PRE-CODE PLAN NEXT
 
 类型：产品父任务 / MVP 用户闭环
 
@@ -406,12 +406,16 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 
 ## 待确认
 
-* 启动实现前，TASK-036-C2 最终处于“已进入确认基线”还是“未进入、使用 legacy RuleSetVersion”。
-* 各 TASK_SPEC 的精确允许文件、测试命令和执行顺序需由 Codex 在派发前逐个冻结。
+* 已确认：TASK-036-C2 未进入 Feature 基线，本 Feature 使用 legacy `v20260705.1`。
+* `TASK_SPEC-MVP-001-B` 已完成独立只读规格审计并获 `GO`；编码前映射计划尚待执行方
+  提交和 Codex 接受。C-F 的精确允许文件、测试命令和执行顺序仍需逐个冻结。
 
 ## Next Task Handoff
 
-Phase 0 已通过。下一步由 Codex 冻结并独立审计 `TASK_SPEC-MVP-001-A`，再审查执行方编码前规格映射计划；计划未获 `GO_TO_IMPLEMENT` 前不得修改业务代码。
+`TASK_SPEC-MVP-001-A` 已接纳并提交为 `f8d76e7`。`TASK_SPEC-MVP-001-B` 独立只读
+规格审计已获 `GO`，Codex decision 为
+`ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET`。下一步由用户把编码前
+规格映射任务复制给 Claude Code；Codex 未接受计划前不得修改 B 的业务代码。
 
 ## 规划建档审查
 
@@ -421,10 +425,10 @@ Phase 0 已通过。下一步由 Codex 冻结并独立审计 `TASK_SPEC-MVP-001-
 
 ## 完成记录
 
-* 完成日期：未完成。
-* 变更文件：尚未进入实现。
-* 测试结果：尚未运行。
+* 完成日期：Feature 未完成；A 于 2026-07-25 完成局部接纳。
+* 变更文件：A 见 `TASK_SPEC-MVP-001-A` 实现报告；B 尚未进入实现。
+* 测试结果：A 的 Docker Compose 权威全量 backend 232/232 通过；B 尚未运行。
 * 遗留问题：C2 未进入基线，本 Feature 已冻结使用 legacy `v20260705.1`。
-* 备注：用户已授权前置收口通过后继续 TASK_SPEC-MVP-001-A；仍须经过规格审计和编码前计划门禁。
-* Integration unit / PR：`FEATURE-MVP-001` / 分支已创建，PR 尚未创建。
+* 备注：B 规格审计已通过；当前只授权执行方提交编码前规格映射，不授权编码。
+* Integration unit / PR：`FEATURE-MVP-001` / A commit `f8d76e7`；PR 尚未创建。
 * 独立审计触发依据：公开 API、PostgreSQL 写入、上传文件安全、主应用执行编排和真实 Demo E2E。

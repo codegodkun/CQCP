@@ -432,7 +432,7 @@
 9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并。B1/B2/C1 仅存在于远端分支 `codex/task-036-consistency-set-runtime@3adcab4`，未进入主线；C2 与正式 E2E 未实现。
 10. `TASK-GOV-007` 已通过 PR #33 合并，merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`。
 11. `TASK-037 / ADR-017 / TASK_SPEC-037-A` 已通过 PR #34 合并，merge commit `401fd05b7a6c23014adb4f5511533467016c37ba`。该任务采用 `MVP_DEMO_MOCK` 与三类 budget profile seed，不激活 TASK-036-C2。
-12. `FEATURE-MVP-001` 基于 `401fd05`；`TASK_SPEC-MVP-001-A` 已实现并通过 Codex Review Intake 与独立只读复审，使用 legacy `v20260705.1`，`TASK_SPEC-MVP-001-B` 已解锁但尚未创建。
+12. `FEATURE-MVP-001` 基于 `401fd05`；`TASK_SPEC-MVP-001-A` 已实现、通过 Codex Review Intake 与独立只读复审并提交为 `f8d76e7`，使用 legacy `v20260705.1`。`TASK_SPEC-MVP-001-B` 独立只读规格审计已获 `GO`，Codex 已接受规格；下一门仅允许执行方提交编码前规格映射，尚未授权编码。
 13. 低风险文档动作采用合并式批处理：Codex 自查、精确 diff、一次 Memory Writeback；不因普通状态同步单独建 TASK或派独立 agent。
 14. 用户已确认不单独创建 MVP 上线 / readiness 任务；后续按正常开发顺序推进，当前不进入 `TASK-029`。
 15. 后续如需处理 parser provenance，必须另行定界任务；real DOCX `TABLE_CELL` 独立人工 anchor 已完成 fixture / expected JSON 引用 / 定向测试转换，但 `TASK-034` 正式结果当前为 `FAIL`。
