@@ -1,6 +1,6 @@
 # TASK-MVP-001：合同审核用户闭环 Demo
 
-状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A ACCEPTED / TASK_SPEC-MVP-001-B SPEC ACCEPTED / PRE-CODE PLAN NEXT
+状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A ACCEPTED / TASK_SPEC-MVP-001-B IMPLEMENTATION ACCEPTED / TASK_SPEC-MVP-001-C SPEC ACCEPTED / PRE-CODE PLAN NEXT
 
 类型：产品父任务 / MVP 用户闭环
 
@@ -407,15 +407,19 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 ## 待确认
 
 * 已确认：TASK-036-C2 未进入 Feature 基线，本 Feature 使用 legacy `v20260705.1`。
-* `TASK_SPEC-MVP-001-B` 已完成独立只读规格审计并获 `GO`；编码前映射计划尚待执行方
-  提交和 Codex 接受。C-F 的精确允许文件、测试命令和执行顺序仍需逐个冻结。
+* 已确认：`TASK_SPEC-MVP-001-B` 实现已通过 Codex Review Intake 与独立只读实现审计，
+  12 个接受文件提交为 `21203998da7482e25d86136c14d1f42cff2d2ec7`；B 不 push，
+  Feature 工作区提交后 clean。
+* 已确认：`TASK_SPEC-MVP-001-C` 已冻结 execution 状态查询 API 的精确 SQL identity、
+  13 状态映射、snapshot/superseded 真源、字段白名单与测试门禁；下一步仅允许执行方
+  提交编码前规格映射计划，尚未授权 C 编码。D-F 仍需逐个冻结。
 
 ## Next Task Handoff
 
-`TASK_SPEC-MVP-001-A` 已接纳并提交为 `f8d76e7`。`TASK_SPEC-MVP-001-B` 独立只读
-规格审计已获 `GO`，Codex decision 为
-`ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET`。下一步由用户把编码前
-规格映射任务复制给 Claude Code；Codex 未接受计划前不得修改 B 的业务代码。
+`TASK_SPEC-MVP-001-A` 已接纳并提交为 `f8d76e7`。`TASK_SPEC-MVP-001-B` 已接纳并提交为
+`21203998da7482e25d86136c14d1f42cff2d2ec7`，未 push。下一步冻结并提交
+`TASK_SPEC-MVP-001-C` 后，由用户把 C 的编码前规格映射任务复制给 Claude Code；
+Codex 未接受计划前不得修改 C 的业务代码。
 
 ## 规划建档审查
 
@@ -426,9 +430,12 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 ## 完成记录
 
 * 完成日期：Feature 未完成；A 于 2026-07-25 完成局部接纳。
-* 变更文件：A 见 `TASK_SPEC-MVP-001-A` 实现报告；B 尚未进入实现。
-* 测试结果：A 的 Docker Compose 权威全量 backend 232/232 通过；B 尚未运行。
+* 变更文件：A 见 `TASK_SPEC-MVP-001-A` 实现报告；B 见
+  `TASK_SPEC-MVP-001-B` 第 9 节实现报告；C 尚未进入实现。
+* 测试结果：A 的 Docker Compose 权威全量 backend 232/232 通过；B 定向 48/48，
+  全量 backend 270/270，review-assets validator 7/7，均已接纳；C 尚未运行。
 * 遗留问题：C2 未进入基线，本 Feature 已冻结使用 legacy `v20260705.1`。
 * 备注：B 规格审计已通过；当前只授权执行方提交编码前规格映射，不授权编码。
-* Integration unit / PR：`FEATURE-MVP-001` / A commit `f8d76e7`；PR 尚未创建。
+* Integration unit / PR：`FEATURE-MVP-001` / A commit `f8d76e7` /
+  B commit `21203998da7482e25d86136c14d1f42cff2d2ec7`；PR 尚未创建。
 * 独立审计触发依据：公开 API、PostgreSQL 写入、上传文件安全、主应用执行编排和真实 Demo E2E。
