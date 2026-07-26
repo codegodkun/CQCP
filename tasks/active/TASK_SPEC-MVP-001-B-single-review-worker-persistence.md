@@ -538,16 +538,133 @@ tasks/active/TASK_SPEC-MVP-001-B-single-review-worker-persistence.md。
 不得 commit、push、切分支或创建 PR。
 ```
 
-## 9. 实现报告
+## 9. 实现报告（第5轮修订）
 
-尚未进入编码。执行方获准实现后，只能在本节追加：
+### 编码前计划与 Codex decision
 
-* 编码前计划与 Codex decision；
-* 实际修改文件；
-* claim/lease、装载、persistence、worker 行为；
-* 逐项测试原始摘要；
-* STOP、假设和遗留；
-* `git status --short` 与 `git diff --stat`。
+- 第1轮：FINAL_DELTA + MICRO_DELTA → GO_TO_IMPLEMENT → REQUEST_CHANGES
+- 第2轮：修复 10 项 → REQUEST_CHANGES（第3轮）
+- 第3轮：修复 10 项 → REQUEST_CHANGES（第4轮）
+- 第4轮：10 项修复（owner 穿透、Clock、日志、AC18、13 场景 x8、cleanup、§9）→ REQUEST_CHANGES（第5轮）
+- 第5轮（本版）：JdbcTaskExecutionPersistence saveExecution/appendStageLog/saveSnapshot 全部 owner+status/current_stage guard、AC15 三子测试+AC16 范围 trigger、AC17 接口 owner mismatch 测试、Clock 单一 Bean、cleanup LIKE 修复、data/ 清零。本轮未获 Codex 接纳；本节仅记录事实，等待 Codex Review Intake。
+
+### 实际修改文件（12 个 §0.3 allowlist）
+
+| 路径 | 操作 |
+|------|------|
+| `.../reviewengine/SingleReviewWorker.java` | 新增 |
+| `.../reviewengine/SingleReviewWorkerRepository.java` | 新增 |
+| `.../reviewengine/JdbcTaskExecutionPersistence.java` | 新增 |
+| `.../reviewengine/LegacyReviewPointSnapshotCatalog.java` | 新增 |
+| `.../reviewengine/SingleReviewWorkerConfiguration.java` | 新增 |
+| `.../reviewengine/TaskExecutionStateMachine.java` | 修改 |
+| `.../reviewengine/LocalReviewDocumentStore.java` | 修改 |
+| `.../resources/application.yml` | 修改 |
+| `.../reviewengine/SingleReviewWorkerRepositoryTest.java` | 新增 |
+| `.../reviewengine/JdbcTaskExecutionPersistenceTest.java` | 新增 |
+| `.../reviewengine/SingleReviewWorkerIntegrationTest.java` | 新增 |
+| `tasks/active/TASK_SPEC-MVP-001-B-...md` | 修改 |
+
+`TaskExecutionPersistence` + `appendCompletedStageLog` + `FailExecutionAttempted` 均在 `TaskExecutionStateMachine.java`。
+
+### AC1~AC20 映射（第5轮）
+
+| AC | 验证 | 类 |
+|----|------|-----|
+| 1 FIFO | `claimReturnsOldestQueuedExecution` | RepositoryTest |
+| 2 并发 | `concurrentClaimReturnsDistinctExecutions` 双线程 | RepositoryTest |
+| 3 过期 lease | `activeLeaseCannotBeReclaimed` + `expiredLeaseCanBeReclaimed` | RepositoryTest |
+| 4 claim 不改 status | SQL 仅更新 lease 字段 | 代码审查 |
+| 5 A→B | `aToBMonthlyWorkerProducesTerminalExecution` | IntegrationTest |
+| 6 MILESTONE | `milestoneWorkerSkipsFourMonthlyPoints` 4 SKIPPED | IntegrationTest |
+| 7 成对 | `ac7_stageLogsAreOrderedByLogId` 12 entries | PersistenceTest |
+| 8 9 点 | enabledSnapshots size=9 + 10 版本字段逐项 | IntegrationTest |
+| 9 字段不漂移 | structuredFieldsSnapshot string/number 语义 | IntegrationTest |
+| 10 版本匹配 | 10 字段逐项 = execution | IntegrationTest |
+| 11 不 resolve default | worker 不调用 ExecutionBindingCatalog | 代码审查 |
+| 12 query 回读 | PersistentTaskResultStore.findLatestSnapshot | IntegrationTest |
+| 13 8 种失败 | unsupportedRuleSet, malformedSF, parser, missing, cross-task, escape, parentSymlink, finalSymlink | IntegrationTest |
+| 14 脱敏 | FAILED log 固定 `执行阶段失败`；日志不含 path/document/正文 | PersistenceTest + IntegrationTest |
+| 15 snapshot 回滚 | COMPOSING log trigger 注入 | PersistenceTest |
+| 16 FAILED 回滚 | FAILED log trigger 注入 | PersistenceTest |
+| 17 owner 不匹配 | UPDATE/COMPLETED/snapshot 均 0 row | PersistenceTest |
+| 18 enabled=false | scheduled no-op, manual runOnce works | IntegrationTest |
+| 19 回归 | 全量 270 tests / 0 failed | Docker Compose |
+| 20 assets | validate-review-assets.mjs 7/7 | host |
+
+### 测试验证摘要（Docker Compose PostgreSQL, CQCP_REVIEW_WORKER_ENABLED=false）
+
+```text
+测试数据库: cqcp_mvp001_b_test（专用库，全新 `dropdb/createdb` + V1/V2 迁移）
+验证方式: docker compose run -e CQCP_DB_URL=jdbc:postgresql://postgres:5432/cqcp_mvp001_b_test
+
+定向 B 测试:
+  SingleReviewWorkerRepositoryTest   → 5 tests / 0 failed / 0 skipped
+  JdbcTaskExecutionPersistenceTest   → 22 tests / 0 failed / 0 skipped
+  SingleReviewWorkerIntegrationTest  → 11 tests / 0 failed / 0 skipped
+  TaskExecutionStateMachineTest      → 10 tests / 0 failed / 0 skipped
+  B suite total                      → 48 tests / 0 failed / 0 skipped
+
+全量 backend（CQCP_REVIEW_WORKER_ENABLED=false）:
+  gradle test --rerun-tasks          → BUILD SUCCESSFUL / 0 failed / 0 skipped
+  （全量包含 B 48 + A/其他 suites，无过滤）
+
+成功路径全部使用 worker.runOnce() FIFO claim（early created_at 隔离）:
+  ✅ MONTHLY  aToBMonthlyWorkerProducesTerminalExecution
+  ✅ MILESTONE milestoneWorkerSkipsFourMonthlyPoints
+  ✅ AC18     enabledFalse_scheduledNoOp_runOnceWorks
+
+AC13 全部 8 场景走真实 runOnce claim（created_at=2000-01-01 确保 FIFO 优先级）:
+  1. unsupportedRuleSet
+  2. malformedStructuredFields
+  3. parserFailure (empty 0-byte DOCX)
+  4. docxMissing (file does not exist)
+  5. crossTaskReference (documentReference starts with different taskId)
+  6. escapeReference (contains ../)
+  7. parentDirSymlink (task parent dir replaced with symlink)
+  8. finalSymlink (target file is a symlink)
+  每例断言: FAILED, 4 lease fields all NULL, 1 FAILED log "执行阶段失败",
+  无 snapshot, 受控日志含 executionId+errorType=, 不含路径/正文/structured value
+
+AC15 (3 子测试，均使用 scoped CONSTRAINT TRIGGER 限定 NEW.execution_id):
+  - ac15_snapshotInsertFailure_rollsBack: review_result_snapshot INSERT 注入异常 → 全部回滚 + execution 仍 COMPOSING
+  - ac15_completedLogInsertFailure_rollsBack: COMPOSING COMPLETED log INSERT 注入异常 → 全部回滚 + execution 仍 COMPOSING
+  - ac15_terminalUpdateFailure_rollsBack: execution UPDATE (SUCCESS/PARTIAL_SUCCESS) 注入异常 → 全部回滚 + execution 仍 COMPOSING
+
+AC16:
+  - FAILED log INSERT CONSTRAINT TRIGGER 注入 → FAILED update + log 全事务回滚，execution 仍 PARSING
+
+AC17:
+  - saveExecution correct owner (lease stability): acquired=-30min, heartbeat=-10min, expires=+50min（60min 基线）。QUEUED→PARSING→INDEXING 两次刷新后 duration 保持 60min ±2s（<2%），无膨胀；hb2>hb1, exp2>exp1。旧 acquired-at 公式会产生 ~80min 并失败
+  - saveExecution correct owner terminal: COMPOSING→SUCCESS, 四 lease 字段清空
+  - saveExecution wrong owner: IllegalStateException (0-row, transitionGuard 拒绝)
+  - saveExecution stale same-owner (wrong predecessor): PARSING→INDEXING 后用旧 PARSING record 调用 → 0-row 抛错
+  - saveExecution FAILED wrong-stage: INDEXING 中用 FAILED+PARSING record → 0-row 抛错
+  - appendStageLog stale same-owner: INDEXING 时追加 PARSING COMPLETED log → 0-row 抛错
+  - appendStageLog wrong owner: IllegalStateException (0-row)
+  - appendStageLog event validation: 非 STARTED/COMPLETED/FAILED 事件在 Java 层立即 fail closed
+  - saveSnapshot correct owner (COMPOSING): 写入恰好一条; 重复写入 PK/guard 冲突
+  - saveSnapshot wrong owner: 0-row fail closed
+  - startStage missing lease baseline: expires OK but heartbeat+acquired NULL → IllegalStateException("startStage failed"), status QUEUED, current_stage QUEUED, owner 不变, expires 非空, heartbeat+acquired 仍 NULL, 无新增 stage log
+  - LIFECYCLE_NON_TERMINAL_WHERE = LIFECYCLE_WHERE + NON_TERMINAL_BASELINE 用于 startStage、failExecution step1、
+    failExecutionRaw step1（clearLease=false 路径）；terminal clearLease=true 更新无此基线要求
+
+其他验证:
+  node scripts/validate-review-assets.mjs   → 7/7 passed
+  git diff --check                           → 0 issues
+  git status --short                         → 12 files in §0.3 allowlist (4 tracked + 8 untracked), 无 data/（data/ 含上传测试产物，测试后手工清理）
+  git diff --stat HEAD (tracked)             → 4 files, 455 insertions, 343 deletions
+  untracked: 8 new files (5 production + 3 test)
+```
+
+### 残余风险
+
+1. **AC15/AC16 trigger 测试**：`DROP FUNCTION ... CASCADE` 在 `@AfterEach` 执行，生产无残留。
+2. **Worker PARSING+ 崩溃不续跑**：已知设计限制；`QUEUED` 过期 lease 可被重新 claim，但已进入 `PARSING` 及后续 stage 的不会自动 reset。
+3. **V1 stage-log/snapshot 表无 lease owner 列**：owner guard 在 SQL 级通过 JDBC 实现，不保证未来数据迁移不引入无 owner 路径。
+4. **非 terminal lease 刷新要求 expires + heartbeat/acquired 基线**：`saveExecution` non-terminal 直接追加 `NON_TERMINAL_BASELINE`；`startStage`、`failExecution` step1、`failExecutionRaw` step1（clearLease=false）通过 `LIFECYCLE_NON_TERMINAL_WHERE = LIFECYCLE_WHERE + NON_TERMINAL_BASELINE` 保护。基线缺失时 0-row fail closed。terminal clearLease=true 更新（`failExecution`/`failExecutionRaw` step3、`completeExecution` step3）不加此 guard，仍可清空四字段。
+5. **RepositoryTest `claimReturnsEmptyWhenNoQueuedExecutions` 用 Mockito mock**：其余 4 个 claim/lease 测试使用真实 PostgreSQL。
+```
 
 ## 10. Codex Review Intake
 

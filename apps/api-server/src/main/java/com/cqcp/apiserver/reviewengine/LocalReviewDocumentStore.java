@@ -124,6 +124,72 @@ class LocalReviewDocumentStore {
         return Files.exists(resolve(documentReference));
     }
 
+    /**
+     * Read a verified DOCX path for the given task + documentReference.
+     * Validates ownership, pattern, symlink safety, and root confinement.
+     *
+     * <p>This is a separate read path (not a reuse of save-time checks) because
+     * TOCTOU between save and read is acceptable for Demo; production should use
+     * OS-level atomic open.  Each path component is checked with NOFOLLOW_LINKS.
+     * The returned path is the real path of a regular file under the upload root.</p>
+     *
+     * @param taskId             loaded task identifier
+     * @param documentReference  stored reference, e.g. {@code "TASK_abc/32hexchars.docx"}
+     * @return resolved real path, or empty if validation fails
+     */
+    java.util.Optional<java.nio.file.Path> readDocument(String taskId, String documentReference) {
+        Objects.requireNonNull(taskId, "taskId");
+        Objects.requireNonNull(documentReference, "documentReference");
+
+        // Pattern: ^{taskId}/[0-9a-f]{32}\.docx$
+        var expectedPrefix = taskId + "/";
+        if (!documentReference.startsWith(expectedPrefix)) {
+            throw new SecurityException("Invalid document reference");
+        }
+        var suffix = documentReference.substring(expectedPrefix.length());
+        if (!suffix.matches("[0-9a-f]{32}\\.docx")) {
+            throw new SecurityException("Invalid document reference");
+        }
+
+        try {
+            // Resolve to absolute path within root
+            var refPath = java.nio.file.Path.of(documentReference);
+            if (refPath.isAbsolute()) {
+                throw new SecurityException("Invalid document reference");
+            }
+            var resolved = realRoot.resolve(refPath).normalize();
+            if (!resolved.startsWith(realRoot)) {
+                throw new SecurityException("Invalid document reference");
+            }
+
+            // Walk all path components with NOFOLLOW_LINKS
+            var current = realRoot;
+            for (var seg : realRoot.relativize(resolved)) {
+                current = current.resolve(seg);
+                if (java.nio.file.Files.isSymbolicLink(current)) {
+                    throw new SecurityException("Invalid document reference");
+                }
+            }
+
+            // Final file must be a regular file (not symlink, not directory)
+            if (!java.nio.file.Files.isRegularFile(current, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
+                return java.util.Optional.empty();
+            }
+
+            // Real path must still be under root
+            var realPath = current.toRealPath();
+            if (!realPath.startsWith(realRoot)) {
+                throw new SecurityException("Invalid document reference");
+            }
+
+            return java.util.Optional.of(realPath);
+        } catch (java.io.IOException e) {
+            return java.util.Optional.empty();
+        } catch (SecurityException e) {
+            throw e;
+        }
+    }
+
     // --------------- internal helpers ---------------
 
     private Path resolve(String documentReference) {
