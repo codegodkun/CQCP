@@ -698,7 +698,15 @@ ACCEPT_IMPLEMENTATION / READY_TO_COMMIT / NO_PUSH
   `App.tsx`、`App.test.tsx` 和本 TASK_SPEC；
 * 未执行 commit、push、merge。
 
-进入 E 前仍须先完成 D commit 并恢复 clean baseline。
+Git 收口（2026-07-27）：
+
+```text
+commit: 9fcf8574bcefe8884ec2cd8ec93cb71a8c5fbecb
+message: feat(review): add review task creation page
+push: 未执行
+```
+
+D commit 已完成且已恢复 clean baseline；E 规格可按父 TASK 顺序冻结。
 
 ## 11. 后续联动
 
