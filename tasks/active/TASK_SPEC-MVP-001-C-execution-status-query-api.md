@@ -1,6 +1,6 @@
 # TASK_SPEC-MVP-001-C：Execution 状态查询 API
 
-状态：IMPLEMENTATION_ACCEPTED / AWAITING_COMMIT_AUTHORIZATION
+状态：IMPLEMENTATION_ACCEPTED / COMMITTED / NO_PUSH
 
 TASK_SPEC 类型：`execution`
 
@@ -594,6 +594,14 @@ ACCEPT_IMPLEMENTATION / READY_TO_COMMIT / NO_PUSH
 * 工作区仅包含本规格 allowlist 内 9 个新增 Java 文件和本 TASK_SPEC 报告修改，
   无 `data/` 残留；
 * 未执行 commit、push、merge。
+
+Git 收口（2026-07-27）：
+
+```text
+commit: 0eb9d9e312c6698fb4532e623362bea091165f87
+message: feat(review): add execution status query API
+push: 未执行
+```
 
 ## 11. 后续联动
 
