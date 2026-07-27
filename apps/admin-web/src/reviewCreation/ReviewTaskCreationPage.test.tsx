@@ -2,6 +2,7 @@ import { cleanup, render, screen, fireEvent, waitFor, act } from "@testing-libra
 import { StrictMode } from "react";
 import { ConfigProvider } from "antd";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { MemoryRouter, useLocation } from "react-router-dom";
 
 import { ReviewTaskCreationPage } from "./ReviewTaskCreationPage";
 import { SubmitError } from "./api";
@@ -39,9 +40,17 @@ vi.mock("./api", () => ({
 function renderPage() {
   return render(
     <ConfigProvider>
-      <ReviewTaskCreationPage />
+      <MemoryRouter>
+        <ReviewTaskCreationPage />
+        <LocationView />
+      </MemoryRouter>
     </ConfigProvider>,
   );
+}
+
+function LocationView() {
+  const location = useLocation();
+  return <div data-testid="location">{location.pathname + location.search}</div>;
 }
 
 function createDocxFile(name: string, size = 1024): File {
@@ -775,14 +784,14 @@ describe("ReviewTaskCreationPage", () => {
     }
   });
 
-  // ── 11 202成功：完整交互展示四字段、不导航不轮询不泄露内部sentinel ──
+  // ── 11 202成功：仅由显式 task/execution identity 导航 ──
 
-  it("11: 202 success — displays taskId/executionId/status/resultUrl precisely, no nav/poll/sentinel", async () => {
+  it("11: 202 success — navigates to the encoded status identity and ignores resultUrl", async () => {
     submitReviewTaskMock.mockResolvedValue({
-      taskId: "task-mvp-001",
-      executionId: "exec-mvp-001",
+      taskId: "task /甲",
+      executionId: "exec /乙",
       status: "QUEUED",
-      resultUrl: "/results/mvp-001",
+      resultUrl: "https://evil.example/SECRET_SENTINEL",
     });
 
     renderPage();
@@ -805,16 +814,14 @@ describe("ReviewTaskCreationPage", () => {
     // Submit
     fireEvent.click(screen.getByTestId("submit-btn"));
 
-    // Assert success card with all four backend values
+    // Navigation uses only the parsed task and execution identities.
     await waitFor(() => {
-      expect(screen.getByTestId("success-card")).toBeInTheDocument();
+      expect(screen.getByTestId("location")).toHaveTextContent(
+        "/review/tasks/task%20%2F%E7%94%B2/executions/exec%20%2F%E4%B9%99",
+      );
     });
-
-    // Each field displayed as exact text — including precise resultUrl
-    expect(screen.getByText("Task ID: task-mvp-001")).toBeInTheDocument();
-    expect(screen.getByText("Execution ID: exec-mvp-001")).toBeInTheDocument();
-    expect(screen.getByText("状态: QUEUED")).toBeInTheDocument();
-    expect(screen.getByText("结果 URL: /results/mvp-001")).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain("evil.example");
+    expect(document.body.textContent).not.toContain("SECRET_SENTINEL");
 
     // No sentinel leak — common internal patterns must not appear
     expect(screen.queryByText(/sk-abc/)).not.toBeInTheDocument();
@@ -822,7 +829,8 @@ describe("ReviewTaskCreationPage", () => {
     expect(screen.queryByText(/RAW-DUMP/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/internal-details/i)).not.toBeInTheDocument();
 
-    // No page-level error
+    // No page-level error and no stale success card.
+    expect(screen.queryByTestId("success-card")).not.toBeInTheDocument();
     expect(screen.queryByText(/任务创建失败/)).not.toBeInTheDocument();
     expect(screen.queryByText(/无法连接/)).not.toBeInTheDocument();
     expect(screen.queryByText(/响应无效/)).not.toBeInTheDocument();
@@ -893,9 +901,11 @@ describe("ReviewTaskCreationPage", () => {
       resultUrl: "/results/double",
     });
 
-    // Wait for success to avoid hanging
+    // Wait for navigation to avoid hanging
     await waitFor(() => {
-      expect(screen.getByTestId("success-card")).toBeInTheDocument();
+      expect(screen.getByTestId("location")).toHaveTextContent(
+        "/review/tasks/task-double/executions/exec-double",
+      );
     });
   });
 
@@ -1051,16 +1061,12 @@ describe("ReviewTaskCreationPage", () => {
     // Submit again
     fireEvent.click(submitBtn);
 
-    // Wait for success card
+    // Wait for status-route navigation
     await waitFor(() => {
-      expect(screen.getByTestId("success-card")).toBeInTheDocument();
+      expect(screen.getByTestId("location")).toHaveTextContent(
+        "/review/tasks/task-retry-ok/executions/exec-retry-ok",
+      );
     });
-
-    // Assert second submission result
-    expect(screen.getByText("Task ID: task-retry-ok")).toBeInTheDocument();
-    expect(screen.getByText("Execution ID: exec-retry-ok")).toBeInTheDocument();
-    expect(screen.getByText("状态: QUEUED")).toBeInTheDocument();
-    expect(screen.getByText("结果 URL: /results/retry-ok")).toBeInTheDocument();
 
     // Old error is gone
     expect(screen.queryByText("文档存储暂不可用，请稍后重试")).not.toBeInTheDocument();
@@ -1090,7 +1096,9 @@ describe("ReviewTaskCreationPage", () => {
     const { unmount } = render(
       <StrictMode>
         <ConfigProvider>
-          <ReviewTaskCreationPage />
+          <MemoryRouter>
+            <ReviewTaskCreationPage />
+          </MemoryRouter>
         </ConfigProvider>
       </StrictMode>,
     );

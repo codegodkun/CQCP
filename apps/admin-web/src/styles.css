@@ -128,6 +128,24 @@ body {
   background: rgba(15, 118, 110, 0.06);
 }
 
+.status-alert,
+.status-note {
+  margin-top: 18px;
+}
+
+.structured-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.structured-field-value {
+  margin-top: 6px;
+  margin-bottom: 0 !important;
+  overflow-wrap: anywhere;
+}
+
 .diagnostic-list {
   display: grid;
   gap: 12px;
@@ -156,14 +174,16 @@ body {
   }
 
   .admin-summary-grid,
-  .completeness-grid {
+  .completeness-grid,
+  .structured-field-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
   .admin-summary-grid,
-  .completeness-grid {
+  .completeness-grid,
+  .structured-field-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }

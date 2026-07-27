@@ -1,6 +1,6 @@
 # TASK_SPEC-MVP-001-E：状态页、轮询与结果跳转
 
-状态：SPEC_ACCEPTED / PRE_CODE_PLAN_REQUIRED
+状态：IMPLEMENTATION_ACCEPTED / CODEX_REVIEW_GO / READY_FOR_COMMIT
 
 TASK_SPEC 类型：`execution`
 
@@ -592,6 +592,107 @@ Final Git State:
 - no commit / push / merge
 ```
 
+### E_IMPLEMENTATION_REPORT（2026-07-27）
+
+**Gate**
+
+```text
+PowerShell Major: 7
+branch: codex/feature-mvp-001-contract-review-loop
+HEAD: adf19b33f1be7350727abe33dea0535948e97362
+initial status: clean
+```
+
+**Changes**
+
+* `reviewStatus/types.ts`：显式定义 5 个公开状态、13 个执行阶段、3 个 ProviderType、
+  7 个 SupersededReason、公开状态白名单 DTO 与安全错误类型。
+* `reviewStatus/api.ts`：精确双 identity GET；显式重建顶层和 `reviewModel` 白名单；校验
+  required string/boolean、枚举、status/terminal 组合、RFC3339 格式及真实日历日期；
+  404 只识别 `REVIEW_EXECUTION_NOT_FOUND`；网络、HTTP、非 JSON/schema 分流且不返回 raw。
+* `reviewStatus/ReviewExecutionStatusPage.tsx`：规范 path identity、首次微任务立即请求、
+  每次合法非终态请求完成后 1000ms 定时、同步 in-flight guard、route generation、AbortController、
+  cleanup、手动重试；终态停止；同源 resultUrl 精确 identity 校验与单次 replace 导航；
+  FAILED、superseded 和固定安全错误 UI。
+* `ReviewTaskCreationPage.tsx`：合法 202 仅用显式解析的 taskId/executionId 生成规范编码状态路由，
+  忽略 response resultUrl，不再显示中间成功卡。
+* `PublicResultPage.tsx` / `publicResult/types.ts`：新增正式结果路由模式和 query-key execution
+  隔离；正式 snapshot task/execution 双 identity fail closed；兼容 `/?taskId=...` 保持；
+  `structuredFieldsSnapshot` 仅按 18 个冻结 key、稳定中文标签、金额/比例单位和 D 枚举映射展示，
+  未知 key 完全忽略。
+* `App.tsx` / `styles.css`：接入状态路由、正式结果路由及响应式状态/结构化字段样式。
+* 三个测试文件覆盖 AC1~AC19 的路由、解析、轮询、停止、重试、竞态、跳转、identity、
+  结果白名单、旧入口和敏感字段零泄露。
+
+**Polling Evidence**
+
+```text
+首次请求: StrictMode 下 1 次精确 endpoint
+interval: 合法 QUEUED/PROCESSING 请求完成 1000ms 后
+non-overlap: 5 秒慢请求期间仍为 1 次；同步 ref 阻止手动连点
+stop: 3 种终态、404/HTTP/network/schema/identity 错误均无后续 timer
+retry: 单次重新查询复用同一请求函数，合法非终态恢复相同轮询路径
+route/unmount: generation 忽略旧完成；AbortController + timer cleanup
+```
+
+**Navigation Evidence**
+
+* 仅 `SUCCESS/PARTIAL_SUCCESS + terminal=true + snapshotAvailable=true` 尝试跳转。
+* URL 必须非协议相对、无反斜杠、同 origin、无认证信息/hash、精确规范 task pathname，
+  且只有一个匹配 executionId；外域、错 identity、重复/额外 query 和 hash 全部拒绝。
+* `navigateOnceRef` 在导航前写入当前 executionId；StrictMode 测试证明只请求并跳转一次。
+* `FAILED` 固定提示并提供 `/review/new` Link，不读取或展示失败详情。
+
+**Result Evidence**
+
+* `/review/results/:taskId?executionId=...` 精确加载现有结果 API；缺 executionId 不请求。
+* 正式模式只有 snapshot taskId 和 executionId 同时匹配才渲染；不匹配完全隐藏 snapshot。
+* 18 个结构化字段按固定顺序和中文标签展示；未知 `unknownSecret` sentinel 不进入 DOM。
+* `/?taskId=...`、审核点统计、业务卡、证据摘要、SourceAnchor 定位及诊断隐藏回归通过。
+
+**Test Evidence**
+
+```text
+focused status/creation/App: 62 passed / 0 failed
+full admin-web test:          62 passed / 0 failed / 0 skipped（3 files）
+admin-web lint:               0 errors / 0 warnings
+production build:             success（1489 modules；仅既有 chunk-size 提示）
+review-assets validator:      7/7 passed
+git diff --check:             0 issues
+```
+
+一次把 test/lint/build 串为同一 PowerShell 行时遇到 Windows 临时文件锁 `EPERM`；随后按规格
+逐条重跑，test、lint、build 均成功。该环境瞬时锁不计为测试断言失败。
+
+**Security Evidence**
+
+* 状态 raw object 仅存在于 parser 局部，显式重建后才进入 React state。
+* 测试注入 `secret`、`stackTrace`、`rawOutput`、`endpoint`、`diagnostics`、`SYS-*`、
+  HTML/网络异常 sentinel，返回对象和 DOM 均零泄露。
+* 状态页校验但不显示 endpointAlias；不输出 resultUrl 原文；结果页未知结构化 key 不渲染。
+
+**Final Git State**
+
+```text
+modified: App.tsx/App.test.tsx、reviewCreation 两文件、publicResult 两文件、styles.css、
+          当前 TASK_SPEC 实现报告
+untracked: reviewStatus/types.ts、api.ts、ReviewExecutionStatusPage.tsx、
+           ReviewExecutionStatusPage.test.tsx
+allowlist 外 dirty: 无
+commit/push/merge: 未执行
+```
+
+**Independent Read-only Audit**
+
+```text
+P0: 0
+P1: 0
+P2: 1（AC9 手动重试恢复轮询缺少 1000ms 直接断言）
+resolution: 已新增 fake-timer 回归；重试返回合法非终态后 999ms 仍为 2 次请求，
+            1000ms 精确发起第 3 次请求
+auditor changes: 0
+```
+
 ## 13. Codex Review Intake
 
 Codex 规格决策：
@@ -599,6 +700,26 @@ Codex 规格决策：
 ```text
 ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET
 ```
+
+Codex 实现 Review Intake（2026-07-27）：
+
+```text
+ACCEPT_IMPLEMENTATION / GO_TO_COMMIT / F_UNLOCKED
+```
+
+核验结果：
+
+* 实际 dirty 路径全部位于 §0.3 allowlist；未修改后端、OpenAPI、migration、worker、
+  状态机、审核语义、依赖、fixture/expected、TASK-034 或 TASK-036/C2。
+* 5 个公开 status、13 个 currentStage、双 identity、1000ms 非重叠轮询、终态与错误
+  停止、手动重试恢复、route/unmount 竞态、同源 resultUrl 与单次跳转均有可证伪测试。
+* 正式结果路由仅在 task/execution identity 完全匹配时展示；18 个结构化字段使用白名单，
+  旧 `/?taskId=...` 入口、审核点、证据摘要和 SourceAnchor 行为保持回归。
+* 独立只读审计发现的 AC9 P2 测试缺口已补齐：合法非终态重试后 999ms 不请求，
+  1000ms 精确恢复下一次请求。
+* Codex 于 2026-07-27 重跑 admin-web 全量 `62/62`、lint、production build、
+  review-assets validator `7/7` 与 `git diff --check`，全部通过。React Router v7 future
+  flag 和 Vite chunk-size 均为既有非阻塞提示。
 
 Codex 将独立核验：
 
@@ -611,9 +732,10 @@ Codex 将独立核验：
 * 正式结果路由、结构化字段白名单和旧入口回归；
 * admin-web 全量 lint/test/build。
 
-未通过 Review Intake 前不得进入 F。
+上述实现 Review Intake 已完成并接纳，允许进入 F。
 
 ## 14. 后续联动
 
-E 经 Codex Review Intake 接纳后解锁 `TASK_SPEC-MVP-001-F`（Docker Compose 真实 Demo 验收）。
+E 已经 Codex Review Intake 接纳，`TASK_SPEC-MVP-001-F`（Docker Compose 真实 Demo 验收）
+现已解锁。
 E 不修改后端、worker、审核语义或正式 TASK-034 E2E。

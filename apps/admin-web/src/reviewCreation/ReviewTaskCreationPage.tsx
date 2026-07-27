@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Alert, Button, Card, Input, Select, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 
 import type { FormFields, FieldError as FieldErrorType } from "./types";
 import { EMPTY_FORM, MAX_UPLOAD_BYTES } from "./types";
@@ -109,16 +110,17 @@ function pathToKey(path: string): string {
 // ── Component ──
 
 export function ReviewTaskCreationPage() {
+  const navigate = useNavigate();
   const [form, setForm] = useState<FormFields>(EMPTY_FORM);
   const [file, setFile] = useState<File | null>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [pageError, setPageError] = useState<PageError>(null);
-  const [successResult, setSuccessResult] = useState<{ taskId: string; executionId: string; resultUrl: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const [backendFieldErrors, setBackendFieldErrors] = useState<FieldErrorType[]>([]);
 
   const inFlightRef = useRef(false);
+  const navigatedExecutionRef = useRef<string | null>(null);
   const mountedRef = useRef(true);
   // StrictMode-safe: React.StrictMode calls setup→cleanup→setup;
   // we must re-set to true on each mount.
@@ -137,7 +139,6 @@ export function ReviewTaskCreationPage() {
     });
     setBackendFieldErrors([]);
     setPageError(null);
-    setSuccessResult(null);
   }, []);
 
   const handleDemoPreset = useCallback(() => {
@@ -145,7 +146,6 @@ export function ReviewTaskCreationPage() {
     setValidationErrors({});
     setBackendFieldErrors([]);
     setPageError(null);
-    setSuccessResult(null);
     // Apply demo values
     setForm((prev) => ({ ...prev, ...DEMO_PRESET }));
   }, []);
@@ -154,7 +154,6 @@ export function ReviewTaskCreationPage() {
     setFileError(null);
     setBackendFieldErrors([]);
     setPageError(null);
-    setSuccessResult(null);
 
     if (!selectedFile) {
       setFile(null);
@@ -187,7 +186,6 @@ export function ReviewTaskCreationPage() {
     if (sizeErr) { setFileError(sizeErr); return; }
 
     // Clear previous state
-    setSuccessResult(null);
     setBackendFieldErrors([]);
     setPageError(null);
 
@@ -202,7 +200,12 @@ export function ReviewTaskCreationPage() {
     try {
       const result = await submitReviewTask(file, form);
       if (!mountedRef.current) return;
-      setSuccessResult({ taskId: result.taskId, executionId: result.executionId, resultUrl: result.resultUrl });
+      if (navigatedExecutionRef.current !== result.executionId) {
+        navigatedExecutionRef.current = result.executionId;
+        navigate(
+          `/review/tasks/${encodeURIComponent(result.taskId)}/executions/${encodeURIComponent(result.executionId)}`
+        );
+      }
     } catch (err) {
       if (!mountedRef.current) return;
       if (err instanceof SubmitError && err.status === 400) {
@@ -249,7 +252,7 @@ export function ReviewTaskCreationPage() {
         setLoading(false);
       }
     }
-  }, [file, form]);
+  }, [file, form, navigate]);
 
   const pm = form.paymentMethod;
   const isInFlight = inFlightRef.current;
@@ -416,16 +419,6 @@ export function ReviewTaskCreationPage() {
         </Card>
       )}
 
-      { /* ── Success ── */ }
-      {successResult && (
-        <Card className="hero-panel" style={{ marginTop: 16 }} data-testid="success-card">
-          <Title level={5}>任务创建成功</Title>
-          <div>Task ID: {successResult.taskId}</div>
-          <div>Execution ID: {successResult.executionId}</div>
-          <div>状态: QUEUED</div>
-          <div>结果 URL: {successResult.resultUrl}</div>
-        </Card>
-      )}
     </div>
   );
 }

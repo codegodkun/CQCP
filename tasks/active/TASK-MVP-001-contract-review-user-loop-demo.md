@@ -1,6 +1,6 @@
 # TASK-MVP-001：合同审核用户闭环 Demo
 
-状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A ACCEPTED / TASK_SPEC-MVP-001-B ACCEPTED / TASK_SPEC-MVP-001-C ACCEPTED / TASK_SPEC-MVP-001-D ACCEPTED / TASK_SPEC-MVP-001-E SPEC ACCEPTED / PRE-CODE PLAN NEXT
+状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A~E ACCEPTED / TASK_SPEC-MVP-001-F NEXT
 
 类型：产品父任务 / MVP 用户闭环
 
@@ -413,17 +413,17 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 * 已确认：`TASK_SPEC-MVP-001-C` 已通过 Codex Review Intake；C 定向 43/43、
   backend 全量 313/313、review-assets validator 7/7 与 `git diff --check` 通过，
   实现提交为 `0eb9d9e312c6698fb4532e623362bea091165f87`，未 push。
-* 已确认：`TASK_SPEC-MVP-001-D` 已冻结 `/review/new`、完整 OpenAPI 字段、付款方式
-  条件分支、Demo 样本字段预填、精确 multipart、双击单请求和安全错误映射。下一步仅
-  允许执行方提交 D 编码前规格映射计划，尚未授权 D 编码。E-F 仍需逐个冻结。
+* 已确认：`TASK_SPEC-MVP-001-D` 已接纳并提交为 `9fcf857`。
+* 已确认：`TASK_SPEC-MVP-001-E` 状态页、1000ms 非重叠轮询、安全结果跳转、正式结果
+  路由与结构化字段白名单实现已经 Codex Review Intake 接纳；Codex 重跑 admin-web
+  `62/62`、lint、production build、review-assets validator `7/7` 和
+  `git diff --check` 全部通过。下一步形成 E 完成态提交并冻结 F。
 
 ## Next Task Handoff
 
-`TASK_SPEC-MVP-001-A` 已接纳并提交为 `f8d76e7`。`TASK_SPEC-MVP-001-B` 已接纳并提交为
-`21203998da7482e25d86136c14d1f42cff2d2ec7`，`TASK_SPEC-MVP-001-C` 已接纳并
-提交为 `0eb9d9e312c6698fb4532e623362bea091165f87`，均未 push。下一步提交 D 规格
-冻结后，由用户把 D 的编码前规格映射任务复制给 Claude Code；Codex 未接受计划前
-不得修改 D 的业务代码。
+`TASK_SPEC-MVP-001-A` 至 D 已接纳并形成 Feature 内提交；E 已完成实现、独立只读审计
+finding 修正和 Codex Review Intake。下一步形成 E 完成态提交，由 Codex 冻结并执行
+`TASK_SPEC-MVP-001-F` 的 Docker Compose 真实浏览器 Demo 验收。
 
 ## 规划建档审查
 
@@ -433,16 +433,18 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 
 ## 完成记录
 
-* 完成日期：Feature 未完成；A/B/C 已完成局部接纳。
+* 完成日期：Feature 未完成；A/B/C/D/E 已完成局部接纳。
 * 变更文件：A 见 `TASK_SPEC-MVP-001-A` 实现报告；B 见
   `TASK_SPEC-MVP-001-B` 第 9 节实现报告；C 见
-  `TASK_SPEC-MVP-001-C` 第 9 节实现报告；D 尚未进入实现。
+  `TASK_SPEC-MVP-001-C` 第 9 节实现报告；D/E 见各自实现报告。
 * 测试结果：A 的 Docker Compose 权威全量 backend 232/232 通过；B 定向 48/48，
-  全量 backend 270/270；C 定向 43/43、全量 backend 313/313；B/C 的
-  review-assets validator 均为 7/7，全部已接纳。
+  全量 backend 270/270；C 定向 43/43、全量 backend 313/313；E admin-web
+  `62/62`、lint、production build、review-assets validator `7/7` 和
+  `git diff --check` 通过，A~E 均已接纳。
 * 遗留问题：C2 未进入基线，本 Feature 已冻结使用 legacy `v20260705.1`。
-* 备注：D 规格已冻结；当前只授权执行方提交 D 编码前规格映射，不授权编码。
+* 备注：E 已接纳，F 尚未创建。
 * Integration unit / PR：`FEATURE-MVP-001` / A commit `f8d76e7` /
   B commit `21203998da7482e25d86136c14d1f42cff2d2ec7` /
-  C commit `0eb9d9e312c6698fb4532e623362bea091165f87`；PR 尚未创建。
+  C commit `0eb9d9e312c6698fb4532e623362bea091165f87` / D commit `9fcf857`；
+  E 待完成态提交；PR 尚未创建。
 * 独立审计触发依据：公开 API、PostgreSQL 写入、上传文件安全、主应用执行编排和真实 Demo E2E。
