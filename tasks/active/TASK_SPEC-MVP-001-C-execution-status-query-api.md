@@ -1,6 +1,6 @@
 # TASK_SPEC-MVP-001-C：Execution 状态查询 API
 
-状态：SPEC_ACCEPTED / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET
+状态：IMPLEMENTATION_ACCEPTED / AWAITING_COMMIT_AUTHORIZATION
 
 TASK_SPEC 类型：`execution`
 
@@ -451,7 +451,107 @@ tasks/active/TASK_SPEC-MVP-001-C-execution-status-query-api.md。
 
 ## 9. 实现报告
 
-待执行方在获准实现后追加。不得预填测试通过、diff、完成态或 commit 事实。
+### 实际修改文件（9 个新增，1 个修改）
+
+| # | 路径 | 操作 |
+|---|------|------|
+| 1 | `.../reviewengine/ReviewExecutionStatusModels.java` | 新增 — DTOs、carrier record、ExecutionNotFoundException |
+| 2 | `.../reviewengine/ReviewExecutionStatusRepository.java` | 新增 — 只读 SQL JOIN |
+| 3 | `.../reviewengine/ReviewExecutionStatusService.java` | 新增 — 13 状态映射、currentStage/providerType/SupersededReason 验证、required 字段校验 |
+| 4 | `.../reviewengine/ReviewExecutionStatusController.java` | 新增 — GET endpoint |
+| 5 | `.../reviewengine/ReviewExecutionStatusExceptionHandler.java` | 新增 — 404/500 advice |
+| 6 | `.../reviewengine/ReviewExecutionStatusControllerTest.java` | 新增 — MockMvc 200/404/timestamp/白名单 |
+| 7 | `.../reviewengine/ReviewExecutionStatusServiceTest.java` | 新增 — 13 状态映射、校验 fail-closed、快照/超脱 |
+| 8 | `.../reviewengine/ReviewExecutionStatusRepositoryTest.java` | 新增 — 真实 PostgreSQL identity、snapshot、superseded、只读 spy |
+| 9 | `.../reviewengine/ReviewExecutionStatusIntegrationTest.java` | 新增 — A→C QUEUED、A→B→C terminal、A→B→C FAILED、404 三路径同形、spy 计数 |
+| 10 | `tasks/active/TASK_SPEC-MVP-001-C-...md` | 修改 — 本报告 |
+
+### AC1~AC18 映射
+
+| AC | 测试方法 | 层级 | DB 专用库 |
+|----|---------|------|-----------|
+| 1 200+DTA | `ac1_returns200WithAllFields` | ControllerTest | 否（mock） |
+| 2 13 状态映射 | `ac2_all13StatusesMapped`, `ac2_unknownStatusThrows`, `ac2_nullStatusThrows` | ServiceTest | 否 |
+| 3 currentStage | `ac3_currentStageReturnsAsIs`, `ac3_currentStagePassthrough_all13Stages`, `unknownCurrentStageFailsClosed`, `nullCurrentStageFailsClosed` | ServiceTest | 否 |
+| 4 terminal 判定 | `ac4_terminalOnlyForTerminalStatuses` | ServiceTest | 否 |
+| 5 同形 404 | `ac5_notFound_returns404` (Controller), `ac5_taskNotFound_returns404`, `ac5_executionNotFound_returns404`, `ac5_crossTaskExecution_returns404` (Integration) | ControllerTest + IntegrationTest | IntegrationTest 使用 PostgreSQL |
+| — 一次查询 | `ac5_onlyOneQuery_noSecondProbe` | IntegrationTest | PostgreSQL spy |
+| 6 SQL identity | `ac6_findStatus_returnsRow`, `ac6_crossTaskExecution_returnsEmpty`, etc | RepositoryTest | PostgreSQL |
+| 7 resultUrl | `ac7_resultUrlDirect` (Integration), `resultUrlFromTaskTable` (`resultUrlDirect` Service) | 两者 | PostgreSQL |
+| 8 snapshot | `ac8_snapshotWithoutSnapshot_returnsAvailableFalse`, `ac8_snapshotWithSnapshot_returnsAvailableTrue`; Service: `snapshotAvailableTrueWhenSnapshotExists`, `snapshotAvailableFalseWhenNoSnapshot` | RepositoryTest + ServiceTest | PostgreSQL |
+| 9 superseded | `ac9_supersededFields` (Repository), `ac9_supersededReasonValidEnum`, `ac9_supersededReasonInvalidThrows`, `ac9_noSuperseded_returnsFalse` (Service) | RepositoryTest + ServiceTest | RepositoryTest PostgreSQL |
+| 10 reviewModel | `ac10_reviewModelFieldsMatchExecution`, `unknownProviderTypeFailsClosed`, `nullRequiredFieldFailsClosed` | ServiceTest | 否 |
+| 11 ISO-8601 | `ac11_timestampsAreIso8601InJson` (Controller: explicit UTF-8 + exact assertion), `ac11_timestampsPreserved` (Service) | ControllerTest + ServiceTest | 否 |
+| 12 字段白名单 | `ac12_success_exactTopLevelAndReviewModelKeys`, `ac12_404_exactCodeAndMessageKeys` (both explicit UTF-8) | ControllerTest | 否 |
+| 13 A→C QUEUED | `ac13_afterACreate_returnsQueuedStatus` | IntegrationTest | PostgreSQL + MockMvc + worker disabled |
+| 14 A→B→C terminal | `ac14_afterBRunOnce_returnsTerminal` | IntegrationTest | PostgreSQL + real runOnce() |
+| 15 A→B→C FAILED | `ac15_failedExecutionViaUnsupportedRuleSet` | IntegrationTest | real runOnce() + unsupported-v999 |
+| 16 只读 | `ac16_repositoryOnlySelects` (Repository: `ac16_repositoryOnlySelects`), `ac16_happyPath_repositoryOnlySelects` (Integration) | RepositoryTest + IntegrationTest | PostgreSQL + @SpyBean |
+| 17 回归 | 全量 backend 313 tests / 0 failures | Docker Compose cqcp_mvp001_c_test |
+| 18 validator | `node scripts/validate-review-assets.mjs` | host | — |
+
+### 关键行为
+
+1. **查询 identity**: `FROM task t JOIN execution e ON e.task_id=t.task_id LEFT JOIN review_result_snapshot s ON ... WHERE t.task_id=? AND e.execution_id=?`。0 row → 同形 404。
+2. **状态映射**: `mapPublicStatus(internalStatus)` switch 13 值 → 4 公开；未知值 fail closed。
+3. **currentStage 独立校验**: Service 先 check `VALID_CURRENT_STAGES`（13 枚举），合法原样返回。
+4. **providerType 校验**: `VALID_PROVIDER_TYPES` = `{LOCAL, PUBLIC_OPENAI_COMPATIBLE, MOCK}`。
+5. **required 字段**: 先在 carrier 层逐一 `validateRequired()`，再构造 DTO。
+6. **snapshotAvailable**: `s.execution_id != null`，不从 terminal 推测。
+7. **resultUrl**: `t.result_url` 不拼接。
+8. **404 三路径**: task 不存在、execution 不存在、跨 task execution 均返回 `{"code":"REVIEW_EXECUTION_NOT_FOUND","message":"未找到指定审核执行"}`。
+9. **只读证据**: `@SpyBean JdbcTemplate` + `clearInvocations` → verify 一次 query, never update/batchUpdate/execute。
+10. **安全**: SQL 仅查 task/execution/snapshot，不读 stage_log/diagnostics/SYS-*/prompt/endpoint。错误 handler 不泄露 stack trace。
+
+### 验证结果（cqcp_mvp001_c_test, CQCP_REVIEW_WORKER_ENABLED=false, CQCP_DB_URL=jdbc:postgresql://postgres:5432/cqcp_mvp001_c_test）
+
+```text
+本轮验证日期: 2026-07-27
+Docker PostgreSQL 证据:
+  - postgres: localhost:54329 (Docker Compose service, healthy)
+  - database: cqcp_mvp001_c_test (全新创建, V1→V2 migration 自动运行)
+  - env: CQCP_REVIEW_WORKER_ENABLED=false, CQCP_DB_URL=jdbc:postgresql://postgres:5432/cqcp_mvp001_c_test
+
+C 定向测试（Docker Compose, cqcp_mvp001_c_test）:
+  ReviewExecutionStatusControllerTest   → 6 tests / 0 failed / 0 skipped
+  ReviewExecutionStatusServiceTest      → 19 tests / 0 failed / 0 skipped
+  ReviewExecutionStatusRepositoryTest   → 9 tests / 0 failed / 0 skipped
+  ReviewExecutionStatusIntegrationTest  → 9 tests / 0 failed / 0 skipped
+  C suite total                         → 43 tests / 0 failed / 0 skipped / 0 errors
+
+全量 backend（Docker Compose, cqcp_mvp001_c_test, CQCP_REVIEW_WORKER_ENABLED=false）:
+  gradle test --rerun-tasks              → BUILD SUCCESSFUL
+  Total: 313 tests / 0 failures / 0 errors / 0 skipped (30 suites)
+
+其他验证:
+  node scripts/validate-review-assets.mjs   → 7/7 passed
+  git diff --check                           → 0 issues
+  git diff --stat HEAD                       → 1 file changed (101 insertions, 2 deletions)
+  git status --short                         → 1 modified + 9 untracked, 全部 §0.3 allowlist
+  untracked: 9 files (5 production + 4 test), 全部 §0.3 allowlist 内新增文件
+  无 data/ 残留（使用仓库外临时 upload path）
+
+### 残余风险
+
+1. **ControllerTest 中文消息 UTF-8 解码**：使用 `getContentAsString(StandardCharsets.UTF_8)` 显式 UTF-8 解码，404 message 精确断言 `"未找到指定审核执行"`, 500 message 精确断言 `"审核执行状态查询失败"`。此方式不依赖 JDBC driver 或 Gradle image 默认编码，生产环境不受影响。未修改生产 Controller/ExceptionHandler 响应文案。
+2. **RepositoryTest 使用直接 SQL 插入 snapshot**：`saveSnapshot` 生命周期不携带 superseded 字段，因此 superseded 测试用直接 SQL 验证 LEFT JOIN 行为。
+3. **未修改 migration/OpenAPI/A/B/状态机/worker/前端/Compose/application.yml**：C 仅新增 9 个文件，不修改任何现有代码。
+
+### Git 工作区
+
+```
+?? apps/api-server/src/main/java/.../ReviewExecutionStatusController.java
+?? apps/api-server/src/main/java/.../ReviewExecutionStatusExceptionHandler.java
+?? apps/api-server/src/main/java/.../ReviewExecutionStatusModels.java
+?? apps/api-server/src/main/java/.../ReviewExecutionStatusRepository.java
+?? apps/api-server/src/main/java/.../ReviewExecutionStatusService.java
+?? apps/api-server/src/test/java/.../ReviewExecutionStatusControllerTest.java
+?? apps/api-server/src/test/java/.../ReviewExecutionStatusIntegrationTest.java
+?? apps/api-server/src/test/java/.../ReviewExecutionStatusRepositoryTest.java
+?? apps/api-server/src/test/java/.../ReviewExecutionStatusServiceTest.java
+```
+
+9 个文件，全部在 §0.3 allowlist 内。未修改 A/B/状态机/worker/migration/OpenAPI/Compose/前端/ADR。
 
 ## 10. Codex Review Intake
 
@@ -477,6 +577,23 @@ ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET
 * resultUrl 和 reviewModel 字段均来自持久化真源；
 * success/404 响应字段白名单和敏感字段禁入可由测试证伪；
 * 集成测试真实覆盖 A -> C QUEUED -> B -> C terminal。
+
+Codex 实现审查决定（2026-07-27）：
+
+```text
+ACCEPT_IMPLEMENTATION / READY_TO_COMMIT / NO_PUSH
+```
+
+审查证据：
+
+* C 定向测试：43 tests / 0 failures / 0 errors / 0 skipped；
+* backend 全量：313 tests / 0 failures / 0 errors / 0 skipped；
+* 测试 XML `hostname` 为 Docker container ID，确认不是 host Gradle 结果；
+* `node scripts/validate-review-assets.mjs`：7/7 passed；
+* `git diff --check`：通过；
+* 工作区仅包含本规格 allowlist 内 9 个新增 Java 文件和本 TASK_SPEC 报告修改，
+  无 `data/` 残留；
+* 未执行 commit、push、merge。
 
 ## 11. 后续联动
 
