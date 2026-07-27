@@ -477,4 +477,16 @@ describe("TASK-023 public result page", () => {
     renderApp("/admin/diagnostics?taskId=task-025");
     expect(await screen.findByText("诊断查询失败，请稍后重试。")).toBeInTheDocument();
   });
+
+  it("AC19: /review/new renders review creation page without other page elements", async () => {
+    renderApp("/review/new");
+
+    expect(await screen.findByText("新建合同审核")).toBeInTheDocument();
+    expect(screen.getByText("当前仅支持 DOCX，DOC 待后续开发。")).toBeInTheDocument();
+    expect(screen.getByText("工程采购合同（ENGINEERING）")).toBeInTheDocument();
+    expect(screen.getByText("人民币（CNY）")).toBeInTheDocument();
+
+    expect(screen.queryByText("普通结果页最小展示")).not.toBeInTheDocument();
+    expect(screen.queryByText("管理台诊断详情最小展示")).not.toBeInTheDocument();
+  });
 });

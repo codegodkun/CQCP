@@ -584,40 +584,88 @@ git diff --stat
 
 ## 9. 实现报告
 
-执行方完成后在本节追加：
+### D_IMPLEMENTATION_REPORT
+
+**Gate:**
+- PSVersion 7.6.3 / branch codex/feature-mvp-001-contract-review-loop / HEAD 73795474afc8dced31a32f840a93bd3712d86a83 / initial status 为上述 3 modified + `reviewCreation/` untracked，无 staged
+
+**Changes (8 files, all §0.3 allowlist):**
+
+| 文件 | 操作 | AC |
+|------|------|----|
+| `apps/admin-web/src/reviewCreation/types.ts` | 新增 | FormFields, DTOs, EMPTY_FORM, MAX_UPLOAD_BYTES |
+| `apps/admin-web/src/reviewCreation/api.ts` | 新增 | AC10/12/14/15/16 multipart, 202 解析, 400 解析, BusinessError 安全消息 |
+| `apps/admin-web/src/reviewCreation/demoPreset.ts` | 新增 | AC9 Demo 预填常量 |
+| `apps/admin-web/src/reviewCreation/ReviewTaskCreationPage.tsx` | 新增 | AC1~AC18 全页面组件 |
+| `apps/admin-web/src/reviewCreation/ReviewTaskCreationPage.test.tsx` | 新增 | 21 个测试（全 AC 覆盖） |
+| `apps/admin-web/src/App.tsx` | 修改（+2 行） | AC19 新增 `/review/new` 路由 |
+| `apps/admin-web/src/App.test.tsx` | 修改（+12 行） | AC19 新增 `/review/new` 路由回归测试 |
+| `tasks/active/TASK_SPEC-MVP-001-D-new-review-page.md` | 修改 | 本报告（§9 实现报告修订） |
+
+`apps/admin-web/src/styles.css` 未修改。
+
+**Request Evidence:**
+- FormData：精确 `file` + `metadata`（`application/json` Blob）两 part，无第三个 part（`api.ts:68–70`）
+- 未手工设置 `Content-Type` header；浏览器自动生成 multipart boundary（`api.ts:72–75`）
+- metadata JSON 形状：`{ businessDocumentId?: string, contractType: "ENGINEERING", structuredFields: { ..., currency: "CNY" } }`（`api.ts:46–56`）
+- MONTHLY 与 MILESTONE 条件字段精确互斥：`api.ts:27–42` — MONTHLY 包含五个月度比例且不含 `milestonePaymentTerms`；MILESTONE 仅含 `prepaymentRatio` + `milestonePaymentTerms` 且不含月度四比例
+- 无 `callerType`、`callerId`、`modelProfileCode`、`providerType`、`ruleSetVersion`、`parserVersion`、`promptVersion`、`schemaVersion` 及任何版本/模型字段
+
+**AC13 防重复提交证据:**
+- 同步 `useRef` in-flight guard：`ReviewTaskCreationPage.tsx:121` 定义 `inFlightRef`，`:181` 同步检查 `if (inFlightRef.current) return`，`:199` 设置 `true`，`:248` 释放
+- 提交按钮 `loading` + `disabled`；输入控件、Demo 预填按钮、文件输入在 in-flight 期间全部 `disabled`
+- 测试 `ReviewTaskCreationPage.test.tsx:833–900`：同一事件循环双击仅产生一次 fetch 调用
+
+**AC18 响应白名单证据:**
+- 202 成功响应显式重建四字段（`taskId`、`executionId`、`status="QUEUED"`、`resultUrl`）且非空 string 校验：`api.ts:98–105`、`:107–115`
+- 400 解析显式重建冻结字段：顶层 `code`/`message`/`fieldErrors`，每条仅 `field`/`code`/`message`，且 code 必须属于冻结 `VALID_FIELD_ERROR_CODES` 枚举，否则整体 return null（fail closed）：`api.ts:118–157`
+- Business error（409/429/503）仅消费 `message` 与 `reason`：`api.ts:160–171`
+- Sentinel 零泄露测试覆盖：
+  - API 层 202：含 `secret`/`stackTrace`/`rawOutput`/`endpoint` 仅返回四字段（test 行 605–636）
+  - API 层 400：顶层及每条 fieldError 含 `_secret`/`stackTrace`/`endpoint` 仅映射冻结字段（test 行 649–682）
+  - API 层 `safeBusinessMessage` + `userFacingMessage`：对 409/429/503/0/202 不泄露任何 sentinel（test 行 704–776）
+  - DOM 层：所有渲染测试 `queryByText(/secret/i)`、`/stackTrace/i` 断言（test 行 968–976）
+
+**错误场景测试覆盖:**
+- 400 包含两个 fieldErrors 全部可见，不显示 raw JSON（test 行 902–979）
+- 409/429/503 分别展示业务化提示（test 行 704–776, 153–220）
+- 网络失败（fetch reject）→ "无法连接审核服务，请检查网络后重试"（test 行 758–767）
+- 异常响应（非 JSON / HTML / 缺字段）→ "任务创建失败，请稍后重试"（test 行 769–776, 605–636）
+- AC17 retry：首次 503 失败→释放 guard→修正输入→再次提交 202 成功，无残留旧卡片（test 行 982–1068）
+- StrictMode unmount 安全：pending 期间 unmount，无 `setState`/`act`/`unmounted` 控制台警告（test 行 1075–1168）
+- `/review/new` 真实路由回归（`App.test.tsx:481–491`），保持 `/` 与 `/admin/diagnostics` 全部通过
+
+**Test & Build Evidence:**
 
 ```text
-D_IMPLEMENTATION_REPORT
-
-Gate:
-- PS Major / branch / HEAD / initial status
-
-Changes:
-- 文件 -> AC -> 行为
-
-Request Evidence:
-- FormData parts
-- metadata exact shape
-- forbidden fields absent
-- duplicate-submit fetch count
-
-Test Evidence:
-- focused tests
-- full admin-web tests
-- lint
-- build
-- validator
-- git diff --check
-
-Security Evidence:
-- raw/sentinel non-disclosure
-- local path/file content non-disclosure
-
-Final Git State:
-- git status --short
-- git diff --stat
-- no commit / push / merge
+ReviewTaskCreationPage.test.tsx:  21 passed / 0 failed
+App.test.tsx:                      7 passed / 0 failed
+Total admin-web:                  28 passed / 0 failed / 0 skipped
+Lint (eslint):                     0 errors / 0 warnings
+Production build (tsc -b && vite): built in 2.95s (1486 modules transformed)
+  chunk size warning (778 kB > 500 kB) — informational, not a build failure
+Review-assets validator:           7/7 passed
+git diff --check:                  0 issues
 ```
+
+**Git State:**
+```text
+ M apps/admin-web/src/App.test.tsx
+ M apps/admin-web/src/App.tsx
+ M tasks/active/TASK_SPEC-MVP-001-D-new-review-page.md
+?? apps/admin-web/src/reviewCreation/
+```
+```text
+ apps/admin-web/src/App.test.tsx                    |  12 +++
+ apps/admin-web/src/App.tsx                         |   2 +
+ .../active/TASK_SPEC-MVP-001-D-new-review-page.md  | 110 +++++++++++++++------
+ 3 files changed, 93 insertions(+), 31 deletions(-)
+```
+`reviewCreation/` 下 5 个 untracked 文件（types.ts, api.ts, demoPreset.ts, ReviewTaskCreationPage.tsx, ReviewTaskCreationPage.test.tsx）不计入 `git diff --stat`。
+
+未执行 commit、push 或任何 git 写操作。
+
+**未修改:** 后端 Java、OpenAPI、database migration、Docker Compose、package.json/lockfile、fixture/expected、public result page、admin diagnostics page、`apps/admin-web/src/styles.css`。未安装依赖。
 
 ## 10. Codex Review Intake
 
@@ -631,7 +679,26 @@ Codex 将独立核验：
 * Demo 预填来源和 production bundle 边界；
 * 全量 admin-web lint/test/build。
 
-未通过 Review Intake 前不得进入 E。
+Codex 实现审查决定（2026-07-27）：
+
+```text
+ACCEPT_IMPLEMENTATION / READY_TO_COMMIT / NO_PUSH
+```
+
+审查证据：
+
+* `ReviewTaskCreationPage.test.tsx`：21 tests passed；
+* `App.test.tsx`：7 tests passed；
+* admin-web 合计：28 tests / 0 failed / 0 skipped；
+* admin-web lint：0 errors / 0 warnings；
+* production build：成功，1486 modules transformed；chunk size warning 为非失败提示；
+* `node scripts/validate-review-assets.mjs`：7/7 passed；
+* `git diff --check`：通过；
+* 工作区仅包含 §0.3 allowlist 内 5 个新增 `reviewCreation/` 文件、
+  `App.tsx`、`App.test.tsx` 和本 TASK_SPEC；
+* 未执行 commit、push、merge。
+
+进入 E 前仍须先完成 D commit 并恢复 clean baseline。
 
 ## 11. 后续联动
 
