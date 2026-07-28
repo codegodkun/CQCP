@@ -45,7 +45,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
-@SpringBootTest
+@SpringBootTest(properties = "cqcp.review.worker.enabled=false")
 @AutoConfigureMockMvc
 @Import(ReviewTaskCreationIntegrationTest.CommitStageTestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -107,6 +107,10 @@ class ReviewTaskCreationIntegrationTest {
 
     @BeforeEach
     void cleanDatabaseAndUploads() {
+        jdbcTemplate.update("DELETE FROM point_diagnostic");
+        jdbcTemplate.update("DELETE FROM tuning_packet");
+        jdbcTemplate.update("DELETE FROM review_result_snapshot");
+        jdbcTemplate.update("DELETE FROM task_stage_log");
         jdbcTemplate.update("DELETE FROM execution");
         jdbcTemplate.update("DELETE FROM task");
         // Remove all regular files and empty directories under temp root
