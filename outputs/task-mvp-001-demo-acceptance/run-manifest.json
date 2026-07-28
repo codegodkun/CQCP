@@ -1,8 +1,8 @@
 {
   "schemaVersion": "cqcp-task-mvp-001-demo-acceptance-v2",
-  "capturedAt": "2026-07-28T11:07:40+08:00",
+  "capturedAt": "2026-07-28T12:44:21+08:00",
   "branch": "codex/feature-mvp-001-contract-review-loop",
-  "headCommit": "439a02012c54f11577c6e916591d69db2a7d5d58",
+  "headCommit": "1dbef9cdbcb0e98996c58b262d1b668f0d06941e",
   "baselineCommit": "401fd05b7a6c23014adb4f5511533467016c37ba",
   "primaryRun": {
     "runId": "TASK_2f2539c99d574d29b993c5733c20b4bd-EXEC_321f36a3ad37415993b5dcdd5c11c0cb",
@@ -43,6 +43,17 @@
     "frontend202ParserVerified": true,
     "browserAutoRedirectVerified": true,
     "repositoryBrowserDependenciesAdded": false
+  },
+  "f3CiRemediation": {
+    "pr": 35,
+    "failedRunId": 30326662660,
+    "failedJobId": 90173392371,
+    "failedHead": "1dbef9cdbcb0e98996c58b262d1b668f0d06941e",
+    "ciRed": "313 tests / 3 fixture setup failures",
+    "hostTargetedGreen": "11 tests / 0 failures",
+    "hostFullGreen": "313 tests / 0 failures",
+    "linuxTargetedGreen": "11 tests / 0 failures",
+    "productionCodeChanged": false
   },
   "result": {
     "publicStatus": "SUCCESS",
@@ -87,6 +98,13 @@
       "red": "HEAD implementation + staged tests: exit 1 / 2 failed / 31 passed",
       "green": "staged implementation + staged tests: exit 0 / 33 passed"
     },
+    "f3CiRedGreen": {
+      "red": "GitHub Actions/Linux: exit 1 / 3 failed / 310 passed",
+      "hostTargetedGreen": "exit 0 / 11 passed",
+      "hostFullGreen": "exit 0 / 313 passed",
+      "linuxTargetedGreen": "exit 0 / 11 passed",
+      "onlineLinuxDependencyAttemptUsedAsPassEvidence": false
+    },
     "adminWebLint": "PASS",
     "adminWebBuild": "PASS",
     "reviewAssetsValidator": {
@@ -117,10 +135,13 @@
     "workspace-bundled Playwright controlling installed Google Chrome: /review/new upload + submit + network/status/result capture",
     "curl.exe --fail-with-body health/status/result checks",
     "docker exec cqcp-postgres-1 psql read-only identity queries",
+    "CQCP_UPLOAD_ROOT absent: gradle.bat test --tests com.cqcp.apiserver.reviewengine.SingleReviewWorkerIntegrationTest --no-daemon --rerun-tasks",
+    "CQCP_UPLOAD_ROOT absent: gradle.bat test --no-daemon --rerun-tasks",
+    "gradle:8.10.2-jdk21 + read-only dependency cache: targeted SingleReviewWorkerIntegrationTest --offline",
     "git diff --cached --check"
   ],
   "evidenceSha256": {
-    "console-summary.md": "4A52FC69A36C8C7027FCC305260E64BA092EFC507CDCB5A2E2B16CB4ACF5ECA3",
+    "console-summary.md": "AC14AF88B8CF2758B1DCDBCA0593331628FD72CD30C15C3594D86E1A971277C6",
     "create-response.json": "FC6D87E6BF18BD5B1C9E83C8D8412E930881BDC83B90542D7593FA0862AEF913",
     "database-summary.md": "83687F0C743CC992EA6597871739582479E8B7784A0AEE6B2E639D0AF326B855",
     "final-status.json": "0580C0008C5298288864408416F2982603F27909B84FB2BD778326080500D555",
@@ -152,11 +173,17 @@
     "raw/f2-browser-creation-chain.txt": "2BACB1F98AC1D5C3A683217A764377121BC6B374ED80679BCC091E241583240C",
     "raw/f2-browser-database.txt": "F523667FD297722A2BBD1693FE6BC52C4A35FEA757A8498BAAA6B658D77AEBC2",
     "raw/f2-browser-service-log.txt": "CE944A94576ABE61133A2C5F0A51FE72EF070BA766122477AD91BA137A08BE8F",
+    "raw/f3-verification-summary.txt": "371E9DA3AFB7E6EA86117FF03A7686B62E9A28C6162C106BB24C494C6D50E57B",
+    "raw/f3-host-targeted.txt": "D3CC90C2701E888B423C324E3041F3FB6FF9292D7130584EC45B4AA74FB0E7F7",
+    "raw/f3-host-full.txt": "8C5ACB05448AE6B56C91CFD993885806C2EE5FF2B7F01527ACD1AE53100E9309",
+    "raw/f3-linux-targeted-stdout.txt": "26144B9B6B9A89F0F0383898D192F016939162FB8B726123FFDC181545DAE9E7",
+    "raw/f3-linux-targeted-stderr.txt": "9A8F7F2B593114C278002D074202D4DD3A94FECDE57F3F0822F742ABB030C324",
+    "raw/f3-linux-online-dependency-failure.txt": "BB13B371C3B1FCD1ACD822C3A32B17D8A2E60CE7DCE5BFF021492B5EF2278707",
     "raw/revalidation-database.txt": "A7F142E7F0789DFAA28127ED77D23EA8E4D109A6D2D20F228690CCB59621C1EB",
     "raw/revalidation-request-metadata.json": "78BFDCE7A8AA6BB970F6CFF638FBE10E777FED5039D947190296788894CBA40C",
     "raw/revalidation-status-result-http.txt": "DB55EE2495405D1E22EADBAED1A4DEA9B0192E1025B1E920F5957AFC722BF1EF",
     "raw/review-assets-validator.txt": "25ECB9A2DAA77AEA89AE25F9BE5C83F36534A89D37A36BBEEFF9AE45469FF4D6",
     "raw/target-service-logs.txt": "FD9EA52F8C6F00920EFF6954DA7302D85373C7AF451AFAFD1F100D3915CA7F6C"
   },
-  "finalDecision": "GO_AFTER_F2_REMEDIATION_PENDING_FULL_DUAL_REAUDIT"
+  "finalDecision": "GO_AFTER_F3_REMEDIATION_PENDING_FULL_DUAL_REAUDIT"
 }

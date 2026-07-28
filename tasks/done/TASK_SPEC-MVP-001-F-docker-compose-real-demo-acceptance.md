@@ -37,7 +37,7 @@ F 不新增产品能力，不修改业务代码，不运行 TASK-034 正式 E2E�
 
 * `AGENTS.md`
 * `CURRENT_CONTEXT.md`
-* `tasks/active/TASK-MVP-001-contract-review-user-loop-demo.md`
+* `tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`
 * 本规格
 * `docs/deployment.md`
 * `docs/frontend.md`

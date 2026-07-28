@@ -142,3 +142,28 @@ Task、Execution、12 条阶段日志和 Snapshot identity 一致。
 v4 代码审计随后发现 `run-manifest.json` 顶层 `capturedAt` 仍早于新增 Chrome run，
 构成证据元数据 P2。旧 v4 基线立即失效；顶层捕获时间已更新为所有已纳入证据完成之后，
 并将重算 manifest、完整 diff 和双重审计。
+
+## F3 PR #35 Linux upload-root 测试可移植性修复
+
+完成态 commit `1dbef9c` 的 PR #35 backend CI 在 313 项中有 3 项失败。三项均未进入
+业务断言，而是在 Linux runner 构造 symlink/parser-failure fixture 时因测试辅助方法
+硬编码 `/data/cqcp/uploads` 抛出 `NoSuchFileException` / `AccessDeniedException`。
+应用真源 `cqcp.review.upload-root` 在未设置环境变量时使用 `./data/uploads`，因此
+测试 fixture 与应用实际根不一致；Windows 本地还可能因文件缺失而形成 fail-closed
+假阳性。
+
+F3 仅修改 `SingleReviewWorkerIntegrationTest`：注入同一个 Spring
+`cqcp.review.upload-root` property，并将其规范为绝对路径。验证结果：
+
+- host 定向 `SingleReviewWorkerIntegrationTest`：11/11；
+- host backend 全量：313/313；
+- Linux `gradle:8.10.2-jdk21`、只读依赖缓存、offline 定向：11/11；
+- 一次在线 Linux 依赖下载在进入测试前因 `Illegal packet size` 失败，原样记录且
+  不作为通过证据。
+
+原始 console 见 `raw/f3-host-targeted.txt`、`raw/f3-host-full.txt`、
+`raw/f3-linux-targeted-stdout.txt`、`raw/f3-linux-targeted-stderr.txt` 与
+`raw/f3-linux-online-dependency-failure.txt`；交叉核对摘要见
+`raw/f3-verification-summary.txt`。F3 未修改生产代码、workflow、OpenAPI、
+migration、Docker Compose 或既有真实 Demo 结果；代码变化使此前 v5 与完成态
+增量审计基线失效，必须重新冻结并完整重跑双重独立审计。

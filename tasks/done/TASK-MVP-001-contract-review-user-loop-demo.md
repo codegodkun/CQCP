@@ -1,6 +1,6 @@
 # TASK-MVP-001：合同审核用户闭环 Demo
 
-状态：Done / A~F+F2 ACCEPTED / DUAL_AUDIT_GO / ARCHIVED / FEATURE_PR_PENDING
+状态：Done / PR_35_BACKEND_CI_NO_GO_REMEDIATED / F3_VERIFIED / V9_DUAL_AUDIT_GO / PR_CI_PENDING
 
 类型：产品父任务 / MVP 用户闭环
 
@@ -437,9 +437,10 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 
 ## Next Task Handoff
 
-本父任务与 A~F/F1/F2 已完成实现、真实 Demo、Memory Writeback 和双重独立审计；
-不存在新的 TASK Handoff。后续仅继续同一 `FEATURE-MVP-001` 的完成态 commit、push、
-一个 Feature PR、CI 与 merge，不创建新的执行任务。
+同一父任务下的 `TASK_SPEC-MVP-001-F3`、原始证据与 v6~v8 状态补正均已完成。
+v9 基线的 CC AUDIT 与两个 Codex subagent 全部为 GO，P0/P1/P2 与 blocking
+findings 全为 0。下一步仅提交并 push F3 与本次归档写回，重跑 PR #35 三项 CI；
+仅在 remote head 与审计内容一致且 CI 全绿时 merge，不创建新的父 TASK。
 
 ## 规划建档审查
 
@@ -447,10 +448,11 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 * Codex Review Intake：`ACCEPT_FEATURE_PLAN / PHASE_0_NEXT / NO_TASK_SPEC_CREATED / NO_IMPLEMENTATION_AUTHORIZATION`。
 * ADR：不需要。当前只对齐既有 PostgreSQL、OpenAPI、V1 schema 和审核链路；没有新增或改变产品架构。
 
-## 完成记录
+## v5 完成态历史记录（已被 PR #35 CI 失效）
 
-* 完成日期：2026-07-28。Feature 实现、Demo 验收、Memory Writeback 与双重独立
-  审计完成；当前只剩同一 Feature 的 PR/CI/merge 集成。
+* 历史完成日期：2026-07-28。该记录对应 F2 后 v5 基线；当时实现、Demo 验收、
+  Memory Writeback 与双重独立审计完成。PR #35 后续暴露 F3，故该完成态与
+  Review Intake 不再是当前 merge 依据。
 * 变更文件：A 见 `TASK_SPEC-MVP-001-A` 实现报告；B 见
   `TASK_SPEC-MVP-001-B` 第 9 节实现报告；C 见
   `TASK_SPEC-MVP-001-C` 第 9 节实现报告；D/E/F/F1 见各自实现报告。
@@ -471,18 +473,81 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
   freeze manifest SHA-256
   `E7F6A67D36F253FFFC3704DE5E7BFF128DE8E64798FCCCA45995B61022D92C4E`；
   102/102 文件与 37/37 原始证据 SHA-256 均经独立复核匹配。
-* 双重独立审计：CC AUDIT 为 `GO`，`P0=0 / P1=0 / P2=0`、无 blocking
+* v5 双重独立审计：CC AUDIT 为 `GO`，`P0=0 / P1=0 / P2=0`、无 blocking
   findings；Codex 代码/API/数据库/状态机 subagent 为 `GO`，Codex
   测试/前端安全/Compose/真实 Demo subagent 为 `GO`。最终门禁
-  `CC_AUDIT=GO AND CODEX_SUBAGENT_AUDIT=GO AND blocking findings=0` 已满足。
+  `CC_AUDIT=GO AND CODEX_SUBAGENT_AUDIT=GO AND blocking findings=0` 当时满足；
+  F3 测试变更已使该基线和结论失效。
 * 非阻塞观察：`REVIEWING_MODEL` 枚举在当前 Demo 路径未使用；两个 runtime
   data 目录保持 untracked 且不得提交；TASK-034 正式 FAIL 与本 Feature Demo
   SUCCESS 的语义边界继续保留；后续任务应保持 `openapi.json` / `openapi.yaml`
   等价。以上均不构成本 Feature blocker。
-* Codex 最终 Review Intake：
+* v5 Codex Review Intake（已失效）：
   `ACCEPT_FEATURE_IMPLEMENTATION / DUAL_AUDIT_GO / GO_TO_COMMIT_PR_CI_MERGE`。
 * Integration unit / PR：`FEATURE-MVP-001` / A commit `f8d76e7` /
   B commit `21203998da7482e25d86136c14d1f42cff2d2ec7` /
   C commit `0eb9d9e312c6698fb4532e623362bea091165f87` / D commit `9fcf857`；
-  E commit `539c9e6`；F1 commit `439a020`；Feature 完成态 PR 尚未创建。
+  E commit `539c9e6`；F1 commit `439a020`；完成态 commit `1dbef9c` 已创建并
+  push，Feature PR #35 已创建。
 * 独立审计触发依据：公开 API、PostgreSQL 写入、上传文件安全、主应用执行编排和真实 Demo E2E。
+
+## PR #35 CI 回归与 F3 定点修复
+
+- 完成态 commit `1dbef9cdbcb0e98996c58b262d1b668f0d06941e` 已 push，并创建
+  PR #35：`https://github.com/codegodkun/CQCP/pull/35`。
+- `Authorization evidence check` 与 `Admin web lint, tests, and build` 通过。
+- `Backend Gradle tests` 在 313 项中有 3 项失败，均发生于
+  `SingleReviewWorkerIntegrationTest` 的 Linux fixture 构造阶段：
+  `NoSuchFileException` / `AccessDeniedException`。
+- 根因为测试辅助方法硬编码 `/data/cqcp/uploads`，与应用属性
+  `cqcp.review.upload-root` 的默认 `./data/uploads` 不一致；Windows 本地还可能因
+  fixture 与应用根不同而形成假阳性。
+- `TASK_SPEC-MVP-001-F3` 仅允许测试注入同一 Spring upload-root property 与必要
+  状态写回；不得修改业务代码或 workflow。
+- F3 定向在 host 11/11、Linux container 11/11，host backend 全量 313/313；
+  未设置 `CQCP_UPLOAD_ROOT`。一次 Linux 在线依赖下载在进入测试前因外部传输
+  `Illegal packet size` 失败，未用作通过证据。
+- 由于业务测试文件在完成态审计后发生变化，旧 v5 与完成态增量审计基线失效。
+  F3 验证已完成；下一有效基线必须重新执行 CC AUDIT 与两个 Codex subagent
+  完整只读审计。
+- v6 完整复审中，测试/安全 subagent 为 GO，代码 subagent 因 F3 缺少原始
+  stdout/stderr（P1）和父 TASK 残留 v5/PR 旧叙事（P2）判定 NO-GO；
+  v6 基线永久失效。现已重新执行并固化 host targeted/full、Linux offline green
+  与 Linux online dependency failure 的原始 console，并将 v5 完成段明确标为
+  历史失效；下一基线必须把 CC AUDIT 与两个 Codex subagent 全部从零重跑。
+- v7 完整复审中，代码 subagent 因 `CURRENT_CONTEXT.md` 首段仍保留 v5 放行口径
+  判定 NO-GO；测试/安全 subagent 另指出父 TASK Handoff 已落后于 v7 冻结、
+  F3 摘要时间早于重新执行的原始 console。三项均已补正；v7 基线永久失效。
+- v8 两个 subagent 均因 `CURRENT_CONTEXT.md`“下一步”仍列出已经完成的 F3
+  实现与测试判定 NO-GO；该过期步骤已删除，v8 基线永久失效。其余代码、raw
+  console、证据 hash、安全和范围核验均通过。
+
+## v9 双重独立审计与最终 Review Intake
+
+- 冻结基线：base `401fd05b7a6c23014adb4f5511533467016c37ba`、HEAD
+  `1dbef9cdbcb0e98996c58b262d1b668f0d06941e`、index tree
+  `c37c328841be41a09b84c4a96056b0282c881f05`、base → index 109 个 changed
+  paths、tracked unstaged 0、`git diff --cached --check` 通过。
+- full diff SHA-256：
+  `D5E88C6070223F273771D2D1BB3BAE22E99B08D40AF02E3D8F3225D521AF597E`；
+  freeze manifest SHA-256：
+  `27EE638BF399D03F1E0F49FB40B2C2C0216DA9F1971F04DBFFEC0B07AE67AECF`；
+  run-manifest SHA-256：
+  `CE60C4764029B7D66F0F283465118AE382EB1F2AFCA2D0CD1F2B5085668864BE`。
+  独立复核确认 109/109 文件与 43/43 evidence hashes 匹配。
+- Codex 代码/API/数据库/状态机/范围审计：
+  `CODE_AUDIT=GO / P0=0 / P1=0 / P2=0 / blocking=0`。
+- Codex 测试/前端安全/Compose/真实 Demo 审计：
+  `TEST_SECURITY_AUDIT=GO / P0=0 / P1=0 / P2=0 / blocking=0`。
+- CC AUDIT 会话 `CQCP FEATURE-MVP-001 v9 freeze audit`：
+  `CC_AUDIT=GO / P0=0 / P1=0 / P2=0 / BLOCKING_FINDINGS=0`。
+  审计严格只读；F3 summary 文件系统 mtime 晚于内容 `capturedAt` 被判定为本地
+  元数据伪影，文件内容与冻结 hash 一致，不构成 finding。
+- CC 非阻塞观察包括既有 OpenAPI YAML/JSON 路径层级漂移、前端 `as` 转换与缺少
+  ErrorBoundary；审计确认这些均低于 P2，且前者在 Feature base 已存在，不构成
+  本 Feature 合并阻塞。本 Feature 新增节点的 YAML/JSON 语义逐项一致。
+- 最终门禁
+  `CC_AUDIT=GO AND CODEX_SUBAGENT_AUDIT=GO AND blocking findings=0`
+  已满足。
+- Codex 最终 Review Intake：
+  `ACCEPT_F3_IMPLEMENTATION / V9_DUAL_AUDIT_GO / GO_TO_COMMIT_PUSH_PR_CI_MERGE`。

@@ -12,8 +12,8 @@
 
 - `AGENTS.md`
 - `CURRENT_CONTEXT.md`
-- `tasks/active/TASK-MVP-001-contract-review-user-loop-demo.md`
-- `tasks/active/TASK_SPEC-MVP-001-F-docker-compose-real-demo-acceptance.md`
+- `tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`
+- `tasks/done/TASK_SPEC-MVP-001-F-docker-compose-real-demo-acceptance.md`
 - `apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/ReviewTaskCreationIntegrationTest.java`
 
 ## Optional Context

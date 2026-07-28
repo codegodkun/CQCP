@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,6 +42,7 @@ class SingleReviewWorkerIntegrationTest {
     @Autowired private SingleReviewWorker worker;
     @Autowired private JdbcTemplate jdbcTemplate;
     @Autowired private PersistentTaskResultStore resultStore;
+    @Value("${cqcp.review.upload-root}") private Path configuredUploadRoot;
     private final List<String> createdTaskIds = new ArrayList<>();
     private final List<String> createdExecutionIds = new ArrayList<>();
     private final List<java.nio.file.Path> createdFiles = new ArrayList<>();
@@ -397,7 +399,7 @@ class SingleReviewWorkerIntegrationTest {
     // ── AC13 helpers ──
 
     private java.nio.file.Path uploadRoot() {
-        return java.nio.file.Path.of(System.getenv().getOrDefault("CQCP_UPLOAD_ROOT", "/data/cqcp/uploads"));
+        return configuredUploadRoot.toAbsolutePath().normalize();
     }
     private void writeFile(java.nio.file.Path p, byte[] data) {
         try { java.nio.file.Files.createDirectories(p.getParent()); java.nio.file.Files.write(p, data); createdFiles.add(p); }

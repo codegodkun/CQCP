@@ -4,11 +4,14 @@
 
 ## 当前阶段
 
-CQCP 当前处于 MVP 主链路接通、合同审核用户闭环 Demo 集成收口与 parser-backed
-evidence 后续治理并行阶段。`FEATURE-MVP-001` 的实现、真实 Demo、Memory Writeback
-和双重独立审计均已完成，当前门禁是完成态 commit、一个 Feature PR、CI 与 merge。
-长期架构依据仍以 `docs/ARCHITECTURE.md` 为准；当前任务状态、门禁和下一步以本文与
-对应 task 文件的最新记录为准。
+CQCP 当前处于 MVP 主链路接通、合同审核用户闭环 Demo PR #35 CI 修复收口与
+parser-backed evidence 后续治理并行阶段。`FEATURE-MVP-001` 的 F3 实现、原始
+console 补证、状态真源补正与 v9 双重独立审计已完成；CC AUDIT 与两个 Codex
+subagent 均为 `GO`，`P0=0 / P1=0 / P2=0 / blocking findings=0`。父 TASK 与
+F3 已迁移到 `tasks/done/`，当前门禁是提交并 push F3 后等待 PR #35 三项 CI，
+仅在 remote head 与审计内容一致且 CI 全绿时 merge。
+长期架构依据仍以 `docs/ARCHITECTURE.md` 为准；当前任务状态、门禁和下一步以本文
+与对应 task 文件的最新记录为准。
 
 当前任务推进采用 Task Level + Feature/Milestone 收口规则：`L0 探索`默认不进入主线，`L1 小文档`批量处理，`L2 Feature`默认一个父 TASK、一个 Feature PR，`L3 高风险治理`按可回滚风险边界独立审计。TASK_SPEC 保持细粒度执行和 Review Intake，但不自动等于 commit/push/PR/merge；普通 push 不因传输动作重复完整审计；人工 ground truth、expected/fixture、核心审核链路、生产激活、数据库/API/CI/安全等强门禁继续有效。详细规则见 `AGENTS.md`、`docs/DEVELOPMENT.md`、`docs/VERIFY.md` 与 `docs/context-management.md`。
 
@@ -25,16 +28,24 @@ evidence 后续治理并行阶段。`FEATURE-MVP-001` 的实现、真实 Demo、
 - `TASK-030` Review assets 版本化治理 A/B/C 已完成、独立审计条件已满足、Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`，已归档；归档文件：`tasks/done/TASK-030-review-assets-versioning-governance.md`。归档不启用 runtime loader，不声明生产 runtime 绑定，不授权 `TASK-028` / `TASK-031` / `TASK-032` 或 `TASK-033`。
 - `TASK-033` MVP 端到端样本验收规格冻结已完成并归档，归档文件：`tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`。PR #24 已合并规格冻结建档，merge commit 为 `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`；PR #25 已合并 post-merge 状态写回，merge commit 为 `a60fc9f`。Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_POST_MERGE_SYNC_SATISFIED`。2026-07-09 用户确认独立只读审计已对 `TASK-033` 归档迁移与 Memory Writeback 给出 `GO`，并授权提交前收口、精确 stage、commit 与 push。归档不运行完整验收，不修改代码、测试、fixture、expected JSON、workflow、ADR 或 PRD，不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
 - `TASK-DATA-001` 已完成并归档到 `tasks/done/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`。PR #28 merge commit 为 `23c66aaed34326f242f9fb395d784518421f1575`，PR #29 post-merge merge commit 为 `2b30bf303642d10156eec5844ee09718adb595b3`，PR #30 归档 merge commit 为 `01e59f54284bbab5409f0d7fd392acfd96d7ff83`；独立归档前审计最终结论为 `GO`，Codex Decision 为 `GO_TO_ARCHIVE / INDEPENDENT PRE_ARCHIVE AUDIT SATISFIED / FULL MVP E2E NOT VERIFIED`。归档不代表完整 MVP E2E 已通过，不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
-- `TASK-MVP-001` / `FEATURE-MVP-001` 已完成实现、真实浏览器 Demo、PostgreSQL
-  持久化核对、Memory Writeback 与双重独立审计，父任务及 A~F/F1/F2 已迁移到
-  `tasks/done/`。最终 v5 冻结覆盖 base `401fd05` 到 index 的 102 个路径，
-  102/102 文件与 37/37 原始证据 hash 匹配；CC AUDIT 和两个 Codex 独立
-  subagent 均为 `GO`，P0/P1/P2 与 blocking findings 均为 0。当前仅待同一
-  Feature 的 PR/CI/merge；这不是 TASK-034 正式质量 E2E、57/57 coverage 或
-  Production Ready 声明。
 
 ## 当前活跃任务
 
+- `TASK-MVP-001` / `FEATURE-MVP-001` 已完成 A~F/F1/F2、真实 Demo 与 v9 双重审计，
+  完成态 commit `1dbef9c` 已 push，PR #35 已创建。PR 的 authorization/admin-web
+  checks 通过，但 backend CI 在 313 项中有 3 项 Linux fixture 构造失败。
+  `TASK_SPEC-MVP-001-F3` 已定界并验证：测试消费与应用相同的
+  `cqcp.review.upload-root`，不再硬编码 `/data/cqcp/uploads`；host 定向 11/11、
+  backend 全量 313/313、Linux container 定向 11/11。
+  v6 代码审计因缺少原始 green console 与父 TASK 旧叙事判定 NO-GO，现已重新执行
+  并固化 host/Linux 原始 stdout/stderr，且已标明 v5 记录失效。v7 又发现本文首段、
+  父 TASK Handoff 与 F3 摘要时间三项状态/元数据问题，现已补正；v8 两个
+  subagent 均因本节“下一步”仍列出已完成 F3 测试而 NO-GO，该过期步骤也已删除。
+  v9 的代码审计、测试/安全审计和 CC AUDIT 均为 GO，P0/P1/P2 与 blocking
+  findings 全为 0；父 TASK 与 F3 已归档。当前只剩 F3 commit/push、PR #35
+  required CI 与条件式 merge。
+  该修复不改变 TASK-034 正式 FAIL、57/57、Production Ready 或 `v20260715.1`
+  边界。
 - `TASK-034` 已完成 Phase 0 与 Phase 1，父任务保持 active，正式 MVP E2E 最终判定为 `FAIL`。3 份真实 DOCX 均完成同 run parser → review → snapshot → 同 task 查询；27 个 `PointStatus` 全为 `PASS`，但 candidate comparison 仅 9 `MATCH`、18 `MISMATCH`；63 条 occurrence 保持 57 纳入 / 6 排除，其中 57 条纳入全部 `NOT_OBSERVABLE`，6 条排除全部 `EXCLUDED`。三份结果均无 Finding、无 `SYS-*`。证据目录：`outputs/task-034-mvp-e2e-acceptance/`。
 - `TASK_SPEC-034-A` test-only E2E harness 已实现并经 Codex Review Intake 与独立只读复核接纳，文件：`tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`；实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，manifest 序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`。harness 13/13、既有四类定向回归 27/27；未修改生产链路或人工 ground truth。
 - `TASK-035` 的 `mvp-e2e-candidate-comparison-v2` 与 `TASK_SPEC-035-A` 已接纳并随 PR #32 合并；实现提交为 `52d73b3`，定向证据为 harness `15/15`、四类回归 `27/27`。正式 MVP E2E 未重跑，父任务仍 active。
@@ -53,8 +64,9 @@ evidence 后续治理并行阶段。`FEATURE-MVP-001` 的实现、真实 Demo、
 GitHub 是 PR、checks 与 merge 状态的事实源。当前 Feature 基线为 PR #34 / merge commit
 `401fd05b7a6c23014adb4f5511533467016c37ba`，已包含 TASK-037 / ADR-017 的
 Execution Binding Release 与 `MVP_DEMO_MOCK` seed。`FEATURE-MVP-001` 从该基线建立，
-双重审计门禁已通过，当前只存在本地 Feature commits 与完成态 staged diff，
-尚未 push、创建 PR 或 merge。PR #32 /
+完成态 commit `1dbef9c` 已 push 并创建 PR #35；backend CI 的 Linux fixture
+失败使 merge 门禁重新关闭；F3 定点修复与 v9 完整双审计现已通过，当前等待
+F3 commit/push 与 PR #35 三项 CI。PR #32 /
 merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 的 TASK-036-A carrier 仍未激活；
 本 Feature 不证明 57/57 occurrence coverage，也不解除 TASK-028 / TASK-031 / TASK-032。
 
@@ -101,17 +113,17 @@ merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 的 TASK-036-A carrier �
 
 ## 下一步
 
-1. 对双审计后仅包含状态真源、Memory Writeback 与 `tasks/active -> tasks/done`
-   迁移的收口增量执行只读一致性复核。
-2. 形成 `FEATURE-MVP-001` 完成态 commit，push 当前分支并创建一个 Feature PR。
-3. 等待 required CI；仅在 remote head 与完成态 commit 一致、checks 全部通过且无
-   新 finding 时 merge，并核验 GitHub merge commit 与 CI 事实。
-4. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败证据保持不变。
+1. 提交并 push 已通过 v9 双重审计的 F3 与归档写回，等待 PR #35 三项 CI
+   全部通过。
+2. 仅在 remote head
+   与新审计基线一致且无新 finding 时 merge。
+3. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败证据保持不变。
 
 ## 参考路径
 
 - `tasks/MVP_TASK_MAP.md`
 - `tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`
+- `tasks/done/TASK_SPEC-MVP-001-F3-linux-upload-root-test-portability.md`
 - `tasks/done/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
 - `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`
 - `tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
