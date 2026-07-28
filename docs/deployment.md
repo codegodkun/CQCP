@@ -271,6 +271,23 @@ operatorActionRequired=true
 - 运行时的模型 timeout、retry 和 circuit breaker 基线以 `docs/model-gateway-budget-baseline.md` 为准
 - Word parser 的 `.docx/.doc` MVP 边界和 preview 定位口径以 `docs/word-parser-mvp-boundary.md` 为准
 
+## FEATURE-MVP-001 Demo 运行约束
+
+标准 Compose 环境通过 `CQCP_UPLOAD_HOST_PATH`（默认
+`../../data/uploads`）把宿主机受控上传目录挂载到 API 容器
+`/data/cqcp/uploads`。`CQCP_UPLOAD_ROOT` 必须指向该容器内根目录；不得把用户文件名
+拼接为真实路径，也不得把上传目录改为通用共享盘或仓库代码目录。
+
+Demo 验收使用：
+
+- `http://localhost:15173/review/new`
+- `http://localhost:18080/actuator/health`
+- PostgreSQL `localhost:54329`
+
+Compose 镜像 build/start、API 健康、真实浏览器创建/轮询/结果跳转和 PostgreSQL
+持久化必须属于同一次验收。`MVP_DEMO_MOCK` 仅证明受控 Demo 可运行，不代表公网模型、
+GPU、Pilot 或 Production Ready。
+
 ## 待确认
 
 - 部署拓扑。

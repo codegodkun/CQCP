@@ -1,0 +1,7 @@
+COMMAND: aggregate apps/api-server/build/test-results/test/TEST-*.xml
+EXIT_CODE: 0
+TEST_SUITES: 30
+TESTS: 313
+FAILURES: 0
+ERRORS: 0
+SKIPPED: 0

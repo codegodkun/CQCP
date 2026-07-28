@@ -1,0 +1,19 @@
+{
+  "taskId": "TASK_2f2539c99d574d29b993c5733c20b4bd",
+  "executionId": "EXEC_321f36a3ad37415993b5dcdd5c11c0cb",
+  "status": "SUCCESS",
+  "currentStage": "SUCCESS",
+  "terminal": true,
+  "snapshotAvailable": true,
+  "resultUrl": "/review/results/TASK_2f2539c99d574d29b993c5733c20b4bd?executionId=EXEC_321f36a3ad37415993b5dcdd5c11c0cb",
+  "reviewModel": {
+    "modelProfileCode": "MVP_DEMO_MOCK",
+    "providerType": "MOCK",
+    "modelName": "cqcp-demo-mock",
+    "endpointAlias": "mock-local",
+    "modelConfigVersion": "model-config-mvp-demo-mock-v20260724.1"
+  },
+  "createdAt": "2026-07-28T01:11:14.966391Z",
+  "updatedAt": "2026-07-28T01:11:15.979316Z",
+  "superseded": false
+}

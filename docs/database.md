@@ -409,6 +409,23 @@ slot 只有在存在候选、达到该 slot 的 `confidenceRequired`、且未因
 
 任务创建时显式引用 approval ID；不得静默降级到其他规则集，也不得以环境变量绕过。
 
+## FEATURE-MVP-001 持久化闭环
+
+受控管理台创建任务时，在一个 PostgreSQL 事务内：
+
+1. 解析并校验 ADR-017 的唯一有效 Demo binding；
+2. 插入 `task`，保存 `result_url`、`contract_metadata` 和
+   `structured_fields_snapshot`；
+3. 插入首个 `QUEUED` `execution`，复制 binding 的全部 14 个不可变版本/模型字段。
+
+`contract_metadata.documentReference` 只保存 task-scoped 随机相对路径；
+`originalFileName` 仅用于展示和审计，不作为真实存储路径。`structured_fields_snapshot`
+保存当次 17 个适用字段，历史结果不回查当前表单配置。
+
+Single Worker 推进时向 `task_stage_log` 追加阶段级 STARTED/COMPLETED/FAILED 事件，
+在终态写入不可变 `review_result_snapshot`。状态查询必须同时匹配 `task_id` 与
+`execution_id`；普通结果查询读取 snapshot，不用当前配置重算历史结果。
+
 ## 待确认
 
 - 完整 ERD。

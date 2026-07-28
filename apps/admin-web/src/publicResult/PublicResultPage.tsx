@@ -14,7 +14,7 @@ import {
   Tag,
   Typography
 } from "antd";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 import { fetchTaskResult, TaskResultApiError } from "./api";
 import type {
@@ -56,6 +56,64 @@ const NOT_CONCLUDED_REASON_LABEL: Record<NotConcludedReason, string> = {
   MODEL_BUDGET_EXCEEDED: "预算不足",
   INTERNAL_RULE_ERROR: "规则处理异常"
 };
+
+const STRUCTURED_FIELD_META = [
+  ["contractName", "合同名称", "plain"],
+  ["partyAName", "甲方名称", "plain"],
+  ["partyBName", "乙方名称", "plain"],
+  ["projectName", "项目名称", "plain"],
+  ["contractTotalAmount", "合同总金额（含税）", "money"],
+  ["taxExcludedAmount", "不含税金额", "money"],
+  ["taxAmount", "合同税额", "money"],
+  ["taxRate", "税率", "ratio"],
+  ["pricingMode", "计价方式", "pricingMode"],
+  ["paymentMethod", "付款方式", "paymentMethod"],
+  ["invoiceType", "发票类型", "invoiceType"],
+  ["currency", "币种", "currency"],
+  ["prepaymentRatio", "预付款比例", "ratio"],
+  ["progressPaymentRatio", "进度付款比例", "ratio"],
+  ["completionPaymentRatio", "完工付款比例", "ratio"],
+  ["settlementPaymentRatio", "结算付款比例", "ratio"],
+  ["warrantyRetentionRatio", "质保金比例", "ratio"],
+  ["milestonePaymentTerms", "节点付款信息", "plain"]
+] as const;
+
+const ENUM_LABELS: Record<string, Record<string, string>> = {
+  pricingMode: {
+    FIXED_TOTAL_PRICE: "固定总价",
+    PROVISIONAL_TOTAL_PRICE: "暂定总价"
+  },
+  paymentMethod: {
+    MONTHLY: "按月度付款",
+    MILESTONE: "按节点付款"
+  },
+  invoiceType: {
+    VAT_GENERAL: "增值税普通发票",
+    VAT_SPECIAL: "增值税专用发票"
+  },
+  currency: {
+    CNY: "人民币（CNY）"
+  }
+};
+
+function displayStructuredValue(
+  value: string,
+  format: (typeof STRUCTURED_FIELD_META)[number][2]
+): string {
+  if (format === "money") return `${value} 元`;
+  if (format === "ratio") return `${value}%`;
+  if (format === "plain") return value;
+  return ENUM_LABELS[format]?.[value] ?? "未知值";
+}
+
+function decodeCanonicalSegment(raw: string): string | null {
+  try {
+    const decoded = decodeURIComponent(raw);
+    return decoded.trim().length > 0 && encodeURIComponent(decoded) === raw ? decoded : null;
+  } catch {
+    return null;
+  }
+}
 
 interface PointCardViewModel {
   result: PointReviewResult;
@@ -102,25 +160,61 @@ function errorMessage(error: Error | null): string | null {
 }
 
 export function PublicResultPage() {
+  const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const taskIdFromUrl = searchParams.get("taskId")?.trim() ?? "";
+  const formalMode = pathname.startsWith("/review/results/");
+  const formalMatch = /^\/review\/results\/([^/]+)$/.exec(pathname);
+  const formalTaskId = formalMatch ? decodeCanonicalSegment(formalMatch[1]) : null;
+  const formalExecutionValues = searchParams.getAll("executionId");
+  const formalExecutionValue =
+    formalExecutionValues.length === 1 ? formalExecutionValues[0] : null;
+  const formalExecutionId =
+    searchParams.size === 1 &&
+    formalExecutionValue !== null &&
+    formalExecutionValue.length > 0 &&
+    formalExecutionValue === formalExecutionValue.trim()
+      ? formalExecutionValue
+      : null;
+  const formalIdentityValid =
+    !formalMode || (formalTaskId !== null && formalExecutionId !== null);
+  const taskIdFromUrl = formalMode
+    ? formalTaskId ?? ""
+    : searchParams.get("taskId")?.trim() ?? "";
   const [inputTaskId, setInputTaskId] = useState(taskIdFromUrl);
   const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
 
   const query = useQuery({
-    queryKey: ["task-result", taskIdFromUrl],
+    queryKey: ["task-result", taskIdFromUrl, formalExecutionId ?? "legacy"],
     queryFn: () => fetchTaskResult(taskIdFromUrl),
-    enabled: taskIdFromUrl.length > 0,
+    enabled: taskIdFromUrl.length > 0 && formalIdentityValid,
     retry: false
   });
 
+  const identityMismatch =
+    formalMode &&
+    query.data !== undefined &&
+    (query.data.taskId !== formalTaskId ||
+      query.data.executionId !== formalExecutionId);
+  const displayData = identityMismatch ? undefined : query.data;
   const pointCards = useMemo(
-    () => (query.data ? buildPointCards(query.data) : []),
-    [query.data]
+    () => (displayData ? buildPointCards(displayData) : []),
+    [displayData]
   );
 
-  const visibleAnchors = query.data?.sourceAnchors ?? [];
-  const currentError = errorMessage(query.error);
+  const visibleAnchors = displayData?.sourceAnchors ?? [];
+  const currentError = !formalIdentityValid
+    ? "结果页地址无效。"
+    : identityMismatch
+      ? "结果身份校验失败，请返回状态页重新查询。"
+      : errorMessage(query.error);
+  const structuredFields = displayData
+    ? STRUCTURED_FIELD_META.flatMap(([key, label, format]) => {
+        const value = displayData.structuredFieldsSnapshot[key];
+        return typeof value === "string"
+          ? [{ key, label, value: displayStructuredValue(value, format) }]
+          : [];
+      })
+    : [];
 
   return (
     <div className="app-shell result-page">
@@ -130,37 +224,39 @@ export function PublicResultPage() {
         <Typography.Paragraph>
           仅展示业务化审核结果，围绕“审核点 - 证据 - 原文定位”解释，不展示系统诊断明细。
         </Typography.Paragraph>
-        <Form
-          layout="inline"
-          onFinish={() => {
-            const nextTaskId = inputTaskId.trim();
-            setActiveBlockId(null);
-            setSearchParams(nextTaskId ? { taskId: nextTaskId } : {});
-          }}
-        >
-          <Form.Item className="result-form-item">
-            <Input
-              aria-label="taskId"
-              placeholder="输入 taskId，例如 task-001"
-              value={inputTaskId}
-              onChange={(event) => setInputTaskId(event.target.value)}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" disabled={inputTaskId.trim().length === 0}>
-              查询结果
-            </Button>
-          </Form.Item>
-        </Form>
+        {!formalMode && (
+          <Form
+            layout="inline"
+            onFinish={() => {
+              const nextTaskId = inputTaskId.trim();
+              setActiveBlockId(null);
+              setSearchParams(nextTaskId ? { taskId: nextTaskId } : {});
+            }}
+          >
+            <Form.Item className="result-form-item">
+              <Input
+                aria-label="taskId"
+                placeholder="输入 taskId，例如 task-001"
+                value={inputTaskId}
+                onChange={(event) => setInputTaskId(event.target.value)}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" disabled={inputTaskId.trim().length === 0}>
+                查询结果
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
       </section>
 
-      {!taskIdFromUrl && (
+      {!formalMode && !taskIdFromUrl && (
         <section className="content-panel">
           <Empty description="请输入 taskId 查询普通结果。" />
         </section>
       )}
 
-      {taskIdFromUrl && currentError && (
+      {(taskIdFromUrl || formalMode) && currentError && (
         <section className="content-panel">
           <Alert type="warning" showIcon message={currentError} />
         </section>
@@ -172,52 +268,70 @@ export function PublicResultPage() {
         </section>
       )}
 
-      {query.data && (
+      {displayData && (
         <div className="result-content">
           <section className="content-panel">
             <Flex justify="space-between" align="start" gap={16} wrap>
               <div>
-                <Typography.Title level={4}>任务 {query.data.taskId}</Typography.Title>
+                <Typography.Title level={4}>任务 {displayData.taskId}</Typography.Title>
                 <Typography.Paragraph>
-                  执行 {query.data.executionId} · {query.data.status}
+                  执行 {displayData.executionId} · {displayData.status}
                 </Typography.Paragraph>
               </div>
               <Space wrap className="summary-tags">
-                <Tag>PLANNED {query.data.summary.plannedPointCount}</Tag>
-                <Tag color="success">PASS {query.data.summary.passCount}</Tag>
-                <Tag color="error">ERROR {query.data.summary.errorCount}</Tag>
-                <Tag color="warning">WARNING {query.data.summary.warningCount}</Tag>
-                <Tag color="processing">NOT_CONCLUDED {query.data.summary.notConcludedCount}</Tag>
-                <Tag>SKIPPED {query.data.summary.skippedCount}</Tag>
+                <Tag>PLANNED {displayData.summary.plannedPointCount}</Tag>
+                <Tag color="success">PASS {displayData.summary.passCount}</Tag>
+                <Tag color="error">ERROR {displayData.summary.errorCount}</Tag>
+                <Tag color="warning">WARNING {displayData.summary.warningCount}</Tag>
+                <Tag color="processing">NOT_CONCLUDED {displayData.summary.notConcludedCount}</Tag>
+                <Tag>SKIPPED {displayData.summary.skippedCount}</Tag>
               </Space>
             </Flex>
             <div className="completeness-grid">
               <Card size="small" className="result-card">
                 <Typography.Text type="secondary">审核覆盖状态</Typography.Text>
                 <Typography.Title level={5}>
-                  {COVERAGE_LABEL[query.data.reviewCompleteness.reviewCoverageStatus]}
+                  {COVERAGE_LABEL[displayData.reviewCompleteness.reviewCoverageStatus]}
                 </Typography.Title>
               </Card>
               <Card size="small" className="result-card">
                 <Typography.Text type="secondary">已形成结论</Typography.Text>
                 <Typography.Title level={5}>
-                  {query.data.reviewCompleteness.concludedPointCount} /{" "}
-                  {query.data.reviewCompleteness.executablePointCount}
+                  {displayData.reviewCompleteness.concludedPointCount} /{" "}
+                  {displayData.reviewCompleteness.executablePointCount}
                 </Typography.Title>
               </Card>
               <Card size="small" className="result-card">
                 <Typography.Text type="secondary">未形成结论</Typography.Text>
                 <Typography.Title level={5}>
-                  {query.data.reviewCompleteness.notConcludedPointCount}
+                  {displayData.reviewCompleteness.notConcludedPointCount}
                 </Typography.Title>
               </Card>
               <Card size="small" className="result-card">
                 <Typography.Text type="secondary">关键证据覆盖</Typography.Text>
                 <Typography.Title level={5}>
-                  {CONFIDENCE_LABEL[query.data.reviewCompleteness.confidenceLevel]}
+                  {CONFIDENCE_LABEL[displayData.reviewCompleteness.confidenceLevel]}
                 </Typography.Title>
               </Card>
             </div>
+          </section>
+
+          <section className="content-panel">
+            <Typography.Title level={4}>合同结构化信息</Typography.Title>
+            {structuredFields.length === 0 ? (
+              <Empty description="当前结果没有可展示的结构化字段。" />
+            ) : (
+              <div className="structured-field-grid">
+                {structuredFields.map((field) => (
+                  <Card key={field.key} size="small" className="result-card">
+                    <Typography.Text type="secondary">{field.label}</Typography.Text>
+                    <Typography.Paragraph className="structured-field-value">
+                      {field.value}
+                    </Typography.Paragraph>
+                  </Card>
+                ))}
+              </div>
+            )}
           </section>
 
           <Row gutter={[24, 24]} className="preview-grid">

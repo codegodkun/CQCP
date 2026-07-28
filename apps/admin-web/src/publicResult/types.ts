@@ -78,6 +78,7 @@ export interface ReviewResultSnapshot {
   findings: unknown[];
   diagnostics: unknown[];
   sourceAnchors: SourceAnchorSummary[];
+  structuredFieldsSnapshot: Record<string, string>;
   enabledReviewPointsSnapshot: ReviewPointSnapshot[];
   disabledReviewPointsSnapshot: ReviewPointSnapshot[];
 }

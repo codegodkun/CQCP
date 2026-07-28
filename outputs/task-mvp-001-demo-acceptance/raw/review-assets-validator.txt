@@ -1,0 +1,4 @@
+COMMAND: node scripts/validate-review-assets.mjs
+EXIT_CODE: 0
+
+Review assets validation passed. 7 file(s) checked, 7 JSON file(s) scanned.

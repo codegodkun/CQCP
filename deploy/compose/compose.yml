@@ -9,6 +9,12 @@ services:
       - "${CQCP_DB_PORT:-54329}:5432"
     volumes:
       - cqcp_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${CQCP_DB_USERNAME:-cqcp}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   api-server:
     build:
@@ -17,10 +23,15 @@ services:
       CQCP_DB_URL: jdbc:postgresql://postgres:5432/${CQCP_DB_NAME:-cqcp}
       CQCP_DB_USERNAME: ${CQCP_DB_USERNAME:-cqcp}
       CQCP_DB_PASSWORD: ${CQCP_DB_PASSWORD:-cqcp}
+      CQCP_UPLOAD_ROOT: /data/cqcp/uploads
+      CQCP_MAX_UPLOAD_BYTES: "26214400"
     ports:
       - "${CQCP_API_PORT:-18080}:8080"
+    volumes:
+      - ${CQCP_UPLOAD_HOST_PATH:-../../data/uploads}:/data/cqcp/uploads
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   admin-web:
     build:
@@ -31,6 +42,23 @@ services:
       - "${CQCP_WEB_PORT:-15173}:80"
     depends_on:
       - api-server
+
+  api-server-test:
+    profiles: [test]
+    image: gradle:8.10.2-jdk21
+    working_dir: /workspace/apps/api-server
+    volumes:
+      - ../..:/workspace
+      - ${CQCP_UPLOAD_HOST_PATH:-../../data/uploads}:/data/cqcp/uploads
+    environment:
+      CQCP_DB_URL: jdbc:postgresql://postgres:5432/${CQCP_TEST_DB_NAME:-cqcp_mvp001_a_test}
+      CQCP_DB_USERNAME: ${CQCP_DB_USERNAME:-cqcp}
+      CQCP_DB_PASSWORD: ${CQCP_DB_PASSWORD:-cqcp}
+      CQCP_UPLOAD_ROOT: /data/cqcp/uploads
+      CQCP_MAX_UPLOAD_BYTES: "26214400"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   cqcp_postgres_data:

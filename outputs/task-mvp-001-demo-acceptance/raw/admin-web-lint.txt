@@ -1,0 +1,10 @@
+COMMAND: npm.cmd run lint:admin-web
+EXIT_CODE: 0
+
+
+> cqcp@0.1.0 lint:admin-web
+> npm --workspace apps/admin-web run lint
+
+
+> @cqcp/admin-web@0.1.0 lint
+> eslint .

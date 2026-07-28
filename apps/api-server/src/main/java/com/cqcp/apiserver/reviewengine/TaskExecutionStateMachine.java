@@ -34,165 +34,148 @@ public final class TaskExecutionStateMachine {
         this.clock = Objects.requireNonNull(clock, "clock");
     }
 
+    // ── Public entry (InMemory tests use empty owner) ──
+
     public TaskExecutionRunResult execute(
             TaskExecutionRequest request,
             TaskExecutionPersistence persistence) {
+        return execute(request, persistence, "");
+    }
+
+    // ── Package-private entry with explicit stageOwner (JDBC worker path) ──
+
+    TaskExecutionRunResult execute(
+            TaskExecutionRequest request,
+            TaskExecutionPersistence persistence,
+            String stageOwner) {
         Objects.requireNonNull(request, "request");
         Objects.requireNonNull(persistence, "persistence");
 
         if (request.execution().status().isTerminal()) {
-            throw new IllegalStateException("Cannot execute terminal execution: " + request.execution().executionId());
+            throw new IllegalStateException(
+                    "Cannot execute terminal execution: " + request.execution().executionId());
         }
 
-        var startedAt = Instant.now(clock);
-        var runningExecution = request.execution().transitionTo(
-                initialStageFor(request),
-                initialStageFor(request).name(),
-                startedAt,
-                null);
-        persistence.saveExecution(runningExecution);
+        var executionStartedAt = Instant.now(clock);
 
+        // ── Phase 1: PARSING → INDEXING → PLANNING → BUILDING_EVIDENCE ──
         PreparedReviewInput preparedInput;
         try {
             preparedInput = request.documentReference() == null
-                    ? new PreparedReviewInput(request.reviewInput(), runningExecution)
-                    : runPreparationStages(request, runningExecution, persistence, startedAt);
-            runningExecution = preparedInput.execution();
-        } catch (RuntimeException exception) {
-            throw exception;
+                    ? new PreparedReviewInput(request.reviewInput(), request.execution())
+                    : runPreparationStages(request, request.execution(), persistence,
+                            executionStartedAt, stageOwner);
+        } catch (RuntimeException e) {
+            throw e;
         }
 
+        // ── Phase 2: REVIEWING_RULES ──
+        TaskExecutionRecord currentExec = preparedInput.execution();
         ReviewEngineResult reviewEngineResult;
+        var reviewStartedAt = Instant.now(clock);
         try {
-            runningExecution = preparedInput.execution().transitionTo(
-                    ExecutionStatus.REVIEWING_RULES,
-                    "REVIEWING_RULES",
-                    preparedInput.execution().startedAt(),
-                    null);
-            reviewEngineResult = runReviewingRulesStage(request, preparedInput.reviewInput(), runningExecution, persistence, Instant.now(clock));
+            currentExec = persistence.startStage(
+                    currentExec.status(), currentExec.currentStage(),
+                    ExecutionStatus.REVIEWING_RULES, "REVIEWING_RULES",
+                    currentExec, stageOwner,
+                    executionStartedAt, reviewStartedAt);
+            reviewEngineResult = runReviewingRulesStage(
+                    request, preparedInput.reviewInput(), currentExec,
+                    persistence, reviewStartedAt, stageOwner);
         } catch (RuntimeException exception) {
-            var failedExecution = runningExecution.transitionTo(
-                    ExecutionStatus.FAILED,
-                    runningExecution.currentStage(),
-                    runningExecution.startedAt(),
-                    Instant.now(clock));
-            persistence.appendStageLog(TaskStageLogEntry.failed(
-                    request.task().taskId(),
-                    runningExecution.executionId(),
-                    runningExecution.currentStage(),
-                    1,
-                    exception.getMessage(),
-                    Duration.between(startedAt, Instant.now(clock)).toMillis(),
-                    Instant.now(clock)));
-            persistence.saveExecution(failedExecution);
+            persistence.failExecution(
+                    currentExec.currentStage(),
+                    currentExec.status(), currentExec.currentStage(),
+                    currentExec, stageOwner,
+                    request.task().taskId(), request.execution().executionId(),
+                    "执行阶段失败", Instant.now(clock));
             throw exception;
         }
 
+        // ── Phase 3a: COMPOSING startStage ──
         var composingStartedAt = Instant.now(clock);
-        var composingExecution = runningExecution.transitionTo(
-                ExecutionStatus.COMPOSING,
-                "COMPOSING",
-                runningExecution.startedAt(),
-                null);
-        persistence.saveExecution(composingExecution);
-        persistence.appendStageLog(TaskStageLogEntry.started(
-                request.task().taskId(),
-                composingExecution.executionId(),
-                "COMPOSING",
-                1,
-                composingStartedAt));
-
+        TaskExecutionRecord composingExec;
         try {
-            var snapshot = composeSnapshot(request, composingExecution, reviewEngineResult);
-            persistence.saveSnapshot(snapshot);
+            composingExec = persistence.startStage(
+                    ExecutionStatus.REVIEWING_RULES, "REVIEWING_RULES",
+                    ExecutionStatus.COMPOSING, "COMPOSING",
+                    currentExec, stageOwner,
+                    executionStartedAt, composingStartedAt);
+        } catch (RuntimeException e) {
+            persistence.failExecution(
+                    currentExec.currentStage(),
+                    currentExec.status(), currentExec.currentStage(),
+                    currentExec, stageOwner,
+                    request.task().taskId(), request.execution().executionId(),
+                    "执行阶段失败", Instant.now(clock));
+            throw e;
+        }
+
+        // ── Phase 3b: compose snapshot + terminal persistence ──
+        try {
+            var snapshot = composeSnapshot(request, composingExec, reviewEngineResult);
+            var finishedAt = Instant.now(clock);
+            persistence.completeExecution(
+                    composingExec, snapshot, stageOwner, composingStartedAt, finishedAt);
 
             var terminalStatus = snapshot.status() == SnapshotStatus.PARTIAL_SUCCESS
                     ? ExecutionStatus.PARTIAL_SUCCESS
                     : ExecutionStatus.SUCCESS;
-            var finishedAt = Instant.now(clock);
-            persistence.appendStageLog(TaskStageLogEntry.completed(
-                    request.task().taskId(),
-                    composingExecution.executionId(),
-                    "COMPOSING",
-                    1,
-                    terminalStatus.name(),
-                    Duration.between(composingStartedAt, finishedAt).toMillis(),
-                    finishedAt));
-
-            var completedExecution = composingExecution.transitionTo(
-                    terminalStatus,
-                    terminalStatus.name(),
-                    composingExecution.startedAt(),
-                    finishedAt);
-            persistence.saveExecution(completedExecution);
-
-            return new TaskExecutionRunResult(completedExecution, snapshot);
+            var terminalExec = composingExec.transitionTo(
+                    terminalStatus, terminalStatus.name(),
+                    composingExec.startedAt(), finishedAt);
+            return new TaskExecutionRunResult(terminalExec, snapshot);
         } catch (RuntimeException exception) {
-            var failedAt = Instant.now(clock);
-            persistence.appendStageLog(TaskStageLogEntry.failed(
-                    request.task().taskId(),
-                    composingExecution.executionId(),
-                    "COMPOSING",
-                    1,
-                    exception.getMessage(),
-                    Duration.between(composingStartedAt, failedAt).toMillis(),
-                    failedAt));
-            var failedExecution = composingExecution.transitionTo(
-                    ExecutionStatus.FAILED,
-                    "COMPOSING",
-                    composingExecution.startedAt(),
-                    failedAt);
-            persistence.saveExecution(failedExecution);
+            try {
+                persistence.failExecution(
+                        "COMPOSING",
+                        ExecutionStatus.COMPOSING, "COMPOSING",
+                        composingExec, stageOwner,
+                        request.task().taskId(), request.execution().executionId(),
+                        "执行阶段失败", Instant.now(clock));
+            } catch (Exception inner) {
+                throw new FailExecutionAttempted(
+                        request.execution().executionId(), inner);
+            }
             throw exception;
         }
     }
 
-    private ExecutionStatus initialStageFor(TaskExecutionRequest request) {
-        return request.documentReference() == null ? ExecutionStatus.REVIEWING_RULES : ExecutionStatus.PARSING;
-    }
-
     private PreparedReviewInput runPreparationStages(
             TaskExecutionRequest request,
-            TaskExecutionRecord runningExecution,
+            TaskExecutionRecord rawExecution,
             TaskExecutionPersistence persistence,
-            Instant startedAt) {
-        var parsedDocument = runStage(
-                request,
-                runningExecution,
-                ExecutionStatus.PARSING,
-                persistence,
-                startedAt,
+            Instant executionStartedAt,
+            String stageOwner) {
+        var parsed = runStage(request, rawExecution,
+                rawExecution.status(), rawExecution.currentStage(),
+                ExecutionStatus.PARSING, persistence,
+                executionStartedAt, Instant.now(clock), stageOwner,
                 () -> reviewInputPreparer.parse(request.documentReference()),
-                result -> "SUCCESS");
+                r -> "SUCCESS");
 
-        var indexed = runStage(
-                request,
-                parsedDocument.execution(),
-                ExecutionStatus.INDEXING,
-                persistence,
-                Instant.now(clock),
-                () -> reviewInputPreparer.index(parsedDocument.value()),
-                result -> "SUCCESS");
+        var indexed = runStage(request, parsed.execution(),
+                ExecutionStatus.PARSING, "PARSING",
+                ExecutionStatus.INDEXING, persistence,
+                executionStartedAt, Instant.now(clock), stageOwner,
+                () -> reviewInputPreparer.index(parsed.value()),
+                r -> "SUCCESS");
 
-        var planned = runStage(
-                request,
-                indexed.execution(),
-                ExecutionStatus.PLANNING,
-                persistence,
-                Instant.now(clock),
+        var planned = runStage(request, indexed.execution(),
+                ExecutionStatus.INDEXING, "INDEXING",
+                ExecutionStatus.PLANNING, persistence,
+                executionStartedAt, Instant.now(clock), stageOwner,
                 () -> reviewInputPreparer.plan(indexed.value()),
-                result -> "SUCCESS");
+                r -> "SUCCESS");
 
-        var built = runStage(
-                request,
-                planned.execution(),
-                ExecutionStatus.BUILDING_EVIDENCE,
-                persistence,
-                Instant.now(clock),
+        var built = runStage(request, planned.execution(),
+                ExecutionStatus.PLANNING, "PLANNING",
+                ExecutionStatus.BUILDING_EVIDENCE, persistence,
+                executionStartedAt, Instant.now(clock), stageOwner,
                 () -> reviewInputPreparer.build(request, planned.value()),
-                input -> input.pointEvidences().values().stream().allMatch(evidence -> evidence.status() == EvidenceStatus.CONFIRMED)
-                        ? "SUCCESS"
-                        : "PARTIAL_SUCCESS");
+                input -> input.pointEvidences().values().stream()
+                        .allMatch(e -> e.status() == EvidenceStatus.CONFIRMED)
+                        ? "SUCCESS" : "PARTIAL_SUCCESS");
 
         return new PreparedReviewInput(built.value(), built.execution());
     }
@@ -202,81 +185,66 @@ public final class TaskExecutionStateMachine {
             ReviewEngineInput reviewInput,
             TaskExecutionRecord runningExecution,
             TaskExecutionPersistence persistence,
-            Instant stageStartedAt) {
-        persistence.saveExecution(runningExecution);
-        persistence.appendStageLog(TaskStageLogEntry.started(
-                request.task().taskId(),
-                runningExecution.executionId(),
-                "REVIEWING_RULES",
-                1,
-                stageStartedAt));
-
-        var reviewEngineResult = reviewEngine.review(reviewInput);
+            Instant stageStartedAt,
+            String stageOwner) {
+        var result = reviewEngine.review(reviewInput);
         var completedAt = Instant.now(clock);
-        persistence.appendStageLog(TaskStageLogEntry.completed(
-                request.task().taskId(),
-                runningExecution.executionId(),
-                "REVIEWING_RULES",
-                1,
-                deriveReviewStageSummaryStatus(reviewEngineResult),
-                Duration.between(stageStartedAt, completedAt).toMillis(),
-                completedAt));
-        return reviewEngineResult;
+        persistence.appendCompletedStageLog(
+                TaskStageLogEntry.completed(
+                        request.task().taskId(),
+                        runningExecution.executionId(),
+                        "REVIEWING_RULES", 1,
+                        deriveReviewStageSummaryStatus(result),
+                        Duration.between(stageStartedAt, completedAt).toMillis(),
+                        completedAt),
+                stageOwner,
+                ExecutionStatus.REVIEWING_RULES, "REVIEWING_RULES");
+        return result;
     }
 
     private <T> StageValue<T> runStage(
             TaskExecutionRequest request,
             TaskExecutionRecord currentExecution,
+            ExecutionStatus fromStatus, String fromCurrentStage,
             ExecutionStatus stageStatus,
             TaskExecutionPersistence persistence,
-            Instant stageStartedAt,
+            Instant executionStartedAt, Instant stageStartedAt,
+            String stageOwner,
             StageSupplier<T> supplier,
             StageSummary<T> summary) {
-        var runningExecution = currentExecution.transitionTo(
-                stageStatus,
-                stageStatus.name(),
-                currentExecution.startedAt(),
-                null);
-        persistence.saveExecution(runningExecution);
-        persistence.appendStageLog(TaskStageLogEntry.started(
-                request.task().taskId(),
-                runningExecution.executionId(),
-                stageStatus.name(),
-                1,
-                stageStartedAt));
+        var running = persistence.startStage(
+                fromStatus, fromCurrentStage,
+                stageStatus, stageStatus.name(),
+                currentExecution, stageOwner,
+                executionStartedAt, stageStartedAt);
         try {
             var value = supplier.get();
             var completedAt = Instant.now(clock);
-            persistence.appendStageLog(TaskStageLogEntry.completed(
-                    request.task().taskId(),
-                    runningExecution.executionId(),
-                    stageStatus.name(),
-                    1,
-                    summary.toSummary(value),
-                    Duration.between(stageStartedAt, completedAt).toMillis(),
-                    completedAt));
-            return new StageValue<>(value, runningExecution);
+            persistence.appendCompletedStageLog(
+                    TaskStageLogEntry.completed(
+                            request.task().taskId(),
+                            running.executionId(),
+                            stageStatus.name(), 1,
+                            summary.toSummary(value),
+                            Duration.between(stageStartedAt, completedAt).toMillis(),
+                            completedAt),
+                    stageOwner,
+                    stageStatus, stageStatus.name());
+            return new StageValue<>(value, running);
         } catch (RuntimeException exception) {
             var failedAt = Instant.now(clock);
-            persistence.appendStageLog(TaskStageLogEntry.failed(
-                    request.task().taskId(),
-                    runningExecution.executionId(),
+            persistence.failExecution(
                     stageStatus.name(),
-                    1,
-                    exception.getMessage(),
-                    Duration.between(stageStartedAt, failedAt).toMillis(),
-                    failedAt));
-            persistence.saveExecution(runningExecution.transitionTo(
-                    ExecutionStatus.FAILED,
-                    stageStatus.name(),
-                    runningExecution.startedAt(),
-                    failedAt));
+                    stageStatus, stageStatus.name(),
+                    running, stageOwner,
+                    request.task().taskId(), request.execution().executionId(),
+                    "执行阶段失败", failedAt);
             throw exception;
         }
     }
 
-    private String deriveReviewStageSummaryStatus(ReviewEngineResult reviewEngineResult) {
-        return reviewEngineResult.summary().notConcludedCount() > 0 ? "PARTIAL_SUCCESS" : "SUCCESS";
+    private String deriveReviewStageSummaryStatus(ReviewEngineResult result) {
+        return result.summary().notConcludedCount() > 0 ? "PARTIAL_SUCCESS" : "SUCCESS";
     }
 
     private ReviewResultSnapshot composeSnapshot(
@@ -296,6 +264,8 @@ public final class TaskExecutionStateMachine {
     }
 }
 
+// ── Records ──────────────────────────────────────────────────────
+
 record TaskExecutionRequest(
         ReviewTaskRecord task,
         TaskExecutionRecord execution,
@@ -304,28 +274,19 @@ record TaskExecutionRequest(
         List<ReviewPointSnapshot> disabledReviewPointsSnapshot,
         TaskExecutionDocumentReference documentReference) {
 
-    TaskExecutionRequest(
-            ReviewTaskRecord task,
-            TaskExecutionRecord execution,
-            ReviewEngineInput reviewInput,
-            List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
-            List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
+    TaskExecutionRequest(ReviewTaskRecord task, TaskExecutionRecord execution,
+                         ReviewEngineInput reviewInput,
+                         List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
+                         List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
         this(task, execution, reviewInput, enabledReviewPointsSnapshot, disabledReviewPointsSnapshot, null);
     }
 
-    static TaskExecutionRequest forDocument(
-            ReviewTaskRecord task,
-            TaskExecutionRecord execution,
-            TaskExecutionDocumentReference documentReference,
-            List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
-            List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
-        return new TaskExecutionRequest(
-                task,
-                execution,
-                null,
-                enabledReviewPointsSnapshot,
-                disabledReviewPointsSnapshot,
-                documentReference);
+    static TaskExecutionRequest forDocument(ReviewTaskRecord task, TaskExecutionRecord execution,
+                                            TaskExecutionDocumentReference documentReference,
+                                            List<ReviewPointSnapshot> enabledReviewPointsSnapshot,
+                                            List<ReviewPointSnapshot> disabledReviewPointsSnapshot) {
+        return new TaskExecutionRequest(task, execution, null,
+                enabledReviewPointsSnapshot, disabledReviewPointsSnapshot, documentReference);
     }
 
     TaskExecutionRequest {
@@ -339,38 +300,22 @@ record TaskExecutionRequest(
     }
 }
 
-record TaskExecutionDocumentReference(
-        Path docxPath,
-        String sampleId) {
-
+record TaskExecutionDocumentReference(Path docxPath, String sampleId) {
     TaskExecutionDocumentReference {
         Objects.requireNonNull(docxPath, "docxPath");
         Objects.requireNonNull(sampleId, "sampleId");
     }
 }
 
-record ReviewTaskRecord(
-        String taskId,
-        String contractName,
-        Map<String, String> structuredFieldsSnapshot) {
-
-    ReviewTaskRecord {
-        structuredFieldsSnapshot = Map.copyOf(structuredFieldsSnapshot);
-    }
+record ReviewTaskRecord(String taskId, String contractName, Map<String, String> structuredFieldsSnapshot) {
+    ReviewTaskRecord { structuredFieldsSnapshot = Map.copyOf(structuredFieldsSnapshot); }
 }
 
 record TaskExecutionRecord(
-        String executionId,
-        String taskId,
-        ExecutionStatus status,
-        String currentStage,
-        VersionReferences versionReferences,
-        String modelProfileCode,
-        String providerType,
-        String modelName,
-        String endpointAlias,
-        Instant startedAt,
-        Instant finishedAt) {
+        String executionId, String taskId, ExecutionStatus status, String currentStage,
+        VersionReferences versionReferences, String modelProfileCode,
+        String providerType, String modelName, String endpointAlias,
+        Instant startedAt, Instant finishedAt) {
 
     TaskExecutionRecord {
         Objects.requireNonNull(status, "status");
@@ -378,40 +323,18 @@ record TaskExecutionRecord(
         Objects.requireNonNull(versionReferences, "versionReferences");
     }
 
-    TaskExecutionRecord transitionTo(
-            ExecutionStatus nextStatus,
-            String nextStage,
-            Instant nextStartedAt,
-            Instant nextFinishedAt) {
-        return new TaskExecutionRecord(
-                executionId,
-                taskId,
-                nextStatus,
-                nextStage,
-                versionReferences,
-                modelProfileCode,
-                providerType,
-                modelName,
-                endpointAlias,
-                nextStartedAt,
-                nextFinishedAt);
+    TaskExecutionRecord transitionTo(ExecutionStatus nextStatus, String nextStage,
+                                     Instant nextStartedAt, Instant nextFinishedAt) {
+        return new TaskExecutionRecord(executionId, taskId, nextStatus, nextStage,
+                versionReferences, modelProfileCode, providerType, modelName, endpointAlias,
+                nextStartedAt, nextFinishedAt);
     }
 }
 
 enum ExecutionStatus {
-    CREATED,
-    QUEUED,
-    PARSING,
-    INDEXING,
-    PLANNING,
-    BUILDING_EVIDENCE,
-    REVIEWING_RULES,
-    REVIEWING_MODEL,
-    COMPOSING,
-    SUCCESS,
-    PARTIAL_SUCCESS,
-    FAILED,
-    CANCELLED;
+    CREATED, QUEUED, PARSING, INDEXING, PLANNING, BUILDING_EVIDENCE,
+    REVIEWING_RULES, REVIEWING_MODEL, COMPOSING,
+    SUCCESS, PARTIAL_SUCCESS, FAILED, CANCELLED;
 
     boolean isTerminal() {
         return this == SUCCESS || this == PARTIAL_SUCCESS || this == FAILED || this == CANCELLED;
@@ -419,91 +342,33 @@ enum ExecutionStatus {
 }
 
 record TaskStageLogEntry(
-        String taskId,
-        String executionId,
-        String stageName,
-        int attempt,
-        String eventType,
-        String summaryStatus,
-        String businessReason,
-        String diagnosticCode,
-        Long durationMs,
-        Map<String, Object> detailPayload,
+        String taskId, String executionId, String stageName, int attempt,
+        String eventType, String summaryStatus, String businessReason,
+        String diagnosticCode, Long durationMs, Map<String, Object> detailPayload,
         Instant createdAt) {
 
-    TaskStageLogEntry {
-        detailPayload = Map.copyOf(detailPayload);
+    TaskStageLogEntry { detailPayload = Map.copyOf(detailPayload); }
+
+    static TaskStageLogEntry started(String taskId, String executionId, String stageName,
+                                     int attempt, Instant createdAt) {
+        return new TaskStageLogEntry(taskId, executionId, stageName, attempt,
+                "STARTED", "RUNNING", null, null, null, Map.of(), createdAt);
     }
 
-    static TaskStageLogEntry started(
-            String taskId,
-            String executionId,
-            String stageName,
-            int attempt,
-            Instant createdAt) {
-        return new TaskStageLogEntry(
-                taskId,
-                executionId,
-                stageName,
-                attempt,
-                "STARTED",
-                "RUNNING",
-                null,
-                null,
-                null,
-                Map.of(),
-                createdAt);
+    static TaskStageLogEntry completed(String taskId, String executionId, String stageName,
+                                       int attempt, String summaryStatus, long durationMs, Instant createdAt) {
+        return new TaskStageLogEntry(taskId, executionId, stageName, attempt,
+                "COMPLETED", summaryStatus, null, null, durationMs, Map.of(), createdAt);
     }
 
-    static TaskStageLogEntry completed(
-            String taskId,
-            String executionId,
-            String stageName,
-            int attempt,
-            String summaryStatus,
-            long durationMs,
-            Instant createdAt) {
-        return new TaskStageLogEntry(
-                taskId,
-                executionId,
-                stageName,
-                attempt,
-                "COMPLETED",
-                summaryStatus,
-                null,
-                null,
-                durationMs,
-                Map.of(),
-                createdAt);
-    }
-
-    static TaskStageLogEntry failed(
-            String taskId,
-            String executionId,
-            String stageName,
-            int attempt,
-            String businessReason,
-            long durationMs,
-            Instant createdAt) {
-        return new TaskStageLogEntry(
-                taskId,
-                executionId,
-                stageName,
-                attempt,
-                "FAILED",
-                "FAILED",
-                businessReason,
-                null,
-                durationMs,
-                Map.of(),
-                createdAt);
+    static TaskStageLogEntry failed(String taskId, String executionId, String stageName,
+                                    int attempt, String businessReason, long durationMs, Instant createdAt) {
+        return new TaskStageLogEntry(taskId, executionId, stageName, attempt,
+                "FAILED", "FAILED", businessReason, null, durationMs, Map.of(), createdAt);
     }
 }
 
-record TaskExecutionRunResult(
-        TaskExecutionRecord execution,
-        ReviewResultSnapshot snapshot) {
-}
+record TaskExecutionRunResult(TaskExecutionRecord execution, ReviewResultSnapshot snapshot) {}
 
 interface TaskExecutionPersistence {
 
@@ -512,24 +377,84 @@ interface TaskExecutionPersistence {
     void appendStageLog(TaskStageLogEntry entry);
 
     void saveSnapshot(ReviewResultSnapshot snapshot);
+
+    // ── Lifecycle default methods (InMemory-compatible) ──────────
+
+    default TaskExecutionRecord startStage(
+            ExecutionStatus fromStatus, String fromCurrentStage,
+            ExecutionStatus toStatus, String toStageName,
+            TaskExecutionRecord current, String stageOwner,
+            Instant executionStartedAt, Instant stageStartedAt) {
+        var next = current.transitionTo(toStatus, toStageName,
+                current.startedAt() != null ? current.startedAt() : executionStartedAt, null);
+        saveExecution(next);
+        appendStageLog(TaskStageLogEntry.started(
+                next.taskId(), next.executionId(), toStageName, 1, stageStartedAt));
+        return next;
+    }
+
+    default void failExecution(
+            String targetStageName,
+            ExecutionStatus fromStatus, String fromCurrentStage,
+            TaskExecutionRecord current, String stageOwner,
+            String taskId, String executionId,
+            String businessReason, Instant failedAt) {
+        var failed = current.transitionTo(ExecutionStatus.FAILED, targetStageName,
+                current.startedAt(), failedAt);
+        saveExecution(failed);
+        appendStageLog(TaskStageLogEntry.failed(
+                taskId, executionId, targetStageName, 1, businessReason,
+                Duration.between(current.startedAt() != null ? current.startedAt() : failedAt, failedAt).toMillis(),
+                failedAt));
+    }
+
+    /** Persist snapshot, COMPOSING COMPLETED log, and terminal execution atomically. */
+    default void completeExecution(
+            TaskExecutionRecord composingExecution, ReviewResultSnapshot snapshot,
+            String stageOwner, Instant composingStartedAt, Instant finishedAt) {
+        saveSnapshot(snapshot);
+        var terminalStatus = snapshot.status() == SnapshotStatus.PARTIAL_SUCCESS
+                ? ExecutionStatus.PARTIAL_SUCCESS : ExecutionStatus.SUCCESS;
+        appendStageLog(TaskStageLogEntry.completed(
+                composingExecution.taskId(), composingExecution.executionId(),
+                "COMPOSING", 1, terminalStatus.name(),
+                Duration.between(composingStartedAt, finishedAt).toMillis(), finishedAt));
+        var terminal = composingExecution.transitionTo(
+                terminalStatus, terminalStatus.name(),
+                composingExecution.startedAt(), finishedAt);
+        saveExecution(terminal);
+    }
+
+    /**
+     * Append a COMPLETED stage log with explicit owner and status/current_stage guard.
+     * InMemory default delegates to plain appendStageLog; JDBC override uses
+     * INSERT...SELECT with owner+status+current_stage guard.
+     */
+    default void appendCompletedStageLog(TaskStageLogEntry entry, String stageOwner,
+                                          ExecutionStatus currentStatus, String currentStage) {
+        appendStageLog(entry);
+    }
 }
 
-record PreparedReviewInput(
-        ReviewEngineInput reviewInput,
-        TaskExecutionRecord execution) {
-}
+record PreparedReviewInput(ReviewEngineInput reviewInput, TaskExecutionRecord execution) {}
 
-record StageValue<T>(
-        T value,
-        TaskExecutionRecord execution) {
-}
+record StageValue<T>(T value, TaskExecutionRecord execution) {}
 
 @FunctionalInterface
-interface StageSupplier<T> {
-    T get();
-}
+interface StageSupplier<T> { T get(); }
 
 @FunctionalInterface
-interface StageSummary<T> {
-    String toSummary(T value);
+interface StageSummary<T> { String toSummary(T value); }
+
+/**
+ * Marker thrown when failExecution fails inside COMPOSING catch.
+ * Worker must NOT attempt FAILED compensation after this marker.
+ */
+final class FailExecutionAttempted extends RuntimeException {
+    private final String executionId;
+    FailExecutionAttempted(String executionId, Throwable cause) {
+        super("failExecution attempted for " + executionId, cause);
+        this.executionId = executionId;
+    }
+    String executionId() { return executionId; }
 }

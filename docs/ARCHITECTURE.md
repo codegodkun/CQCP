@@ -1477,7 +1477,7 @@ CANCELLED
 
 ```text
 Single Review Worker
-- 从 MySQL 拉取 QUEUED 任务
+- 从 PostgreSQL 拉取 QUEUED 任务
 - 顺序处理单份合同
 - 每阶段写 TaskStageLog
 - Gemma maxConcurrent=1

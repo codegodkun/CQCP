@@ -1,0 +1,36 @@
+COMMAND: CQCP_UPLOAD_ROOT absent; gradle.bat test --tests "com.cqcp.apiserver.reviewengine.SingleReviewWorkerIntegrationTest" --no-daemon --rerun-tasks --console=plain
+DATABASE: jdbc:postgresql://localhost:54329/cqcp_mvp001_a_test
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Task :compileJava
+
+> Task :processResources
+> Task :classes
+
+> Task :compileTestJava
+
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+2026-07-28T12:38:44.967+08:00  INFO 46128 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-28T12:38:44.971+08:00  INFO 46128 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+> Task :test
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 14s
+4 actionable tasks: 4 executed
+RAW_XML_SUMMARY tests=11 failures=0 errors=0 skipped=0
+EXIT_CODE=0
+注: C:\tmp\cqcp-mvp001\apps\api-server\src\main\java\com\cqcp\apiserver\reviewengine\ReviewTaskCreationService.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+注: C:\tmp\cqcp-mvp001\apps\api-server\src\test\java\com\cqcp\apiserver\reviewengine\ReviewTaskCreationServiceTest.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+注: 某些输入文件使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended

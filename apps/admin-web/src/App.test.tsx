@@ -123,6 +123,55 @@ const adminSnapshot = {
   ]
 };
 
+const minimalPublicSnapshot = {
+  taskId: "task-formal",
+  executionId: "exec-formal",
+  status: "SUCCESS",
+  summary: {
+    plannedPointCount: 0,
+    passCount: 0,
+    errorCount: 0,
+    warningCount: 0,
+    notConcludedCount: 0,
+    skippedCount: 0
+  },
+  reviewCompleteness: {
+    reviewCoverageStatus: "FULL_REVIEWED",
+    executablePointCount: 0,
+    concludedPointCount: 0,
+    notConcludedPointCount: 0,
+    concludedCoverageRate: 1,
+    confidenceLevel: "HIGH"
+  },
+  pointResults: [],
+  findings: [],
+  diagnostics: [],
+  sourceAnchors: [],
+  structuredFieldsSnapshot: {
+    contractName: "测试合同",
+    partyAName: "甲方公司",
+    partyBName: "乙方公司",
+    projectName: "测试项目",
+    contractTotalAmount: "8848",
+    taxExcludedAmount: "7830.09",
+    taxAmount: "1017.91",
+    taxRate: "13",
+    pricingMode: "FIXED_TOTAL_PRICE",
+    paymentMethod: "MONTHLY",
+    invoiceType: "VAT_SPECIAL",
+    currency: "CNY",
+    prepaymentRatio: "0",
+    progressPaymentRatio: "70",
+    completionPaymentRatio: "80",
+    settlementPaymentRatio: "97",
+    warrantyRetentionRatio: "3",
+    milestonePaymentTerms: "验收后付款",
+    unknownSecret: "STRUCTURED_SECRET_SENTINEL"
+  },
+  enabledReviewPointsSnapshot: [],
+  disabledReviewPointsSnapshot: []
+};
+
 describe("TASK-023 public result page", () => {
   afterEach(() => {
     fetchMock.mockReset();
@@ -273,6 +322,16 @@ describe("TASK-023 public result page", () => {
               evidenceSummary: "税额：32.50，计算结果：32.40"
             }
           ],
+          structuredFieldsSnapshot: {
+            contractName: "测试建设合同",
+            contractTotalAmount: "100.50",
+            taxRate: "13",
+            pricingMode: "FIXED_TOTAL_PRICE",
+            paymentMethod: "MONTHLY",
+            invoiceType: "VAT_SPECIAL",
+            currency: "CNY",
+            unknownSecret: "STRUCTURED_SECRET_SENTINEL"
+          },
           enabledReviewPointsSnapshot: [
             {
               reviewPointCode: "PARTY_A_NAME_CONSISTENCY",
@@ -349,6 +408,14 @@ describe("TASK-023 public result page", () => {
     expect(screen.getByText("SKIPPED 1")).toBeInTheDocument();
     expect(screen.queryByText("SYS_MODEL_TIMEOUT")).not.toBeInTheDocument();
     expect(screen.queryByText("prompt-v1")).not.toBeInTheDocument();
+    expect(screen.getByText("测试建设合同")).toBeInTheDocument();
+    expect(screen.getByText("100.50 元")).toBeInTheDocument();
+    expect(screen.getByText("13%")).toBeInTheDocument();
+    expect(screen.getByText("固定总价")).toBeInTheDocument();
+    expect(screen.getByText("按月度付款")).toBeInTheDocument();
+    expect(screen.getByText("增值税专用发票")).toBeInTheDocument();
+    expect(screen.getByText("人民币（CNY）")).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain("STRUCTURED_SECRET_SENTINEL");
   });
 
   it("shows not found message for 404", async () => {
@@ -476,5 +543,106 @@ describe("TASK-023 public result page", () => {
 
     renderApp("/admin/diagnostics?taskId=task-025");
     expect(await screen.findByText("诊断查询失败，请稍后重试。")).toBeInTheDocument();
+  });
+
+  it("AC19: /review/new renders review creation page without other page elements", async () => {
+    renderApp("/review/new");
+
+    expect(await screen.findByText("新建合同审核")).toBeInTheDocument();
+    expect(screen.getByText("当前仅支持 DOCX，DOC 待后续开发。")).toBeInTheDocument();
+    expect(screen.getByText("工程采购合同（ENGINEERING）")).toBeInTheDocument();
+    expect(screen.getByText("人民币（CNY）")).toBeInTheDocument();
+
+    expect(screen.queryByText("普通结果页最小展示")).not.toBeInTheDocument();
+    expect(screen.queryByText("管理台诊断详情最小展示")).not.toBeInTheDocument();
+  });
+
+  it("AC19: status route renders and calls the exact status endpoint", async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          taskId: "task-route",
+          executionId: "exec-route",
+          status: "QUEUED",
+          currentStage: "PARSING",
+          terminal: false,
+          snapshotAvailable: false,
+          resultUrl: "/review/results/task-route?executionId=exec-route",
+          reviewModel: {
+            modelProfileCode: "review-default",
+            providerType: "LOCAL",
+            modelName: "local-model",
+            endpointAlias: "local-primary",
+            modelConfigVersion: "v1"
+          },
+          createdAt: "2026-07-27T08:00:00Z",
+          updatedAt: "2026-07-27T08:00:01Z",
+          superseded: false
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      )
+    );
+    renderApp("/review/tasks/task-route/executions/exec-route");
+    expect(await screen.findByText("合同审核进度")).toBeInTheDocument();
+    expect(await screen.findByText("解析合同")).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/review/tasks/task-route/executions/exec-route",
+      expect.objectContaining({ headers: { Accept: "application/json" } })
+    );
+  });
+
+  it("loads the formal result route only for matching execution identity", async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify(minimalPublicSnapshot), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      })
+    );
+    renderApp("/review/results/task-formal?executionId=exec-formal");
+    expect(await screen.findByText("任务 task-formal")).toBeInTheDocument();
+    expect(screen.getByText("测试合同")).toBeInTheDocument();
+    for (const label of [
+      "甲方名称",
+      "乙方名称",
+      "项目名称",
+      "不含税金额",
+      "合同税额",
+      "预付款比例",
+      "进度付款比例",
+      "完工付款比例",
+      "结算付款比例",
+      "质保金比例",
+      "节点付款信息"
+    ]) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+    expect(screen.queryByLabelText("taskId")).not.toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith("/api/v1/tasks/task-formal/result");
+  });
+
+  it("fails closed on formal result snapshot identity mismatch", async () => {
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({ ...minimalPublicSnapshot, executionId: "exec-other" }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      )
+    );
+    renderApp("/review/results/task-formal?executionId=exec-formal");
+    expect(
+      await screen.findByText("结果身份校验失败，请返回状态页重新查询。")
+    ).toBeInTheDocument();
+    expect(screen.queryByText("测试合同")).not.toBeInTheDocument();
+  });
+
+  it("does not request a formal result route without executionId", async () => {
+    renderApp("/review/results/task-formal");
+    expect(await screen.findByText("结果页地址无效。")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed without requesting when formal executionId is not canonical", async () => {
+    renderApp("/review/results/task-formal?executionId=%20exec-formal%20");
+    expect(await screen.findByText("结果页地址无效。")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

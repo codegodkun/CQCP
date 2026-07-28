@@ -1,0 +1,29 @@
+- generic: 审核执行
+- heading "合同审核进度" [level=2]
+- generic: 页面会在当前请求完成后继续查询；终态或查询异常时自动停止。
+- table:
+  - rowgroup:
+    - row "Task ID TASK_2f2539c99d574d29b993c5733c20b4bd":
+      - rowheader "Task ID"
+      - cell "TASK_2f2539c99d574d29b993c5733c20b4bd"
+    - row "Execution ID EXEC_321f36a3ad37415993b5dcdd5c11c0cb":
+      - rowheader "Execution ID"
+      - cell "EXEC_321f36a3ad37415993b5dcdd5c11c0cb"
+    - row "公开状态 排队中":
+      - rowheader "公开状态"
+      - cell "排队中"
+    - row "当前阶段 排队中":
+      - rowheader "当前阶段"
+      - cell "排队中"
+    - row "创建时间 2026-07-28T01:11:14.966391Z":
+      - rowheader "创建时间"
+      - cell "2026-07-28T01:11:14.966391Z"
+    - row "更新时间 2026-07-28T01:11:14.966391Z":
+      - rowheader "更新时间"
+      - cell "2026-07-28T01:11:14.966391Z"
+    - row "模型配置 MVP_DEMO_MOCK / MOCK / cqcp-demo-mock / model-config-mvp-demo-mock-v20260724.1":
+      - rowheader "模型配置"
+      - cell "MVP_DEMO_MOCK / MOCK / cqcp-demo-mock / model-config-mvp-demo-mock-v20260724.1":
+        - generic: MVP_DEMO_MOCK / MOCK / cqcp-demo-mock / model-config-mvp-demo-mock-v20260724.1
+- generic: 自动更新中
+- generic: 每次请求完成 1 秒后再次查询

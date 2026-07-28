@@ -1,0 +1,72 @@
+FEATURE-MVP-001 / TASK_SPEC-MVP-001-F3
+Captured at: 2026-07-28T12:44:21+08:00
+
+CI RED
+PR: https://github.com/codegodkun/CQCP/pull/35
+Run: https://github.com/codegodkun/CQCP/actions/runs/30326662660
+Job: https://github.com/codegodkun/CQCP/actions/runs/30326662660/job/90173392371
+Head: 1dbef9cdbcb0e98996c58b262d1b668f0d06941e
+Command: gradle test
+Exit code: 1
+Result: 313 tests completed, 3 failed
+Failures:
+- SingleReviewWorkerIntegrationTest.ac13_finalSymlink_failsClosed:
+  fixture setup NoSuchFileException at createTempFile(uploadRoot(), ...)
+- SingleReviewWorkerIntegrationTest.ac13_parserFailure_failsClosed:
+  fixture setup AccessDeniedException at writeFile(...)
+- SingleReviewWorkerIntegrationTest.ac13_parentDirSymlink_failsClosed:
+  fixture setup AccessDeniedException at writeFile(...)
+
+ROOT CAUSE
+The test helper used /data/cqcp/uploads when CQCP_UPLOAD_ROOT was absent, while
+the application source of truth cqcp.review.upload-root defaults to
+./data/uploads. The Linux runner could not create the hard-coded absolute root.
+On Windows the helper could also write the fixture outside the application's
+configured root, allowing a false-positive fail-closed result.
+
+HOST TARGETED GREEN
+Environment:
+- CQCP_DB_URL=jdbc:postgresql://localhost:54329/cqcp_mvp001_a_test
+- CQCP_UPLOAD_ROOT absent
+Command:
+gradle.bat test --tests com.cqcp.apiserver.reviewengine.SingleReviewWorkerIntegrationTest --no-daemon --rerun-tasks
+Exit code: 0
+Result: 11 tests, 0 failures, 0 errors, 0 skipped; BUILD SUCCESSFUL
+
+HOST FULL GREEN
+Environment:
+- CQCP_DB_URL=jdbc:postgresql://localhost:54329/cqcp_mvp001_a_test
+- CQCP_UPLOAD_ROOT absent
+Command:
+gradle.bat test --no-daemon --rerun-tasks
+Exit code: 0
+Result: 313 tests, 0 failures, 0 errors, 0 skipped; BUILD SUCCESSFUL
+
+LINUX TARGETED DEPENDENCY ATTEMPT
+Image: gradle:8.10.2-jdk21
+Command: targeted test with normal online dependency resolution
+Exit code: 1
+Entered tests: false
+Failure: Maven Central transfer failed before compile with
+"Illegal packet size: 42592"
+Used as pass evidence: false
+
+LINUX TARGETED GREEN
+Image: gradle:8.10.2-jdk21
+Dependency mode:
+- host Gradle cache mounted read-only
+- GRADLE_RO_DEP_CACHE=/host-gradle-cache
+- --offline
+Environment:
+- CQCP_DB_URL=jdbc:postgresql://host.docker.internal:54329/cqcp_mvp001_a_test
+- CQCP_UPLOAD_ROOT absent
+Command:
+gradle test --tests com.cqcp.apiserver.reviewengine.SingleReviewWorkerIntegrationTest --no-daemon --rerun-tasks --offline
+Exit code: 0
+Result: 11 tests, 0 failures; BUILD SUCCESSFUL
+
+SCOPE
+- Production code unchanged.
+- Workflow, OpenAPI, migration, Docker Compose, and Demo evidence unchanged.
+- The test now injects the same Spring cqcp.review.upload-root property used by
+  the application and normalizes it to an absolute path.

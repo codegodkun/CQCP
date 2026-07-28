@@ -1,10 +1,17 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-07-24
+更新日期：2026-07-28
 
 ## 当前阶段
 
-CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。长期架构依据仍以 `docs/ARCHITECTURE.md` 为准；当前任务状态、门禁和下一步以本文与对应 task 文件的最新记录为准。
+CQCP 当前处于 MVP 主链路接通、合同审核用户闭环 Demo PR #35 CI 修复收口与
+parser-backed evidence 后续治理并行阶段。`FEATURE-MVP-001` 的 F3 实现、原始
+console 补证、状态真源补正与 v9 双重独立审计已完成；CC AUDIT 与两个 Codex
+subagent 均为 `GO`，`P0=0 / P1=0 / P2=0 / blocking findings=0`。父 TASK 与
+F3 已迁移到 `tasks/done/`，当前门禁是提交并 push F3 后等待 PR #35 三项 CI，
+仅在 remote head 与审计内容一致且 CI 全绿时 merge。
+长期架构依据仍以 `docs/ARCHITECTURE.md` 为准；当前任务状态、门禁和下一步以本文
+与对应 task 文件的最新记录为准。
 
 当前任务推进采用 Task Level + Feature/Milestone 收口规则：`L0 探索`默认不进入主线，`L1 小文档`批量处理，`L2 Feature`默认一个父 TASK、一个 Feature PR，`L3 高风险治理`按可回滚风险边界独立审计。TASK_SPEC 保持细粒度执行和 Review Intake，但不自动等于 commit/push/PR/merge；普通 push 不因传输动作重复完整审计；人工 ground truth、expected/fixture、核心审核链路、生产激活、数据库/API/CI/安全等强门禁继续有效。详细规则见 `AGENTS.md`、`docs/DEVELOPMENT.md`、`docs/VERIFY.md` 与 `docs/context-management.md`。
 
@@ -24,6 +31,21 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。�
 
 ## 当前活跃任务
 
+- `TASK-MVP-001` / `FEATURE-MVP-001` 已完成 A~F/F1/F2、真实 Demo 与 v9 双重审计，
+  完成态 commit `1dbef9c` 已 push，PR #35 已创建。PR 的 authorization/admin-web
+  checks 通过，但 backend CI 在 313 项中有 3 项 Linux fixture 构造失败。
+  `TASK_SPEC-MVP-001-F3` 已定界并验证：测试消费与应用相同的
+  `cqcp.review.upload-root`，不再硬编码 `/data/cqcp/uploads`；host 定向 11/11、
+  backend 全量 313/313、Linux container 定向 11/11。
+  v6 代码审计因缺少原始 green console 与父 TASK 旧叙事判定 NO-GO，现已重新执行
+  并固化 host/Linux 原始 stdout/stderr，且已标明 v5 记录失效。v7 又发现本文首段、
+  父 TASK Handoff 与 F3 摘要时间三项状态/元数据问题，现已补正；v8 两个
+  subagent 均因本节“下一步”仍列出已完成 F3 测试而 NO-GO，该过期步骤也已删除。
+  v9 的代码审计、测试/安全审计和 CC AUDIT 均为 GO，P0/P1/P2 与 blocking
+  findings 全为 0；父 TASK 与 F3 已归档。当前只剩 F3 commit/push、PR #35
+  required CI 与条件式 merge。
+  该修复不改变 TASK-034 正式 FAIL、57/57、Production Ready 或 `v20260715.1`
+  边界。
 - `TASK-034` 已完成 Phase 0 与 Phase 1，父任务保持 active，正式 MVP E2E 最终判定为 `FAIL`。3 份真实 DOCX 均完成同 run parser → review → snapshot → 同 task 查询；27 个 `PointStatus` 全为 `PASS`，但 candidate comparison 仅 9 `MATCH`、18 `MISMATCH`；63 条 occurrence 保持 57 纳入 / 6 排除，其中 57 条纳入全部 `NOT_OBSERVABLE`，6 条排除全部 `EXCLUDED`。三份结果均无 Finding、无 `SYS-*`。证据目录：`outputs/task-034-mvp-e2e-acceptance/`。
 - `TASK_SPEC-034-A` test-only E2E harness 已实现并经 Codex Review Intake 与独立只读复核接纳，文件：`tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`；实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，manifest 序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`。harness 13/13、既有四类定向回归 27/27；未修改生产链路或人工 ground truth。
 - `TASK-035` 的 `mvp-e2e-candidate-comparison-v2` 与 `TASK_SPEC-035-A` 已接纳并随 PR #32 合并；实现提交为 `52d73b3`，定向证据为 harness `15/15`、四类回归 `27/27`。正式 MVP E2E 未重跑，父任务仍 active。
@@ -33,11 +55,20 @@ CQCP 当前处于 MVP 主链路接通与 parser-backed evidence 收口阶段。�
 - `TASK-GOV-005` 已拆出并定界为 active 治理债务任务，文件：`tasks/active/TASK-GOV-005-historical-commit-authorization-evidence-debt.md`。处理决定为 `BOUNDARY RECORDED / NO RECOVERY PATH / NO IMPLEMENTATION AUTHORIZATION`；2026-07-04 独立只读审计结论为 `GO`。该任务仅记录 `TASK-EVAL-001-A/B` 历史授权链不可完整核实问题，不追溯否定已 merge / push 内容，但阻止其作为后续绕过 commit / push 明确授权门禁的先例；任务仍长期保留 active，不表示已归档。
 - `TASK-GOV-006` 已通过 PR #18 合并完成云端 PR 触发验证，文件：`tasks/active/TASK-GOV-006-submit-authorization-evidence-gate.md`。PR #18 head commit 为 `432a63a25b0352e5ba9768f68f32c95a266474e4`，merge commit 为 `d3d5d1b507d233b5ff9a20350fad7b0c05a36cf9`；PR 触发的 CI 已通过，包含 `Authorization evidence check`、`Backend Gradle tests`、`Admin web lint, tests, and build`。`Authorization evidence check` 已在 PR #18 中成功运行，但它不是 required status check，也不证明用户授权、测试、独立审计或 Memory Writeback 已真实发生；本任务不配置 branch protection、repository ruleset 或 required status checks，不发布 `CQCP Code Review` / `CQCP Spec & Docs Review` Check Run 或 Commit Status。
 - `TASK-GOV-007` 已通过 PR #33 合并，merge commit 为 `1f62320f20ec29c52f49c0ed33c4244bb1be669e`；独立只读审计 12 项全部通过、状态增量复核 `GO`，三项 CI 全部通过。该任务不修改业务代码、workflow、检查脚本或 TASK-036 门禁。
-- `TASK-037 / ADR-017` 已从 `origin/master@1f62320` 创建独立 L3 分支 `codex/task-037-execution-binding-release`；ADR-017 已接受，规格、架构同步与第二轮实现审计均为 `GO`。Claude Code 编码前计划经修订后获准实现；V2 seed、binding resolver 与定向测试已完成，Codex Review Intake 为 `ACCEPT_IMPLEMENTATION / GO_TO_COMMIT_PR`。全新 PostgreSQL 16.14 空库定向 45 tests、全量 backend 157 tests、review-assets validator 与 `git diff --check` 全部通过；当前待 PR/CI/merge。
+- `TASK-037 / ADR-017` 已通过 PR #34 合并，merge commit 为
+  `401fd05b7a6c23014adb4f5511533467016c37ba`；ADR-017、V2 seed、binding
+  resolver、`MVP_DEMO_MOCK` 与三类 budget profile 已进入主线，C2 未激活。
 
 ## Git 集成基线
 
-GitHub 是 PR、checks 与 merge 状态的事实源。当前主线最近的确认集成基线为 PR #33 / merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`；它只合并 TASK-GOV-007 治理规则。PR #32 / merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 合并 TASK-035 candidate comparison v2 与 TASK-036-A 未激活 carrier，不激活 RuleSetVersion runtime loader，不证明 57/57 occurrence coverage，也不解除 TASK-028 / TASK-031 / TASK-032。
+GitHub 是 PR、checks 与 merge 状态的事实源。当前 Feature 基线为 PR #34 / merge commit
+`401fd05b7a6c23014adb4f5511533467016c37ba`，已包含 TASK-037 / ADR-017 的
+Execution Binding Release 与 `MVP_DEMO_MOCK` seed。`FEATURE-MVP-001` 从该基线建立，
+完成态 commit `1dbef9c` 已 push 并创建 PR #35；backend CI 的 Linux fixture
+失败使 merge 门禁重新关闭；F3 定点修复与 v9 完整双审计现已通过，当前等待
+F3 commit/push 与 PR #35 三项 CI。PR #32 /
+merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 的 TASK-036-A carrier 仍未激活；
+本 Feature 不证明 57/57 occurrence coverage，也不解除 TASK-028 / TASK-031 / TASK-032。
 
 ## 当前阻塞项
 
@@ -82,14 +113,17 @@ GitHub 是 PR、checks 与 merge 状态的事实源。当前主线最近的确�
 
 ## 下一步
 
-1. 对 TASK-037 接纳状态写回执行轻量 delta 复核，然后精确提交、创建独立 L3 PR并等待 CI。
-2. TASK-037 merge 后从新 `origin/master` 重跑 `TASK-MVP-001` Phase 0；通过前不得创建 `TASK_SPEC-MVP-001-A`。
-3. Phase 0 为 GO 后，按用户授权创建 FEATURE-MVP-001 分支并冻结 `TASK_SPEC-MVP-001-A`。
-4. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败证据保持不变。
+1. 提交并 push 已通过 v9 双重审计的 F3 与归档写回，等待 PR #35 三项 CI
+   全部通过。
+2. 仅在 remote head
+   与新审计基线一致且无新 finding 时 merge。
+3. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败证据保持不变。
 
 ## 参考路径
 
 - `tasks/MVP_TASK_MAP.md`
+- `tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`
+- `tasks/done/TASK_SPEC-MVP-001-F3-linux-upload-root-test-portability.md`
 - `tasks/done/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
 - `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`
 - `tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`

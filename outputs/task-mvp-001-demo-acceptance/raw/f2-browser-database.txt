@@ -1,0 +1,28 @@
+COMMAND: docker exec cqcp-postgres-1 psql -U cqcp -d cqcp -c <read-only SQL>
+EXIT_CODE: 0
+
+TASK:
+                task_id                | caller_type | source_type | contract_type_code |                                               result_url                                                | currency |                             document_reference
+---------------------------------------+-------------+-------------+--------------------+---------------------------------------------------------------------------------------------------------+----------+-----------------------------------------------------------------------------
+ TASK_0b5335afd3b4423ba5485c94a029ce3c | ADMIN       | DOCX_UPLOAD | ENGINEERING        | /review/results/TASK_0b5335afd3b4423ba5485c94a029ce3c?executionId=EXEC_be1954f494dd4d19b73d33b9801cd710 | CNY      | TASK_0b5335afd3b4423ba5485c94a029ce3c/67d5305c49f14e2ba125064ccd9c32ef.docx
+(1 row)
+
+EXECUTION:
+             execution_id              |                task_id                | status  | current_stage | rule_set_version | model_profile_code |          model_config_version          |        parser_version        | provider_type |   model_name   | endpoint_alias
+---------------------------------------+---------------------------------------+---------+---------------+------------------+--------------------+----------------------------------------+------------------------------+---------------+----------------+----------------
+ EXEC_be1954f494dd4d19b73d33b9801cd710 | TASK_0b5335afd3b4423ba5485c94a029ce3c | SUCCESS | SUCCESS       | v20260705.1      | MVP_DEMO_MOCK      | model-config-mvp-demo-mock-v20260724.1 | parser-docx-word-v20260724.1 | MOCK          | cqcp-demo-mock | mock-local
+(1 row)
+
+STAGE LOG:
+ stage_log_count |        first_event_at         |       last_event_at
+-----------------+-------------------------------+----------------------------
+              12 | 2026-07-28 02:52:49.343906+00 | 2026-07-28 02:52:49.967+00
+(1 row)
+
+SNAPSHOT:
+                task_id                |             execution_id              | status  | point_count | anchor_count | structured_field_count | rule_set_version |         model_profile_version
+---------------------------------------+---------------------------------------+---------+-------------+--------------+------------------------+------------------+----------------------------------------
+ TASK_0b5335afd3b4423ba5485c94a029ce3c | EXEC_be1954f494dd4d19b73d33b9801cd710 | SUCCESS |           9 |            8 |                     17 | v20260705.1      | model-config-mvp-demo-mock-v20260724.1
+(1 row)
+
+DECISION: PASS

@@ -1,0 +1,40 @@
+COMMAND: CQCP_DB_URL=jdbc:postgresql://localhost:54329/cqcp_mvp001_a_test gradle.bat test --no-daemon --rerun-tasks
+EXIT_CODE: 0
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Task :compileJava
+注: C:\tmp\cqcp-mvp001\apps\api-server\src\main\java\com\cqcp\apiserver\reviewengine\ReviewTaskCreationService.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+
+> Task :processResources
+> Task :classes
+
+> Task :compileTestJava
+注: C:\tmp\cqcp-mvp001\apps\api-server\src\test\java\com\cqcp\apiserver\reviewengine\ReviewTaskCreationServiceTest.java使用或覆盖了已过时的 API。
+注: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+注: 某些输入文件使用了未经检查或不安全的操作。
+注: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-07-28T10:07:24.820+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-07-28T10:07:24.824+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-07-28T10:07:24.827+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-07-28T10:07:24.830+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2026-07-28T10:07:24.833+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-07-28T10:07:24.836+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+2026-07-28T10:07:24.838+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown initiated...
+2026-07-28T10:07:24.841+08:00  INFO 51108 --- [cqcp-api-server] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown completed.
+> Task :test
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 36s
+4 actionable tasks: 4 executed

@@ -1,0 +1,10 @@
+COMMAND: docker logs cqcp-admin-web-1 --since 10m <filtered to target request chain>
+EXIT_CODE: 0
+
+172.19.0.1 - - [28/Jul/2026:02:52:48 +0000] "POST /api/review/tasks HTTP/1.1" 202 251 "http://localhost:15173/review/new" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:52:48 +0000] "GET /api/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710 HTTP/1.1" 200 615 "http://localhost:15173/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:52:49 +0000] "GET /api/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710 HTTP/1.1" 200 620 "http://localhost:15173/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:52:50 +0000] "GET /api/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710 HTTP/1.1" 200 615 "http://localhost:15173/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:52:50 +0000] "GET /api/v1/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/result HTTP/1.1" 200 15547 "http://localhost:15173/review/results/TASK_0b5335afd3b4423ba5485c94a029ce3c?executionId=EXEC_be1954f494dd4d19b73d33b9801cd710" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36" "-"
+
+DECISION: PASS
