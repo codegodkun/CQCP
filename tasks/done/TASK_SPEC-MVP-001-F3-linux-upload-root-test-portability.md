@@ -4,7 +4,7 @@
 
 - 父任务：`tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`
 - Task Level：L2 Feature 内 CI 定点修复
-- 状态：`COMPLETED / VERIFIED / V9_DUAL_AUDIT_GO / PR_CI_PENDING`
+- 状态：`COMPLETED / VERIFIED / V9_DUAL_AUDIT_GO / PR_35_MERGED / CI_GREEN`
 - 触发来源：PR #35 `Backend Gradle tests`
 - 失败 run：`30326662660`
 - 失败 job：`90173392371`
@@ -147,3 +147,12 @@ console、test-only diff、AC13、安全边界、Compose/Chrome/PostgreSQL 与 A
   `CC_AUDIT=GO / P0=0 / P1=0 / P2=0 / BLOCKING_FINDINGS=0`。
 - 最终门禁已满足。Codex Review Intake：
   `ACCEPT_F3_IMPLEMENTATION / V9_DUAL_AUDIT_GO / GO_TO_COMMIT_PUSH_PR_CI_MERGE`。
+
+## Git 集成完成事实
+
+- F3 与归档写回提交为 `332d365e75b00102e8ce6a54df716024c7b9288c`，已 push。
+- PR #35 最终 CI run `30333059261` 的三项检查全部成功；其中 backend job
+  `90192109599` 已在 Linux 上验证修复。
+- PR #35 于 `2026-07-28T05:56:19Z` 合并，merge commit 为
+  `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
+- F3 完成态为 `VERIFIED / V9_DUAL_AUDIT_GO / PR_35_MERGED / CI_GREEN`。
