@@ -412,6 +412,27 @@ MVP 管理台模型配置相关 API 只读：
 
 resolver 返回完整 14 字段 tuple。后续 Task Creation 必须在一个 PostgreSQL 事务中完成 binding 校验、Task 插入和首个 `QUEUED` Execution 插入；任一失败整体回滚。`execution.model_config_version` 写入 snapshot 时映射为同值 `model_profile_version`。
 
+## FEATURE-MVP-001 Demo 应用闭环
+
+当前受控管理台 Demo 入口使用：
+
+- `POST /api/review/tasks`：接收单个 DOCX multipart 与结构化 metadata，成功返回
+  HTTP 202、`taskId`、`executionId`、`status=QUEUED` 和正式 `resultUrl`；
+- `GET /api/review/tasks/{taskId}/executions/{executionId}`：按双 identity 返回
+  5 个公开状态、13 个 `currentStage`、终态标记、snapshot 可用性和同源结果 URL；
+- `GET /api/v1/tasks/{taskId}/result`：读取已持久化 `ReviewResultSnapshot`。
+
+创建任务时，服务端生成 task-scoped 随机 `documentReference`，原始文件名只进入
+metadata。文件先写受控临时路径，再与 Task 和首个 Execution 的 PostgreSQL 事务协调
+提交；失败时清理文件。Worker 只能解析配置根目录内规范化后的引用，拒绝路径穿越，
+不得依赖 multipart 临时文件。
+
+Single Worker 从 PostgreSQL 原子 claim 一个 `QUEUED` execution，按
+`PARSING -> INDEXING -> PLANNING -> BUILDING_EVIDENCE -> REVIEWING_RULES /
+REVIEWING_MODEL -> COMPOSING` 推进，并持久化阶段事件、终态和 snapshot。MVP Demo
+继续绑定 `MVP_DEMO_MOCK` 与 legacy `v20260705.1`，不加载 DRAFT review-assets，
+不激活 `v20260715.1`。
+
 ## 基线冻结文档
 
 - Word parser MVP 边界与最小字段清单见 `docs/word-parser-mvp-boundary.md`

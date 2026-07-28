@@ -1,0 +1,331 @@
+BASE_IMPLEMENTATION: git archive HEAD@439a02012c54f11577c6e916591d69db2a7d5d58 apps/admin-web
+TEST_FILES: copied from staged F2 working tree
+COMMAND: HEAD implementation + staged F2 tests; npm.cmd test -- src/reviewCreation/ReviewTaskCreationPage.test.tsx src/App.test.tsx
+EXIT_CODE: 1
+EXPECTED_RED: 2 failed / 31 passed
+
+STDOUT:
+
+> @cqcp/admin-web@0.1.0 test
+> vitest run --environment jsdom src/reviewCreation/ReviewTaskCreationPage.test.tsx src/App.test.tsx
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/tmp/cqcp-mvp001-red-repro/apps/admin-web[39m
+
+ [31m❯[39m src/reviewCreation/ReviewTaskCreationPage.test.tsx [2m([22m[2m21 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 1715[2mms[22m[39m
+[31m   [31m×[31m ReviewTaskCreationPage[2m > [22m8: rejects malformed 202 responses (9 cases) and accepts valid 202[90m 7[2mms[22m[31m[39m
+[31m     → case "taskId whitespace only": should throw: expected undefined to be an instance of SubmitError[39m
+ [31m❯[39m src/App.test.tsx [2m([22m[2m12 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 1873[2mms[22m[39m
+[31m   [31m×[31m TASK-023 public result page[2m > [22mfails closed without requesting when formal executionId is not canonical[33m 1016[2mms[22m[31m[39m
+[31m     → Unable to find an element with the text: 结果页地址无效。. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"app-shell result-page"[31m
+    [36m>[31m
+      [36m<section[31m
+        [33mclass[31m=[32m"hero-panel"[31m
+      [36m>[31m
+        [36m<span[31m
+          [33mclass[31m=[32m"ant-tag ant-tag-cyan css-dev-only-do-not-override-mncuj7"[31m
+        [36m>[31m
+          [0mTASK-023[0m
+        [36m</span>[31m
+        [36m<h2[31m
+          [33mclass[31m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[31m
+        [36m>[31m
+          [0m普通结果页最小展示[0m
+        [36m</h2>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[31m
+        [36m>[31m
+          [0m仅展示业务化审核结果，围绕“审核点 - 证据 - 原文定位”解释，不展示系统诊断明细。[0m
+        [36m</div>[31m
+      [36m</section>[31m
+      [36m<section[31m
+        [33mclass[31m=[32m"content-panel"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"ant-alert ant-alert-warning css-dev-only-do-not-override-mncuj7"[31m
+          [33mdata-show[31m=[32m"true"[31m
+          [33mrole[31m=[32m"alert"[31m
+        [36m>[31m
+          [36m<span[31m
+            [33maria-label[31m=[32m"exclamation-circle"[31m
+            [33mclass[31m=[32m"anticon anticon-exclamation-circle ant-alert-icon"[31m
+            [33mrole[31m=[32m"img"[31m
+          [36m>[31m
+            [36m<svg[31m
+              [33maria-hidden[31m=[32m"true"[31m
+              [33mdata-icon[31m=[32m"exclamation-circle"[31m
+              [33mfill[31m=[32m"currentColor"[31m
+              [33mfocusable[31m=[32m"false"[31m
+              [33mheight[31m=[32m"1em"[31m
+              [33mviewBox[31m=[32m"64 64 896 896"[31m
+              [33mwidth[31m=[32m"1em"[31m
+            [36m>[31m
+              [36m<path[31m
+                [33md[31m=[32m"M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"[31m
+              [36m/>[31m
+            [36m</svg>[31m
+          [36m</span>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"ant-alert-content"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"ant-alert-message"[31m
+            [36m>[31m
+              [0m结果查询失败，请稍后重试。[0m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+      [36m</section>[31m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m
+
+Ignored nodes: comments, script, style
+[36m<body>[31m
+  [36m<div>[31m
+    [36m<div[31m
+      [33mclass[31m=[32m"app-shell result-page"[31m
+    [36m>[31m
+      [36m<section[31m
+        [33mclass[31m=[32m"hero-panel"[31m
+      [36m>[31m
+        [36m<span[31m
+          [33mclass[31m=[32m"ant-tag ant-tag-cyan css-dev-only-do-not-override-mncuj7"[31m
+        [36m>[31m
+          [0mTASK-023[0m
+        [36m</span>[31m
+        [36m<h2[31m
+          [33mclass[31m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[31m
+        [36m>[31m
+          [0m普通结果页最小展示[0m
+        [36m</h2>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[31m
+        [36m>[31m
+          [0m仅展示业务化审核结果，围绕“审核点 - 证据 - 原文定位”解释，不展示系统诊断明细。[0m
+        [36m</div>[31m
+      [36m</section>[31m
+      [36m<section[31m
+        [33mclass[31m=[32m"content-panel"[31m
+      [36m>[31m
+        [36m<div[31m
+          [33mclass[31m=[32m"ant-alert ant-alert-warning css-dev-only-do-not-override-mncuj7"[31m
+          [33mdata-show[31m=[32m"true"[31m
+          [33mrole[31m=[32m"alert"[31m
+        [36m>[31m
+          [36m<span[31m
+            [33maria-label[31m=[32m"exclamation-circle"[31m
+            [33mclass[31m=[32m"anticon anticon-exclamation-circle ant-alert-icon"[31m
+            [33mrole[31m=[32m"img"[31m
+          [36m>[31m
+            [36m<svg[31m
+              [33maria-hidden[31m=[32m"true"[31m
+              [33mdata-icon[31m=[32m"exclamation-circle"[31m
+              [33mfill[31m=[32m"currentColor"[31m
+              [33mfocusable[31m=[32m"false"[31m
+              [33mheight[31m=[32m"1em"[31m
+              [33mviewBox[31m=[32m"64 64 896 896"[31m
+              [33mwidth[31m=[32m"1em"[31m
+            [36m>[31m
+              [36m<path[31m
+                [33md[31m=[32m"M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"[31m
+              [36m/>[31m
+            [36m</svg>[31m
+          [36m</span>[31m
+          [36m<div[31m
+            [33mclass[31m=[32m"ant-alert-content"[31m
+          [36m>[31m
+            [36m<div[31m
+              [33mclass[31m=[32m"ant-alert-message"[31m
+            [36m>[31m
+              [0m结果查询失败，请稍后重试。[0m
+            [36m</div>[31m
+          [36m</div>[31m
+        [36m</div>[31m
+      [36m</section>[31m
+    [36m</div>[31m
+  [36m</div>[31m
+[36m</body>[31m[39m
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m31 passed[39m[22m[90m (33)[39m
+[2m   Start at [22m 10:35:11
+[2m   Duration [22m 3.99s[2m (transform 176ms, setup 116ms, collect 2.99s, tests 3.59s, environment 586ms, prepare 135ms)[22m
+
+
+STDERR:
+[90mstderr[2m | src/App.test.tsx[2m > [22m[2mTASK-023 public result page[2m > [22m[2mrenders public snapshot and hides internal diagnostics fields
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+[90mstderr[2m | src/reviewCreation/ReviewTaskCreationPage.test.tsx[2m > [22m[2mReviewTaskCreationPage[2m > [22m[2m1a: renders DOCX hint, ENGINEERING/CNY, and amount field labels
+[22m[39m⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+[31m⎯⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 2 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/App.test.tsx[2m > [22mTASK-023 public result page[2m > [22mfails closed without requesting when formal executionId is not canonical
+[31m[1mTestingLibraryElementError[22m[39m: Unable to find an element with the text: 结果页地址无效。. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell result-page"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"hero-panel"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ant-tag ant-tag-cyan css-dev-only-do-not-override-mncuj7"[39m
+        [36m>[39m
+          [0mTASK-023[0m
+        [36m</span>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[39m
+        [36m>[39m
+          [0m普通结果页最小展示[0m
+        [36m</h2>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[39m
+        [36m>[39m
+          [0m仅展示业务化审核结果，围绕“审核点 - 证据 - 原文定位”解释，不展示系统诊断明细。[0m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"content-panel"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ant-alert ant-alert-warning css-dev-only-do-not-override-mncuj7"[39m
+          [33mdata-show[39m=[32m"true"[39m
+          [33mrole[39m=[32m"alert"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-label[39m=[32m"exclamation-circle"[39m
+            [33mclass[39m=[32m"anticon anticon-exclamation-circle ant-alert-icon"[39m
+            [33mrole[39m=[32m"img"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mdata-icon[39m=[32m"exclamation-circle"[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mfocusable[39m=[32m"false"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mviewBox[39m=[32m"64 64 896 896"[39m
+              [33mwidth[39m=[32m"1em"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ant-alert-content"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"ant-alert-message"[39m
+            [36m>[39m
+              [0m结果查询失败，请稍后重试。[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell result-page"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"hero-panel"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"ant-tag ant-tag-cyan css-dev-only-do-not-override-mncuj7"[39m
+        [36m>[39m
+          [0mTASK-023[0m
+        [36m</span>[39m
+        [36m<h2[39m
+          [33mclass[39m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[39m
+        [36m>[39m
+          [0m普通结果页最小展示[0m
+        [36m</h2>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ant-typography css-dev-only-do-not-override-mncuj7"[39m
+        [36m>[39m
+          [0m仅展示业务化审核结果，围绕“审核点 - 证据 - 原文定位”解释，不展示系统诊断明细。[0m
+        [36m</div>[39m
+      [36m</section>[39m
+      [36m<section[39m
+        [33mclass[39m=[32m"content-panel"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"ant-alert ant-alert-warning css-dev-only-do-not-override-mncuj7"[39m
+          [33mdata-show[39m=[32m"true"[39m
+          [33mrole[39m=[32m"alert"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33maria-label[39m=[32m"exclamation-circle"[39m
+            [33mclass[39m=[32m"anticon anticon-exclamation-circle ant-alert-icon"[39m
+            [33mrole[39m=[32m"img"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mdata-icon[39m=[32m"exclamation-circle"[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mfocusable[39m=[32m"false"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mviewBox[39m=[32m"64 64 896 896"[39m
+              [33mwidth[39m=[32m"1em"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"ant-alert-content"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"ant-alert-message"[39m
+            [36m>[39m
+              [0m结果查询失败，请稍后重试。[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+[90m [2m❯[22m waitForWrapper ../../../cqcp-mvp001/node_modules/@testing-library/dom/dist/wait-for.js:[2m163:27[22m[39m
+[90m [2m❯[22m ../../../cqcp-mvp001/node_modules/@testing-library/dom/dist/query-helpers.js:[2m86:33[22m[39m
+[36m [2m❯[22m src/App.test.tsx:[2m645:25[22m[39m
+    [90m643| [39m  [34mit[39m([32m"fails closed without requesting when formal executionId is not c[39m…
+    [90m644| [39m    [34mrenderApp[39m([32m"/review/results/task-formal?executionId=%20exec-formal%[39m…
+    [90m645| [39m    [34mexpect[39m([35mawait[39m screen[33m.[39m[34mfindByText[39m([32m"结果页地址无效。"[39m))[33m.[39m[34mtoBeInTheDocum[39m…
+    [90m   | [39m                        [31m^[39m
+    [90m646| [39m    [34mexpect[39m(fetchMock)[33m.[39mnot[33m.[39m[34mtoHaveBeenCalled[39m()[33m;[39m
+    [90m647| [39m  })[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m src/reviewCreation/ReviewTaskCreationPage.test.tsx[2m > [22mReviewTaskCreationPage[2m > [22m8: rejects malformed 202 responses (9 cases) and accepts valid 202
+[31m[1mAssertionError[22m: case "taskId whitespace only": should throw: expected undefined to be an instance of SubmitError[39m
+[36m [2m❯[22m src/reviewCreation/ReviewTaskCreationPage.test.tsx:[2m626:57[22m[39m
+    [90m624| [39m        }
+    [90m625| [39m
+    [90m626| [39m        [34mexpect[39m(thrown[33m,[39m [32m`case "[39m[36m${[39mlabel[36m}[39m[32m": should throw`[39m)[33m.[39m[34mtoBeInstanceOf[39m…
+    [90m   | [39m                                                        [31m^[39m
+    [90m627| [39m        [34mexpect[39m((thrown [35mas[39m { status[33m:[39m number })[33m.[39mstatus[33m,[39m [32m`case "[39m[36m${[39mlabel[36m}[39m[32m"[39m…
+    [90m628| [39m      }
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m

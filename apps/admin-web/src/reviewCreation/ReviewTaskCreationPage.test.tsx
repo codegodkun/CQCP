@@ -555,7 +555,7 @@ describe("ReviewTaskCreationPage", () => {
 
   // ── 8 真实 api.ts：202 响应格式校验 ──
 
-  it("8: rejects malformed 202 responses (5 cases) and accepts valid 202", async () => {
+  it("8: rejects malformed 202 responses (9 cases) and accepts valid 202", async () => {
     const realApi = await vi.importActual<typeof import("./api")>("./api");
     const realSubmit = realApi.submitReviewTask;
     const RealSubmitError = realApi.SubmitError;
@@ -591,6 +591,22 @@ describe("ReviewTaskCreationPage", () => {
         {
           label: "resultUrl not string",
           body: () => JSON.stringify({ taskId: "t-1", executionId: "e-1", status: "QUEUED", resultUrl: 123 }),
+        },
+        {
+          label: "taskId whitespace only",
+          body: () => JSON.stringify({ taskId: " ", executionId: "e-1", status: "QUEUED", resultUrl: "/r/1" }),
+        },
+        {
+          label: "executionId whitespace only",
+          body: () => JSON.stringify({ taskId: "t-1", executionId: "\t", status: "QUEUED", resultUrl: "/r/1" }),
+        },
+        {
+          label: "resultUrl empty",
+          body: () => JSON.stringify({ taskId: "t-1", executionId: "e-1", status: "QUEUED", resultUrl: "" }),
+        },
+        {
+          label: "resultUrl whitespace only",
+          body: () => JSON.stringify({ taskId: "t-1", executionId: "e-1", status: "QUEUED", resultUrl: "  " }),
         },
       ];
 

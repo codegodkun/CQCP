@@ -166,11 +166,14 @@ export function PublicResultPage() {
   const formalMatch = /^\/review\/results\/([^/]+)$/.exec(pathname);
   const formalTaskId = formalMatch ? decodeCanonicalSegment(formalMatch[1]) : null;
   const formalExecutionValues = searchParams.getAll("executionId");
+  const formalExecutionValue =
+    formalExecutionValues.length === 1 ? formalExecutionValues[0] : null;
   const formalExecutionId =
     searchParams.size === 1 &&
-    formalExecutionValues.length === 1 &&
-    formalExecutionValues[0].trim().length > 0
-      ? formalExecutionValues[0].trim()
+    formalExecutionValue !== null &&
+    formalExecutionValue.length > 0 &&
+    formalExecutionValue === formalExecutionValue.trim()
+      ? formalExecutionValue
       : null;
   const formalIdentityValid =
     !formalMode || (formalTaskId !== null && formalExecutionId !== null);

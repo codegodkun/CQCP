@@ -107,11 +107,21 @@ export async function submitReviewTask(
 function isValidSuccessResponse(json: unknown): json is CreateReviewTaskResponse {
   if (typeof json !== "object" || json === null) return false;
   const r = json as Record<string, unknown>;
-  if (typeof r.taskId !== "string" || r.taskId === "") return false;
-  if (typeof r.executionId !== "string" || r.executionId === "") return false;
+  if (!isCanonicalNonEmptyString(r.taskId)) return false;
+  if (!isCanonicalNonEmptyString(r.executionId)) return false;
   if (r.status !== "QUEUED") return false;
-  if (typeof r.resultUrl !== "string") return false;
+  if (typeof r.resultUrl !== "string" || r.resultUrl.trim().length === 0) {
+    return false;
+  }
   return true;
+}
+
+function isCanonicalNonEmptyString(value: unknown): value is string {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value === value.trim()
+  );
 }
 
 /** Accepted field-error codes (OpenAPI stable enum). */

@@ -4,7 +4,7 @@
 
 - 父任务：`TASK-MVP-001-contract-review-user-loop-demo`
 - Task Level：L2 Feature 内定点修复
-- 状态：`ACCEPTED`
+- 状态：`DONE / ARCHIVED_WITH_FEATURE / DUAL_AUDIT_GO / FEATURE_PR_PENDING`
 - 触发来源：`TASK_SPEC-MVP-001-F` 全量回归
 - 冻结基线：`539c9e6d026fcac112831118022b451e7632c40c`
 

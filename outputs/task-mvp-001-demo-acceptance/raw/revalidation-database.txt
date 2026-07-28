@@ -1,0 +1,44 @@
+COMMAND: docker exec cqcp-postgres-1 psql -U cqcp -d cqcp -c <read-only SQL>
+EXIT_CODE: 0
+SQL: SELECT task_id, caller_type, source_type, contract_type_code, result_url, currency, contract_metadata->>'documentReference' AS document_reference FROM task WHERE task_id = 'TASK_cc6250cce538441195efe630c220f9c5';
+
+                task_id                | caller_type | source_type | contract_type_code |                                               result_url                                                | currency |                             document_reference
+---------------------------------------+-------------+-------------+--------------------+---------------------------------------------------------------------------------------------------------+----------+-----------------------------------------------------------------------------
+ TASK_cc6250cce538441195efe630c220f9c5 | ADMIN       | DOCX_UPLOAD | ENGINEERING        | /review/results/TASK_cc6250cce538441195efe630c220f9c5?executionId=EXEC_e6755d0dd53e44dab7dae9032784fe7b | CNY      | TASK_cc6250cce538441195efe630c220f9c5/a8961d8818e344d3a2b0486dc4e178fc.docx
+(1 row)
+
+
+COMMAND: docker exec cqcp-postgres-1 psql -U cqcp -d cqcp -c <read-only SQL>
+EXIT_CODE: 0
+SQL: SELECT execution_id, task_id, status, current_stage, rule_set_version, model_profile_code, model_config_version, parser_version, provider_type, model_name, endpoint_alias FROM execution WHERE task_id = 'TASK_cc6250cce538441195efe630c220f9c5' AND execution_id = 'EXEC_e6755d0dd53e44dab7dae9032784fe7b';
+
+             execution_id              |                task_id                | status  | current_stage | rule_set_version | model_profile_code |          model_config_version          |        parser_version        | provider_type |   model_name   | endpoint_alias
+---------------------------------------+---------------------------------------+---------+---------------+------------------+--------------------+----------------------------------------+------------------------------+---------------+----------------+----------------
+ EXEC_e6755d0dd53e44dab7dae9032784fe7b | TASK_cc6250cce538441195efe630c220f9c5 | SUCCESS | SUCCESS       | v20260705.1      | MVP_DEMO_MOCK      | model-config-mvp-demo-mock-v20260724.1 | parser-docx-word-v20260724.1 | MOCK          | cqcp-demo-mock | mock-local
+(1 row)
+
+
+COMMAND: docker exec cqcp-postgres-1 psql -U cqcp -d cqcp -c <read-only SQL>
+EXIT_CODE: 0
+SQL: SELECT count(*) AS stage_log_count, min(created_at) AS first_event_at, max(created_at) AS last_event_at FROM task_stage_log WHERE task_id = 'TASK_cc6250cce538441195efe630c220f9c5' AND execution_id = 'EXEC_e6755d0dd53e44dab7dae9032784fe7b';
+
+ stage_log_count |        first_event_at         |         last_event_at
+-----------------+-------------------------------+-------------------------------
+              12 | 2026-07-28 02:13:48.424202+00 | 2026-07-28 02:13:48.985031+00
+(1 row)
+
+
+COMMAND: docker exec cqcp-postgres-1 psql -U cqcp -d cqcp -c <read-only SQL>
+EXIT_CODE: 0
+SQL: SELECT task_id, execution_id, status, jsonb_array_length(point_results) AS point_count, jsonb_array_length(source_anchors) AS anchor_count, rule_set_version, model_profile_version FROM review_result_snapshot WHERE task_id = 'TASK_cc6250cce538441195efe630c220f9c5' AND execution_id = 'EXEC_e6755d0dd53e44dab7dae9032784fe7b';
+
+                task_id                |             execution_id              | status  | point_count | anchor_count | rule_set_version |         model_profile_version
+---------------------------------------+---------------------------------------+---------+-------------+--------------+------------------+----------------------------------------
+ TASK_cc6250cce538441195efe630c220f9c5 | EXEC_e6755d0dd53e44dab7dae9032784fe7b | SUCCESS |           9 |            8 | v20260705.1      | model-config-mvp-demo-mock-v20260724.1
+(1 row)
+
+
+COMMAND: docker exec cqcp-api-server-1 test -f <configured-upload-root>/<documentReference> && stat -c %s <file>
+EXIT_CODE: 0
+
+90276

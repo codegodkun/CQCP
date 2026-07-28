@@ -1,6 +1,6 @@
 # TASK-MVP-001：合同审核用户闭环 Demo
 
-状态：Active / Phase 0 GO / Feature 基线 401fd05 / legacy v20260705.1 / TASK_SPEC-MVP-001-A~E ACCEPTED / TASK_SPEC-MVP-001-F NEXT
+状态：Done / A~F+F2 ACCEPTED / DUAL_AUDIT_GO / ARCHIVED / FEATURE_PR_PENDING
 
 类型：产品父任务 / MVP 用户闭环
 
@@ -12,7 +12,8 @@ Integration unit：`FEATURE-MVP-001`
 
 负责人：Codex（规划、TASK_SPEC 冻结、Review Intake、Feature 最终接纳）
 
-执行方：Claude Code（DeepSeek 模型）仅按 Codex 后续冻结的局部 `TASK_SPEC` 执行
+执行方：A~D 为 Claude Code（DeepSeek 模型）按冻结规格执行；E 起按用户本 Feature
+专属授权由主 Codex 实施，独立审计仍保持只读角色分离
 
 创建日期：2026-07-23
 
@@ -417,13 +418,28 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 * 已确认：`TASK_SPEC-MVP-001-E` 状态页、1000ms 非重叠轮询、安全结果跳转、正式结果
   路由与结构化字段白名单实现已经 Codex Review Intake 接纳；Codex 重跑 admin-web
   `62/62`、lint、production build、review-assets validator `7/7` 和
-  `git diff --check` 全部通过。下一步形成 E 完成态提交并冻结 F。
+  `git diff --check` 全部通过；E 已提交为 `539c9e6`。
+* 已确认：`TASK_SPEC-MVP-001-F` 已完成标准 Compose、真实浏览器、PostgreSQL 与
+  上传持久化验收；Task/Execution 最终 `SUCCESS`，9/9 审核点 `PASS`，
+  证据位于 `outputs/task-mvp-001-demo-acceptance/`。
+* 已确认：F 回归暴露的创建任务集成测试隔离缺陷已由
+  `TASK_SPEC-MVP-001-F1` 定点修复并提交为 `439a020`；定向 16/16、连续两轮
+  全量后端强制回归均为 313/313。
+* 已确认：首轮 Codex 双代理审计为一条 `GO`、一条 `NO-GO`，旧冻结基线失效且
+  CC AUDIT 未发送。`TASK_SPEC-MVP-001-F2` 已修复创建响应 whitespace identity /
+  空白 resultUrl 和正式结果 query 静默 trim 两项 fail-closed 缺口，并补齐原始
+  验收输出；修复前 `2 failed / 31 passed`，修复后定向 33/33、admin-web 全量
+  63/63、后端连续两轮 313/313，重建后的真实任务仍为 `SUCCESS / 9 PASS`。
+* 已确认：第二次冻结复核发现数据库证据输出包含容器绝对上传根，且缺少可独立复核的
+  red stdout；该基线再次失效，CC AUDIT 仍未发送。证据现仅输出文件 size，并已在
+  独立临时副本用旧实现 + staged tests 固化 `EXIT_CODE=1 / 2 failed / 31 passed`，
+  当前实现对应 green 为 `EXIT_CODE=0 / 33 passed`。
 
 ## Next Task Handoff
 
-`TASK_SPEC-MVP-001-A` 至 D 已接纳并形成 Feature 内提交；E 已完成实现、独立只读审计
-finding 修正和 Codex Review Intake。下一步形成 E 完成态提交，由 Codex 冻结并执行
-`TASK_SPEC-MVP-001-F` 的 Docker Compose 真实浏览器 Demo 验收。
+本父任务与 A~F/F1/F2 已完成实现、真实 Demo、Memory Writeback 和双重独立审计；
+不存在新的 TASK Handoff。后续仅继续同一 `FEATURE-MVP-001` 的完成态 commit、push、
+一个 Feature PR、CI 与 merge，不创建新的执行任务。
 
 ## 规划建档审查
 
@@ -433,18 +449,40 @@ finding 修正和 Codex Review Intake。下一步形成 E 完成态提交，由 
 
 ## 完成记录
 
-* 完成日期：Feature 未完成；A/B/C/D/E 已完成局部接纳。
+* 完成日期：2026-07-28。Feature 实现、Demo 验收、Memory Writeback 与双重独立
+  审计完成；当前只剩同一 Feature 的 PR/CI/merge 集成。
 * 变更文件：A 见 `TASK_SPEC-MVP-001-A` 实现报告；B 见
   `TASK_SPEC-MVP-001-B` 第 9 节实现报告；C 见
-  `TASK_SPEC-MVP-001-C` 第 9 节实现报告；D/E 见各自实现报告。
+  `TASK_SPEC-MVP-001-C` 第 9 节实现报告；D/E/F/F1 见各自实现报告。
 * 测试结果：A 的 Docker Compose 权威全量 backend 232/232 通过；B 定向 48/48，
   全量 backend 270/270；C 定向 43/43、全量 backend 313/313；E admin-web
-  `62/62`、lint、production build、review-assets validator `7/7` 和
-  `git diff --check` 通过，A~E 均已接纳。
+  `63/63`、lint、production build、review-assets validator `7/7` 和
+  `git diff --check` 通过；F 真实浏览器闭环为 `SUCCESS / 9 PASS`，F1 定向 16/16、
+  连续两轮 backend 313/313；F2 定向 33/33、重建真实路径 `SUCCESS / 9 PASS`；
+  A~F+F2 均已接纳。
 * 遗留问题：C2 未进入基线，本 Feature 已冻结使用 legacy `v20260705.1`。
-* 备注：E 已接纳，F 尚未创建。
+* 备注：E 已接纳并提交为 `539c9e6`；F 已接纳；F1 已提交为 `439a020`；
+  F2 已接纳并进入 Feature 完成态提交。首轮与 v2~v4 旧冻结均已失效；最终 v5
+  冻结以 base `401fd05b7a6c23014adb4f5511533467016c37ba`、HEAD
+  `439a02012c54f11577c6e916591d69db2a7d5d58`、index tree
+  `dc81a8c3d2636844db7e7e85748ca507720323fd` 为基线，覆盖 102 个 changed paths。
+* 冻结证据：full diff SHA-256
+  `D60D11D81D6FBEEBE29FF32553B2A6159853820C988D8A8278F605AD559BC37F`；
+  freeze manifest SHA-256
+  `E7F6A67D36F253FFFC3704DE5E7BFF128DE8E64798FCCCA45995B61022D92C4E`；
+  102/102 文件与 37/37 原始证据 SHA-256 均经独立复核匹配。
+* 双重独立审计：CC AUDIT 为 `GO`，`P0=0 / P1=0 / P2=0`、无 blocking
+  findings；Codex 代码/API/数据库/状态机 subagent 为 `GO`，Codex
+  测试/前端安全/Compose/真实 Demo subagent 为 `GO`。最终门禁
+  `CC_AUDIT=GO AND CODEX_SUBAGENT_AUDIT=GO AND blocking findings=0` 已满足。
+* 非阻塞观察：`REVIEWING_MODEL` 枚举在当前 Demo 路径未使用；两个 runtime
+  data 目录保持 untracked 且不得提交；TASK-034 正式 FAIL 与本 Feature Demo
+  SUCCESS 的语义边界继续保留；后续任务应保持 `openapi.json` / `openapi.yaml`
+  等价。以上均不构成本 Feature blocker。
+* Codex 最终 Review Intake：
+  `ACCEPT_FEATURE_IMPLEMENTATION / DUAL_AUDIT_GO / GO_TO_COMMIT_PR_CI_MERGE`。
 * Integration unit / PR：`FEATURE-MVP-001` / A commit `f8d76e7` /
   B commit `21203998da7482e25d86136c14d1f42cff2d2ec7` /
   C commit `0eb9d9e312c6698fb4532e623362bea091165f87` / D commit `9fcf857`；
-  E 待完成态提交；PR 尚未创建。
+  E commit `539c9e6`；F1 commit `439a020`；Feature 完成态 PR 尚未创建。
 * 独立审计触发依据：公开 API、PostgreSQL 写入、上传文件安全、主应用执行编排和真实 Demo E2E。

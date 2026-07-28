@@ -1,0 +1,15 @@
+COMMAND: docker logs cqcp-admin-web-1 | Select-String target POST/status/result
+EXIT_CODE: 0
+
+172.19.0.1 - - [28/Jul/2026:02:13:47 +0000] "POST /api/review/tasks HTTP/1.1" 202 251 "-" "curl/8.21.0" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:11 +0000] "GET /api/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b HTTP/1.1" 200 615 "-" "curl/8.21.0" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:11 +0000] "GET /api/review/results/TASK_cc6250cce538441195efe630c220f9c5?executionId=EXEC_e6755d0dd53e44dab7dae9032784fe7b HTTP/1.1" 404 156 "-" "curl/8.21.0" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:18 +0000] "GET /review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b HTTP/1.1" 200 435 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:18 +0000] "GET /assets/index-COhKZAO0.js HTTP/1.1" 304 0 "http://localhost:15173/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:18 +0000] "GET /assets/index-bsE5HZqd.css HTTP/1.1" 304 0 "http://localhost:15173/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:18 +0000] "GET /api/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b HTTP/1.1" 200 615 "http://localhost:15173/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:18 +0000] "GET /favicon.ico HTTP/1.1" 304 0 "http://localhost:15173/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" "-"
+172.19.0.1 - - [28/Jul/2026:02:14:18 +0000] "GET /api/v1/tasks/TASK_cc6250cce538441195efe630c220f9c5/result HTTP/1.1" 200 15547 "http://localhost:15173/review/results/TASK_cc6250cce538441195efe630c220f9c5?executionId=EXEC_e6755d0dd53e44dab7dae9032784fe7b" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36" "-"
+
+COMMAND: docker logs cqcp-api-server-1 | Select-String target identity
+EXIT_CODE: 0

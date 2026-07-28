@@ -1,0 +1,47 @@
+RUNTIME: workspace-bundled Playwright controlling installed Google Chrome 150
+REPOSITORY DEPENDENCY CHANGES: none
+TARGET: http://localhost:15173
+FIXTURE: CQCP-MVP-DOCX-001
+FIXTURE_SHA256: 29E50BBB74E234FD4508C2765F1A74A57AB9043667234A7BF30E04F29F2EF2F5
+
+ACTION 1: Open /review/new in a real Chromium browser.
+RESULT: CQCP Admin Web creation form loaded.
+
+ACTION 2: Click "填入 Demo 样本字段", select the existing DOCX fixture through
+the page file input, then click "提交审核".
+
+POST /api/review/tasks
+HTTP_STATUS: 202
+RESPONSE:
+{"taskId":"TASK_0b5335afd3b4423ba5485c94a029ce3c","executionId":"EXEC_be1954f494dd4d19b73d33b9801cd710","status":"QUEUED","resultUrl":"/review/results/TASK_0b5335afd3b4423ba5485c94a029ce3c?executionId=EXEC_be1954f494dd4d19b73d33b9801cd710"}
+
+FRONTEND_ROUTE_AFTER_202:
+http://localhost:15173/review/tasks/TASK_0b5335afd3b4423ba5485c94a029ce3c/executions/EXEC_be1954f494dd4d19b73d33b9801cd710
+
+FIRST_STATUS_RESPONSE:
+{"taskId":"TASK_0b5335afd3b4423ba5485c94a029ce3c","executionId":"EXEC_be1954f494dd4d19b73d33b9801cd710","status":"QUEUED","currentStage":"QUEUED","terminal":false,"snapshotAvailable":false,"resultUrl":"/review/results/TASK_0b5335afd3b4423ba5485c94a029ce3c?executionId=EXEC_be1954f494dd4d19b73d33b9801cd710","reviewModel":{"modelProfileCode":"MVP_DEMO_MOCK","providerType":"MOCK","modelName":"cqcp-demo-mock","endpointAlias":"mock-local","modelConfigVersion":"model-config-mvp-demo-mock-v20260724.1"}}
+
+STATUS_SEQUENCE:
+1. QUEUED / QUEUED / terminal=false / snapshotAvailable=false
+2. PROCESSING / PARSING / terminal=false / snapshotAvailable=false
+3. SUCCESS / SUCCESS / terminal=true / snapshotAvailable=true
+
+FINAL_FRONTEND_ROUTE:
+http://localhost:15173/review/results/TASK_0b5335afd3b4423ba5485c94a029ce3c?executionId=EXEC_be1954f494dd4d19b73d33b9801cd710
+
+FINAL_VISIBLE_RESULT:
+- execution status: SUCCESS
+- planned/pass/error/warning/not-concluded/skipped: 9/9/0/0/0/0
+- review coverage: FULL_REVIEWED
+- structured fields: 17
+- review points: 9
+- source anchors: 8
+- result page displayed business messages, evidence summaries and block-level anchors
+
+SCREENSHOTS:
+- screenshots/05-f2-browser-new.png
+- screenshots/06-f2-browser-filled.png
+- screenshots/07-f2-browser-status.png
+- screenshots/08-f2-browser-result.png
+
+DECISION: PASS

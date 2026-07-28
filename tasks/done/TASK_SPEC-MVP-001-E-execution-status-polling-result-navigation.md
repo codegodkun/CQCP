@@ -1,6 +1,6 @@
 # TASK_SPEC-MVP-001-E：状态页、轮询与结果跳转
 
-状态：IMPLEMENTATION_ACCEPTED / CODEX_REVIEW_GO / READY_FOR_COMMIT
+状态：DONE / ARCHIVED_WITH_FEATURE / DUAL_AUDIT_GO / FEATURE_PR_PENDING
 
 TASK_SPEC 类型：`execution`
 
@@ -733,6 +733,14 @@ Codex 将独立核验：
 * admin-web 全量 lint/test/build。
 
 上述实现 Review Intake 已完成并接纳，允许进入 F。
+
+Git 收口：
+
+```text
+commit: 539c9e6d026fcac112831118022b451e7632c40c
+message: feat(review): add execution polling and result navigation
+push: 未执行
+```
 
 ## 14. 后续联动
 

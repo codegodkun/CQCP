@@ -1,0 +1,18 @@
+COMMAND: curl.exe -i -X POST -F file=@<CQCP-MVP-DOCX-001> -F metadata=@revalidation-request-metadata.json;type=application/json http://localhost:15173/api/review/tasks
+EXIT_CODE: 0
+
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+100  91682   0    240 100  91442   1179 438.9k                              0
+100  91682   0    240 100  91442   1179 438.8k                              0
+100  91682   0    240 100  91442   1179 438.7k                              0
+HTTP/1.1 202
+Server: nginx/1.27.5
+Date: Tue, 28 Jul 2026 02:13:47 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+{"taskId":"TASK_cc6250cce538441195efe630c220f9c5","executionId":"EXEC_e6755d0dd53e44dab7dae9032784fe7b","status":"QUEUED","resultUrl":"/review/results/TASK_cc6250cce538441195efe630c220f9c5?executionId=EXEC_e6755d0dd53e44dab7dae9032784fe7b"}

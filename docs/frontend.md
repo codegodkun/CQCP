@@ -333,6 +333,25 @@ MVP 不保存也不提供 `redactedRawOutput` 展开；受控保存完整 redact
 - 规则/prompt/pattern 发布治理延后到 Pilot / Production Readiness；MVP 不支持自动发布，也不支持 AI 建议直接改生产配置。
 - 受控敏感诊断导出、`encryptedRawOutput` 展开、角色权限和审批审计延后到 Pilot / Production Readiness。
 
+## FEATURE-MVP-001 用户闭环路由
+
+MVP Demo 已接通以下真实管理台链路：
+
+- `/review/new`：DOCX 选择、首批结构化字段录入与前端条件校验；
+- `/review/tasks/:taskId/executions/:executionId`：展示公开状态与当前阶段，首次立即查询，
+  每次请求完成 1000ms 后再发起下一次请求，不允许重叠轮询；
+- `/review/results/:taskId?executionId=...`：正式普通结果路由。
+
+创建成功后前端只使用响应中的 `taskId + executionId` 进入状态路由，不直接信任创建响应
+中的跳转 URL。状态 API 返回终态后，前端只接受同源、identity 一致的 `resultUrl`，并只
+跳转一次。终态、查询错误、404、畸形响应或组件卸载都会停止轮询；错误页提供显式手动
+重试。
+
+普通结果页展示进入 ReviewExecutionPlan 的全部审核点、统计、结构化输入、业务说明、
+证据摘要和 block 级 SourceAnchor。结构化信息只渲染固定白名单字段，不递归展示任意
+JSON；旧 `/?taskId=...` 入口继续兼容。页面不得展示完整 prompt、raw model output、
+secret、stack trace 或内部诊断明细。
+
 ## 待确认
 
 - 前端框架、路由、组件库和设计系统。

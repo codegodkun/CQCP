@@ -1,0 +1,64 @@
+COMMAND: docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml ps
+EXIT_CODE: 0
+
+NAME                IMAGE             COMMAND                  SERVICE      CREATED         STATUS                  PORTS
+cqcp-admin-web-1    cqcp-admin-web    "/docker-entrypoint.…"   admin-web    8 minutes ago   Up 8 minutes            0.0.0.0:15173->80/tcp, [::]:15173->80/tcp
+cqcp-api-server-1   cqcp-api-server   "java -jar /app/app.…"   api-server   8 minutes ago   Up 8 minutes            0.0.0.0:18080->8080/tcp, [::]:18080->8080/tcp
+cqcp-postgres-1     postgres:15       "docker-entrypoint.s…"   postgres     3 days ago      Up 34 hours (healthy)   0.0.0.0:54329->5432/tcp, [::]:54329->5432/tcp
+
+COMMAND: curl.exe --fail-with-body -i http://localhost:18080/actuator/health
+EXIT_CODE: 0
+
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+100     15   0     15   0      0   2409      0                              0
+100     15   0     15   0      0   2382      0                              0
+100     15   0     15   0      0   2353      0                              0
+HTTP/1.1 200
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Transfer-Encoding: chunked
+Date: Tue, 28 Jul 2026 02:19:00 GMT
+
+{"status":"UP"}
+
+COMMAND: curl.exe --fail-with-body -I http://localhost:15173/review/new
+EXIT_CODE: 0
+
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+  0    435   0      0   0      0      0      0                              0
+  0    435   0      0   0      0      0      0                              0
+  0    435   0      0   0      0      0      0                              0
+HTTP/1.1 200 OK
+Server: nginx/1.27.5
+Date: Tue, 28 Jul 2026 02:19:00 GMT
+Content-Type: text/html
+Content-Length: 435
+Last-Modified: Tue, 28 Jul 2026 02:08:51 GMT
+Connection: keep-alive
+ETag: "6a680f33-1b3"
+Accept-Ranges: bytes
+
+
+COMMAND: curl.exe --fail-with-body -i http://localhost:15173/api/review/tasks/TASK_cc6250cce538441195efe630c220f9c5/executions/EXEC_e6755d0dd53e44dab7dae9032784fe7b
+EXIT_CODE: 0
+
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+100    603   0    603   0      0 109.0k      0                              0
+100    603   0    603   0      0 107.3k      0                              0
+100    603   0    603   0      0 106.1k      0                              0
+HTTP/1.1 200
+Server: nginx/1.27.5
+Date: Tue, 28 Jul 2026 02:19:00 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+{"taskId":"TASK_cc6250cce538441195efe630c220f9c5","executionId":"EXEC_e6755d0dd53e44dab7dae9032784fe7b","status":"SUCCESS","currentStage":"SUCCESS","terminal":true,"snapshotAvailable":true,"resultUrl":"/review/results/TASK_cc6250cce538441195efe630c220f9c5?executionId=EXEC_e6755d0dd53e44dab7dae9032784fe7b","reviewModel":{"modelProfileCode":"MVP_DEMO_MOCK","providerType":"MOCK","modelName":"cqcp-demo-mock","endpointAlias":"mock-local","modelConfigVersion":"model-config-mvp-demo-mock-v20260724.1"},"createdAt":"2026-07-28T02:13:47.677234Z","updatedAt":"2026-07-28T02:13:48.993880Z","superseded":false}

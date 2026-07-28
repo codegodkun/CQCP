@@ -1,6 +1,6 @@
 # TASK_SPEC-MVP-001-B：Single Review Worker 与 PostgreSQL 执行持久化
 
-状态：SPEC_ACCEPTED / INDEPENDENT_SPEC_AUDIT_GO / PRE_CODE_PLAN_REQUIRED
+状态：DONE / ARCHIVED_WITH_FEATURE / DUAL_AUDIT_GO / FEATURE_PR_PENDING
 
 TASK_SPEC 类型：`execution`
 
@@ -668,6 +668,9 @@ AC17:
 
 ## 10. Codex Review Intake
 
+> 本节前半部分保留编码前的历史规格审计记录；实现完成态以本节末尾的
+> “实现 Review Intake” 为准。
+
 独立只读规格审计结论：`GO`。审计基线为
 `codex/feature-mvp-001-contract-review-loop@f307d00` 与三项已声明 Codex 文档 dirty；
 审计确认无未知 dirty、无 HEAD 漂移、无 B 实现文件，并明确未修改任何文件、未执行
@@ -685,7 +688,7 @@ AC17:
 * Docker 定向/全量测试显式禁用 scheduler，真实 worker bean 与 `runOnce()` 仍保留；
 * AC1~AC20、allowlist、测试命令与 Git dirty 清单一致。
 
-Codex Review Intake：`ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET`。
+历史规格 Review Intake：`ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_YET`。
 
 编码前计划必须额外明确：
 
@@ -701,6 +704,15 @@ Codex Review Intake：`ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_
 * lifecycle 原子性依赖 JDBC override 的 Spring transaction proxy 正确生效，禁止
   `noRollbackFor`。
 
+Codex 实现 Review Intake（2026-07-27）：
+
+```text
+ACCEPT_IMPLEMENTATION / COMMITTED / NO_PUSH
+```
+
+实现已在 commit `21203998da7482e25d86136c14d1f42cff2d2ec7` 收口；其测试、
+范围边界与残余风险继续受父 TASK 和 Feature 最终双重独立审计约束。
+
 规格审计至少核对：
 
 * 是否绕过 TASK-036-C2 或 DRAFT review-assets runtime 边界；
@@ -713,5 +725,6 @@ Codex Review Intake：`ACCEPT_SPEC / PRE_CODE_PLAN_REQUIRED / NO_IMPLEMENTATION_
 
 ## 11. 后续联动
 
-B 经 Codex Review Intake 接纳后解锁 `TASK_SPEC-MVP-001-C`（execution 状态查询 API）。
+B 已经 Codex Review Intake 接纳并提交，已解锁
+`TASK_SPEC-MVP-001-C`（execution 状态查询 API）。
 B 不创建 C endpoint，也不修改前端。

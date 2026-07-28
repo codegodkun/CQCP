@@ -1,0 +1,2 @@
+COMMAND: docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml config --quiet
+EXIT_CODE: 0

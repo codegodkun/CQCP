@@ -639,4 +639,10 @@ describe("TASK-023 public result page", () => {
     expect(await screen.findByText("结果页地址无效。")).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it("fails closed without requesting when formal executionId is not canonical", async () => {
+    renderApp("/review/results/task-formal?executionId=%20exec-formal%20");
+    expect(await screen.findByText("结果页地址无效。")).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });

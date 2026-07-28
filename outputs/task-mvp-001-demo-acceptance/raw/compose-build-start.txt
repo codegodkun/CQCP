@@ -1,0 +1,188 @@
+COMMAND: docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml up -d --build
+EXIT_CODE: 0
+
+ Image cqcp-admin-web Building
+ Image cqcp-api-server Building
+#1 [internal] load local bake definitions
+#1 reading from stdin 985B 0.0s done
+#1 DONE 0.0s
+
+#2 [api-server internal] load build definition from Dockerfile
+#2 transferring dockerfile: 283B done
+#2 DONE 0.0s
+
+#3 [admin-web internal] load build definition from Dockerfile
+#3 transferring dockerfile: 301B done
+#3 DONE 0.0s
+
+#4 [api-server internal] load metadata for docker.io/library/gradle:8.10.2-jdk21
+#4 DONE 0.1s
+
+#5 [admin-web internal] load metadata for docker.io/library/nginx:1.27-alpine
+#5 DONE 0.1s
+
+#6 [admin-web internal] load metadata for docker.io/library/node:20-alpine
+#6 DONE 0.1s
+
+#7 [api-server internal] load metadata for docker.io/library/eclipse-temurin:21-jre
+#7 DONE 0.1s
+
+#8 [admin-web internal] load .dockerignore
+#8 transferring context: 64B done
+#8 DONE 0.0s
+
+#9 [api-server internal] load .dockerignore
+#9 transferring context: 60B done
+#9 DONE 0.0s
+
+#10 [api-server internal] load build context
+#10 DONE 0.0s
+
+#11 [admin-web internal] load build context
+#11 transferring context: 229.06kB 0.0s done
+#11 DONE 0.0s
+
+#12 [admin-web build 1/6] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+#12 resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 0.1s done
+#12 DONE 0.1s
+
+#13 [api-server build 1/4] FROM docker.io/library/gradle:8.10.2-jdk21@sha256:963d59f7f22767da4efbcf46b661361b61af5fb88b0309da1071c4234c647eba
+#13 resolve docker.io/library/gradle:8.10.2-jdk21@sha256:963d59f7f22767da4efbcf46b661361b61af5fb88b0309da1071c4234c647eba
+#13 resolve docker.io/library/gradle:8.10.2-jdk21@sha256:963d59f7f22767da4efbcf46b661361b61af5fb88b0309da1071c4234c647eba 0.1s done
+#13 DONE 0.1s
+
+#14 [admin-web build 3/6] COPY package.json ./
+#14 CACHED
+
+#15 [admin-web build 2/6] WORKDIR /app
+#15 CACHED
+
+#16 [admin-web stage-1 1/3] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+#16 resolve docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 0.1s done
+#16 DONE 0.1s
+
+#17 [admin-web build 4/6] RUN npm install
+#17 CACHED
+
+#18 [api-server stage-1 1/3] FROM docker.io/library/eclipse-temurin:21-jre@sha256:010e0a06bd4e0184dec58626afb3ba727b42c56c91b977e2f0a9e0837e0fa3fb
+#18 resolve docker.io/library/eclipse-temurin:21-jre@sha256:010e0a06bd4e0184dec58626afb3ba727b42c56c91b977e2f0a9e0837e0fa3fb 0.1s done
+#18 DONE 0.1s
+
+#10 [api-server internal] load build context
+#10 transferring context: 51.78kB 0.0s done
+#10 DONE 0.1s
+
+#19 [admin-web build 5/6] COPY . .
+#19 DONE 0.1s
+
+#20 [api-server build 2/4] WORKDIR /workspace
+#20 CACHED
+
+#21 [api-server build 3/4] COPY . .
+#21 DONE 0.1s
+
+#22 [admin-web build 6/6] RUN npm run build
+#22 0.759
+#22 0.759 > @cqcp/admin-web@0.1.0 build
+#22 0.759 > tsc -b && vite build
+#22 0.759
+#22 4.745 vite v5.4.21 building for production...
+#22 4.797 transforming...
+#22 8.716 ✓ 1489 modules transformed.
+#22 9.116 rendering chunks...
+#22 9.131 computing gzip size...
+#22 9.152 dist/index.html                   0.44 kB │ gzip:   0.29 kB
+#22 9.152 dist/assets/index-bsE5HZqd.css    2.44 kB │ gzip:   0.95 kB
+#22 9.152 dist/assets/index-COhKZAO0.js   800.51 kB │ gzip: 255.64 kB
+#22 9.152
+#22 9.152 (!) Some chunks are larger than 500 kB after minification. Consider:
+#22 9.152 - Using dynamic import() to code-split the application
+#22 9.152 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+#22 9.152 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#22 9.152 ✓ built in 4.38s
+#22 DONE 9.3s
+
+#23 [api-server build 4/4] RUN gradle bootJar --no-daemon
+#23 1.569 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+#23 2.767 Daemon will be stopped at the end of the build
+#23 ...
+
+#16 [admin-web stage-1 1/3] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+#16 CACHED
+
+#24 [admin-web stage-1 2/3] COPY --from=build /app/dist /usr/share/nginx/html
+#24 DONE 0.1s
+
+#25 [admin-web stage-1 3/3] COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+#25 DONE 0.1s
+
+#23 [api-server build 4/4] RUN gradle bootJar --no-daemon
+#23 ...
+
+#26 [admin-web] exporting to image
+#26 exporting layers
+#26 exporting layers 0.2s done
+#26 exporting manifest sha256:e32d7222a8415408926b12bec9aa2792ad73b3ebdeeadc5d36736aa9bd652762 0.0s done
+#26 exporting config sha256:160a8d5a3df6ba2399205878807e545e3c01010c6776493067d08af1be56501a 0.0s done
+#26 exporting attestation manifest sha256:4ccfd90acbcf55c2b2534afbcce04840cba2967e9797fcd188391cdea4b0f01b 0.1s done
+#26 exporting manifest list sha256:94ef68fe0bd629ed7315d9cfebe5a4a82a214220f5f6f21d25d48f8186c24a4a
+#26 exporting manifest list sha256:94ef68fe0bd629ed7315d9cfebe5a4a82a214220f5f6f21d25d48f8186c24a4a 0.0s done
+#26 naming to docker.io/library/cqcp-admin-web:latest done
+#26 unpacking to docker.io/library/cqcp-admin-web:latest 0.1s done
+#26 DONE 0.5s
+
+#23 [api-server build 4/4] RUN gradle bootJar --no-daemon
+#23 ...
+
+#27 [admin-web] resolving provenance for metadata file
+#27 DONE 0.0s
+
+#23 [api-server build 4/4] RUN gradle bootJar --no-daemon
+#23 105.5
+#23 105.5 > Task :compileJava
+#23 105.5 Note: /workspace/src/main/java/com/cqcp/apiserver/reviewengine/ReviewTaskCreationService.java uses or overrides a deprecated API.
+#23 105.5 Note: Recompile with -Xlint:deprecation for details.
+#23 108.0
+#23 108.0 > Task :processResources
+#23 108.0 > Task :classes
+#23 108.0 > Task :resolveMainClassName
+#23 111.0 > Task :bootJar
+#23 111.0
+#23 111.0 BUILD SUCCESSFUL in 1m 50s
+#23 111.0 4 actionable tasks: 4 executed
+#23 DONE 111.3s
+
+#28 [api-server stage-1 2/3] WORKDIR /app
+#28 CACHED
+
+#29 [api-server stage-1 3/3] COPY --from=build /workspace/build/libs/*.jar app.jar
+#29 DONE 0.1s
+
+#30 [api-server] exporting to image
+#30 exporting layers
+#30 exporting layers 1.1s done
+#30 exporting manifest sha256:8cf42441465c01832b1704f9c492752b65ea52c6aa5f0c2bb38cb928e9a136f3 0.0s done
+#30 exporting config sha256:6a2fb464b394def8287f994515720ae2573a61bb36dbe9e43f91f3e500aed3e2 0.0s done
+#30 exporting attestation manifest sha256:de6b573f65e08471e16cff9384e6f6b04c65259f5397194396a545412a06a366 0.1s done
+#30 exporting manifest list sha256:de544eeff4529a98fabfdfdfe4f964712d91d41120664db90c5d38d64c6cf8fc
+#30 exporting manifest list sha256:de544eeff4529a98fabfdfdfe4f964712d91d41120664db90c5d38d64c6cf8fc 0.0s done
+#30 naming to docker.io/library/cqcp-api-server:latest done
+#30 unpacking to docker.io/library/cqcp-api-server:latest
+#30 unpacking to docker.io/library/cqcp-api-server:latest 0.2s done
+#30 DONE 1.5s
+
+#31 [api-server] resolving provenance for metadata file
+#31 DONE 0.0s
+ Image cqcp-api-server Built
+ Image cqcp-admin-web Built
+ Container cqcp-postgres-1 Running
+ Container cqcp-api-server-1 Recreate
+ Container cqcp-api-server-1 Recreated
+ Container cqcp-admin-web-1 Recreate
+ Container cqcp-admin-web-1 Recreated
+ Container cqcp-postgres-1 Waiting
+ Container cqcp-postgres-1 Healthy
+ Container cqcp-api-server-1 Starting
+ Container cqcp-api-server-1 Started
+ Container cqcp-admin-web-1 Starting
+ Container cqcp-admin-web-1 Started

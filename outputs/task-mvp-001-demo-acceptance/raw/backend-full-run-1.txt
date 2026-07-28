@@ -1,0 +1,30 @@
+COMMAND: docker compose --env-file deploy/env/.env.example -f deploy/compose/compose.yml --profile test run --rm api-server-test gradle test --no-daemon --rerun-tasks
+EXIT_CODE: 1
+
+ Container cqcp-postgres-1 Running
+ Container cqcp-postgres-1 Waiting
+ Container cqcp-postgres-1 Healthy
+ Container cqcp-api-server-test-run-52e16fc4650c Creating
+ Container cqcp-api-server-test-run-52e16fc4650c Created
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :compileJava FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava'.
+> Could not resolve all files for configuration ':compileClasspath'.
+   > Could not download commons-collections4-4.4.jar (org.apache.commons:commons-collections4:4.4)
+      > Could not get resource 'https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar'.
+         > Could not GET 'https://repo.maven.apache.org/maven2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar'.
+            > Tag mismatch
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+1 actionable task: 1 executed
+BUILD FAILED in 1m 36s
