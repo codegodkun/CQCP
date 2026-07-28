@@ -8,8 +8,9 @@ CQCP 当前处于 MVP 主链路接通、合同审核用户闭环 Demo PR #35 CI 
 parser-backed evidence 后续治理并行阶段。`FEATURE-MVP-001` 的 F3 实现、原始
 console 补证、状态真源补正与 v9 双重独立审计已完成；CC AUDIT 与两个 Codex
 subagent 均为 `GO`，`P0=0 / P1=0 / P2=0 / blocking findings=0`。父 TASK 与
-F3 已迁移到 `tasks/done/`，当前门禁是提交并 push F3 后等待 PR #35 三项 CI，
-仅在 remote head 与审计内容一致且 CI 全绿时 merge。
+F3 已迁移到 `tasks/done/`；F3 commit `332d365` 的三项 CI 全部通过，PR #35
+已合并，merge commit 为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
+`FEATURE-MVP-001` 已完成，不再存在本 Feature 的开发或集成门禁。
 长期架构依据仍以 `docs/ARCHITECTURE.md` 为准；当前任务状态、门禁和下一步以本文
 与对应 task 文件的最新记录为准。
 
@@ -42,8 +43,9 @@ F3 已迁移到 `tasks/done/`，当前门禁是提交并 push F3 后等待 PR #3
   父 TASK Handoff 与 F3 摘要时间三项状态/元数据问题，现已补正；v8 两个
   subagent 均因本节“下一步”仍列出已完成 F3 测试而 NO-GO，该过期步骤也已删除。
   v9 的代码审计、测试/安全审计和 CC AUDIT 均为 GO，P0/P1/P2 与 blocking
-  findings 全为 0；父 TASK 与 F3 已归档。当前只剩 F3 commit/push、PR #35
-  required CI 与条件式 merge。
+  findings 全为 0；父 TASK 与 F3 已归档。F3 commit `332d365` 已 push，PR #35
+  新一轮 authorization、backend、admin-web 三项 CI 全部通过并合并，merge
+  commit 为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
   该修复不改变 TASK-034 正式 FAIL、57/57、Production Ready 或 `v20260715.1`
   边界。
 - `TASK-034` 已完成 Phase 0 与 Phase 1，父任务保持 active，正式 MVP E2E 最终判定为 `FAIL`。3 份真实 DOCX 均完成同 run parser → review → snapshot → 同 task 查询；27 个 `PointStatus` 全为 `PASS`，但 candidate comparison 仅 9 `MATCH`、18 `MISMATCH`；63 条 occurrence 保持 57 纳入 / 6 排除，其中 57 条纳入全部 `NOT_OBSERVABLE`，6 条排除全部 `EXCLUDED`。三份结果均无 Finding、无 `SYS-*`。证据目录：`outputs/task-034-mvp-e2e-acceptance/`。
@@ -61,12 +63,11 @@ F3 已迁移到 `tasks/done/`，当前门禁是提交并 push F3 后等待 PR #3
 
 ## Git 集成基线
 
-GitHub 是 PR、checks 与 merge 状态的事实源。当前 Feature 基线为 PR #34 / merge commit
-`401fd05b7a6c23014adb4f5511533467016c37ba`，已包含 TASK-037 / ADR-017 的
-Execution Binding Release 与 `MVP_DEMO_MOCK` seed。`FEATURE-MVP-001` 从该基线建立，
-完成态 commit `1dbef9c` 已 push 并创建 PR #35；backend CI 的 Linux fixture
-失败使 merge 门禁重新关闭；F3 定点修复与 v9 完整双审计现已通过，当前等待
-F3 commit/push 与 PR #35 三项 CI。PR #32 /
+GitHub 是 PR、checks 与 merge 状态的事实源。`FEATURE-MVP-001` 从 PR #34 /
+merge commit `401fd05b7a6c23014adb4f5511533467016c37ba` 建立，最终 head
+`332d365e75b00102e8ce6a54df716024c7b9288c` 的 authorization、backend 与
+admin-web 三项 CI 全部成功；PR #35 已合并，merge commit 为
+`ca2798cd4db400f1fe512e2a13c0d40624929b7d`。PR #32 /
 merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 的 TASK-036-A carrier 仍未激活；
 本 Feature 不证明 57/57 occurrence coverage，也不解除 TASK-028 / TASK-031 / TASK-032。
 
@@ -113,11 +114,9 @@ merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 的 TASK-036-A carrier �
 
 ## 下一步
 
-1. 提交并 push 已通过 v9 双重审计的 F3 与归档写回，等待 PR #35 三项 CI
-   全部通过。
-2. 仅在 remote head
-   与新审计基线一致且无新 finding 时 merge。
-3. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败证据保持不变。
+1. `FEATURE-MVP-001` 已完成；不再追加本 Feature 开发动作。
+2. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败
+   证据保持不变。后续任务须按各自父 TASK 与门禁另行授权。
 
 ## 参考路径
 

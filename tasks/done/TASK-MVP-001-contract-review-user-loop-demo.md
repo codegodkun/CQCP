@@ -1,6 +1,6 @@
 # TASK-MVP-001：合同审核用户闭环 Demo
 
-状态：Done / PR_35_BACKEND_CI_NO_GO_REMEDIATED / F3_VERIFIED / V9_DUAL_AUDIT_GO / PR_CI_PENDING
+状态：Done / F3_VERIFIED / V9_DUAL_AUDIT_GO / PR_35_MERGED / CI_GREEN
 
 类型：产品父任务 / MVP 用户闭环
 
@@ -437,10 +437,10 @@ ADR：当前不需要。本任务实现已冻结 API、数据库和审核链路�
 
 ## Next Task Handoff
 
-同一父任务下的 `TASK_SPEC-MVP-001-F3`、原始证据与 v6~v8 状态补正均已完成。
-v9 基线的 CC AUDIT 与两个 Codex subagent 全部为 GO，P0/P1/P2 与 blocking
-findings 全为 0。下一步仅提交并 push F3 与本次归档写回，重跑 PR #35 三项 CI；
-仅在 remote head 与审计内容一致且 CI 全绿时 merge，不创建新的父 TASK。
+同一父任务下的 A~F/F1/F2/F3、真实 Demo 证据、Memory Writeback、v9 双重独立
+审计和 Git 集成均已完成。PR #35 最终 head `332d365e75b00102e8ce6a54df716024c7b9288c`
+的三项 CI 全绿，并已 merge 为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
+本 Feature 无剩余开发或集成门禁；没有已授权的下一执行任务。
 
 ## 规划建档审查
 
@@ -550,4 +550,12 @@ findings 全为 0。下一步仅提交并 push F3 与本次归档写回，重跑
   `CC_AUDIT=GO AND CODEX_SUBAGENT_AUDIT=GO AND blocking findings=0`
   已满足。
 - Codex 最终 Review Intake：
-  `ACCEPT_F3_IMPLEMENTATION / V9_DUAL_AUDIT_GO / GO_TO_COMMIT_PUSH_PR_CI_MERGE`。
+  `ACCEPT_FEATURE_IMPLEMENTATION / V9_DUAL_AUDIT_GO / PR_35_MERGED / CI_GREEN /
+  FEATURE_COMPLETE`。
+- F3 与归档写回提交为 `332d365e75b00102e8ce6a54df716024c7b9288c`，已 push
+  至 Feature 分支。
+- PR #35 最终 CI run `30333059261` 的三项检查全部成功：
+  `Authorization evidence check` job `90192109604`、`Backend Gradle tests`
+  job `90192109599`、`Admin web lint, tests, and build` job `90192109597`。
+- PR #35 于 `2026-07-28T05:56:19Z` 合并，merge commit 为
+  `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
