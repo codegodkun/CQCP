@@ -1,6 +1,6 @@
 # TASK-034：MVP E2E 人工 anchor 正式验收执行
 
-状态：Active / Phase 1 已执行 / 最终判定 `FAIL`
+状态：Active / v29 Formal R7 `PASS` / MILESTONE FINAL AUDIT PENDING
 
 类型：Codex 主控正式验收任务
 
@@ -171,6 +171,68 @@ Phase 0 当时的父任务结果：`STOPPED_FOR_TASK_SPEC_034_A`；该阶段未�
 * 精确提交检查中，`occurrence-comparison.csv` 的两处多行 `actualEvidenceText` 保留了真实 parser 文本末尾空格，导致 `git diff --check` 仅对该数据工件报告 2 条 trailing whitespace；未手工清洗或改写正式证据。排除该 CSV 后其余 staged 文档与 JSON diff check 通过。
 * 最终判定：`FAIL`。父任务保持 active；不得据此进入 `TASK-028` / `TASK-031` / `TASK-032`。
 
+### C2 / bridge v2 正式 R6 执行记录（2026-07-29）
+
+* 当前 worktree 已接入 `TASK-036 C2`：execution 冻结
+  `ruleSetVersion=v20260715.1` 时进入三参数 consistency-set build；普通
+  `MVP_DEMO_MOCK / v20260705.1` binding 未改变。
+* `TASK_SPEC-034-B` 仅在 test-only harness 增加单调双射 occurrence bridge；
+  不修改人工 fixture、生产 SourceAnchor、CandidateResolver 或裁判。
+* 临时 R5 曾得到 27/27 candidate `MATCH`、27/27 PointStatus `PASS` 和
+  57 个 anchors；复核发现它把 `paymentMethod` 带入 C1 full scan，违反冻结的
+  payment-method-neutral 契约。R5 已明确失效，不能作为门禁证据。
+* 恢复 C1 冻结语义后的正式 R6 使用
+  `1035739b751386176e47c6871738a62bff86de02+WORKTREE-C2-R6` 标识，输出目录为
+  `outputs/task-034-mvp-e2e-acceptance-v2/`。
+* R6 三份样本均完成 parser → state machine → v15 runtime build → review →
+  snapshot → exact query；snapshot 均为 `PARTIAL_SUCCESS`。
+* 27 个审核点中 18 个 candidate `MATCH` / PointStatus `PASS`，9 个 candidate
+  `NOT_OBSERVABLE` / PointStatus `NOT_CONCLUDED`。9 个未结论点均为 payment
+  ratio role conflict，输出 `SYS_ROLE_CONFLICT`，没有业务 Finding。
+* production result 共提供 49 个可靠 SourceAnchor，无法与 57 条纳入人工
+  occurrence 形成逐组同基数、同粒度单调双射。首轮 comparator 误用 global
+  shape flag，导致一个 group 缺口污染全部 57 条；修复为逐 group fail-closed
+  后的 R6B 结果为 47 `MATCHED` + 10 `NOT_OBSERVABLE` + 6 `EXCLUDED`。
+* C1/C2 相关 10 个测试类联合复跑 413/413 通过；formal 方法先写出完整证据，
+  后按设计因 `overallVerdict=FAIL` 返回非零。
+* R6 最终判定：`FAIL`。当前缺口是 active/inactive payment branch 的版本化归属
+  语义，不得通过恢复 v15 的 `paymentMethod` 过滤、修改人工 expected 或放宽
+  occurrence bridge 伪造通过。
+
+### D1 / v29 正式 R7 执行记录（2026-07-29）
+
+* `TASK_SPEC-036-D1` 新增不可变 `v20260729.1` assets、版本化 inactive payment
+  branch classifier 与 point-local ratio grammar；没有原地修改 v15，也没有读取
+  structured `paymentMethod`、sampleId、文件名、fixture 或人工 expected 决定 scope。
+* 正式入口通过 `JAVA_TOOL_OPTIONS` 把双 property 与 commit/branch/Gradle metadata
+  注入测试 JVM；原始 console、JUnit XML 和 R7 工件由
+  `r7-evidence-seal.json` 绑定。仅向 Gradle 进程传 `-D`、导致测试 JVM走
+  SKIPPED 分支的尝试不计为正式复跑证据。
+  seal 中的 `command` 是跨 shell 的规范化 provenance 字符串，不是 Windows
+  host 的复制执行文本；实际 host 外层为 PowerShell 7，等价执行方式是先设置
+  `$env:JAVA_TOOL_OPTIONS`，再调用 `gradle ...`，并在 `finally` 中删除该环境变量。
+* R7 三份样本均为 `SUCCESS`，27/27 candidate `MATCH`、27/27
+  `PointStatus=PASS`、20/17/20 共 57 个可靠 SourceAnchor；occurrence 为
+  57 `MATCHED` + 6 human ground-truth `EXCLUDED`，0 `SYS-*`、0 Finding，
+  `overallVerdict=PASS`。
+* 第九轮审计发现原 harness 的结果读取仍是 `getResult(taskId)` latest 语义，不能
+  证明正式 URL 的 `executionId` 身份。R8 证据重封在每个正式 execution 后写入
+  `executionId + "-latest-decoy"` 的更新 snapshot；latest 查询必须命中 decoy，
+  `getResult(taskId, executionId)` 必须命中原 snapshot，manifest/sample 均记录
+  `queryMode=EXACT_EXECUTION_ID` 与 `exactExecutionIsolationVerified=true`。
+* production branch exclusion 与人工 exclusion 分账：`production-branch-scope-ledger.json`
+  有 70 条 `EXCLUDED/SEMANTIC_EXCLUDED`，分别来自 001/002/003 的 4/6/4
+  inactive blocks × 5 ratio points；不得把这 70 条写成人工 exclusion。
+* 既有 10 类回归 `413/0/0/0`、D1 `30/0/0/0`、合并
+  `443/0/0/0`；R7 formal XML `1/0/0/0`。R8 evidence seal SHA-256 为
+  `05593a35090477a31bde3e43309342f560c87157e007fb60515e55d9c8471579`，
+  run manifest SHA-256 为
+  `55702828c1d1b2fbc9b4817e926b58438978c987d592cb225968941a1c2ada83`。
+  最终统一验证已通过，当前 subject 的
+  新冻结与三审仍待完成，因此父任务保持 active。
+* R7 只证明冻结的三份脱敏样本与 v29 契约通过，不构成 Production Ready，不放行
+  DeepSeek Provider，也不解锁 `TASK-028 / TASK-031 / TASK-032`。
+
 ## 比较与判定口径
 
 ### review point 级
@@ -289,7 +351,10 @@ git diff --check
 
 ## Next Task Handoff
 
-后续已拆分为两个独立父任务：`TASK_SPEC-035-A` 已获创建/派发授权、冻结并通过独立审计，当前只允许提交编码前规格映射计划；`ADR-016` 已被用户接受，`docs/ARCHITECTURE.md` v0.10 已同步且审计 `GO`，但 TASK-036 生产实现未授权。两条路线均未完成，不授权正式重跑。
+当前明确下一执行单元为 `MILESTONE-MVP-002` 收口：完成 D1/D2 与 Track B 项目记忆
+写回、统一验证、重新冻结，并让 CC AUDIT 与两个全新 Codex subagent 对完全相同的
+hash 从零审计。R7 已执行，不再等待 TASK-035/TASK-036 实现授权；未单独授权
+commit、push、PR 或 merge。
 
 ## 风险
 
@@ -307,11 +372,20 @@ git diff --check
 * 已确认：多出处 evidence 缺口由 `TASK-036` / `ADR-016` Draft 承接；根因是 occurrence-insensitive dedup 与 selected-candidate 投影双重折叠，只补 `cellIndex` 不能解决 27 actual anchors 对 57 纳入 occurrence 的基数缺口；Draft 独立最终审计 `GO`。
 * 已确认：现有 point result / snapshot / OpenAPI / JSONB query 使用列表结构，可承载一点评多 anchors；若实现发现事实不同必须停止并拆兼容任务。
 * 已确认：用户授权创建/派发 `TASK_SPEC-035-A`；用户接受 `ADR-016` 并已完成 ARCHITECTURE 同步。
-* 待确认：Codex 是否放行 TASK_SPEC-035-A 编码前计划；TASK-036 生产实现是否另行授权。
+* 已确认：TASK-035、TASK-036 C1/C2、D1 已在当前 MVP-002 worktree 集成；
+  v29 R7 工件判定 `PASS`，当前增量仍待最终冻结三审。
+* 已确认：R6B 为 18 `MATCH` / 9 `NOT_OBSERVABLE`、18 `PASS` /
+  9 `NOT_CONCLUDED`、49 actual anchors / 57 included occurrences；
+  occurrence 为 47 `MATCHED` / 10 `NOT_OBSERVABLE` / 6 `EXCLUDED`，最终
+  `FAIL`。
+* 已确认：active/inactive payment branch attribution 使用新
+  `v20260729.1 / consistency-scope-v20260729.1` 冻结；v15 语义和历史 R6B
+  工件保持不变。
 
 ## 完成记录
 
-* 完成日期：未完成；Phase 1 于 2026-07-14 执行结束，父任务因正式判定 `FAIL` 保持 active。
+* 完成日期：未完成；Phase 1 于 2026-07-14、C2/R6 与 v29/R7 于 2026-07-29
+  执行结束。R7 工件为 `PASS`，父任务因当前增量最终三审尚未完成而保持 active。
 * 建档独立只读复核：2026-07-13，Decision 为 `GO`，无 blocking findings；复核未修改、stage、commit 或 push 任何文件。
 * Phase 0 结论：`NO_GO_TEST_ONLY_HARNESS_REQUIRED`。
 * `TASK_SPEC-034-A`：实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`；Codex Review Intake 与独立只读复核均为接纳。
@@ -321,4 +395,14 @@ git diff --check
 * 样本结果：3 份均完成查询；27 个 `PointStatus` 全为 `PASS`，candidate 为 9 `MATCH` / 18 `MISMATCH`，Finding / SYS 均为 0。
 * occurrence 统计：63 条、57 纳入、6 排除；57 条纳入均 `NOT_OBSERVABLE`，6 条排除均 `EXCLUDED`。
 * 最终判定：`FAIL`。
-* 遗留问题：`TASK_SPEC-035-A` 待编码前计划、实现放行与实现；TASK-036 待单独生产实现授权与后续实现。两者完成且 Codex 单独授权前不得重跑正式验收。
+* C2/R6B 增量：C1/C2 10 类测试 413/413；18/27 candidate `MATCH`、
+  18/27 PointStatus `PASS`、49 actual anchors；57 条纳入均有逐条结果，
+  其中 47 `MATCHED` / 10 `NOT_OBSERVABLE`，formal 总判定仍为 `FAIL`。
+* D1/R7 增量：合并门禁 443/443；正式 R7 为 27/27 candidate `MATCH`、
+  27/27 `PASS`、57 `MATCHED` / 6 human `EXCLUDED`、70 production ledger、
+  0 SYS/Finding，且 R8 重封证明 execution-scoped exact query；正式工件判定 `PASS`。
+* 遗留问题：需完成当前 subject 的新冻结与三审；不得把已失效 R5、历史 R6、
+  官方 `/models` 连通成功或 Track A 模型意见当成 R7/Provider 证据。
+* 2026-07-31 中途收敛：v29/R7 限定样本证据进入先行 Core integration unit，
+  只随 Core 执行完整验证与三方全零审计；不重跑新的人工 ground truth，不把 R7
+  `PASS` 当作 Track B admission 或 Provider 激活证据。

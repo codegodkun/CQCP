@@ -1,6 +1,7 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / TASK_SPEC-036-A Implemented / Codex ACCEPT_IMPLEMENTATION / Independent Implementation Audit GO / EXACT COMMIT AUTHORIZED / B-C NOT AUTHORIZED
+状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
+TASK-034 R7 PASS / MILESTONE FINAL AUDIT PENDING
 
 类型：A 类主链路架构治理父任务
 
@@ -146,7 +147,10 @@
 
 ## Next Task Handoff
 
-`TASK_SPEC-036-A` 已实现并经 Codex Review Intake 接纳，独立只读实现审计最终 `GO`；最终定向 XML 为第一组 47/47、第二组 25/25。用户已授权精确提交本轮 7 个实现文件和 5 个治理文档；该提交不授权 B/C、正式 E2E、push 或 merge。
+当前 A/B/C1/C2/D1/D2 已按冻结局部规格在 `codex/task-mvp-002` worktree
+实现，R7 已补足 execution-scoped exact query 证明并重建 Track B v5，统一验证已通过。
+下一步只做 `MILESTONE-MVP-002` 新冻结和三审；不扩大到 Provider、
+`REVIEWING_MODEL`、commit、push、PR 或 merge。
 
 ## 独立审计与 Codex Review Intake
 
@@ -175,13 +179,38 @@
 ## 待确认
 
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
-* 待后续 B 批次单独冻结新 RuleSetVersion 标识与 carrier activation；A 不改变当前规则集输出。
-* occurrence scope policy 的最终字段名与 RuleSetVersion 承载位置。
+* 已确认：B1/B2/C1/C2 已在当前 `codex/task-mvp-002` worktree 集成；
+  `v20260715.1` execution 可进入 consistency-set runtime，普通
+  `MVP_DEMO_MOCK / v20260705.1` binding 不变。
+* 已确认：2026-07-29 C1/C2 相关 10 个测试类联合复跑 413/413 通过。
+* 历史事实：TASK-034 R6 为 `FAIL`；C1 full scan 的
+  payment-method-neutral 冻结语义使 inactive payment template 候选与 active
+  branch 候选发生 role conflict。
+* 已确认：D1 用新 `v20260729.1` 与
+  `consistency-scope-v20260729.1` 解决 active/inactive branch attribution；
+  没有原地修改 v15，R7 正式工件为 `PASS`。
+* 已确认：D2 eligibility/family-plan/runtime-isomorphic EvidencePacket seam
+  已实现；当前 R7 27 点全部 deterministic HIGH，Track B 为 27/27 zero-call
+  abstention，Provider admission 仍未建立。
 
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：本任务包、已接受的 ADR-016、`docs/ARCHITECTURE.md` v0.10 与项目记忆文档。
 * 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`。
-* 遗留问题：B/C 的 RuleSetVersion / scope policy / readiness 仍未冻结。
-* 备注：用户已授权精确提交 A 的 7 个实现文件和 5 个治理文档；最终 commit hash 以 Git 历史为准。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过，不得自动进入 B/C、push 或 merge。
+* MVP-002 worktree 增量：B1 versioned policy、B2 loader/gate、C1 inactive runtime
+  core 和 C2 execution activation 已集成；定向联合回归 413/413。
+* D1/R7 增量：D1 30/30、与既有回归合并 443/443；R7 为 27/27
+  candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
+  70 production semantic ledger、0 SYS/Finding。
+* D2/Track B 增量：seam 20/20；3 份包、27 packet、9 plan、57 occurrence，
+  v5 三个全新盲评 agent 27/27 `ZERO_CALL_REQUIRED`，seal 为
+  `edcfa024dfe2cbf6c5b1fe6ca1427a91d61101dd8903f19f61c70294f1fe2970`。
+  这不构成 Provider admission。
+* 遗留问题：当前 worktree 增量统一验证已通过，尚待新冻结和同一 hash 三审；
+  尚未进入主线。
+* 2026-07-31 中途收敛：B1/B2/C1/C2/D1/D2 runtime seam 纳入先行 Core
+  integration unit；Core 完整验证、正式三方全零审计、CI 和 merge 后才可声明
+  `seamIntegratedIntoMainline=true`。该顺序不授权 Provider A0、A1/A2 或 A3。
+* 备注：不得据此宣称 Production Ready、Provider admitted 或
+  `TASK-028 / TASK-031 / TASK-032` 已解锁；未授权 commit、push、PR 或 merge。

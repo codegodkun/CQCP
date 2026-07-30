@@ -112,7 +112,9 @@ MVP 普通结果 URL 不做平台侧登录、公开令牌或独立访问控制�
 
 管理台可以展示中间诊断和部分 point result；普通结果 URL 不展示半成品审核结果。
 
-MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。前端不得因为 MVP 不做登录而扩大敏感信息展示范围。
+MVP 管理台暂不做平台内账号体系、登录页和细粒度权限矩阵；部署环境仍负责外围
+访问控制，但 `/api/admin/**` 额外由后端 Bearer 鉴权保护。前端不得因为 MVP 不做
+账号体系而扩大敏感信息展示范围。
 
 管理台常规页面默认只展示摘要级诊断信息。完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包和密钥不在常规页面展示；如后续需要查看或导出，应作为 Pilot / Production Readiness 的受控诊断能力单独设计，纳入权限、脱敏、审批和审计。
 
@@ -240,7 +242,9 @@ MVP 首批字段 key 采用 PRD 冻结最小契约；前端中文文案映射到
 配置审核规则页面标签页 MVP 范围：
 
 - `审核点`：支持列表、详情展开和有限编辑。
-- `模型配置`：只读展示当前模型版本和 endpoint 状态，不支持编辑。
+- `模型配置`：在“配置审核规则”页面内仍只读展示当前模型版本和 endpoint 状态；
+  ADR-018 的独立 `/admin/model-profiles` 页面只允许创建 immutable PUBLIC
+  EVALUATION config version 与执行受控 connectivity test。
 - `提示词模板`：不支持编辑，仅可展示业务摘要或延后。
 - `最终提示词预览`：不展示完整 prompt，延后到后续治理/技术视图。
 - `任务日志` 不属于配置审核规则页面，应放在任务列表/任务详情相关位置。
@@ -328,7 +332,8 @@ MVP 不保存也不提供 `redactedRawOutput` 展开；受控保存完整 redact
 ## 权限边界
 
 - 普通结果 URL 不暴露 prompt、raw output、endpoint、stack trace、admin logs。
-- MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。
+- MVP 管理台暂不做平台内账号体系、登录页和细粒度权限矩阵；外围访问控制继续由
+  部署环境承担，`/api/admin/**` 同时要求后端 Bearer 鉴权。
 - 管理台常规页面不展示完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。
 - 规则/prompt/pattern 发布治理延后到 Pilot / Production Readiness；MVP 不支持自动发布，也不支持 AI 建议直接改生产配置。
 - 受控敏感诊断导出、`encryptedRawOutput` 展开、角色权限和审批审计延后到 Pilot / Production Readiness。
@@ -351,6 +356,42 @@ MVP Demo 已接通以下真实管理台链路：
 证据摘要和 block 级 SourceAnchor。结构化信息只渲染固定白名单字段，不递归展示任意
 JSON；旧 `/?taskId=...` 入口继续兼容。页面不得展示完整 prompt、raw model output、
 secret、stack trace 或内部诊断明细。
+
+## MILESTONE-MVP-002 审核工作台与 Model Profile 管理
+
+管理台新增 execution 级任务入口与两类页面：
+
+- `/review/tasks`：每行只表示一个 execution，展示合同名、创建时间、公开状态、当前
+  stage、当次实际绑定的 Model Profile 与同一 execution 的点级统计；状态筛选固定为
+  `PROCESSING / COMPLETED / FAILED`。
+- `/review/results/{taskId}?executionId=...`：按双 identity 读取正式结果与 parser-backed
+  文档预览。左侧按 parser block、table row/cell identity 渲染，右侧按 family 分组，
+  支持点级状态筛选与折叠。
+
+工作台定位只消费快照已有的 `pointResults[].sourceAnchors[]`。有
+`previewElementRef` 时优先定位到对应 row/cell，否则降级到 `blockId` 并显示“块级定位”；
+多 anchor 中当前证据使用主高亮，同点其他证据使用次级高亮；`UNAVAILABLE` 不显示伪
+跳转。前端不得按 evidence text 或 candidate value 反向搜索合同内容。合同文本始终按
+React 文本节点渲染，不执行合同内 HTML。
+
+工作台提供原始 DOCX 下载，不展示虚构页码，不引入 PDF/OCR 或历史 parser 重解析。
+
+按 ADR-020，任务清单、合同 preview 和原始 DOCX 属于受控管理读取。前端认证前不得
+请求这些接口；Admin/只读管理 token 只保存在当前 React provider 内存，通过
+`Authorization: Bearer` header 发送，刷新或退出即清除，不写 URL、localStorage 或
+其他浏览器持久化。原始下载必须使用认证 fetch + Blob，不得把 token 拼入下载 URL。
+普通结果摘要可按既有兼容契约展示，但未认证时原文区和下载必须保持关闭。
+带 `executionId` 的正式结果 URL 必须调用精确 execution 查询，不得静默切换到同 task
+的 latest snapshot。
+
+管理台新增 `/admin/model-profiles`。页面允许创建 PUBLIC `EVALUATION` profile 的
+不可变 config version、查看 readiness 和发起已保存配置的连通测试，但只接受
+server-side Secret Reference；页面不接收、读取或存储 raw KEY，不允许输入任意 endpoint
+URL，也不显示第三方响应体或底层堆栈。首批 PUBLIC profile 强制 disabled、unbound，
+不会改变 `MVP_DEMO_MOCK` 默认 binding；`READY` 也不表示 execution 已发布。
+页面进入时要求 Admin Access Token，仅保存在当前 React 内存状态并通过
+`Authorization: Bearer` header 发送；验证后清空输入框，不写入 URL、localStorage
+或 sessionStorage。Secret Reference 使用固定选项，不提供任意 `env:`/`file:` 文本框。
 
 ## 待确认
 

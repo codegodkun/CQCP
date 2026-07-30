@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.text.Normalizer;
 import java.time.Clock;
 import java.time.Instant;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -44,20 +46,34 @@ import org.junit.jupiter.api.io.TempDir;
 /** TASK_SPEC-034-A：仅测试源码可见的 MVP E2E 验收入口。 */
 class Task034MvpE2eAcceptanceHarnessTest {
 
-    private static final String SCHEMA_VERSION = "task034-acceptance-v1";
+    private static final String SCHEMA_VERSION = "task034-acceptance-v3-versioned-ratio-scope";
     private static final String CANDIDATE_COMPARISON_VERSION =
             "mvp-e2e-candidate-comparison-v2";
     private static final String FORMAL_PROPERTY = "cqcp.task034.formal";
     private static final String FORMAL_INPUT_PROPERTY = "cqcp.task034.formalInput";
-    private static final String QUERY_PATH_TEMPLATE = "/api/v1/tasks/%s/result";
+    private static final String QUERY_PATH_TEMPLATE =
+            "/api/v1/tasks/%s/result?executionId=%s";
+    private static final String EXACT_QUERY_MODE = "EXACT_EXECUTION_ID";
     private static final Clock FIXED_CLOCK =
             Clock.fixed(Instant.parse("2026-07-14T00:00:00Z"), ZoneOffset.UTC);
     private static final Path FIXTURE_ROOT =
             Path.of("..", "..", "packages", "test-fixtures").normalize();
     private static final Path FORMAL_OUTPUT_ROOT =
-            Path.of("..", "..", "outputs", "task-034-mvp-e2e-acceptance").normalize();
+            Path.of("..", "..", "outputs", "task-034-mvp-e2e-acceptance-v3").normalize();
+    private static final Path TRACK_B_OUTPUT_ROOT =
+            Path.of("..", "..", "outputs", "task-eval-002", "track-b-inputs-v1").normalize();
     private static final List<String> FROZEN_SAMPLE_IDS = List.of(
             "CQCP-MVP-DOCX-001", "CQCP-MVP-DOCX-002", "CQCP-MVP-DOCX-003");
+    private static final List<ReviewPointCode> RATIO_POINT_CODES = List.of(
+            ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+            ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+            ReviewPointCode.COMPLETION_PAYMENT_RATIO_CONSISTENCY,
+            ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+            ReviewPointCode.WARRANTY_RETENTION_RATIO_CONSISTENCY);
+    private static final Map<String, Integer> FROZEN_INACTIVE_BRANCH_BLOCK_COUNTS = Map.of(
+            "CQCP-MVP-DOCX-001", 4,
+            "CQCP-MVP-DOCX-002", 6,
+            "CQCP-MVP-DOCX-003", 4);
     private static final Map<String, Integer> FROZEN_TOTALS = Map.of(
             "CQCP-MVP-DOCX-001", 22,
             "CQCP-MVP-DOCX-002", 19,
@@ -69,6 +85,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
     private static final Pattern TABLE_REF = Pattern.compile(
             "table:([^/]+)/row:(\\d+)(?:/cell:(\\d+))?");
     private static final Pattern BLOCK_REF = Pattern.compile("block:([^/]+)");
+    private static final Pattern HUMAN_PAGE_REF = Pattern.compile("第\\s*(\\d+)\\s*页");
     private static final String UNSIGNED_INTEGER_BODY = "(?:0|[1-9][0-9]*)";
     private static final String GROUPED_INTEGER_BODY =
             "(?:[1-9][0-9]{0,2}(?:,[0-9]{3})+)";
@@ -87,6 +104,8 @@ class Task034MvpE2eAcceptanceHarnessTest {
                     + "3、netAmount=(" + CNY_BODY + ")；\\n"
                     + "4、taxAmount=(" + CNY_BODY + ")。"
     );
+    private static final Pattern ORACLE_PERCENT = Pattern.compile(
+            "(\\d{1,3}(?:\\.\\d+)?)%");
     private static final List<String> EXPECTED_STAGE_EVENTS = List.of(
             "PARSING:STARTED", "PARSING:COMPLETED",
             "INDEXING:STARTED", "INDEXING:COMPLETED",
@@ -115,7 +134,8 @@ class Task034MvpE2eAcceptanceHarnessTest {
         assertThat(run.observation().reviewInput().executionId()).isEqualTo(input.executionId());
         assertThat(run.stageEvents()).containsExactlyElementsOf(EXPECTED_STAGE_EVENTS);
         assertThat(run.reviewInvocationCount()).isEqualTo(1);
-        assertThat(run.sampleResult().queryPath()).isEqualTo(QUERY_PATH_TEMPLATE.formatted(input.taskId()));
+        assertThat(run.sampleResult().queryPath())
+                .isEqualTo(exactQueryPath(input.taskId(), input.executionId()));
         assertThat(run.sampleResult().executionMetadata().versionReferences())
                 .isEqualTo(snapshotVersions(run.querySnapshot()));
         assertQueriedFieldsAreUnmodified(run.sampleResult(), run.querySnapshot());
@@ -181,7 +201,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
     }
 
     @Test
-    void contextCannotProjectAndNullPreviewReferenceStayNotObservable() {
+    void contextCannotProjectWhileStableBlockIdentityRemainsObservableWithoutPreviewReference() {
         ParsedContractDocument parsed = parsedDocument(List.of(
                 tableBlock("block-1", "table-1", 0, List.of("甲方", "奔腾公司"))));
         HumanOccurrence noContextProjection = new HumanOccurrence(
@@ -209,11 +229,140 @@ class Task034MvpE2eAcceptanceHarnessTest {
                         "block-1", "NATIVE_WORD", "STRUCTURED", "NORMAL", "证据",
                         List.of(), "BODY", "HIGH", "BLOCK_LEVEL", null));
         var nullReference = compareOccurrences(
-                List.of(human("C-02", true, "奔腾公司", "奔腾公司")),
+                List.of(blockHuman("C-02", "甲方 | 奔腾公司", "甲方 | 奔腾公司")),
                 parsed,
                 List.of(nullPreview));
-        assertThat(nullReference.getFirst().coverageResult()).isEqualTo(CoverageResult.NOT_OBSERVABLE);
-        assertUnavailable(nullReference.getFirst());
+        assertThat(nullReference.getFirst().coverageResult()).isEqualTo(CoverageResult.MATCHED);
+        assertThat(nullReference.getFirst().actualAnchorGranularity()).isEqualTo("BLOCK");
+        assertThat(nullReference.getFirst().actualAnchorReference()).isEqualTo("BLOCK:block-1");
+    }
+
+    @Test
+    void monotonicBridgeUsesExactGranularityAndDocumentOrderWithoutTextOrCandidateSearch() {
+        ParsedContractDocument parsed = parsedDocument(List.of(
+                paragraphBlock("block-1", "第一处 parser 文本"),
+                paragraphBlock("block-2", "第二处 parser 文本")));
+        List<HumanOccurrence> humans = List.of(
+                blockHuman("SYNTHETIC-B-01", "第1页：人工描述甲", "人工原文甲"),
+                blockHuman("SYNTHETIC-B-02", "第2页：人工描述乙", "人工原文乙"));
+
+        List<OccurrenceComparisonRow> rows = compareOccurrences(
+                humans,
+                parsed,
+                List.of(actualBlock("block-2"), actualBlock("block-1")),
+                OccurrenceBridgeMode.MONOTONIC_BIJECTION_V2);
+
+        assertThat(rows).extracting(OccurrenceComparisonRow::coverageResult)
+                .containsExactly(CoverageResult.MATCHED, CoverageResult.MATCHED);
+        assertThat(rows).extracting(OccurrenceComparisonRow::actualAnchorReference)
+                .containsExactly("BLOCK:block-1", "BLOCK:block-2");
+        assertThat(rows).allSatisfy(row ->
+                assertThat(row.notes()).contains("mvp-e2e-occurrence-bridge-v2"));
+
+        assertThat(v3SameValueProgressPollutionResultForRegression())
+                .isEqualTo(CoverageResult.NOT_MATCHED);
+    }
+
+    static CoverageResult v3SameValueProgressPollutionResultForRegression() {
+        ParsedContractDocument ratioParsed = parsedDocument(List.of(
+                paragraphBlock(
+                        "correct",
+                        "A模式：按月形象进度付款，甲方支付上月完成合格形象进度产值的70%；"),
+                paragraphBlock(
+                        "polluted",
+                        "节点1：完成施工后，甲方支付上月完成合格形象进度产值的70%；")));
+        HumanOccurrence ratioHuman = new HumanOccurrence(
+                "SYNTHETIC",
+                "RATIO-01",
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                true,
+                "70%",
+                "A模式：按月形象进度付款，甲方支付上月完成合格形象进度产值的70%；",
+                "第1页",
+                "BLOCK",
+                "不适用",
+                "不适用",
+                "不适用",
+                null);
+        var pollutedReplacement = compareOccurrences(
+                List.of(ratioHuman),
+                ratioParsed,
+                List.of(actualBlock(
+                        ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                        "polluted")),
+                OccurrenceBridgeMode.MONOTONIC_HUMAN_ORACLE_V3);
+        if (!pollutedReplacement.getFirst().notes().contains("human oracle")) {
+            throw new IllegalStateException("v3 pollution regression must fail through human oracle");
+        }
+        return pollutedReplacement.getFirst().coverageResult();
+    }
+
+    @Test
+    void monotonicBridgeFailsClosedOnCardinalityOrHumanPageOrderMismatch() {
+        ParsedContractDocument parsed = parsedDocument(List.of(
+                paragraphBlock("block-1", "第一处"),
+                paragraphBlock("block-2", "第二处")));
+        List<HumanOccurrence> ordered = List.of(
+                blockHuman("SYNTHETIC-B-01", "第1页", "甲"),
+                blockHuman("SYNTHETIC-B-02", "第2页", "乙"));
+
+        var cardinalityMismatch = compareOccurrences(
+                ordered,
+                parsed,
+                List.of(actualBlock("block-1")),
+                OccurrenceBridgeMode.MONOTONIC_BIJECTION_V2);
+        assertThat(cardinalityMismatch).extracting(OccurrenceComparisonRow::coverageResult)
+                .containsOnly(CoverageResult.NOT_OBSERVABLE);
+
+        List<HumanOccurrence> reversedPages = List.of(
+                blockHuman("SYNTHETIC-B-01", "第2页", "甲"),
+                blockHuman("SYNTHETIC-B-02", "第1页", "乙"));
+        var pageMismatch = compareOccurrences(
+                reversedPages,
+                parsed,
+                List.of(actualBlock("block-1"), actualBlock("block-2")),
+                OccurrenceBridgeMode.MONOTONIC_BIJECTION_V2);
+        assertThat(pageMismatch).extracting(OccurrenceComparisonRow::coverageResult)
+                .containsOnly(CoverageResult.NOT_OBSERVABLE);
+    }
+
+    @Test
+    void monotonicBridgeSingleGroupFailureDoesNotPoisonIndependentGroup() {
+        ParsedContractDocument parsed = parsedDocument(List.of(
+                paragraphBlock("block-a-1", "甲方第一处"),
+                paragraphBlock("block-a-2", "甲方第二处"),
+                paragraphBlock("block-b-1", "乙方唯一处")));
+        List<HumanOccurrence> humans = List.of(
+                blockHuman(
+                        ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                        "A-01",
+                        "第1页",
+                        "甲方第一处"),
+                blockHuman(
+                        ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                        "A-02",
+                        "第2页",
+                        "甲方第二处"),
+                blockHuman(
+                        ReviewPointCode.PARTY_B_NAME_CONSISTENCY,
+                        "B-01",
+                        "第3页",
+                        "乙方唯一处"));
+
+        var rows = compareOccurrences(
+                humans,
+                parsed,
+                List.of(
+                        actualBlock(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "block-a-1"),
+                        actualBlock(ReviewPointCode.PARTY_B_NAME_CONSISTENCY, "block-b-1")),
+                OccurrenceBridgeMode.MONOTONIC_BIJECTION_V2);
+
+        assertThat(rows).extracting(OccurrenceComparisonRow::coverageResult)
+                .containsExactly(
+                        CoverageResult.NOT_OBSERVABLE,
+                        CoverageResult.NOT_OBSERVABLE,
+                        CoverageResult.MATCHED);
+        assertThat(rows.get(2).actualAnchorReference()).isEqualTo("BLOCK:block-b-1");
     }
 
     @Test
@@ -570,7 +719,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
         RunManifest manifest = aggregateRunManifest(
                 input, samples, started, completed, "TEST_ONLY_WRITER_ROUND_TRIP");
 
-        writeFormalEvidence(outputRoot, samples, List.of(), manifest);
+        writeFormalEvidence(outputRoot, samples, List.of(), List.of(), manifest);
 
         Path manifestPath = outputRoot.resolve("run-manifest.json");
         RunManifest reloaded = objectMapper.readValue(manifestPath.toFile(), RunManifest.class);
@@ -611,22 +760,29 @@ class Task034MvpE2eAcceptanceHarnessTest {
 
     private HarnessRunResult runAcceptance(HarnessRunInput input, boolean propertyEnabled) throws Exception {
         if (!propertyEnabled || !input.formalMode()) {
-            return new HarnessRunResult(List.of(), List.of(), 0, 0, OverallVerdict.SKIPPED, null);
+            return new HarnessRunResult(
+                    List.of(), List.of(), List.of(), 0, 0, OverallVerdict.SKIPPED, null);
         }
         validateFormalGate(input, true);
         Instant startedAt = Instant.now();
 
         var samples = new ArrayList<SampleAcceptanceResult>();
         var occurrences = new ArrayList<OccurrenceComparisonRow>();
+        var productionBranchLedger = new ArrayList<ProductionBranchScopeLedgerRow>();
+        var trackBPackages = new ArrayList<TrackBSamplePackage>();
         for (String sampleId : input.sampleIds()) {
             FormalFixture fixture = loadFormalFixture(sampleId, input.fixtureRoot());
             Map<ReviewPointCode, String> expected = expectedCandidatesFromHumanFixture(fixture.occurrences());
             ObservedSampleRun run = executeOne(fixture.input(), expected);
             samples.add(run.sampleResult());
+            trackBPackages.add(buildTrackBPackage(run));
+            productionBranchLedger.addAll(productionBranchScopeLedger(
+                    sampleId, run.observation().parsedDocument().document()));
             occurrences.addAll(compareOccurrences(
                     fixture.occurrences(),
                     run.observation().parsedDocument(),
-                    actualAnchors(run.querySnapshot())));
+                    actualAnchors(run.querySnapshot()),
+                    OccurrenceBridgeMode.MONOTONIC_HUMAN_ORACLE_V3));
         }
         Instant completedAt = Instant.now();
 
@@ -636,13 +792,36 @@ class Task034MvpE2eAcceptanceHarnessTest {
         if (occurrences.size() != 63 || included != 57 || excluded != 6) {
             throw new IllegalStateException("Frozen occurrence contract violated");
         }
+        assertProductionBranchLedger(productionBranchLedger);
+        assertTrackBPackages(trackBPackages);
         RunManifest manifest = aggregateRunManifest(
-                input, samples, startedAt, completedAt, "Instant.now around formal harness run");
+                input,
+                samples,
+                startedAt,
+                completedAt,
+                "Instant.now around formal harness run",
+                included,
+                excluded,
+                productionBranchLedger.size());
         writeFormalEvidence(
-                input.outputRoot(), List.copyOf(samples), List.copyOf(occurrences), manifest);
+                input.outputRoot(),
+                List.copyOf(samples),
+                List.copyOf(occurrences),
+                List.copyOf(productionBranchLedger),
+                manifest);
+        writeTrackBEvidence(
+                TRACK_B_OUTPUT_ROOT,
+                input.outputRoot().resolve("run-manifest.json"),
+                List.copyOf(trackBPackages));
         OverallVerdict verdict = determineOverallVerdict(samples, occurrences, included, excluded);
         HarnessRunResult result = new HarnessRunResult(
-                List.copyOf(samples), List.copyOf(occurrences), included, excluded, verdict, manifest);
+                List.copyOf(samples),
+                List.copyOf(occurrences),
+                List.copyOf(productionBranchLedger),
+                included,
+                excluded,
+                verdict,
+                manifest);
         writeFormalConsoleSummary(input.outputRoot(), result);
         return result;
     }
@@ -670,6 +849,19 @@ class Task034MvpE2eAcceptanceHarnessTest {
             Instant startedAt,
             Instant completedAt,
             String timingSource) {
+        return aggregateRunManifest(
+                input, samples, startedAt, completedAt, timingSource, 0, 0, 0);
+    }
+
+    private static RunManifest aggregateRunManifest(
+            HarnessRunInput input,
+            List<SampleAcceptanceResult> samples,
+            Instant startedAt,
+            Instant completedAt,
+            String timingSource,
+            int humanGroundTruthIncludedCount,
+            int humanGroundTruthExcludedCount,
+            int productionInactiveBranchLedgerCount) {
         if (startedAt == null || completedAt == null || completedAt.isBefore(startedAt)
                 || isBlank(timingSource)) {
             throw new IllegalStateException("run timing must surround the harness execution");
@@ -689,6 +881,9 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 startedAt,
                 completedAt,
                 timingSource,
+                humanGroundTruthIncludedCount,
+                humanGroundTruthExcludedCount,
+                productionInactiveBranchLedgerCount,
                 entries,
                 "same-run ReviewEngineInput.pointEvidences",
                 "same-store TaskResultQueryService snapshot",
@@ -730,7 +925,10 @@ class Task034MvpE2eAcceptanceHarnessTest {
             ReviewEngineInput value = (ReviewEngineInput) invocation.callRealMethod();
             buildOutput.set(value);
             return value;
-        }).when(preparer).build(any(TaskExecutionRequest.class), any(EvidenceBuildPlan.class));
+        }).when(preparer).build(
+                any(TaskExecutionRequest.class),
+                any(EvidenceBuildPlan.class),
+                any(RuntimeRuleSetSnapshot.class));
 
         var engine = new CountingReviewEngine();
         var persistence = new RecordingPersistence();
@@ -746,12 +944,22 @@ class Task034MvpE2eAcceptanceHarnessTest {
         var machine = new TaskExecutionStateMachine(engine, new ResultComposer(), preparer, FIXED_CLOCK);
 
         TaskExecutionRunResult runResult = machine.execute(request, persistence);
-        ReviewResultSnapshot queried = new TaskResultQueryService(persistence.store).getResult(input.taskId());
+        ReviewResultSnapshot latestDecoy = copySnapshotForExecution(
+                runResult.snapshot(),
+                input.executionId() + "-latest-decoy",
+                runResult.snapshot().createdAt().plusSeconds(1));
+        persistence.store.saveSnapshot(latestDecoy);
+        var queryService = new TaskResultQueryService(persistence.store);
+        assertThat(queryService.getResult(input.taskId())).isSameAs(latestDecoy);
+        ReviewResultSnapshot queried = queryService.getResult(input.taskId(), input.executionId());
 
         verify(preparer, times(1)).parse(any(TaskExecutionDocumentReference.class));
         verify(preparer, times(1)).index(any(ParsedContractDocument.class));
         verify(preparer, times(1)).plan(any(ContractEvidenceIndex.class));
-        verify(preparer, times(1)).build(any(TaskExecutionRequest.class), any(EvidenceBuildPlan.class));
+        verify(preparer, times(1)).build(
+                any(TaskExecutionRequest.class),
+                any(EvidenceBuildPlan.class),
+                any(RuntimeRuleSetSnapshot.class));
         assertThat(parsedOutput.get()).isSameAs(indexInput.get());
         assertThat(indexOutput.get()).isSameAs(planInput.get());
         assertThat(planOutput.get()).isSameAs(buildPlanInput.get());
@@ -765,17 +973,59 @@ class Task034MvpE2eAcceptanceHarnessTest {
         assertThat(persistence.stageEvents()).containsExactlyElementsOf(EXPECTED_STAGE_EVENTS);
 
         SameRunObservation observation = new SameRunObservation(parsedOutput.get(), buildOutput.get());
-        SampleAcceptanceResult sample = buildSampleResult(input, queried, buildOutput.get(), expectedCandidates);
+        SampleAcceptanceResult sample = buildSampleResult(
+                input,
+                queried,
+                buildOutput.get(),
+                expectedCandidates,
+                latestDecoy.executionId());
         return new ObservedSampleRun(
                 runResult, queried, observation, engine.invocationCount,
                 persistence.stageEvents(), sample);
+    }
+
+    private static ReviewResultSnapshot copySnapshotForExecution(
+            ReviewResultSnapshot source,
+            String executionId,
+            Instant createdAt) {
+        return new ReviewResultSnapshot(
+                source.taskId(),
+                executionId,
+                source.supersededByExecutionId(),
+                source.supersededReason(),
+                source.status(),
+                source.summary(),
+                source.reviewCompleteness(),
+                source.pointResults(),
+                source.findings(),
+                source.diagnostics(),
+                source.sourceAnchors(),
+                source.structuredFieldsSnapshot(),
+                source.enabledReviewPointsSnapshot(),
+                source.disabledReviewPointsSnapshot(),
+                source.contractTypeProfileVersion(),
+                source.ruleSetVersion(),
+                source.reviewBudgetProfileVersion(),
+                source.modelProfileVersion(),
+                source.parserVersion(),
+                source.promptVersion(),
+                source.schemaVersion(),
+                source.patternLibraryVersion(),
+                source.fieldLexiconVersion(),
+                source.evidenceSelectorVersion(),
+                createdAt);
+    }
+
+    private static String exactQueryPath(String taskId, String executionId) {
+        return QUERY_PATH_TEMPLATE.formatted(taskId, executionId);
     }
 
     private SampleAcceptanceResult buildSampleResult(
             SampleInput input,
             ReviewResultSnapshot snapshot,
             ReviewEngineInput reviewInput,
-            Map<ReviewPointCode, String> expectedCandidates) {
+            Map<ReviewPointCode, String> expectedCandidates,
+            String latestSnapshotExecutionIdAtQuery) {
         var points = new ArrayList<PointAcceptanceResult>();
         for (PointReviewResult point : snapshot.pointResults()) {
             PointEvidence evidence = reviewInput.pointEvidences().get(point.reviewPointCode());
@@ -800,12 +1050,15 @@ class Task034MvpE2eAcceptanceHarnessTest {
         }
         SampleManifestEntry executionMetadata = new SampleManifestEntry(
                 input.sampleId(), snapshot.taskId(), snapshot.executionId(),
-                QUERY_PATH_TEMPLATE.formatted(snapshot.taskId()),
+                exactQueryPath(snapshot.taskId(), snapshot.executionId()),
+                EXACT_QUERY_MODE,
+                latestSnapshotExecutionIdAtQuery,
+                true,
                 snapshot.taskId() + ":" + snapshot.executionId() + ":" + snapshot.createdAt(),
                 snapshot.status(), snapshot.createdAt(), snapshotVersions(snapshot));
         return new SampleAcceptanceResult(
                 input.sampleId(), snapshot.taskId(), snapshot.executionId(),
-                QUERY_PATH_TEMPLATE.formatted(snapshot.taskId()),
+                exactQueryPath(snapshot.taskId(), snapshot.executionId()),
                 snapshot.taskId() + ":" + snapshot.executionId() + ":" + snapshot.createdAt(),
                 List.copyOf(points), snapshot.findings(), snapshot.diagnostics(), executionMetadata);
     }
@@ -857,11 +1110,32 @@ class Task034MvpE2eAcceptanceHarnessTest {
             List<HumanOccurrence> humans,
             ParsedContractDocument parsed,
             List<ActualAnchor> actuals) {
+        return compareOccurrences(humans, parsed, actuals, OccurrenceBridgeMode.STRICT_CONTEXT_V1);
+    }
+
+    private static List<OccurrenceComparisonRow> compareOccurrences(
+            List<HumanOccurrence> humans,
+            ParsedContractDocument parsed,
+            List<ActualAnchor> actuals,
+            OccurrenceBridgeMode bridgeMode) {
+        if (bridgeMode == OccurrenceBridgeMode.MONOTONIC_BIJECTION_V2
+                || bridgeMode == OccurrenceBridgeMode.MONOTONIC_HUMAN_ORACLE_V3) {
+            return compareOccurrencesByMonotonicBijection(
+                    humans,
+                    parsed,
+                    actuals,
+                    bridgeMode == OccurrenceBridgeMode.MONOTONIC_HUMAN_ORACLE_V3);
+        }
         var resolved = new ArrayList<ResolvedActual>();
+        Map<String, Integer> blockOrder = blockOrder(parsed);
         for (int actualIndex = 0; actualIndex < actuals.size(); actualIndex++) {
             ResolvedElement element = resolveElement(parsed, actuals.get(actualIndex).anchor());
             if (element != null) {
-                resolved.add(new ResolvedActual(actualIndex, actuals.get(actualIndex).reviewPointCode(), element));
+                resolved.add(new ResolvedActual(
+                        actualIndex,
+                        actuals.get(actualIndex).reviewPointCode(),
+                        documentOrder(actuals.get(actualIndex).anchor(), blockOrder),
+                        element));
             }
         }
 
@@ -915,6 +1189,295 @@ class Task034MvpE2eAcceptanceHarnessTest {
             rows.add(toRow(humans.get(humanIndex), decisions.get(humanIndex)));
         }
         return List.copyOf(rows);
+    }
+
+    private static List<OccurrenceComparisonRow> compareOccurrencesByMonotonicBijection(
+            List<HumanOccurrence> humans,
+            ParsedContractDocument parsed,
+            List<ActualAnchor> actuals,
+            boolean requireHumanOracle) {
+        Map<String, Integer> blockOrder = blockOrder(parsed);
+        var resolved = new ArrayList<ResolvedActual>();
+        for (int actualIndex = 0; actualIndex < actuals.size(); actualIndex++) {
+            ActualAnchor actual = actuals.get(actualIndex);
+            ResolvedElement element = resolveElement(parsed, actual.anchor());
+            if (element != null) {
+                resolved.add(new ResolvedActual(
+                        actualIndex,
+                        actual.reviewPointCode(),
+                        documentOrder(actual.anchor(), blockOrder),
+                        element));
+            }
+        }
+
+        var decisions = new HashMap<Integer, ComparisonDecision>();
+        var humanGroups = new LinkedHashMap<BridgeGroupKey, List<Integer>>();
+        for (int humanIndex = 0; humanIndex < humans.size(); humanIndex++) {
+            HumanOccurrence human = humans.get(humanIndex);
+            if (!human.included()) {
+                decisions.put(humanIndex, ComparisonDecision.excluded());
+                continue;
+            }
+            humanGroups.computeIfAbsent(
+                    new BridgeGroupKey(human.reviewPointCode(), human.humanAnchorGranularity()),
+                    ignored -> new ArrayList<>()).add(humanIndex);
+        }
+
+        var actualGroups = new LinkedHashMap<BridgeGroupKey, List<ResolvedActual>>();
+        for (ResolvedActual actual : resolved) {
+            actualGroups.computeIfAbsent(
+                    new BridgeGroupKey(actual.reviewPointCode(), actual.element().granularity()),
+                    ignored -> new ArrayList<>()).add(actual);
+        }
+
+        var pointsWithUnexpectedActualGroup = actualGroups.keySet().stream()
+                .filter(key -> !humanGroups.containsKey(key))
+                .map(BridgeGroupKey::reviewPointCode)
+                .collect(Collectors.toSet());
+
+        for (var entry : humanGroups.entrySet()) {
+            List<Integer> humanIndexes = entry.getValue();
+            List<ResolvedActual> matchingActuals = new ArrayList<>(
+                    actualGroups.getOrDefault(entry.getKey(), List.of()));
+            matchingActuals.sort(java.util.Comparator.comparingLong(ResolvedActual::documentOrder));
+
+            boolean groupValid = !pointsWithUnexpectedActualGroup.contains(
+                            entry.getKey().reviewPointCode())
+                    && humanIndexes.size() == matchingActuals.size()
+                    && matchingActuals.stream()
+                            .map(actual -> actual.element().reference())
+                            .distinct()
+                            .count() == matchingActuals.size()
+                    && matchingActuals.stream().map(ResolvedActual::documentOrder).distinct().count()
+                            == matchingActuals.size()
+                    && humanPageOrderIsMonotonic(humans, humanIndexes);
+            if (!groupValid) {
+                for (int humanIndex : humanIndexes) {
+                    decisions.put(humanIndex, ComparisonDecision.notObservable(
+                            "mvp-e2e-occurrence-bridge-v2 fail closed：数量、粒度、identity 或顺序不唯一"));
+                }
+                continue;
+            }
+
+            for (int i = 0; i < humanIndexes.size(); i++) {
+                int humanIndex = humanIndexes.get(i);
+                ResolvedElement actual = matchingActuals.get(i).element();
+                if (requireHumanOracle
+                        && !humanOracleAccepts(humans.get(humanIndex), actual)) {
+                    decisions.put(
+                            humanIndex,
+                            ComparisonDecision.notMatchedHumanOracle(actual));
+                } else {
+                    decisions.put(
+                            humanIndex,
+                            requireHumanOracle
+                                    ? ComparisonDecision.matchedMonotonicV3(actual)
+                                    : ComparisonDecision.matchedMonotonic(actual));
+                }
+            }
+        }
+
+        var rows = new ArrayList<OccurrenceComparisonRow>();
+        for (int humanIndex = 0; humanIndex < humans.size(); humanIndex++) {
+            rows.add(toRow(humans.get(humanIndex), decisions.get(humanIndex)));
+        }
+        return List.copyOf(rows);
+    }
+
+    private static boolean humanOracleAccepts(
+            HumanOccurrence human,
+            ResolvedElement actual) {
+        String actualText = actual.text();
+        if (actualText == null || actualText.isBlank()) {
+            return false;
+        }
+        return switch (human.reviewPointCode()) {
+            case PARTY_A_NAME_CONSISTENCY, PARTY_B_NAME_CONSISTENCY ->
+                    partyOracleAccepts(human, actual);
+            case CONTRACT_TOTAL_AMOUNT_CONSISTENCY ->
+                    amountOracleAccepts(human, actual);
+            case TAX_AMOUNT_FORMULA_CONSISTENCY ->
+                    taxOracleAccepts(human, actual);
+            case PREPAYMENT_RATIO_CONSISTENCY,
+                 PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                 COMPLETION_PAYMENT_RATIO_CONSISTENCY,
+                 SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                 WARRANTY_RETENTION_RATIO_CONSISTENCY ->
+                    ratioOracleAccepts(human, actual);
+        };
+    }
+
+    private static boolean partyOracleAccepts(
+            HumanOccurrence human,
+            ResolvedElement actual) {
+        String expected = compactOracleText(human.expectedCandidateValue());
+        String text = compactOracleText(actual.text());
+        if (expected.isBlank() || !text.contains(expected)) return false;
+        String roleContext = "TABLE_CELL".equals(actual.granularity())
+                ? compactOracleText(actual.rowText())
+                : text;
+        return human.reviewPointCode() == ReviewPointCode.PARTY_A_NAME_CONSISTENCY
+                ? containsAnyText(roleContext, "甲方", "发包方")
+                : containsAnyText(roleContext, "乙方", "承包方", "尊敬的");
+    }
+
+    private static boolean amountOracleAccepts(
+            HumanOccurrence human,
+            ResolvedElement actual) {
+        String expected = normalizeOracleDecimal(human.expectedCandidateValue());
+        String text = compactOracleText(actual.text()).replace(",", "");
+        if (expected == null || !text.contains(expected)) return false;
+        if ("TABLE_CELL".equals(actual.granularity())) {
+            return normalizeOracleDecimal(actual.text()).equals(expected);
+        }
+        return containsAnyText(
+                text, "合同固定总价", "合同暂定总价", "材料/设备含税总价", "签约合同价");
+    }
+
+    private static boolean taxOracleAccepts(
+            HumanOccurrence human,
+            ResolvedElement actual) {
+        Matcher matcher = TAX_EXPECTED_PATTERN.matcher(
+                human.expectedCandidateValue() == null
+                        ? ""
+                        : human.expectedCandidateValue().strip().replace("\r\n", "\n"));
+        if (!matcher.matches() || !"BLOCK".equals(actual.granularity())) return false;
+        String text = compactOracleText(actual.text()).replace(",", "");
+        return text.contains(normalizeOracleDecimal(matcher.group(2)))
+                && text.contains(normalizeOracleDecimal(matcher.group(3)))
+                && text.contains(normalizeOracleDecimal(matcher.group(4)))
+                && containsAnyText(text, "增值税税款", "税款", "税金");
+    }
+
+    private static boolean ratioOracleAccepts(
+            HumanOccurrence human,
+            ResolvedElement actual) {
+        String humanText = compactOracleText(stripHumanSelectorLines(human.humanAnchorText()));
+        String actualText = compactOracleText(actual.text());
+        if (humanText.isBlank()
+                || (!humanText.contains(actualText) && !actualText.contains(humanText))) {
+            return false;
+        }
+        String expected = projectPercentageExpected(human.expectedCandidateValue());
+        String observed = oracleRatioValue(human.reviewPointCode(), actual.text());
+        return expected != null && expected.equals(observed);
+    }
+
+    private static String oracleRatioValue(ReviewPointCode code, String rawText) {
+        String text = compactOracleText(rawText).replace('：', ':');
+        if (code == ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY
+                && (text.matches("^(?:本工程)?无预付款[。;；]?$")
+                    || text.matches("^预付款:无预付款[。;；]?$"))) {
+            return "0";
+        }
+        Pattern pattern = switch (code) {
+            case PREPAYMENT_RATIO_CONSISTENCY ->
+                    Pattern.compile("^预付款:(?:预付款)?比例(?:为|:)(\\d{1,3}(?:\\.\\d+)?)%");
+            case PROGRESS_PAYMENT_RATIO_CONSISTENCY ->
+                    text.startsWith("A模式:")
+                            ? Pattern.compile("支付.*?上月完成合格形象进度产值的(\\d{1,3}(?:\\.\\d+)?)%")
+                            : Pattern.compile("支付至乙方到货总价的(\\d{1,3}(?:\\.\\d+)?)%");
+            case COMPLETION_PAYMENT_RATIO_CONSISTENCY ->
+                    Pattern.compile("支付至(?:已完工程量|该批安装完工款.*?)的(\\d{1,3}(?:\\.\\d+)?)%");
+            case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY ->
+                    Pattern.compile("支付至结算(?:金额|总价)的(\\d{1,3}(?:\\.\\d+)?)%");
+            case WARRANTY_RETENTION_RATIO_CONSISTENCY ->
+                    text.startsWith("质保金:")
+                            ? Pattern.compile("质保金为工程结算总价的(\\d{1,3}(?:\\.\\d+)?)%")
+                            : Pattern.compile("提交保证金额为.*?(\\d{1,3}(?:\\.\\d+)?)%的《质量保函》");
+            default -> ORACLE_PERCENT;
+        };
+        Matcher matcher = pattern.matcher(text);
+        return matcher.find() ? projectPercentageActual(matcher.group(1)) : null;
+    }
+
+    private static String stripHumanSelectorLines(String value) {
+        if (value == null) return "";
+        return value.lines()
+                .map(line -> line.replaceFirst("^\\s*\\d+、\\s*", ""))
+                .filter(line -> !(line.contains("月度付款")
+                        && !containsAnyText(line, "预付款", "到货验收款", "安装完工款",
+                                "结算款", "质保金", "质量保函")))
+                .collect(Collectors.joining());
+    }
+
+    private static String compactOracleText(String value) {
+        if (value == null) return "";
+        String normalized = Normalizer.normalize(value, Normalizer.Form.NFKC);
+        var result = new StringBuilder(normalized.length());
+        normalized.codePoints()
+                .filter(cp -> !Character.isWhitespace(cp) && !Character.isSpaceChar(cp))
+                .forEach(result::appendCodePoint);
+        return result.toString();
+    }
+
+    private static boolean containsAnyText(String text, String... needles) {
+        if (text == null) return false;
+        for (String needle : needles) {
+            if (text.contains(needle)) return true;
+        }
+        return false;
+    }
+
+    private static String normalizeOracleDecimal(String value) {
+        if (value == null) return null;
+        try {
+            return new BigDecimal(value.replace(",", "").replace("￥", "")
+                    .replace("¥", "").strip())
+                    .stripTrailingZeros().toPlainString();
+        } catch (NumberFormatException exception) {
+            return null;
+        }
+    }
+
+    private static Map<String, Integer> blockOrder(ParsedContractDocument parsed) {
+        var result = new LinkedHashMap<String, Integer>();
+        for (int index = 0; index < parsed.document().blocks().size(); index++) {
+            String blockId = parsed.document().blocks().get(index).blockId();
+            if (result.put(blockId, index) != null) {
+                return Map.of();
+            }
+        }
+        return Map.copyOf(result);
+    }
+
+    private static long documentOrder(
+            SourceAnchorSummary anchor,
+            Map<String, Integer> blockOrder) {
+        Integer blockIndex = blockOrder.get(anchor.blockId());
+        if (blockIndex == null) {
+            return Long.MIN_VALUE;
+        }
+        int cellOrder = 0;
+        if (anchor.previewElementRef() != null) {
+            Matcher matcher = TABLE_REF.matcher(anchor.previewElementRef());
+            if (matcher.matches() && matcher.group(3) != null) {
+                cellOrder = Integer.parseInt(matcher.group(3)) + 1;
+            }
+        }
+        return ((long) blockIndex << 32) + cellOrder;
+    }
+
+    private static boolean humanPageOrderIsMonotonic(
+            List<HumanOccurrence> humans,
+            List<Integer> humanIndexes) {
+        if (humanIndexes.size() <= 1) {
+            return true;
+        }
+        int previous = -1;
+        for (int humanIndex : humanIndexes) {
+            Matcher matcher = HUMAN_PAGE_REF.matcher(
+                    humans.get(humanIndex).humanLocationDescription());
+            if (!matcher.find()) {
+                return false;
+            }
+            int page = Integer.parseInt(matcher.group(1));
+            if (page < previous) {
+                return false;
+            }
+            previous = page;
+        }
+        return true;
     }
 
     private static boolean samePointAndGranularity(HumanOccurrence human, ResolvedActual actual) {
@@ -971,9 +1534,6 @@ class Task034MvpE2eAcceptanceHarnessTest {
     private static ResolvedElement resolveElement(
             ParsedContractDocument parsed,
             SourceAnchorSummary anchor) {
-        if (anchor.previewElementRef() == null || anchor.previewElementRef().isBlank()) {
-            return null;
-        }
         List<WordParserSpikeDocument.DocumentBlock> blocks = parsed.document().blocks().stream()
                 .filter(block -> Objects.equals(block.blockId(), anchor.blockId()))
                 .toList();
@@ -981,15 +1541,26 @@ class Task034MvpE2eAcceptanceHarnessTest {
             return null;
         }
         WordParserSpikeDocument.DocumentBlock block = blocks.getFirst();
-        Matcher blockMatcher = BLOCK_REF.matcher(anchor.previewElementRef());
-        if (blockMatcher.matches()) {
-            if (!"BLOCK_LEVEL".equals(anchor.locationLevel())
-                    || !block.blockId().equals(blockMatcher.group(1))) {
-                return null;
+        if ("BLOCK_LEVEL".equals(anchor.locationLevel())) {
+            if (anchor.previewElementRef() != null && !anchor.previewElementRef().isBlank()) {
+                Matcher blockMatcher = BLOCK_REF.matcher(anchor.previewElementRef());
+                if (!blockMatcher.matches() || !block.blockId().equals(blockMatcher.group(1))) {
+                    return null;
+                }
             }
             return new ResolvedElement(
                     block.text(), "BLOCK", "BLOCK:" + block.blockId(), block.text(),
                     null, null, null);
+        }
+        if (anchor.previewElementRef() == null || anchor.previewElementRef().isBlank()) {
+            return null;
+        }
+        Matcher blockMatcher = BLOCK_REF.matcher(anchor.previewElementRef());
+        if (blockMatcher.matches()) {
+            if (!block.blockId().equals(blockMatcher.group(1))) {
+                return null;
+            }
+            return null;
         }
 
         Matcher tableMatcher = TABLE_REF.matcher(anchor.previewElementRef());
@@ -1083,14 +1654,301 @@ class Task034MvpE2eAcceptanceHarnessTest {
         return builder.build();
     }
 
+    private static TrackBSamplePackage buildTrackBPackage(ObservedSampleRun run) {
+        ReviewEngineInput input = run.observation().reviewInput();
+        RuntimeRuleSetSnapshot runtimeSnapshot = input.runtimeRuleSetSnapshot();
+        if (runtimeSnapshot == null
+                || !RuntimeRuleSetLoaderV20260729.VERSION.equals(runtimeSnapshot.version())) {
+            throw new IllegalStateException("Track B requires same-run v20260729.1 runtime input");
+        }
+
+        var builder = new RuntimeEvidencePacketBuilder();
+        var identity = new RuntimeEvidencePacketBuilder.PacketIdentity(
+                input.taskId(),
+                input.executionId(),
+                input.sampleId(),
+                runtimeSnapshot.version());
+        var packets = new ArrayList<RuntimeEvidencePacket>();
+        for (ReviewPointCode code : ReviewPointCode.values()) {
+            PointEvidence evidence = input.pointEvidences().get(code);
+            if (evidence == null) {
+                throw new IllegalStateException("Track B input is missing point evidence: " + code);
+            }
+            packets.add(builder.build(
+                    identity,
+                    evidence,
+                    RuntimeEvidencePacketBuilder.AssistPolicy.deterministicNoAssist(),
+                    16_000));
+        }
+
+        var plans = new ArrayList<FamilyModelCallPlan>();
+        for (String family : List.of("PARTY_FIELDS", "AMOUNT_TAX", "PAYMENT_TERMS")) {
+            List<RuntimeEvidencePacket> familyPackets = packets.stream()
+                    .filter(packet -> family.equals(packet.family()))
+                    .toList();
+            var requests = new ArrayList<FamilyModelCallPlanner.RoleRequest>();
+            for (int index = 0; index < familyPackets.size(); index++) {
+                RuntimeEvidencePacket packet = familyPackets.get(index);
+                requests.add(builder.toRoleRequest(
+                        input.sampleId() + ":" + family + ":shard-1",
+                        packet,
+                        100 - index));
+            }
+            plans.add(new FamilyModelCallPlanner().plan(family, requests, 32_000));
+        }
+        return new TrackBSamplePackage(
+                "task-eval-002-track-b-runtime-packet-set-v1",
+                "TRACK_B_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+                input.sampleId(),
+                "same-run ReviewEngineInput.pointEvidences",
+                packets.size(),
+                false,
+                List.copyOf(packets),
+                List.copyOf(plans));
+    }
+
+    private static void assertTrackBPackages(List<TrackBSamplePackage> packages) {
+        if (packages.size() != 3
+                || !packages.stream().map(TrackBSamplePackage::sampleId).toList()
+                        .equals(FROZEN_SAMPLE_IDS)) {
+            throw new IllegalStateException("Track B package set must preserve frozen sample order");
+        }
+        int packetCount = packages.stream().mapToInt(TrackBSamplePackage::packetCount).sum();
+        int occurrenceCount = packages.stream()
+                .flatMap(sample -> sample.packets().stream())
+                .mapToInt(packet -> packet.candidateOccurrences().size())
+                .sum();
+        if (packetCount != 27 || occurrenceCount != 57) {
+            throw new IllegalStateException(
+                    "Track B must contain exactly 27 point packets and 57 candidate occurrences");
+        }
+        boolean invalid = packages.stream().anyMatch(sample ->
+                sample.modelCallsAllowed()
+                        || sample.packets().size() != 9
+                        || sample.familyPlans().size() != 3
+                        || sample.packets().stream().anyMatch(packet ->
+                                packet.admission().modelCallAllowed()
+                                        || !"ZERO_CALL_REQUIRED".equals(packet.admission().status())
+                                        || packet.admission().reasonCodes().stream().noneMatch(
+                                                reason -> reason
+                                                        == ModelAssistEligibilityEvaluator.EligibilityReason
+                                                                .DETERMINISTIC_HIGH_ZERO_CALL)
+                                        || packet.candidateOccurrences().isEmpty()
+                                        || packet.candidateOccurrences().stream().anyMatch(
+                                                occurrence -> !occurrence.sourceAnchor().reliable()))
+                        || sample.familyPlans().stream().anyMatch(plan ->
+                                plan.modelCallAllowed()
+                                        || !plan.requestedRoles().isEmpty()
+                                        || !"ZERO_ELIGIBLE_ROLES".equals(plan.priorityReason())));
+        if (invalid) {
+            throw new IllegalStateException(
+                    "Track B R7 package must prove 27 deterministic HIGH zero-call decisions");
+        }
+    }
+
+    private void writeTrackBEvidence(
+            Path outputRoot,
+            Path r7ManifestPath,
+            List<TrackBSamplePackage> packages) throws IOException {
+        Files.createDirectories(outputRoot);
+        var entries = new ArrayList<TrackBSampleManifestEntry>();
+        for (TrackBSamplePackage sample : packages) {
+            Path samplePath = outputRoot.resolve(sample.sampleId() + ".track-b.json");
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(samplePath.toFile(), sample);
+            assertTrackBLeakFree(samplePath);
+            entries.add(new TrackBSampleManifestEntry(
+                    sample.sampleId(),
+                    samplePath.getFileName().toString(),
+                    sha256(samplePath),
+                    sample.packetCount(),
+                    sample.familyPlans().size(),
+                    sample.modelCallsAllowed()));
+        }
+        var manifest = new TrackBManifest(
+                "task-eval-002-track-b-manifest-v1",
+                "PACKETS_READY_ZERO_ELIGIBLE_CALLS",
+                false,
+                packages.stream().mapToInt(TrackBSamplePackage::packetCount).sum(),
+                packages.stream().mapToInt(sample -> sample.familyPlans().size()).sum(),
+                packages.stream()
+                        .flatMap(sample -> sample.packets().stream())
+                        .mapToInt(packet -> packet.candidateOccurrences().size())
+                        .sum(),
+                sha256(r7ManifestPath),
+                "CURRENT_R7_HAS_ZERO_ELIGIBLE_ROLES_DOES_NOT_ADMIT_PROVIDER",
+                List.copyOf(entries));
+        Path manifestPath = outputRoot.resolve("manifest.json");
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(manifestPath.toFile(), manifest);
+        assertTrackBLeakFree(manifestPath);
+    }
+
+    private void assertTrackBLeakFree(Path path) throws IOException {
+        String serialized = Files.readString(path, StandardCharsets.UTF_8);
+        for (String forbidden : List.of(
+                "expectedCandidate",
+                "humanAnchor",
+                "groundTruth",
+                "candidateComparison",
+                "pointStatus",
+                "\"findings\"",
+                "\"verdict\"")) {
+            if (serialized.toLowerCase(java.util.Locale.ROOT)
+                    .contains(forbidden.toLowerCase(java.util.Locale.ROOT))) {
+                throw new IllegalStateException("Track B packet leaks forbidden field: " + forbidden);
+            }
+        }
+    }
+
+    private static List<ProductionBranchScopeLedgerRow> productionBranchScopeLedger(
+            String sampleId,
+            WordParserSpikeDocument document) {
+        RuntimeRuleSetSnapshot snapshot =
+                new RuntimeRuleSetLoader().load(RuntimeRuleSetLoaderV20260729.VERSION);
+        InactivePaymentBranchClassifierV20260729.Resolution resolution =
+                InactivePaymentBranchClassifierV20260729.classify(document.blocks());
+        if (!resolution.certain()) {
+            throw new IllegalStateException(
+                    "production payment-branch classifier is uncertain for " + sampleId
+                            + ": " + resolution.reason());
+        }
+
+        var preparer = new ParserBackedReviewInputPreparer(new DocxWordParserSpike());
+        var collector = new ConsistencyCandidateCollector(
+                (code, role, blocks) -> preparer.probeAllForPoint(
+                        code,
+                        role,
+                        blocks,
+                        ParserBackedReviewInputPreparer.ProbeExecutionMode.CONSISTENCY_FULL_SCAN_V29,
+                        null,
+                        document.blocks()),
+                List.of(new ConsistencyCandidateCollector.SemanticClassifier(
+                        InactivePaymentBranchClassifierV20260729.CLASSIFIER_ID,
+                        resolution::excludes)));
+        Map<String, WordParserSpikeDocument.DocumentBlock> blocksById =
+                document.blocks().stream().collect(Collectors.toMap(
+                        WordParserSpikeDocument.DocumentBlock::blockId,
+                        block -> block));
+
+        var rows = new ArrayList<ProductionBranchScopeLedgerRow>();
+        for (ReviewPointCode code : RATIO_POINT_CODES) {
+            ConsistencyPolicySnapshot policy = snapshot.policyMap().get(code);
+            ConsistencyCandidateCollector.ConsistencyCandidateBatch batch =
+                    collector.collect(code, ratioRole(code), document, policy);
+            for (ConsistencyCandidateCollector.BlockScanLedger entry : batch.blockScanLedger()) {
+                if (entry.status() != ConsistencyCandidateCollector.LedgerStatus.EXCLUDED
+                        || !"SEMANTIC_EXCLUDED".equals(entry.reason())) {
+                    continue;
+                }
+                WordParserSpikeDocument.DocumentBlock block = blocksById.get(entry.blockId());
+                if (block == null) {
+                    throw new IllegalStateException("ledger block is absent from parser output");
+                }
+                rows.add(new ProductionBranchScopeLedgerRow(
+                        sampleId,
+                        code,
+                        entry.blockId(),
+                        sha256(block.text()),
+                        entry.status().name(),
+                        entry.reason(),
+                        InactivePaymentBranchClassifierV20260729.CLASSIFIER_ID,
+                        policy.scopeVersion(),
+                        snapshot.version()));
+            }
+        }
+        return List.copyOf(rows);
+    }
+
+    private static String ratioRole(ReviewPointCode code) {
+        return switch (code) {
+            case PREPAYMENT_RATIO_CONSISTENCY -> "PREPAYMENT_RATIO";
+            case PROGRESS_PAYMENT_RATIO_CONSISTENCY -> "PROGRESS_PAYMENT_RATIO";
+            case COMPLETION_PAYMENT_RATIO_CONSISTENCY -> "COMPLETION_PAYMENT_RATIO";
+            case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY -> "SETTLEMENT_PAYMENT_RATIO";
+            case WARRANTY_RETENTION_RATIO_CONSISTENCY -> "WARRANTY_RETENTION_RATIO";
+            default -> throw new IllegalArgumentException("not a ratio point: " + code);
+        };
+    }
+
+    private static void assertProductionBranchLedger(
+            List<ProductionBranchScopeLedgerRow> rows) {
+        int expectedTotal = FROZEN_INACTIVE_BRANCH_BLOCK_COUNTS.values().stream()
+                .mapToInt(Integer::intValue)
+                .sum() * RATIO_POINT_CODES.size();
+        if (rows.size() != expectedTotal || expectedTotal != 70) {
+            throw new IllegalStateException(
+                    "production inactive-branch ledger must contain exactly 70 entries");
+        }
+        long distinctIdentities = rows.stream()
+                .map(row -> row.sampleId() + "|" + row.reviewPointCode() + "|" + row.blockId())
+                .distinct()
+                .count();
+        if (distinctIdentities != rows.size()) {
+            throw new IllegalStateException("production inactive-branch ledger identity is not unique");
+        }
+        for (String sampleId : FROZEN_SAMPLE_IDS) {
+            int expectedPerPoint = FROZEN_INACTIVE_BRANCH_BLOCK_COUNTS.get(sampleId);
+            for (ReviewPointCode code : RATIO_POINT_CODES) {
+                long actual = rows.stream()
+                        .filter(row -> sampleId.equals(row.sampleId())
+                                && code == row.reviewPointCode())
+                        .count();
+                if (actual != expectedPerPoint) {
+                    throw new IllegalStateException(
+                            sampleId + " " + code + " expected " + expectedPerPoint
+                                    + " inactive blocks, got " + actual);
+                }
+            }
+        }
+        boolean invalid = rows.stream().anyMatch(row ->
+                !"EXCLUDED".equals(row.status())
+                        || !"SEMANTIC_EXCLUDED".equals(row.reason())
+                        || !InactivePaymentBranchClassifierV20260729.CLASSIFIER_ID
+                                .equals(row.classifierId())
+                        || !"consistency-scope-v20260729.1".equals(row.scopeVersion())
+                        || !RuntimeRuleSetLoaderV20260729.VERSION.equals(row.ruleSetVersion())
+                        || row.blockTextSha256() == null
+                        || row.blockTextSha256().length() != 64);
+        if (invalid) {
+            throw new IllegalStateException("production inactive-branch ledger contract violated");
+        }
+    }
+
+    private static String sha256(String value) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                    .digest(Objects.requireNonNullElse(value, "").getBytes(StandardCharsets.UTF_8)));
+        } catch (java.security.NoSuchAlgorithmException error) {
+            throw new IllegalStateException("SHA-256 is unavailable", error);
+        }
+    }
+
+    private static String sha256(Path path) throws IOException {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                    .digest(Files.readAllBytes(path)));
+        } catch (java.security.NoSuchAlgorithmException error) {
+            throw new IllegalStateException("SHA-256 is unavailable", error);
+        }
+    }
+
     private void writeFormalEvidence(
             Path outputRoot,
             List<SampleAcceptanceResult> samples,
             List<OccurrenceComparisonRow> occurrences,
+            List<ProductionBranchScopeLedgerRow> productionBranchLedger,
             RunManifest manifest) throws IOException {
         Files.createDirectories(outputRoot.resolve("sample-results"));
         objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValue(outputRoot.resolve("run-manifest.json").toFile(), manifest);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(
+                outputRoot.resolve("production-branch-scope-ledger.json").toFile(),
+                new ProductionBranchScopeLedgerEvidence(
+                        "task034-production-branch-scope-ledger-v1",
+                        RuntimeRuleSetLoaderV20260729.VERSION,
+                        "consistency-scope-v20260729.1",
+                        manifest.humanGroundTruthExcludedCount(),
+                        productionBranchLedger.size(),
+                        productionBranchLedger));
         for (SampleAcceptanceResult sample : samples) {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(
                     outputRoot.resolve("sample-results").resolve(sample.sampleId() + ".json").toFile(), sample);
@@ -1119,8 +1977,10 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 + "- overallVerdict: " + result.overallVerdict() + "\n"
                 + "- samples: " + result.samples().size() + "\n"
                 + "- occurrences: " + result.occurrences().size() + "\n"
-                + "- included: " + result.includedCount() + "\n"
-                + "- excluded: " + result.excludedCount() + "\n";
+                + "- humanGroundTruthIncluded: " + result.includedCount() + "\n"
+                + "- humanGroundTruthExcluded: " + result.excludedCount() + "\n"
+                + "- productionInactiveBranchLedgerEntries: "
+                + result.productionBranchLedger().size() + "\n";
         Files.writeString(outputRoot.resolve("console-summary.md"), summary, StandardCharsets.UTF_8);
     }
 
@@ -1148,7 +2008,11 @@ class Task034MvpE2eAcceptanceHarnessTest {
                                 && point.sysDiagnostics().isEmpty())
                 && sample.findings().isEmpty()
                 && sample.queryDiagnostics().stream().noneMatch(Task034MvpE2eAcceptanceHarnessTest::isSysDiagnostic)
-                && !isBlank(sample.queryPath())
+                && exactQueryPath(sample.taskId(), sample.executionId()).equals(sample.queryPath())
+                && EXACT_QUERY_MODE.equals(sample.executionMetadata().queryMode())
+                && (sample.executionId() + "-latest-decoy")
+                        .equals(sample.executionMetadata().latestSnapshotExecutionIdAtQuery())
+                && sample.executionMetadata().exactExecutionIsolationVerified()
                 && !isBlank(sample.snapshotIdentity());
     }
 
@@ -1399,8 +2263,51 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
                 new SourceAnchorSummary(
                         blockId, "NATIVE_WORD", "STRUCTURED", "NORMAL", "证据",
-                        List.of(), "BODY", "HIGH", "BLOCK_LEVEL",
+                        List.of(), "BODY", "HIGH", "TABLE_CELL",
                         "table:" + tableId + "/row:" + row + "/cell:" + cell));
+    }
+
+    private static ActualAnchor actualBlock(String blockId) {
+        return actualBlock(ReviewPointCode.PARTY_A_NAME_CONSISTENCY, blockId);
+    }
+
+    private static ActualAnchor actualBlock(ReviewPointCode reviewPointCode, String blockId) {
+        return new ActualAnchor(
+                reviewPointCode,
+                new SourceAnchorSummary(
+                        blockId, "NATIVE_WORD", "STRUCTURED", "NORMAL", "证据",
+                        List.of(), "BODY", "HIGH", "BLOCK_LEVEL", null));
+    }
+
+    private static HumanOccurrence blockHuman(
+            String occurrenceNo,
+            String humanLocationDescription,
+            String humanAnchorText) {
+        return blockHuman(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                occurrenceNo,
+                humanLocationDescription,
+                humanAnchorText);
+    }
+
+    private static HumanOccurrence blockHuman(
+            ReviewPointCode reviewPointCode,
+            String occurrenceNo,
+            String humanLocationDescription,
+            String humanAnchorText) {
+        return new HumanOccurrence(
+                "SYNTHETIC",
+                occurrenceNo,
+                reviewPointCode,
+                true,
+                "不参与桥接",
+                humanAnchorText,
+                humanLocationDescription,
+                "BLOCK",
+                "不适用",
+                "不适用",
+                "不适用",
+                null);
     }
 
     private static HumanOccurrence human(
@@ -1489,7 +2396,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
 
     private static VersionReferences defaultVersionReferences() {
         return new VersionReferences(
-                "contract-type-v1", "ruleset-v1", "budget-v1", "model-v1", "parser-v1",
+                "contract-type-v1", "v20260729.1", "budget-v1", "model-v1", "parser-v1",
                 "prompt-v1", "schema-v1", "pattern-v1", "lexicon-v1", "selector-v1");
     }
 
@@ -1534,6 +2441,20 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
     }
 
+    private static WordParserSpikeDocument.DocumentBlock paragraphBlock(
+            String blockId,
+            String text) {
+        return new WordParserSpikeDocument.DocumentBlock(
+                blockId, WordParserSpikeDocument.BlockType.PARAGRAPH, text, text,
+                List.of(), WordParserSpikeDocument.RegionType.BODY,
+                WordParserSpikeDocument.ContextType.NORMAL,
+                WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "synthetic", null, null, List.of(),
+                WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+    }
+
     private static List<OccurrenceComparisonRow> perfectCountRows() {
         var rows = new ArrayList<OccurrenceComparisonRow>();
         for (int index = 0; index < 63; index++) {
@@ -1571,10 +2492,11 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 CandidateComparisonProfile.TEXT_STRIP_EXACT_V1, candidateComparison,
                 PointStatus.PASS, List.of("summary"), List.of(anchor), List.of());
         return new SampleAcceptanceResult(
-                sampleId, "task", "execution", "/api/v1/tasks/task/result", "snapshot",
+                sampleId, "task", "execution", exactQueryPath("task", "execution"), "snapshot",
                 List.of(point), List.of(), List.of(),
                 new SampleManifestEntry(
-                        sampleId, "task", "execution", "/api/v1/tasks/task/result", "snapshot",
+                        sampleId, "task", "execution", exactQueryPath("task", "execution"),
+                        EXACT_QUERY_MODE, "execution-latest-decoy", true, "snapshot",
                         snapshotStatus, snapshotCreatedAt, versions));
     }
 
@@ -1668,6 +2590,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
     record HarnessRunResult(
             List<SampleAcceptanceResult> samples,
             List<OccurrenceComparisonRow> occurrences,
+            List<ProductionBranchScopeLedgerRow> productionBranchLedger,
             int includedCount,
             int excludedCount,
             OverallVerdict overallVerdict,
@@ -1691,6 +2614,9 @@ class Task034MvpE2eAcceptanceHarnessTest {
             String taskId,
             String executionId,
             String queryPath,
+            String queryMode,
+            String latestSnapshotExecutionIdAtQuery,
+            boolean exactExecutionIsolationVerified,
             String snapshotIdentity,
             SnapshotStatus snapshotStatus,
             Instant snapshotCreatedAt,
@@ -1739,10 +2665,80 @@ class Task034MvpE2eAcceptanceHarnessTest {
             String notes) {
     }
 
+    record ProductionBranchScopeLedgerRow(
+            String sampleId,
+            ReviewPointCode reviewPointCode,
+            String blockId,
+            String blockTextSha256,
+            String status,
+            String reason,
+            String classifierId,
+            String scopeVersion,
+            String ruleSetVersion) {
+    }
+
+    record ProductionBranchScopeLedgerEvidence(
+            String schemaVersion,
+            String ruleSetVersion,
+            String scopeVersion,
+            int humanGroundTruthExcludedCount,
+            int productionEntryCount,
+            List<ProductionBranchScopeLedgerRow> entries) {
+        ProductionBranchScopeLedgerEvidence {
+            entries = List.copyOf(entries);
+        }
+    }
+
+    record TrackBSamplePackage(
+            String schemaVersion,
+            String track,
+            String sampleId,
+            String source,
+            int packetCount,
+            boolean modelCallsAllowed,
+            List<RuntimeEvidencePacket> packets,
+            List<FamilyModelCallPlan> familyPlans) {
+        TrackBSamplePackage {
+            packets = List.copyOf(packets);
+            familyPlans = List.copyOf(familyPlans);
+        }
+    }
+
+    record TrackBSampleManifestEntry(
+            String sampleId,
+            String path,
+            String sha256,
+            int packetCount,
+            int familyPlanCount,
+            boolean modelCallsAllowed) {
+    }
+
+    record TrackBManifest(
+            String schemaVersion,
+            String status,
+            boolean modelCallsAllowed,
+            int packetCount,
+            int familyPlanCount,
+            int candidateOccurrenceCount,
+            String sourceR7ManifestSha256,
+            String admissionConclusion,
+            List<TrackBSampleManifestEntry> samples) {
+        TrackBManifest {
+            samples = List.copyOf(samples);
+        }
+    }
+
     private record ActualAnchor(ReviewPointCode reviewPointCode, SourceAnchorSummary anchor) {
     }
 
-    private record ResolvedActual(int identity, ReviewPointCode reviewPointCode, ResolvedElement element) {
+    private record ResolvedActual(
+            int identity,
+            ReviewPointCode reviewPointCode,
+            long documentOrder,
+            ResolvedElement element) {
+    }
+
+    private record BridgeGroupKey(ReviewPointCode reviewPointCode, String granularity) {
     }
 
     private record ResolvedElement(
@@ -1763,9 +2759,30 @@ class Task034MvpE2eAcceptanceHarnessTest {
             return new ComparisonDecision(CoverageResult.MATCHED, actual, "互相唯一严格边命中");
         }
 
+        static ComparisonDecision matchedMonotonic(ResolvedElement actual) {
+            return new ComparisonDecision(
+                    CoverageResult.MATCHED,
+                    actual,
+                    "mvp-e2e-occurrence-bridge-v2：同审核点、同粒度、同基数、文档顺序唯一单调双射");
+        }
+
+        static ComparisonDecision matchedMonotonicV3(ResolvedElement actual) {
+            return new ComparisonDecision(
+                    CoverageResult.MATCHED,
+                    actual,
+                    "mvp-e2e-occurrence-bridge-v3：单调双射 + human oracle 命中");
+        }
+
         static ComparisonDecision notMatched(ResolvedElement actual) {
             return new ComparisonDecision(
                     CoverageResult.NOT_MATCHED, actual, "human location/context 唯一投影，但文本不一致");
+        }
+
+        static ComparisonDecision notMatchedHumanOracle(ResolvedElement actual) {
+            return new ComparisonDecision(
+                    CoverageResult.NOT_MATCHED,
+                    actual,
+                    "mvp-e2e-occurrence-bridge-v3 human oracle 拒绝错误 anchor 替换");
         }
 
         static ComparisonDecision notObservable(String notes) {
@@ -1790,6 +2807,9 @@ class Task034MvpE2eAcceptanceHarnessTest {
             Instant startedAt,
             Instant completedAt,
             String timingSource,
+            int humanGroundTruthIncludedCount,
+            int humanGroundTruthExcludedCount,
+            int productionInactiveBranchLedgerCount,
             List<SampleManifestEntry> samples,
             String candidateSource,
             String statusAndDiagnosticsSource,
@@ -1826,6 +2846,12 @@ class Task034MvpE2eAcceptanceHarnessTest {
         NOT_MATCHED,
         NOT_OBSERVABLE,
         EXCLUDED
+    }
+
+    private enum OccurrenceBridgeMode {
+        STRICT_CONTEXT_V1,
+        MONOTONIC_BIJECTION_V2,
+        MONOTONIC_HUMAN_ORACLE_V3
     }
 
     enum OverallVerdict {

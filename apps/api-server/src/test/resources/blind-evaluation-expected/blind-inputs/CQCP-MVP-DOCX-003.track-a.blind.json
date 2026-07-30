@@ -1,0 +1,1397 @@
+{
+  "schemaVersion" : "task-eval-002-track-a-v1",
+  "track" : "TRACK_A_FULL_DOCUMENT_SEMANTIC_OPINION",
+  "sampleId" : "CQCP-MVP-DOCX-003",
+  "sourceDocumentSha256" : "48bb0fc63a0182baff5d7bd3e38f3a4409f68e7c371e5d24c02970c6362bf7b3",
+  "parserProjectionVersion" : "parser-docx-word-v20260724.1",
+  "submittedStructuredFields" : {
+    "contractName" : "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+    "partyAName" : "星辰建设集团",
+    "partyBName" : "远航建筑工程有限公司",
+    "projectName" : "南山科技园",
+    "contractTotalAmount" : 12800,
+    "taxExcludedAmount" : 11327.43,
+    "taxAmount" : 1472.57,
+    "taxRate" : 13,
+    "pricingMode" : "FIXED_TOTAL_PRICE",
+    "paymentMethod" : "MONTHLY",
+    "prepaymentRatio" : 0,
+    "progressPaymentRatio" : 70,
+    "completionPaymentRatio" : 80,
+    "settlementPaymentRatio" : 97,
+    "warrantyRetentionRatio" : 3,
+    "invoiceType" : "VAT_SPECIAL",
+    "currency" : "CNY"
+  },
+  "reviewPoints" : [ {
+    "reviewPointCode" : "PARTY_A_NAME_CONSISTENCY",
+    "name" : "甲方名称一致性",
+    "family" : "PARTY_FIELDS",
+    "candidateRole" : "PARTY_A",
+    "requiredStructuredFields" : [ "partyAName" ]
+  }, {
+    "reviewPointCode" : "PARTY_B_NAME_CONSISTENCY",
+    "name" : "乙方名称一致性",
+    "family" : "PARTY_FIELDS",
+    "candidateRole" : "PARTY_B",
+    "requiredStructuredFields" : [ "partyBName" ]
+  }, {
+    "reviewPointCode" : "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+    "name" : "合同总金额一致性",
+    "family" : "AMOUNT_TAX",
+    "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+    "requiredStructuredFields" : [ "contractTotalAmount" ]
+  }, {
+    "reviewPointCode" : "TAX_AMOUNT_FORMULA_CONSISTENCY",
+    "name" : "税额公式一致性",
+    "family" : "AMOUNT_TAX",
+    "candidateRole" : "TAX_AMOUNT",
+    "requiredStructuredFields" : [ "contractTotalAmount", "taxExcludedAmount", "taxAmount" ],
+    "optionalStructuredFields" : [ "taxRate" ]
+  }, {
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "name" : "预付款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "PREPAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "prepaymentRatio" ]
+  }, {
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "name" : "进度款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "progressPaymentRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  }, {
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "name" : "竣工款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "completionPaymentRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  }, {
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "name" : "结算款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "settlementPaymentRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  }, {
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "name" : "质保款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "WARRANTY_RETENTION_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "warrantyRetentionRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  } ],
+  "documentProjection" : {
+    "format" : "ORDERED_BLOCKS_WITH_TABLE_CELLS",
+    "locations" : [ {
+      "locationId" : "LOC-00001",
+      "kind" : "PARAGRAPH",
+      "text" : "模板编号：VK-CBZC-SG-2026-005",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00002",
+      "kind" : "PARAGRAPH",
+      "text" : "星辰建设集团南山科技园项目二标段土建总承包工程合同",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00003",
+      "kind" : "TABLE_ROW",
+      "text" : "发包方（甲方）： | 星辰建设集团",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00003-C1",
+        "columnOrdinal" : 1,
+        "text" : "发包方（甲方）："
+      }, {
+        "locationId" : "LOC-00003-C2",
+        "columnOrdinal" : 2,
+        "text" : "星辰建设集团"
+      } ]
+    }, {
+      "locationId" : "LOC-00004",
+      "kind" : "TABLE_ROW",
+      "text" : "承包方（乙方）： | 远航建筑工程有限公司",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00004-C1",
+        "columnOrdinal" : 1,
+        "text" : "承包方（乙方）："
+      }, {
+        "locationId" : "LOC-00004-C2",
+        "columnOrdinal" : 2,
+        "text" : "远航建筑工程有限公司"
+      } ]
+    }, {
+      "locationId" : "LOC-00005",
+      "kind" : "TABLE_ROW",
+      "text" : "合同订立时间 ： | 2026 年 06 月",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00005-C1",
+        "columnOrdinal" : 1,
+        "text" : "合同订立时间 ："
+      }, {
+        "locationId" : "LOC-00005-C2",
+        "columnOrdinal" : 2,
+        "text" : "2026 年 06 月"
+      } ]
+    }, {
+      "locationId" : "LOC-00006",
+      "kind" : "TABLE_ROW",
+      "text" : "合同订立地点 ： | 广东 省 深圳 市",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00006-C1",
+        "columnOrdinal" : 1,
+        "text" : "合同订立地点 ："
+      }, {
+        "locationId" : "LOC-00006-C2",
+        "columnOrdinal" : 2,
+        "text" : "广东 省 深圳 市"
+      } ]
+    }, {
+      "locationId" : "LOC-00007",
+      "kind" : "TABLE_ROW",
+      "text" : "合 同 编 号 ： | 1000001521",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00007-C1",
+        "columnOrdinal" : 1,
+        "text" : "合 同 编 号 ："
+      }, {
+        "locationId" : "LOC-00007-C2",
+        "columnOrdinal" : 2,
+        "text" : "1000001521"
+      } ]
+    }, {
+      "locationId" : "LOC-00008",
+      "kind" : "HEADING",
+      "text" : "第一部分 合同协议书",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00009",
+      "kind" : "PARAGRAPH",
+      "text" : "发包方(以下简称甲方)： 星辰建设集团",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00010",
+      "kind" : "PARAGRAPH",
+      "text" : "承包方(以下简称乙方)： 远航建筑工程有限公司",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00011",
+      "kind" : "PARAGRAPH",
+      "text" : "为进一步明确责任，保障甲乙双方的利益，保证工程顺利进行，经甲、乙双方友好协商，根据《中华人民共和国民法典》及本工程的具体情况签订本合同。双方同意通过万科统一电子签章平台（网址：https://vsign.vanke.com，以下简称“万翼签”），以电子签章的方式进行签署。合同生效后，双方均可对本合同进行下载、打印。下载、打印的合同如与万翼签平台中的原始电子合同不同，以万翼签平台中的电子合同为准。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00012",
+      "kind" : "PARAGRAPH",
+      "text" : "工程概况",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00013",
+      "kind" : "PARAGRAPH",
+      "text" : "工程名称： 南山科技园 土建总承包工程。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00014",
+      "kind" : "PARAGRAPH",
+      "text" : "工程地点： 南山科技园 。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00015",
+      "kind" : "PARAGRAPH",
+      "text" : "建筑面积：约 31415926 平方米（具体建筑面积以工规证约定为准，此次面积不用于费用计算基数）。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00016",
+      "kind" : "PARAGRAPH",
+      "text" : "承包范围",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00017",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方将委托乙方承担南山科技园范围内1栋～5栋的土建总承包工程，乙方需完成范围内所有（住宅/人才房/保障房、地下室、裙房商业、裙房屋顶架空层以下配套用房、地下室及通道工程、天桥、市政路、配套输变电设备）等发包人提供的施工图中除其他单位已完成工程内容和发包人自行招标的专业工程外的所有工程内容，具体承包范围详见合同第四部分《合同价格清单》以及附件7《合约界面划分表》，同时甲方保留对施工范围局部调整的权利。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00018",
+      "kind" : "PARAGRAPH",
+      "text" : "工期",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00019",
+      "kind" : "PARAGRAPH",
+      "text" : "开工时间：2026年01月01日，竣工时间：2026年12月31日，交付时间：2027年12月31日，工期总日历天数 365 天。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00020",
+      "kind" : "PARAGRAPH",
+      "text" : "开工时间以甲方代表的书面开工令为准；竣工时间为甲方验收合格且具备交付条件，并取得政府部门最终验收合格的备案证明的时间；交付时间以合同范围内的土建总承包工程完工，并经监理或甲方组织的土建分部工程验收合格，交付业主为准。具体工期节点详见 “专用条款/工期要求”。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00021",
+      "kind" : "PARAGRAPH",
+      "text" : "本工程质量标准",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00022",
+      "kind" : "PARAGRAPH",
+      "text" : "达到国家、地方、行业、甲方的现行施工质量标准规范要求，工程质量等级合格，具体详见专用条款及附件6《工程技术质量要求》，相关规范、标准或要求不一致的，应以要求较高较严者为准。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00023",
+      "kind" : "PARAGRAPH",
+      "text" : "供应商税务资质",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00024",
+      "kind" : "PARAGRAPH",
+      "text" : "增值税纳税人类型及计税方法",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00025",
+      "kind" : "PARAGRAPH",
+      "text" : "增值税一般纳税人 一般计税方法 简易计税方法",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00026",
+      "kind" : "PARAGRAPH",
+      "text" : "增值税小规模纳税人 简易计税方法",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00027",
+      "kind" : "PARAGRAPH",
+      "text" : "开具发票类型及适用税率或征收率",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00028",
+      "kind" : "PARAGRAPH",
+      "text" : "增值税专用发票 （13%/9%/6%/3%）",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00029",
+      "kind" : "PARAGRAPH",
+      "text" : "增值税普通发票 （13%/9%/6%/3%）",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00030",
+      "kind" : "PARAGRAPH",
+      "text" : "签约合同价与合同计价模式",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00031",
+      "kind" : "PARAGRAPH",
+      "text" : "甲乙双方约定的签约合同价为不含增值税合同价款及增值税税款总金额。合同计价模式为： 固定总价 暂定总价",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00032",
+      "kind" : "PARAGRAPH",
+      "text" : "合同暂定总价：¥ 元，大写：人民币 元；其中不含增值税合同价款：¥ 元，大写：人民币 元；增值税税款¥ 元，大写：人民币 元。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00033",
+      "kind" : "PARAGRAPH",
+      "text" : "暂定总价的总承包工程乙方必须在正式施工图下发后30天内完成工程预算的编制并报送给甲方，90天内完成与甲方所委托造价咨询公司、复审咨询公司的预算核对、争议问题的处理，并形成最终的预算核对结果，同时施工蓝图范围总价的确定不晚于垫层浇筑后120个自然日【不晚于合同内土建总包工程（不含大总包范围内甲分包）第4笔进度款】。暂估价分包不纳入120个自然日总价确定范围。由于乙方原因，延迟核对预算时间，每延迟一天，乙方须向甲方缴纳【1000元】的违约金。如未在约定期限内完成施工蓝图范围内的总价确定,甲方有权停止支付后续工程款，直至甲乙双方完成包干总价后恢复正常付款。但乙方不得因此停止施工或拒绝履行本合同项下的其他义务。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00034",
+      "kind" : "PARAGRAPH",
+      "text" : "合同固定总价：¥ 12800 元，大写：人民币 壹万贰仟捌佰元整 元；其中不含增值税合同价款：¥ 11,327.43 元，大写：人民币 壹万壹仟叁佰贰拾柒元肆角叁分 元；增值税税款¥ 1,472.57 元，大写：人民币 壹仟肆佰柒拾贰元伍角柒分 元。合同固定总价为图纸范围总价包干，是指编号为 BH-123 的招标图纸内容（包括招标文件中相应说明）总价包干。包含但不限于如下内容：完成本工程所需要的措施费、规费、人工费、材料费、机械费、水电费、材料运输费、材料损耗、样板费、养护费及其他费用（运杂费、质检费、安装费、检验与试验费、缺陷修复费）、管理费、税金等全部费用和要求获得的利润以及应由乙方承担的义务、责任和风险以及为完成本项目资金的筹集和使用所发生的一切费用。除合同允许的情况外，合同总价在合同有效期内不予变更。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00035",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同的增值税税款为签约时根据现行执行税率计算的结果，若后续国家增值税税率调整，不含增值税合同价款不变，增值税税款按最新税率调整。除了新税率生效前已完成产值确认/结算且可以提供原增值税税率发票以外，应以实际税率进行计算。进度款及结算款产值单和付款单，需100%执行无纸化。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00036",
+      "kind" : "PARAGRAPH",
+      "text" : "竣工结算造价",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00037",
+      "kind" : "PARAGRAPH",
+      "text" : "竣工结算造价＝签约合同价+签约合同价调整(含合同规定材料调差)＋签证结算价－减少项目造价±其它。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00038",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方应按照核定合同结算造价金额向甲方开具发票，其中，在计算合同结算造价时水电费及乙方应承担的违约金、赔偿金等扣款等不进行计算扣除(即该部分需开具发票)，在实际支付价款时，水电费由甲方代缴，乙方应承担的违约金、赔偿金等扣款直接予以扣除，不再支付，乙方不持异议。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00039",
+      "kind" : "PARAGRAPH",
+      "text" : "工程款支付：详见专用条款相关条款。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00040",
+      "kind" : "PARAGRAPH",
+      "text" : "合同文件组成及解释次序",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00041",
+      "kind" : "PARAGRAPH",
+      "text" : "1、组成合同的各项文件应互相解释，互为说明，本合同文件组成及解释合同文件的优先顺序如下：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00042",
+      "kind" : "PARAGRAPH",
+      "text" : "合同签订后双方新签订的补充协议；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00043",
+      "kind" : "PARAGRAPH",
+      "text" : "合同协议书；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00044",
+      "kind" : "PARAGRAPH",
+      "text" : "签约通知书；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00045",
+      "kind" : "PARAGRAPH",
+      "text" : "合同专用条款；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00046",
+      "kind" : "PARAGRAPH",
+      "text" : "合同通用条款；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00047",
+      "kind" : "PARAGRAPH",
+      "text" : "图纸或材料样板；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00048",
+      "kind" : "PARAGRAPH",
+      "text" : "合同价格清单；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00049",
+      "kind" : "PARAGRAPH",
+      "text" : "合同附件；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00050",
+      "kind" : "PARAGRAPH",
+      "text" : "招标文件及招标文件补遗；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00051",
+      "kind" : "PARAGRAPH",
+      "text" : "经双方认可的投标书；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00052",
+      "kind" : "PARAGRAPH",
+      "text" : "现行标准、规范、技术要求和有关技术资料；",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00053",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同签订后，合同履行过程中双方约定并共同签署的有关工程的变更、签证、约谈记录等书面文件视为本合同的组成部分。约谈记录、纪要等文件与本合同约定不一致的（包括但不限于计价模式、支付时间、工作内容等），则除非双方就相关文件加盖公章，否则不发生效力。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00054",
+      "kind" : "PARAGRAPH",
+      "text" : "2.如果合同文件之间存在矛盾或不一致之处，以上述文件的排列顺序在先者为准；同一内容的文件以最新签署的为准。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00055",
+      "kind" : "PARAGRAPH",
+      "text" : "送达",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00056",
+      "kind" : "PARAGRAPH",
+      "text" : "除非本合同另有规定，任何一方为履行本合同或与本合同有关的文件递交和/或通知、要求或其它通讯应采用书面形式，并按下述地址和电话递送或用邮寄（挂号/EMS特快专递）发给有关一方。通讯地址、号码若有变更应提前【3】日书面告知对方，否则发件人按原地址寄送的文件寄出三日即视为送达。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00057",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方通讯地址及电话：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00058",
+      "kind" : "PARAGRAPH",
+      "text" : "地址： 企鹅1号",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00059",
+      "kind" : "PARAGRAPH",
+      "text" : "邮编：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00060",
+      "kind" : "PARAGRAPH",
+      "text" : "电话：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00061",
+      "kind" : "PARAGRAPH",
+      "text" : "收件人：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00062",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方通讯地址及电话：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00063",
+      "kind" : "PARAGRAPH",
+      "text" : "地址： 前水1号",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00064",
+      "kind" : "PARAGRAPH",
+      "text" : "邮编：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00065",
+      "kind" : "PARAGRAPH",
+      "text" : "电话：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00066",
+      "kind" : "PARAGRAPH",
+      "text" : "收件人：",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00067",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同第一部分《协议书》中有关词语含义与本合同第三部分《合同条款》中定义相同。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00068",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同及其附件是甲乙双方经过平等协商拟定，甲乙双方对有疑义之条款已进行了充分的沟通和说明，乙方已充分知晓和理解其全部条款的内容，并对其无异议。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00069",
+      "kind" : "PARAGRAPH",
+      "text" : "合同份数（非电子合同适用）",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00070",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同一式 肆 份，甲方 贰 份、乙方 贰 份，均具同等法律效力，未尽事宜甲乙双方应本着合作诚信原则，友好协商解决，本合同的补充、变更、未尽事宜由双方另行签署补充协议约定。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00071",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同经双方法定代表人或其授权代表在下面签署并加盖公章/通过万翼签加盖电子签章后生效（非电子合同需在合同所有部分加盖骑缝章）。",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00072",
+      "kind" : "PARAGRAPH",
+      "text" : "（以下无本合同第一部分《合同协议书》正文）",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00073",
+      "kind" : "PARAGRAPH",
+      "text" : "（本页无正文，为合同签署页）",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00074",
+      "kind" : "TABLE_ROW",
+      "text" : "甲方： 星辰建设集团 （公章） 地址： 法定代表人或授权代表： 电话： 开户银行： 账号： 采购经办人： 成本经办人： 工程经办人： | 乙方： 远航建筑工程有限公司 （公章）地址： 法定代表人或授权代表： 电话： 开户银行： 账号：",
+      "sectionPath" : [ "第一部分 合同协议书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00074-C1",
+        "columnOrdinal" : 1,
+        "text" : "甲方： 星辰建设集团 （公章） 地址： 法定代表人或授权代表： 电话： 开户银行： 账号： 采购经办人： 成本经办人： 工程经办人："
+      }, {
+        "locationId" : "LOC-00074-C2",
+        "columnOrdinal" : 2,
+        "text" : "乙方： 远航建筑工程有限公司 （公章）地址： 法定代表人或授权代表： 电话： 开户银行： 账号："
+      } ]
+    }, {
+      "locationId" : "LOC-00075",
+      "kind" : "PARAGRAPH",
+      "text" : "签订日期： 年 月 日",
+      "sectionPath" : [ "第一部分 合同协议书" ]
+    }, {
+      "locationId" : "LOC-00076",
+      "kind" : "HEADING",
+      "text" : "第二部分 签约通知书",
+      "sectionPath" : [ "第二部分 签约通知书" ]
+    }, {
+      "locationId" : "LOC-00077",
+      "kind" : "TABLE_ROW",
+      "text" : "签约通知书",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00077-C1",
+        "columnOrdinal" : 1,
+        "text" : "签约通知书"
+      } ]
+    }, {
+      "locationId" : "LOC-00078",
+      "kind" : "TABLE_ROW",
+      "text" : "尊敬的远航建筑工程有限公司：",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00078-C1",
+        "columnOrdinal" : 1,
+        "text" : "尊敬的远航建筑工程有限公司："
+      } ]
+    }, {
+      "locationId" : "LOC-00079",
+      "kind" : "TABLE_ROW",
+      "text" : "南山科技园项目二标段/服务/部品采购事项(单号：XXXX)于XX年XX月XX日已完成招采工作，初步确定与贵司开展签约工作，信息如下：",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00079-C1",
+        "columnOrdinal" : 1,
+        "text" : "南山科技园项目二标段/服务/部品采购事项(单号：XXXX)于XX年XX月XX日已完成招采工作，初步确定与贵司开展签约工作，信息如下："
+      } ]
+    }, {
+      "locationId" : "LOC-00080",
+      "kind" : "TABLE_ROW",
+      "text" : "标段名称 | 金额（元）",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00080-C1",
+        "columnOrdinal" : 1,
+        "text" : "标段名称"
+      }, {
+        "locationId" : "LOC-00080-C2",
+        "columnOrdinal" : 2,
+        "text" : "金额（元）"
+      } ]
+    }, {
+      "locationId" : "LOC-00081",
+      "kind" : "TABLE_ROW",
+      "text" : "二标段 | 12800",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00081-C1",
+        "columnOrdinal" : 1,
+        "text" : "二标段"
+      }, {
+        "locationId" : "LOC-00081-C2",
+        "columnOrdinal" : 2,
+        "text" : "12800"
+      } ]
+    }, {
+      "locationId" : "LOC-00082",
+      "kind" : "TABLE_ROW",
+      "text" : "说明：1）本次采购不属于法定强制招标范围，不适用《招标投标法》及相关法规、规章、行政规范性文件及司法解释中针对法定强制招标活动的相关约定；（部分与国企合作、且国有资金占控股或主导地位的项目删除此条款）2）本签约通知书不构成要约或承诺，发出签约通知书不视为双方协议关系成立，协议关系的成立以双方正式签署书面协议为准；3）双方在本通知书发出之日起XX日内未能正式签署书面协议的，我司有权决定不再签约；4）双方未能签约的，我司就供应商制定报价方案、提供封样及小样的投入不予赔偿或补偿。请贵司于XX年XX月XX日前与项目联系人XX联系并商谈合同签订事宜。联系电话:XX， 联系邮箱: XX。",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00082-C1",
+        "columnOrdinal" : 1,
+        "text" : "说明：1）本次采购不属于法定强制招标范围，不适用《招标投标法》及相关法规、规章、行政规范性文件及司法解释中针对法定强制招标活动的相关约定；（部分与国企合作、且国有资金占控股或主导地位的项目删除此条款）2）本签约通知书不构成要约或承诺，发出签约通知书不视为双方协议关系成立，协议关系的成立以双方正式签署书面协议为准；3）双方在本通知书发出之日起XX日内未能正式签署书面协议的，我司有权决定不再签约；4）双方未能签约的，我司就供应商制定报价方案、提供封样及小样的投入不予赔偿或补偿。请贵司于XX年XX月XX日前与项目联系人XX联系并商谈合同签订事宜。联系电话:XX， 联系邮箱: XX。"
+      } ]
+    }, {
+      "locationId" : "LOC-00083",
+      "kind" : "TABLE_ROW",
+      "text" : "| 甲方： 星辰建设集团 (盖章) 法定代表人： 日期： 年 月 日",
+      "sectionPath" : [ "第二部分 签约通知书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00083-C1",
+        "columnOrdinal" : 1,
+        "text" : ""
+      }, {
+        "locationId" : "LOC-00083-C2",
+        "columnOrdinal" : 2,
+        "text" : "甲方： 星辰建设集团 (盖章) 法定代表人： 日期： 年 月 日"
+      } ]
+    }, {
+      "locationId" : "LOC-00084",
+      "kind" : "HEADING",
+      "text" : "第三部分 合同条款",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00085",
+      "kind" : "PARAGRAPH",
+      "text" : "一、专用条款",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00086",
+      "kind" : "PARAGRAPH",
+      "text" : "计价依据",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00087",
+      "kind" : "PARAGRAPH",
+      "text" : "本招标工程的承包方式：□费率招标； □模拟清单招标； □ 工程量清单招标；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00088",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同附件清单中的项目工程量均为暂定工程量，综合单价包干，工程量按实际结算（本条款仅模拟清单招标适用）；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00089",
+      "kind" : "PARAGRAPH",
+      "text" : "变更、指令或新增项目子目单价的确定：如属合同清单已有的子目，按合同清单单价；如有类似的子目，单价参照类似子目单价（相关措施费不再单独计取）；如工程量清单中无相同或类似的项目，则按甲乙双方核定为准。在合同清单的措施清单中已包含的工作内容核价时不再计取。合同清单已有子目、类似子目、清单中无相同或类似的项目的界定由甲方确定。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00090",
+      "kind" : "PARAGRAPH",
+      "text" : "调差约定",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00091",
+      "kind" : "PARAGRAPH",
+      "text" : "因乙方原因导致工期延误：由于乙方自身原因引起的工期延误，在延误期间，以下约定的可调差项目，价格上涨时，不进行调差；价格降低时，依据本条28.4.2条调差规则进行调差。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00092",
+      "kind" : "PARAGRAPH",
+      "text" : "合同履约过程中人工费不再进行调差，材料仅对钢筋、混凝土（包含预制构件的钢筋、混凝土）进行调差，其它材料不予调差。具体调差规则如下：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00093",
+      "kind" : "PARAGRAPH",
+      "text" : "钢筋材料价格调差",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00094",
+      "kind" : "PARAGRAPH",
+      "text" : "调差范围：合同履约过程中仅对一次结构钢筋（含预制构件钢筋）进行调差。砌体加筋、二次结构钢筋、建筑装饰面用钢筋网片、预埋件用钢筋及变更签证钢筋等均不再进行调差。材料价格凡是变动均进行调整，不设免调比例。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00095",
+      "kind" : "PARAGRAPH",
+      "text" : "调差基价：以 年 月（截标当月）5号、15 号、25 号“我的钢铁网”公布的 钢（以工程所在城市常用钢筋品牌，如广东韶钢、广西海南桂万钢，福建三钢等）不含本体税价格的算数平均值作为基价（遇非工作日则向后顺延）。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00096",
+      "kind" : "PARAGRAPH",
+      "text" : "钢筋行情价格：各种规格型号钢筋行情价格，取 （项目所在城市）各月份“我的钢铁网（http:// www.mysteel.com) ”上5 号、15 号、25 号（遇非工作日则向后顺延）公布的 钢不含税价格。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00097",
+      "kind" : "PARAGRAPH",
+      "text" : "调差计算方式：钢筋结算调差金额=∑（（主体结构施工阶段内各月钢筋行情价格的算术平均值-基价）×对应规格型号的结算量）×（1+增值税税率[目前为9%]），各规格型号的结算量为不含损耗的合同净工程量。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00098",
+      "kind" : "PARAGRAPH",
+      "text" : "调差期间：地下室按基础垫层浇筑开始至车库顶板(±0)结构完工（按每个施工段单独调整）期间计算，地上按各楼栋单位工程±0 结构开始至主体结构封顶的期间计算钢筋行情价格（每个单体单独调整）。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00099",
+      "kind" : "PARAGRAPH",
+      "text" : "商品混凝土材料价格调差",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00100",
+      "kind" : "PARAGRAPH",
+      "text" : "调差范围：合同履约过程中仅对一次结构混凝土主材（含预制构件的混凝土）进行调差，二构混凝土、室内地坪、地下室地坪及地下室顶板保护层及变更签证混凝土等均不再进行调差。材料价格凡是变动均进行调整，不设免调比例。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00101",
+      "kind" : "PARAGRAPH",
+      "text" : "调差基价：以 年 月（截标当月）所在城市造价信息网公布的各标号普通商品混凝土不含税价格作为基价;如无信息价的，采用当地政府公开发布的参考指导价。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00102",
+      "kind" : "PARAGRAPH",
+      "text" : "混凝土行情价格：取所在城市各月份造价信息网公布的各标号普通商品混凝土对应的不含税价格作为混凝土行情价格。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00103",
+      "kind" : "PARAGRAPH",
+      "text" : "调差计算方式：商品混凝土结算调差金额=(投标不含税材料单价×(主体结构施工阶段内混凝土行情价格的算术平均值-调差基价)/调差基价×各类型混凝土结算量)×(1+增值税税率[目前为9%])，各类型混凝土结算量为不含损耗的合同净工程量。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00104",
+      "kind" : "PARAGRAPH",
+      "text" : "调差期间：地下室按基础垫层浇筑开始至车库顶板(±0)结构完工（按每个施工段单独调整）期间计算；地上结构混凝土按各楼栋单位工程±0 结构开始至主体结构封顶的期间计算混凝土行情价格（每个单体单独调整）；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00105",
+      "kind" : "PARAGRAPH",
+      "text" : "甲分包配合费，以合同价格清单约定为准。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00106",
+      "kind" : "PARAGRAPH",
+      "text" : "甲供材管理费，以合同价格清单约定为准。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00107",
+      "kind" : "PARAGRAPH",
+      "text" : "赶工措施费",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00108",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方发出的赶工指令作为此项费用计取的唯一依据。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00109",
+      "kind" : "PARAGRAPH",
+      "text" : "当甲方确因需要提前开盘或结转等原因要求乙方早于双方在开工前正式约定工期，完成全部工程或部分工程时，乙方需在收到发包人赶工指令的5个工作日内申报赶工方案及预估费用交由甲方审核，甲方审核的最终补偿费用需扣除按合同原有要求正常施工费用及合同本已约定的相关费用。如未提前申报方案及费用，发包人有权不予确认。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00110",
+      "kind" : "PARAGRAPH",
+      "text" : "发包人要求压缩合同约定工期时，赶工费用按以下原则计取：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00111",
+      "kind" : "PARAGRAPH",
+      "text" : "压缩幅度在约定工期的20%（含）以内的，承包人不计取任何赶工措施费用；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00112",
+      "kind" : "PARAGRAPH",
+      "text" : "压缩幅度超过约定工期20%的，仅就超出20%以外的部分计取相应的赶工措施费用。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00113",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方下达的赶工指令并不免除乙方对工程质量的责任，若因赶工造成工程质量问题及返工的费用，乙方必须承担相关修复、赔偿责任及返工的费用。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00114",
+      "kind" : "PARAGRAPH",
+      "text" : "停工费用补偿",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00115",
+      "kind" : "PARAGRAPH",
+      "text" : "因乙方原因造成停工的，由乙方承担发生的费用，工期不予顺延。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00116",
+      "kind" : "PARAGRAPH",
+      "text" : "仅关键线路上的停缓建可以计算停缓建费用，乙方在收到甲方停工通知后5天内且满足尽最大努力避免、减少工期延误及由此引致的经济损失，向甲方申报停工方案及预估费用，包括且不仅包括现场成品、半成品材料设备清查及保护措施、工地现场围护及看管方案，费用估算等，同时乙方应仅保留现场最少资源配置，如未提前申报方案及费用，甲方有权不予确认。当复工日期可以预计时，双方应就停工期间内的各种费用达成一致意见；当复工日期不可预计时，双方可就停工期间的费用分阶段达成一致意见，形成阶段性补偿费用，最终停工补偿费用由各阶段性停工补偿费用合计而成。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00117",
+      "kind" : "PARAGRAPH",
+      "text" : "虽然有上述约定，如果发生同期并行延误的情况，乙方亦无权要求停缓建费用和（或）顺延工期。同期并行延误是指：两项或多项发生于同一期间的延误，其中至少一项延误是由于乙方的错误、拖延、不服从指示、未协调管理以及其它任何违法或违约行为等原因所造成或乙方本来应能够合理控制及避免的。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00118",
+      "kind" : "PARAGRAPH",
+      "text" : "未对本工程关键线路造成影响的延误，无论因何种原因导致，亦无论其情形如何，承包人无权要求增加费用和（或）顺延工期。按甲方要求完成施工节点，若有其他损失甲方保留追诉权。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00119",
+      "kind" : "PARAGRAPH",
+      "text" : "建设单位根据自身开发节奏等非不可抗力对承包商工期进行调整时：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00120",
+      "kind" : "PARAGRAPH",
+      "text" : "因非不可抗力引起的停工，单次累计时间在30日历天内的，交付工期时间不变，费用不予补偿；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00121",
+      "kind" : "PARAGRAPH",
+      "text" : "因非不可抗力引起的停工，单次累计时间超过30日历天且小于90天的，工期顺延，费用不予补偿；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00122",
+      "kind" : "PARAGRAPH",
+      "text" : "因非不可抗力引起的停工，单次累计时间超过90日历天的工期顺延，关键线路上的停缓建费用由双方协商处理，仅计取单次停工时间超出90日历天之外的停缓建费用。停工期间承包商有义务进行材料或机械的退场来尽量减少损失，因承包商管理不当造成的现场材料机械浪费不予计算补偿费用。停工期间除大型施工机械（如塔吊、施工电梯、井架、桩机等）停滞费或进退场费（如发生）、租赁类材料（钢管、爬架及铝模）进行费用补偿外，无其它费用补偿，停工补偿款不超过产品货值。停工期间如经甲方确认需乙方管理人员滞留，按照5000元/人月补偿，管理人员提供身份证复印件；如有工人滞留，需提供花名册，按照3500元/人月补偿。以上人员信息须经项目部确认。大型机械停滞费用，如清单有台班停滞价格的，按清单计价，如无则根据“当地造价信息专栏发布的台班停滞信息价格计取，造价信息停滞费24小时仅计1个台班（如项目所在地无台班停滞造价信息发布，则按照台班租赁价格5折计取）。租赁类材料（钢管、爬架、铝模）按【市场买断价的50%】与【（停工期间实际租赁时间-90日历天）×租赁单价】中较低者进行补偿。以上计价以市场信息价为准，为税后补偿，不计算任何管理费及利润。除本款约定外，停工期间无其它费用补偿，包括但不限于人员窝工、人员遣散、活动房损耗（包括集装箱租赁等）、安全文明措施等。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00123",
+      "kind" : "PARAGRAPH",
+      "text" : "复工后，合同计价原则不变，仍按原合同计价。不因工期变化而调整。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00124",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方申请停缓建费用补偿时，应附有充分的事实证明材料，即能够清楚证明停工事实并载明人工、机械数量的有效现场签证、以及监理人和甲方认可的施工记录等，而不得在没有事实材料的情况下直接依据清单内容进行确认。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00125",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方原因不能按照开工通知中载明的开工日期开工时，不构成本款约定的停工、窝工情形，乙方无权主张增加费用。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00126",
+      "kind" : "PARAGRAPH",
+      "text" : "遵守本协议第八条8.3（暂停施工）和第二十一条21.3（乙方的索赔）相关约定，是乙方得到顺延工期和停缓建费用增加的必要前提条件，否则，应视为乙方放弃了顺延工期和/或停缓建费用的权利。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00127",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方直接发包、暂估价分包工程水电费：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00128",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方自行安装水表、电表计量系统，并由乙方缴纳水电费；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00129",
+      "kind" : "PARAGRAPH",
+      "text" : "考虑到工地可能出现停水停电，乙方应准备备用发电机、水池等设施，费用在合同价格清单措施费中考虑；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00130",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方在现场施工用水用电总量按供电局、自来水公司出具的收费单为准，自行缴纳；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00131",
+      "kind" : "PARAGRAPH",
+      "text" : "在正式电送到永久配电室后，现场施工用电应及时转接到永久配电室，且施工用电应以永久配电室内的总计量表(有功电度表)为准，同时承担变压器的基本电费及力率调整电费。乙方按照实际使用的数量自行支付；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00132",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方直接发包水电费：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00133",
+      "kind" : "PARAGRAPH",
+      "text" : "现场水电费计量采用□A模式 B模式（详见甲直接发包配合费说明）",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00134",
+      "kind" : "PARAGRAPH",
+      "text" : "A模式：甲方直接发包单位施工用水、用电自行承担，包括（1）挂表计量，（2）或按合同额一定比例向总包缴纳；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00135",
+      "kind" : "PARAGRAPH",
+      "text" : "分包临设生活用水、用电挂表计量，费用统一缴纳至总包；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00136",
+      "kind" : "PARAGRAPH",
+      "text" : "施工期间分包的水电费用采取挂表计量方式，由总包人提供水电接驳点，单价按照总包单位考虑损耗后缴纳市政的实际单价收取。如有挂表计量不方便（经甲方、监理确认属实）的专业分包工程，确实需要发生水电费用的，此时按分包合同额（变更工程不再另计）总价比例收取，由分包单位按此比例直接交付总包，或经总包与分包共同申请由发包人代扣代付。此比例为总包收取水电费的上限比例，若存在超出此比例现象，则甲方对超出部分在工程进度款中给予103%的扣除；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00137",
+      "kind" : "PARAGRAPH",
+      "text" : "B模式：甲方直接发包单位使用乙方的施工水电费，已包含在甲直接发包配合费中，由乙方统一管理统一支付，甲方直接发包单位无须缴纳水电费。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00138",
+      "kind" : "PARAGRAPH",
+      "text" : "垃圾清运：总包单位在施工现场内指定垃圾堆场，且不得远离正在施工楼栋（运距不超过1公里）。总包须保证垃圾正常堆放，在堆场垃圾满2/3时就必须外运处理。甲分包单位负责将垃圾运至场地内总包指定地点并由总包负责外运，若总包单位未能及时按要求外运，甲方有权利委托第三方进行清运，费用由甲方核定计价后增加20%管理费从总包工程款中扣除。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00139",
+      "kind" : "PARAGRAPH",
+      "text" : "过账费计价原则（若适用）：甲方直接发包单位因政府质检无法实施，需乙方配合过账，相应的过账费用税率为 %。因甲方要求需乙方代付费用，甲方进行实报实销。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00140",
+      "kind" : "PARAGRAPH",
+      "text" : "甲供材料及设备",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00141",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方有权根据项目需要调整所有材料设备的采购方式。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00142",
+      "kind" : "PARAGRAPH",
+      "text" : "甲供材料设备由甲方签订合同并支付相应款项，乙方进行材料施工和统一管理；乙方根据专用条款约定履行相关卸货及转运、仓储义务，甲方给予甲供材料配合管理费含在总包配合费内,甲供材料不计取其它任何费用，因乙方管理不善造成的盗窃、毁损、灭失等由乙方负责。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00143",
+      "kind" : "PARAGRAPH",
+      "text" : "甲供材料结算原则：根据甲供材料的领用量与结算工程量进行比较，土建甲供材料结算工程量＝实测材料用量＋变更签证的工程量，安装甲供材结算工程量=结算所确定的工程量（含变更签证）*清单中对应甲供材的损耗率。甲方将根据乙方超领进行扣款，少领费用不作补偿，材料单价按甲方采购合同含税单价。如乙方甲供材料的领用量超过结算用量10%，则超过结算用量10%部分的材料扣款单价按甲方采购合同单价另加20%违约金。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00144",
+      "kind" : "PARAGRAPH",
+      "text" : "外墙涂料施工，应由甲方、监理、乙方、供货商一同先做样板，测定每平方米实际施工涂料用量，测定结果由各方会签并盖章确认，作为工程结算依据。外墙保温施工，应由甲方、监理、乙方、供货商一同确定样板面积并施工样板，测定实际施工粘接砂浆用量，测定结果由各方会签并盖章确认，作为工程结算依据。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00145",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方直接发包工程：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00146",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方直接发包工程由其他施工单位与甲方直接签订合同，最终以各项目开工前确定为准（甲方根据需要可调整）；在工程开工后由于设计变更增加的或特殊的施工措施或对甲方有重大影响的部分，不受上述范围的限制，甲方可以另行处理。甲方有权变更材料采购的方式和种类。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00147",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方对甲方直接发包工程收取配合管理费用已包含在总包配合管理费中，乙方对甲方指定分包方必须起到协调、管理、配合等责任。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00148",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方所收取的总包配合管理费为取费面积*包干单方价格（具体以清单中约定为准）,总包配合管理费中均含甲分包施工水电费（若采用第11条B模式）、垃圾清运费及税金（除特别注明以外），且均税后计取。具体取费标准详见合同附件报价清单编制说明及清单及/或合同价格清单。对于乙方未在表中填报配合管理费的分包工程项，乙方仍须承担配合管理的义务。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00149",
+      "kind" : "PARAGRAPH",
+      "text" : "如甲方有需要，乙方有义务配合甲方与甲方独立分包单位签订外部备案合同，乙方不得因此向任何分包单位收取任何额外的费用，亦不得要求甲方签订“承诺函”、“三方协议”等形式的免责文件，或向甲方要求费用补偿。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00150",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方限定品牌范围限价的乙供材料设备",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00151",
+      "kind" : "PARAGRAPH",
+      "text" : "由甲方指定材料品牌范围，乙方必须在甲方指定或乙方提出后甲方同意的范围内采购材料，乙方购买及报价，但此报价必须经甲方审核并认可后方可购买。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00152",
+      "kind" : "PARAGRAPH",
+      "text" : "对于甲方限价的乙供材料设备不计取任何管理费。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00153",
+      "kind" : "PARAGRAPH",
+      "text" : "甲指乙供材料、设备",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00154",
+      "kind" : "PARAGRAPH",
+      "text" : "甲指乙供材料、设备或甲指乙分包工程是指由甲方完成材料采购比选，但由乙方按甲方的比选条件及中选结果与中选的供应商签订相关材料采购合同，并由乙方按本合同条件向甲方负责的项目。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00155",
+      "kind" : "PARAGRAPH",
+      "text" : "其它：墙改、散装水泥及城建档案资料等保证金或押金由甲方负责缴纳，乙方应根据甲方要求提供合法发票及合格资料。否则由于乙方原因造成有关保证金或押金未能全部退回的，扣除部分的保证金或押金由乙方负责，甲方有权从支付乙方的任何工程款项中扣除。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00156",
+      "kind" : "PARAGRAPH",
+      "text" : "安全文明措施费涉及的具体内容包括不限于工地大门及绿化、现场标识牌、临边防护、施工现场所有围蔽的彩钢板及钢围板安装及拆除等，具体按照万科集团、项目所在地政府关于安全文明质量要求最新规定执行。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00157",
+      "kind" : "PARAGRAPH",
+      "text" : "本工程其它计价依据未尽事项见本合同的第四部分《合同价格清单》。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00158",
+      "kind" : "PARAGRAPH",
+      "text" : "工程款支付",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00159",
+      "kind" : "PARAGRAPH",
+      "text" : "本工程无预付款。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00160",
+      "kind" : "PARAGRAPH",
+      "text" : "进度款： A模式 □ B模式",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00161",
+      "kind" : "PARAGRAPH",
+      "text" : "A模式：按月形象进度付款，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00162",
+      "kind" : "PARAGRAPH",
+      "text" : "B模式：按节点付款:",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00163",
+      "kind" : "PARAGRAPH",
+      "text" : "节点1：完成每栋楼10层水电线路敷设、湿作业及轻钢龙骨安装，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00164",
+      "kind" : "PARAGRAPH",
+      "text" : "节点2：完成每栋楼10层湿作业、腻子工程，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00165",
+      "kind" : "PARAGRAPH",
+      "text" : "节点3：分包工作面移交（木地板、橱柜、淋浴屏等）并完成五金、洁具，龙头，插座面板等安装，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00166",
+      "kind" : "PARAGRAPH",
+      "text" : "竣工款：竣工验收完成工后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付至已完工程量的80%；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00167",
+      "kind" : "PARAGRAPH",
+      "text" : "结算款：乙方向甲方提交齐全完整的结算书并经甲方确认，工程结算完毕且整体工程交付使用后，甲方完成结算审核，乙方向甲方提交付款申请及结算金额100%的增值税专用发票等请款资料，甲方在收到上述请款资料后三个月内支付至结算金额的97%；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00168",
+      "kind" : "PARAGRAPH",
+      "text" : "质保金：工程质保金为工程结算总价的3%，保修期以工程总体竣工验收，完善整改意见并正式移交甲方，甲方开始办理集中客户入住之日起计算（分批集中入住的，按每批入住时间，分批计算。质保金按同比例支付）。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00169",
+      "kind" : "PARAGRAPH",
+      "text" : "保修期：普通装修项的保修期限为 2 年，防水工程为 5 年。保修期间，如乙方的维修质量及服务不能满足甲方要求，甲方有权另行组织人力物力进行维修，维修的费用及有关赔偿将从质保金中扣除支付，乙方予以无条件确认。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00170",
+      "kind" : "PARAGRAPH",
+      "text" : "质保金结算及支付详见附件1《工程质量保修协议书》相应条款。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00171",
+      "kind" : "PARAGRAPH",
+      "text" : "若涉及样板房拆除，所有保修期限自样板房拆除之日起终止。每次质保金结算前乙方的工程质量情况和维修情况需物业公司、甲方加盖公章认可。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00172",
+      "kind" : "PARAGRAPH",
+      "text" : "在工程施工过程中以及保修期内，由于乙方责任出现质量问题、劳资纠纷、拖欠工人工资等原因，造成甲方和客户的全部直接和间接损失，由乙方无条件承担，且乙方向甲方支付违约金10万元/次，从合同质保金支付中直接扣除。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00173",
+      "kind" : "PARAGRAPH",
+      "text" : "保修期结束后，由于乙方原因造成的工程质量缺陷或材料设备质量缺陷问题，造成甲方和客户的全部直接和间接损失，由乙方无条件承担。甲方书面通知乙方后即刻生效，无需乙方书面认可。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00174",
+      "kind" : "PARAGRAPH",
+      "text" : "支付方式补充说明",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00175",
+      "kind" : "PARAGRAPH",
+      "text" : "根据甲乙双方的交易习惯和等价有偿的缔约原则，现乙方认可并接受甲方在不同情形下可对单笔工程款/材料款（包括进度款、竣工款、结算款及到期应付质保金）自主选择支付形式，包括但不限于现金支付形式及ABS、保理、商业承兑汇票、国内信用证、实物等非现金支付形式。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00176",
+      "kind" : "PARAGRAPH",
+      "text" : "采用在售商品房抵充以外的非现金支付时，乙方应配合相关金融机构履行开户、签署协议、委托支付款项至分包等义务。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00177",
+      "kind" : "PARAGRAPH",
+      "text" : "实物支付要求",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00178",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同含税金额的 10%，即 884.8 元，可通过实物支付（即甲方在售商品房抵充支付）。在实物支付工程款（包括进度款、竣工款、结算款及到期应付质保金）时，如本条27.2条款或合同其余条款对实物支付时间节点没有约定的，实物支付条款可按此执行：按本章进度款的支付由产值额70%提升为产值额80%，其中进度款支付额度内提升的10%部分通过实物支付，剩余款项在竣工款、结算款及到期应付质保金中执行。实物支付明细以双方另行签订实物支付相关书面文件为准。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00179",
+      "kind" : "PARAGRAPH",
+      "text" : "采用在售商品房抵充的非现金方式支付工程款（包括进度款、竣工款、结算款及到期应付质保金）时：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00180",
+      "kind" : "PARAGRAPH",
+      "text" : "根据等价有偿的缔约原则，乙方认可并接受甲方在不同情形下根据本款约定自主选择工程款支付形式，即现金支付或者在售商品房抵充的非现金支付形式。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00181",
+      "kind" : "PARAGRAPH",
+      "text" : "就在售商品房抵充的非现金支付方式甲乙双方将另行签订《以房抵债协议》（以实际签署文件名称为准）约定具体内容。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00182",
+      "kind" : "PARAGRAPH",
+      "text" : "《以房抵债协议》和《商品房买卖合同》签订生效之日起视为甲方已向乙方支付本合同项下相应工程款（具体数额依据《以房抵债协议》和《商品房买卖合同》约定的金额确定），甲方在相应工程款金额内付款义务即视为履行完毕。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00183",
+      "kind" : "PARAGRAPH",
+      "text" : "材料调差于主体结构封顶后统一办理并支付一次，双方应根据核定后的调差金额签订补充协议，并按主合同约定的付款比例同步支付。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00184",
+      "kind" : "PARAGRAPH",
+      "text" : "被甲方或甲方上级单位要求停工整改后，甲方暂停支付进度款，待事项整改完成并经甲方确认后方可继续支付进度款，因此导致的工期延误及费用增加由乙方自行承担。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00185",
+      "kind" : "PARAGRAPH",
+      "text" : "支付方式补充说明",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00186",
+      "kind" : "PARAGRAPH",
+      "text" : "根据甲乙双方的交易习惯和等价有偿的缔约原则，现乙方认可并接受甲方在不同情形下可对单笔工程款/材料款（包括工程进度款、竣工款、结算款及到期应付质保金）自主选择支付形式，包括但不限于现金支付形式及ABS、保理、商业承兑汇票、国内信用证、实物等非现金支付形式。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00187",
+      "kind" : "PARAGRAPH",
+      "text" : "采用在售商品房抵充以外的非现金支付时，乙方应配合相关金融机构履行开户、签署协议、委托支付款项至分包等义务。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00188",
+      "kind" : "PARAGRAPH",
+      "text" : "实物支付要求：本合同含税金额的 X%，即 XXXX 元，可通过实物支付（即甲方在售商品房抵充支付）。在实物支付工程款（包括进度款、竣工款、结算款及到期应付质保金）时，如本条29.2或合同其余条款对实物支付时间节点没有约定的，实物支付条款可按此执行：按本章进度款的支付由产值额70%提升为产值额80%，其中进度款支付额度内提升的10%部分通过实物支付，剩余款项在竣工款、结算款及到期应付质保金中执行。实物支付明细以双方另行签订实物支付相关书面文件为准。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00189",
+      "kind" : "PARAGRAPH",
+      "text" : "采用在售商品房抵充的非现金支付方式支付工程款时（包括工程进度款、竣工款、结算款及到期应付质保金）：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00190",
+      "kind" : "PARAGRAPH",
+      "text" : "根据等价有偿的缔约原则，承包商（即本合同乙方）认可并接受建设单位（即本合同甲方）在不同情形下自主选择工程款支付形式，即现金支付或者在售商品房抵充的非现金支付形式。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00191",
+      "kind" : "PARAGRAPH",
+      "text" : "以在售商品房抵充的非现金支付方式支付的工程款（含进度款、结算款、到期应付质保金）时，甲乙双方将另行签订《以房抵债协议》（以实际签署文件名称为准）约定具体内容。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00192",
+      "kind" : "PARAGRAPH",
+      "text" : "《以房抵债协议》和《商品房买卖合同》签订生效之日起视为甲方已向乙方支付本合同项下相应工程款（具体数额依据《以房抵债协议》和《商品房买卖合同》约定的金额确定），甲方在相应工程款金额内付款义务即视为履行完毕。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00193",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方签署《以房抵债协议》及《商品房买卖合同》后，有权申请更名一次，更名期限为一年，具体以《以房抵债协议》及《商品房买卖合同》约定为准。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00194",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方有权以自身名义或委托万科企业股份有限公司/万科下属子公司等甲方关联主体（甲方无需另行通知收款方）向本合同约定的收款方支付本合同项下甲方应支付的所有款项，且无论该支付是否备注款项性质等事项、乙方开具的发票及收据等文件备注的款项性质与合同约定是否一致，一经支付，均视为收款方已收到甲方支付的相关款项，均视为甲方已履行相关付款义务。如乙方对付款及款项有异议的，应在收款后5个自然日内向甲方提出且送达书面异议，否则视为无异议。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00195",
+      "kind" : "PARAGRAPH",
+      "text" : "工程保修及质保金支付",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00196",
+      "kind" : "PARAGRAPH",
+      "text" : "详见附件1《工程质量保修协议书》中的约定。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00197",
+      "kind" : "PARAGRAPH",
+      "text" : "收款银行帐号",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00198",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方承诺如因乙方提供的收款银行账号资料有误，导致相关款项支付不到位，则由此产生的一切经济纠纷和责任由乙方承担。乙方愿意接受扣除本次付款金额的10％，但最高不超过5000元的处理方式，并且同意被退票款项在甲方收到乙方的《退票后重办付款账号信息更正声明》两个月后再次办理付款。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00199",
+      "kind" : "PARAGRAPH",
+      "text" : "履约保函的说明",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00200",
+      "kind" : "PARAGRAPH",
+      "text" : "□乙方提交履约保函，且履约保函不补贴利息。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00201",
+      "kind" : "PARAGRAPH",
+      "text" : "□乙方不提交履约保函，甲方不放弃按合同其他条款约定让乙方追加保函的权力。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00202",
+      "kind" : "PARAGRAPH",
+      "text" : "总原则：乙方（即投标方，下同）向甲方（即发包方，下同）提交总的履约担保；甲指乙分包商向乙方提交履约担保；乙方在收到中标函后28天内按招标文件附录：总承包商履约担保格式（如未提供，则格式由乙方自行拟定，甲方审核）向甲方提交履约担保。乙方提交之履约保函在履约的全过程中必须是无条件的、且不可撤销的。履约保函须由经甲方同意的银行出具。履约担保金额为合同暂定造价的10%（取千位以上之整数）。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00203",
+      "kind" : "PARAGRAPH",
+      "text" : "在任何情况下，甲方在按照上述履约保函提出索赔之前，均应通知乙方并说明导致索赔的违约性质。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00204",
+      "kind" : "PARAGRAPH",
+      "text" : "总承包履约保函所担保之范围须包括乙方承造之工程及各甲指乙分包合同（各甲指乙分包合同金额按暂定金额购买）。同时，在甲指乙分包合同文件内，甲指乙分包会被要求向承包商提供相关的分包工程之履约保函。乙方亦须按招标投标法／担保法或民法典（以生效法律为准）／建筑法规定向甲指乙分包提供“工程款支付保证担保”担保会按分包合同约定支付工程价款。保函金额须与履约保函保额相同。若乙方未能按要求向甲方提供相关的总承包工程之履约保函，则甲方有权从支付给乙方的首期付款(首期付款不足以抵扣的从后继付款继续扣除)中扣除等于履约保函金额的合同付款作为担保。当乙方合同金额超出暂定造价后，乙方应按造价咨询单位（发包方邀请的投资顾问）估计的最后合同金额的10%作为最新的保证金额，乙方必须按要求在14天内向甲方提交追加金额后的履约保函。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00205",
+      "kind" : "PARAGRAPH",
+      "text" : "若乙方、专业分包商提供的履约保函的有效期为具体的时间，则须提供有效期到期后继续提供履约保函的承诺书，并且当履约保函到期前一个月，乙方、专业分包商须及时提供新的履约保函。存在（包括但不限于）以下例举事宜，甲方可以按照上述履约保函及专业条款相应违约金向乙方提出索赔：",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00206",
+      "kind" : "PARAGRAPH",
+      "text" : "(1) 乙方的施工质量达不到合同规定的标准（第二十七条质量标准），并且在甲方及监理工程师一再指出后仍不能有效的改正，致使工程无法正常进行的情况；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00207",
+      "kind" : "PARAGRAPH",
+      "text" : "(2) 乙方消极怠工、致使施工进度明显滞后，（连续三个月无法达到合同工期要求，累计落后工期节点达到15%以上）并且无迹象表明乙方有能力按合同规定的工期完成各项工程的施工任务的情况；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00208",
+      "kind" : "PARAGRAPH",
+      "text" : "(3) 乙方以不接受甲方工程师及造价咨询单位出具的施工图预算或合约变更预算、或以其他借口为理由，以停工或停止采购材料或设备要挟甲方使工程进度受到影响的情况；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00209",
+      "kind" : "PARAGRAPH",
+      "text" : "(4) 克扣专业分包工程款，经协调无迹象表明乙方有意愿支付分包商工程款达3次以上时；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00210",
+      "kind" : "PARAGRAPH",
+      "text" : "(5) 乙方因结算争议而拖延竣工交付的情况；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00211",
+      "kind" : "PARAGRAPH",
+      "text" : "(6) 乙方因结算争议而拖延办理政府方面的有关手续，致使甲方或独立分包商无法及时向政府有关部门办理建设项目的竣工、交付及办理产证等情况；",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00212",
+      "kind" : "PARAGRAPH",
+      "text" : "(7) 因乙方的其他违约行为而使甲方蒙受经济损失或不得不中止或终止合同的情况。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00213",
+      "kind" : "PARAGRAPH",
+      "text" : "工程预结算管理",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00214",
+      "kind" : "PARAGRAPH",
+      "text" : "施工图预算甲方将进行社会审价，审核确认后的预算价为工程结算造价的一部分。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00215",
+      "kind" : "PARAGRAPH",
+      "text" : "工程全部验收合格并收到竣工备案证书，乙方应在30日内向甲方申报完整的结算资料。如乙方未在约定期限内报送结算并配合甲方进行结算审核，甲方有权停止支付后续工程款。工程结算资料包括结算承诺书、送审资料清单、甲供料结算单、结算汇总表、工程结算书、各项结算调整的依据、内容及费用。如乙方结算资料不完整，从甲方要求乙方进行提交补充资料之日起十五个工作日内，乙方仍未能按要求提交完整资料的，如有未提交部分，则视为乙方让利不予结算。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00216",
+      "kind" : "PARAGRAPH",
+      "text" : "在集团结算复审/审计过程中，不再增加任何结算资料（图纸、签证变更单、价格凭证等），送审的结算书中若有遗漏项目均作为让利给甲方，不作增加调整。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00217",
+      "kind" : "PARAGRAPH",
+      "text" : "若结算报价超过最终审定价的5%，乙方按以下方式承担违约金：违约金＝(乙方送审造价－甲方审定价*1.05)×10%。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00218",
+      "kind" : "PARAGRAPH",
+      "text" : "审价结束后，双方根据合同及审价报告进行工程费用结算工作，确定工程结算款。若本项目属于与国企合作项目，如国企有要求结算需经政府相关部门审批，最终合同结算总价以政府相关部门审定值为准。双方应配合完成政府部门相关审核工作，按审定值办理最终结算手续。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00219",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方在报工程预结算过程中应本着实事求是的原则，若发生严重的高估冒算，甲方将在下次招投标中信誉考评给低分。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00220",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方为考虑施工成本，变更或取消某些施工项目，而使施工成本有所降低，若乙方在结算时自行抽出、抽换变更资料，或在竣工图纸中不反应此变更情况，一经发现，从该部分款项中扣除20%作为乙方让利，且甲方将在下次比选中信誉考评给低分。",
+      "sectionPath" : [ "第三部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00221",
+      "kind" : "HEADING",
+      "text" : "第四部分 合同价格清单",
+      "sectionPath" : [ "第四部分 合同价格清单" ]
+    }, {
+      "locationId" : "LOC-00222",
+      "kind" : "PARAGRAPH",
+      "text" : "[提示：此处价格清单需列清价格明细表，如清单页数多，可独立编制页码，",
+      "sectionPath" : [ "第四部分 合同价格清单" ]
+    }, {
+      "locationId" : "LOC-00223",
+      "kind" : "PARAGRAPH",
+      "text" : "共X页。]",
+      "sectionPath" : [ "第四部分 合同价格清单" ]
+    }, {
+      "locationId" : "LOC-00224",
+      "kind" : "HEADING",
+      "text" : "第五部分 合同附件",
+      "sectionPath" : [ "第五部分 合同附件" ]
+    }, {
+      "locationId" : "LOC-00225",
+      "kind" : "APPENDIX_TITLE",
+      "text" : "附件2: 阳光合作协议",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00226",
+      "kind" : "PARAGRAPH",
+      "text" : "阳光合作协议",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00227",
+      "kind" : "PARAGRAPH",
+      "text" : "(2025年10月起签署版本)",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00228",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方（全称）： 星辰建设集团",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00229",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方（全称）： 远航建筑工程有限公司",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00230",
+      "kind" : "PARAGRAPH",
+      "text" : "甲乙双方签署了《 星辰建设集团南山科技园项目二标段",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00231",
+      "kind" : "PARAGRAPH",
+      "text" : "土建总承包工程合同》（以下简称“合同”），为营造健康商业环境和建立正常商业合作关系，甲乙双方经友好协商签订本合同，并作为双方共同遵守的阳光合作行为准则执行。",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00232",
+      "kind" : "PARAGRAPH",
+      "text" : "定义",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00233",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方人员定义：含甲方工作人员本人及其利益相关方（包括但不仅限于甲方工作人员的亲属、下属等），下称“甲方人员”。",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00234",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方人员定义：含乙方工作人员本人及其利益相关方（包括但不仅限于乙方工作人员的亲属、分包商/班组、代理商、合作方等），下称“乙方人员”。",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00235",
+      "kind" : "PARAGRAPH",
+      "text" : "万科集团定义：指万科企业股份有限公司及其直接或间接参股、控股，以及虽不参股、控股但由其实际负责项目开发工作的公司。",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00236",
+      "kind" : "PARAGRAPH",
+      "text" : "（以下无正文，为《阳光合作协议》签署页）",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00237",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方: 星辰建设集团 乙方: 远航建筑工程有限公司",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00238",
+      "kind" : "PARAGRAPH",
+      "text" : "（公章） （公章）",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00239",
+      "kind" : "PARAGRAPH",
+      "text" : "法定代表人/授权代表签字： 法定代表人/授权代表签字：",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00240",
+      "kind" : "PARAGRAPH",
+      "text" : "签订日期： 年 月 日",
+      "sectionPath" : [ "附件2: 阳光合作协议" ]
+    } ]
+  },
+  "requiredOutput" : {
+    "format" : "STRICT_JSON_ONLY",
+    "opinionEnum" : [ "CONSISTENT", "INCONSISTENT", "NOT_ENOUGH_EVIDENCE", "NOT_APPLICABLE" ],
+    "fields" : [ "reviewPointCode", "opinion", "confidence", "candidateValues", "evidenceQuotes", "opaqueLocations", "insufficiencyReason" ],
+    "instruction" : "Return one opinion for every review point. Cite only supplied opaque location IDs. Do not invent missing evidence."
+  }
+}

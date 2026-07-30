@@ -85,12 +85,9 @@ public class SingleReviewWorker {
             }
             var state = loadResult.orElseThrow();
 
-            if (!"v20260705.1".equals(state.execution().versionReferences().ruleSetVersion())) {
-                failNonTerminal(executionId, state.execution());
-                return;
-            }
-
-            var docRef = documentStore.readDocument(state.task().taskId(), state.documentReference());
+            var docRef = documentStore.readDocumentPathForExecution(
+                    state.task().taskId(),
+                    state.documentReference());
             if (docRef.isEmpty()) {
                 failNonTerminal(executionId, state.execution());
                 return;

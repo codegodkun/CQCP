@@ -272,7 +272,10 @@ CandidateResolver 的 HIGH 必须满足值语法、解析置信、标签、上�
 - 从 PostgreSQL 拉取 `QUEUED` 任务。
 - 顺序处理单份合同。
 - 每阶段写 `TaskStageLog`。
-- 模型调用通过 `Model Profile` 绑定到本地 OpenAI-compatible 模型服务、公网兼容 OpenAI API 或 mock fallback；MVP 可按 profile 设置 `maxConcurrent`、timeout 和 retry。
+- 普通任务当前只通过已发布的 `MVP_DEMO_MOCK` binding；PUBLIC
+  OpenAI-compatible profile 只提供 disabled/unbound EVALUATION 配置与
+  connectivity 基础，不能被普通 worker 选择。Provider runtime 必须经过独立 gate
+  和 execution-scoped activation。
 - 结果完成后生成 `ReviewResultSnapshot`。
 
 一期不用 RabbitMQ/Kafka，不做多 worker。后续可在不改变入口 API 的前提下升级为多 worker 或 MQ。
@@ -291,7 +294,16 @@ result URL 形式：
 
 MVP 普通结果 URL 不做平台侧登录、公开令牌或独立访问控制。外围系统负责对 URL 进行编码、加密、分发和访问控制。平台侧仍必须限制普通结果接口输出范围，不返回 prompt、raw output、endpoint、stack trace、admin logs、secret 或管理台诊断详情。
 
-MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。后端 Admin API 暂不设计细粒度角色权限，但必须限制常规接口输出范围，不返回完整 prompt、完整模型 raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。
+MVP 管理台暂不引入账号体系、登录页和细粒度权限矩阵，但所有 `/api/admin/**`
+必须由后端 Bearer 鉴权保护，不能只依赖内网、VPN 或反向代理。Admin token 与只读
+身份 token 由部署环境注入，只允许通过 `Authorization` header 使用；缺失/未知身份
+返回 `401`，已认证但非 Admin 返回 `403`。接口仍不得返回完整 prompt、完整模型
+raw output、endpoint secret、stack trace、完整合同敏感调试包或密钥。
+鉴权 Filter 必须按 Spring MVC 的 canonical application path 判定保护范围，移除每个
+segment 的 matrix parameter 后再匹配；不得使用原始 URI 精确字符串形成
+`/api/admin;...` 或 `/api/review/tasks;...` 绕过。Spring MVC 会用 GET handler
+自动响应 HEAD，因此任务清单、preview 和 download 的 GET/HEAD 必须使用相同的
+后端 Bearer 门禁，并在未认证时保持 service 零调用。
 
 MVP 配置变更仍应记录配置版本、变更时间和操作者占位信息；操作者可暂记为 `SYSTEM`、`ADMIN_PLACEHOLDER` 或环境账号。Pilot / Production Readiness 再补登录、角色、审批、审计和受控敏感诊断导出。
 
@@ -384,15 +396,45 @@ MVP 配置变更仍应记录配置版本、变更时间和操作者占位信息�
 `requiresHigherBudget / recommendedBudgetProfile` 不进入第一轮 MVP 普通结果页响应；普通结果页 API 只返回业务化未结论原因和人工核对提示。管理台任务详情、评测报告和 AI 调优包 API 可返回预算诊断字段。
 MVP 不保存完整模型原始输出，管理台 API 也不返回完整模型原始输出、完整 prompt、endpoint secret、stack trace 或完整合同敏感调试包。模型运行记录只保存模型调用状态、`SYS-MODEL-*` 诊断码、schema 校验结果、redacted artifact 摘要、token 用量、耗时、模型版本、调用时间和必要的候选归属结论摘要。
 
-MVP 管理台模型配置相关 API 只读：
+MVP 管理台模型治理边界：
 
-- 模型配置只读返回当前模型版本和 endpoint 状态，不支持编辑。
+- 所有接口先经过后端 Admin Bearer 鉴权；token 不进入 URL、响应、数据库、日志或
+  浏览器持久化。
+- `GET /api/admin/model-profiles` 返回 config version、lifecycle、provider-specific
+  readiness、`secretConfigured` 与最近一次连通测试摘要。
+- `POST /api/admin/model-profiles` 和
+  `PUT /api/admin/model-profiles/{profileCode}` 只创建新的 immutable config version；
+  PUT 不是原地覆盖。lifecycle/default 切换在同一事务中完成，历史版本不得删除或改写。
+- `POST /api/admin/model-profiles/{profileCode}/connectivity-tests` 只使用已保存的
+  endpoint alias、model ID 和 server-side Secret Reference；请求体必须为空，不接收
+  endpoint、KEY 或 prompt。
+- PUBLIC profile 首批只允许 `EVALUATION`、disabled、unbound，且 model ID 只允许
+  `deepseek-v4-pro / deepseek-v4-flash`。`READY` 不等于 execution binding 或发布，
+  `MVP_DEMO_MOCK` 继续保持既有默认绑定。
+- raw KEY 不进入数据库、HTTP 响应、浏览器、URL、localStorage、日志、Snapshot、
+  stage log、TuningPacket 或异常；稳定错误类别不得透传第三方响应体、Authorization
+  header 或底层堆栈。
+- `file:` Secret 只允许受控根目录的直接子文件，按 strict UTF-8 解码且上限
+  16 KiB。Linux 必须通过 `SecureDirectoryStream` 相对打开并绑定根目录 identity；
+  Windows 必须以 `NOFOLLOW_LINKS + NOSHARE_DELETE` 打开最终文件并在读取前后复核
+  根目录和文件 identity。根目录/文件替换、symlink/reparse、嵌套路径、畸形 UTF-8
+  或超限内容均 fail closed。
+- `deepseek-official` 只接受固定 provider-specific Secret Reference；应用与数据库
+  同时拒绝任意其他 `env:`/`file:` 引用。endpoint 固定为
+  `https://api.deepseek.com`，DNS 全部地址验证后固定到同一次实际连接，禁止
+  rebinding。
 - 提示词模板不支持编辑；可返回业务摘要或延后。
 - 最终提示词预览不返回完整 prompt，延后到后续治理/技术视图。
 - 任务日志 API 属于任务详情能力，不属于配置审核规则模块。
 - 后端必须在每个 execution 绑定当次 `modelProfileCode`、provider 类型、模型名称、endpoint alias 和 `modelConfigVersion`。任务详情 API 顶部概览返回“审核模型”摘要；历史快照不随后续模型配置切换变化。
-- `Model Profile` 可配置本地模型、公网兼容 OpenAI API 模型和 mock fallback。公网模型 profile 是否可用于真实合同由业务方、管理员和部署环境承担配置责任；后端必须校验 profile 已启用、使用范围、配置版本和 provider-specific readiness。需要 secret 的 provider 必须校验密钥 readiness；MOCK 使用 `secretRequired=false`，不得伪造 `secretConfigured=true`。
-- 管理台创建任务时可以传入 `modelProfileCode`；外部 API MVP 不允许调用方直接指定 `modelProfileCode`。外部 API 创建任务统一使用当前默认启用的 `Model Profile`。如后续需要开放，必须通过 caller policy 白名单和独立 API 契约扩展。
+- PUBLIC Model Profile 当前只允许 `EVALUATION / disabled / unbound`；管理员、
+  普通 Task Creation、Demo、内部审核和外部 API 均不能把它选作 execution binding。
+  connectivity success 或 `READY` 不授予运行权限。A2 如获门禁授权，只能由内部
+  activation-aware EVALUATION resolver 消费 execution-scoped activation，且不修改
+  PUBLIC lifecycle。需要 secret 的 provider 必须校验 Secret Reference readiness；
+  MOCK 使用 `secretRequired=false`，不得伪造 `secretConfigured=true`。
+- 当前管理台与外部任务创建 API 均不接受 `modelProfileCode`。未来若开放 caller
+  selection，必须另立 TASK/ADR、caller policy 白名单和独立 API 契约。
 - 模型不论来自本地还是公网，都不得直接决定最终业务 finding；后端仍负责结构化比对、确定性裁判和点级结果合成。
 - MVP 任务日志 API 只暴露阶段级事件，不暴露每个内部函数调用。阶段级事件按 `taskId + executionId + stageName + attempt` 记录，至少包含事件类型、发生时间、耗时、摘要状态、业务化原因和摘要级 `SYS-*` 诊断。
 - 模型阶段日志可返回模型调用状态、token 用量、耗时、模型版本、schema 校验状态和诊断码摘要；不得返回完整 prompt、完整模型 raw output、endpoint secret、stack trace 或逐函数调试日志。
@@ -432,6 +474,39 @@ Single Worker 从 PostgreSQL 原子 claim 一个 `QUEUED` execution，按
 REVIEWING_MODEL -> COMPOSING` 推进，并持久化阶段事件、终态和 snapshot。MVP Demo
 继续绑定 `MVP_DEMO_MOCK` 与 legacy `v20260705.1`，不加载 DRAFT review-assets，
 不激活 `v20260715.1`。
+
+## MILESTONE-MVP-002 execution 精确查询与文档读取
+
+新增公共兼容接口：
+
+- `GET /api/review/tasks?page=0&size=20&statusGroup=...&q=...`：execution 级稳定分页，
+  搜索通过参数绑定并转义 LIKE；状态、stage、Model Profile 与统计均取自同一 execution；
+  `page * size` 超出支持的整数 offset 时返回稳定 `400`，不得泄漏算术异常为 `500`。
+- `GET /api/v1/tasks/{taskId}/result?executionId=...`：带 executionId 时必须精确匹配
+  `taskId + executionId`，不存在返回 404，禁止回退 latest；不带参数时保留 legacy
+  latest 行为。
+- `GET /api/review/tasks/{taskId}/executions/{executionId}/document-preview`：仅当
+  execution parser version 与当前 parser release 一致时按需重解析，否则 409 fail
+  closed；返回 parser-issued block/table row/cell identity。
+- `GET /api/review/tasks/{taskId}/executions/{executionId}/document`：验证双 identity、
+  task-scoped document reference、规范化根目录、普通文件、symlink/reparse point、
+  上传 size 与 SHA-256 后下载原始 DOCX。工作台 preview、hash 与下载必须消费同一份
+  已验证且有上限的不可变字节快照，禁止“先校验路径、后重新按路径打开”。
+
+其中任务清单、document-preview 和 document 按 ADR-020 属于内部工作台敏感 GET。
+后端只接受 `Authorization: Bearer` 中的部署侧 Admin/只读管理 token；匿名或未知
+token 返回 `401` 且不得进入 service。只读 token 只获得上述读取能力，访问
+`/api/admin/**` 仍为 `403`。POST 创建、公开 execution 状态和普通结果摘要保持既有
+兼容边界，不在本次整改中推断完成 caller IAM。
+
+上传时保存原始 DOCX 的 SHA-256 与 size，拒绝含 CR/LF 的原始文件名。preview 与下载
+不使用用户文件名拼接路径，不允许跨 task reference、路径穿越或任意历史重解析。
+Linux 读取通过 upload-root/task 两级 `SecureDirectoryStream` 句柄和相对
+`NOFOLLOW_LINKS` 文件打开绑定 identity；Windows 通过不共享删除的原生 root/task
+目录句柄拒绝 reparse 与目录替换，并以 `NOSHARE_DELETE` 文件句柄读取。任一平台不能
+证明路径身份稳定时均 fail closed。
+本 Milestone 只读消费既有 SourceAnchor，不修改 anchor 生成、EvidenceSlot、
+CandidateResolver、Finding/SYS 或状态机。
 
 ## 基线冻结文档
 

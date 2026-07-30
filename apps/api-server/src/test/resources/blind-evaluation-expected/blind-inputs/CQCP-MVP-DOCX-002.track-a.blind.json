@@ -1,0 +1,1195 @@
+{
+  "schemaVersion" : "task-eval-002-track-a-v1",
+  "track" : "TRACK_A_FULL_DOCUMENT_SEMANTIC_OPINION",
+  "sampleId" : "CQCP-MVP-DOCX-002",
+  "sourceDocumentSha256" : "0ba02f11cd7c51ded7626a271c698fa8c0e3fa50197b2a31b6cbed9d714ea074",
+  "parserProjectionVersion" : "parser-docx-word-v20260724.1",
+  "submittedStructuredFields" : {
+    "contractName" : "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+    "partyAName" : "达利安造船厂",
+    "partyBName" : "天下会装饰工程有限公司",
+    "projectName" : "四方城市四方城翡翠大道项目",
+    "contractTotalAmount" : 884800,
+    "taxExcludedAmount" : 783008.85,
+    "taxAmount" : 101791.15,
+    "taxRate" : 13,
+    "pricingMode" : "FIXED_TOTAL_PRICE",
+    "paymentMethod" : "MONTHLY",
+    "prepaymentRatio" : 0,
+    "progressPaymentRatio" : 80,
+    "completionPaymentRatio" : 95,
+    "settlementPaymentRatio" : 95,
+    "warrantyRetentionRatio" : 5,
+    "invoiceType" : "VAT_SPECIAL",
+    "currency" : "CNY"
+  },
+  "reviewPoints" : [ {
+    "reviewPointCode" : "PARTY_A_NAME_CONSISTENCY",
+    "name" : "甲方名称一致性",
+    "family" : "PARTY_FIELDS",
+    "candidateRole" : "PARTY_A",
+    "requiredStructuredFields" : [ "partyAName" ]
+  }, {
+    "reviewPointCode" : "PARTY_B_NAME_CONSISTENCY",
+    "name" : "乙方名称一致性",
+    "family" : "PARTY_FIELDS",
+    "candidateRole" : "PARTY_B",
+    "requiredStructuredFields" : [ "partyBName" ]
+  }, {
+    "reviewPointCode" : "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+    "name" : "合同总金额一致性",
+    "family" : "AMOUNT_TAX",
+    "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+    "requiredStructuredFields" : [ "contractTotalAmount" ]
+  }, {
+    "reviewPointCode" : "TAX_AMOUNT_FORMULA_CONSISTENCY",
+    "name" : "税额公式一致性",
+    "family" : "AMOUNT_TAX",
+    "candidateRole" : "TAX_AMOUNT",
+    "requiredStructuredFields" : [ "contractTotalAmount", "taxExcludedAmount", "taxAmount" ],
+    "optionalStructuredFields" : [ "taxRate" ]
+  }, {
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "name" : "预付款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "PREPAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "prepaymentRatio" ]
+  }, {
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "name" : "进度款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "progressPaymentRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  }, {
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "name" : "竣工款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "completionPaymentRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  }, {
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "name" : "结算款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "settlementPaymentRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  }, {
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "name" : "质保款比例一致性",
+    "family" : "PAYMENT_TERMS",
+    "candidateRole" : "WARRANTY_RETENTION_RATIO",
+    "requiredStructuredFields" : [ "paymentMethod", "warrantyRetentionRatio" ],
+    "applicabilityPolicy" : "paymentMethod=MILESTONE 时 SKIPPED"
+  } ],
+  "documentProjection" : {
+    "format" : "ORDERED_BLOCKS_WITH_TABLE_CELLS",
+    "locations" : [ {
+      "locationId" : "LOC-00001",
+      "kind" : "PARAGRAPH",
+      "text" : "达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00002",
+      "kind" : "TABLE_ROW",
+      "text" : "甲 方 ： | 达利安造船厂",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00002-C1",
+        "columnOrdinal" : 1,
+        "text" : "甲 方 ："
+      }, {
+        "locationId" : "LOC-00002-C2",
+        "columnOrdinal" : 2,
+        "text" : "达利安造船厂"
+      } ]
+    }, {
+      "locationId" : "LOC-00003",
+      "kind" : "TABLE_ROW",
+      "text" : "乙 方 ： | 天下会装饰工程有限公司",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00003-C1",
+        "columnOrdinal" : 1,
+        "text" : "乙 方 ："
+      }, {
+        "locationId" : "LOC-00003-C2",
+        "columnOrdinal" : 2,
+        "text" : "天下会装饰工程有限公司"
+      } ]
+    }, {
+      "locationId" : "LOC-00004",
+      "kind" : "TABLE_ROW",
+      "text" : "合同订立时间： | 2026 年5月13日",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00004-C1",
+        "columnOrdinal" : 1,
+        "text" : "合同订立时间："
+      }, {
+        "locationId" : "LOC-00004-C2",
+        "columnOrdinal" : 2,
+        "text" : "2026 年5月13日"
+      } ]
+    }, {
+      "locationId" : "LOC-00005",
+      "kind" : "TABLE_ROW",
+      "text" : "合同订立地点： | 四方城市南开区四方城时代中心",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00005-C1",
+        "columnOrdinal" : 1,
+        "text" : "合同订立地点："
+      }, {
+        "locationId" : "LOC-00005-C2",
+        "columnOrdinal" : 2,
+        "text" : "四方城市南开区四方城时代中心"
+      } ]
+    }, {
+      "locationId" : "LOC-00006",
+      "kind" : "TABLE_ROW",
+      "text" : "合 同 编 号 ： | 1900006056",
+      "sectionPath" : [ ],
+      "cells" : [ {
+        "locationId" : "LOC-00006-C1",
+        "columnOrdinal" : 1,
+        "text" : "合 同 编 号 ："
+      }, {
+        "locationId" : "LOC-00006-C2",
+        "columnOrdinal" : 2,
+        "text" : "1900006056"
+      } ]
+    }, {
+      "locationId" : "LOC-00007",
+      "kind" : "PARAGRAPH",
+      "text" : "目录",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00008",
+      "kind" : "TOC_ITEM",
+      "text" : "第一部分 协议书 3",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00009",
+      "kind" : "TOC_ITEM",
+      "text" : "第二部分 合同条款 7",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00010",
+      "kind" : "TOC_ITEM",
+      "text" : "一、采购流程 7",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00011",
+      "kind" : "TOC_ITEM",
+      "text" : "二、发票开具 8",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00012",
+      "kind" : "TOC_ITEM",
+      "text" : "三、双方的一般权利和义务 9",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00013",
+      "kind" : "TOC_ITEM",
+      "text" : "四、材料/设备安装 10",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00014",
+      "kind" : "TOC_ITEM",
+      "text" : "五、交货验收及保管方式 10",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00015",
+      "kind" : "TOC_ITEM",
+      "text" : "六、施工验收方式 11",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00016",
+      "kind" : "TOC_ITEM",
+      "text" : "七、合同价款支付方式 11",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00017",
+      "kind" : "TOC_ITEM",
+      "text" : "八、变更处理方法 14",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00018",
+      "kind" : "TOC_ITEM",
+      "text" : "九、违约责任 14",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00019",
+      "kind" : "TOC_ITEM",
+      "text" : "第四部分 合同附件 17",
+      "sectionPath" : [ ]
+    }, {
+      "locationId" : "LOC-00020",
+      "kind" : "APPENDIX_TITLE",
+      "text" : "附件1：阳光合作协议 17",
+      "sectionPath" : [ "附件1：阳光合作协议 17" ]
+    }, {
+      "locationId" : "LOC-00021",
+      "kind" : "HEADING",
+      "text" : "第一部分 协议书",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00022",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方（全称）： 达利安造船厂",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00023",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方（全称）： 天下会装饰工程有限公司",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00024",
+      "kind" : "PARAGRAPH",
+      "text" : "根据《中华人民共和国民法典》等有关法律规定以及【 上海建筑设计顾问有限公司 】与【 江苏装饰科技有限公司 】签订的《集团2026-2027年度强化地板产品集中采购协议》（协议编号：【 20000AA999 】，以下亦称“集采协议”），结合本工程具体情况，遵循平等、自愿、公平和诚实信用的原则，甲乙双方经友好协商，签订本合同。除本合同另有约定外，甲乙双方权利及责任以《集团2026-2027年度强化地板产品集中采购协议》中的有关条款为准。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00025",
+      "kind" : "PARAGRAPH",
+      "text" : "一、 材料/设备清单",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00026",
+      "kind" : "PARAGRAPH",
+      "text" : "详见第三部分《合同价格清单》。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00027",
+      "kind" : "PARAGRAPH",
+      "text" : "二、交货及安装地点",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00028",
+      "kind" : "PARAGRAPH",
+      "text" : "项目位于【 四方城市四方城翡翠大道项目 】工地现场，乙方应在甲方指定场地卸货。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00029",
+      "kind" : "PARAGRAPH",
+      "text" : "三、交货/安装时间",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00030",
+      "kind" : "PARAGRAPH",
+      "text" : "全部货品计划于【2026 】年 【 6 】月【30】日前按照甲方要求时间分批交货完毕并通过验收。具体工期要求详见附件4。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00031",
+      "kind" : "PARAGRAPH",
+      "text" : "具体排产和货到现场时间待甲方正式指令为准。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00032",
+      "kind" : "PARAGRAPH",
+      "text" : "四、技术标准与质量要求",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00033",
+      "kind" : "PARAGRAPH",
+      "text" : "材料/设备质量标准：以《四方城集团2026-2027年度强化地板产品集中采购协议》中相关条款及本合同约定的工程规范、工程图纸、产品质量要求为准，满足四方城集团强化地板产品的技术标准及本项目质量要求（以要求高者为准）。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00034",
+      "kind" : "PARAGRAPH",
+      "text" : "材料设备质量要求：优等品。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00035",
+      "kind" : "PARAGRAPH",
+      "text" : "五、合同价款",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00036",
+      "kind" : "PARAGRAPH",
+      "text" : "甲乙双方约定的签约合同价为不含增值税合同价款及增值税税款总金额。合同计价模式为：√ 固定总价 暂定总价",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00037",
+      "kind" : "PARAGRAPH",
+      "text" : "材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分 】，（小写）：￥：【101,791.15】 元。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00038",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同增值税税率为 13 %，该税率为本合同签约时根据现行执行税率计算的结果，除了新税率生效前已完成产值确认/结算且可以提供原增值税税率发票以外，应以实际税率进行计算。甲乙双方一致同意，如将来因国家政策变化导致增值税税率调整，增值税税款按照价税分离后的不含税合同价款根据实际执行税率计算，合同总价以上述不含税合同价款与增值税税款为基础进行动态调整。本合同价款计价标准应满足本合同第三部分《合同价格清单》中的要求。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00039",
+      "kind" : "PARAGRAPH",
+      "text" : "六、合同价款支付：详见第二部分合同条款",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00040",
+      "kind" : "PARAGRAPH",
+      "text" : "七、合同文件组成及解释次序",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00041",
+      "kind" : "PARAGRAPH",
+      "text" : "构成本合同的文件应能相互解释，互为说明。除本合同条款另有约定外，本合同文件组成及优先解释次序如下：",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00042",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同签订后双方新签订的补充协议；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00043",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同的协议书；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00044",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同的合同条款；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00045",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同的附件；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00046",
+      "kind" : "PARAGRAPH",
+      "text" : "图纸或材料样板；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00047",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同的价格清单；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00048",
+      "kind" : "PARAGRAPH",
+      "text" : "招标文件及招标文件补遗。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00049",
+      "kind" : "PARAGRAPH",
+      "text" : "经双方认可的投标书；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00050",
+      "kind" : "PARAGRAPH",
+      "text" : "现行标准、规范、技术要求和有关技术资料；",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00051",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同签订后，合同履行过程中双方约定并共同签署的有关工程的变更、签证、约谈记录等书面文件视为本合同的组成部分。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00052",
+      "kind" : "PARAGRAPH",
+      "text" : "八、送达",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00053",
+      "kind" : "PARAGRAPH",
+      "text" : "除非本合同另有规定，任何一方为履行本合同或与本合同有关的文件递交和/或通知、要求或其它通讯应采用书面形式，并按下述地址和电话递送或用邮寄（挂号/EMS特快专递）发给有关一方。通讯地址、号码若有变更应提前【3】日书面告知对方，否则发件人按原地址寄送的文件寄出三日即视为送达。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00054",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方通讯地址及电话：",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00055",
+      "kind" : "PARAGRAPH",
+      "text" : "地址：四方城市西青数码城3号楼467室",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00056",
+      "kind" : "PARAGRAPH",
+      "text" : "邮编： 300380",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00057",
+      "kind" : "PARAGRAPH",
+      "text" : "电话： 18622677897",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00058",
+      "kind" : "PARAGRAPH",
+      "text" : "收件人：",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00059",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方通讯地址及电话：",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00060",
+      "kind" : "PARAGRAPH",
+      "text" : "地址： 四方城市和平区南营门街11D-4048号",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00061",
+      "kind" : "PARAGRAPH",
+      "text" : "邮编： 300000",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00062",
+      "kind" : "PARAGRAPH",
+      "text" : "电话： 18322887897",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00063",
+      "kind" : "PARAGRAPH",
+      "text" : "收件人：雄霸",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00064",
+      "kind" : "PARAGRAPH",
+      "text" : "九、 本合同及其附件是甲乙双方经过平等协商拟定，甲乙双方对有疑义之条款已进",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00065",
+      "kind" : "PARAGRAPH",
+      "text" : "行了充分的沟通和说明，乙方已充分知晓和理解其全部条款的内容，并对其无异议。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00066",
+      "kind" : "PARAGRAPH",
+      "text" : "十、合同份数（非电子合同适用）",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00067",
+      "kind" : "PARAGRAPH",
+      "text" : "本合同一式 肆 份，甲方 贰 份、乙方 贰 份，均具同等法律效力，未尽事宜甲乙双方应本着合作诚信原则，友好协商解决。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00068",
+      "kind" : "PARAGRAPH",
+      "text" : "十一、 本合同经双方法定代表人或其授权代表在下面签署并加盖公章后生效（合同条款及相关附件加盖骑缝章后为本合同的组成部分，同样有效）。",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00069",
+      "kind" : "PARAGRAPH",
+      "text" : "（以下无本合同第一部分《合同协议书》正文）",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00070",
+      "kind" : "PARAGRAPH",
+      "text" : "（本页无本合同第一部分《协议书》正文，为合同签署页）",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00071",
+      "kind" : "TABLE_ROW",
+      "text" : "甲方：达利安造船厂 （公章） 地址： 四方城市西青区张家窝镇 法定代表人或授权代表： 马超 电话： 开户银行： A银行股份有限公司四方城分行营业部 账号： | 乙方：天下会装饰工程有限公司 （公章）地址：四方城市和平区南营门街道南京路235号河川4048号 法定代表人或授权代表： 雄霸 电话： 1999999999 开户银行：中国工商银行股份有限公司四方城西广开支行 账号：030207030ABDCDFG2",
+      "sectionPath" : [ "第一部分 协议书" ],
+      "cells" : [ {
+        "locationId" : "LOC-00071-C1",
+        "columnOrdinal" : 1,
+        "text" : "甲方：达利安造船厂 （公章） 地址： 四方城市西青区张家窝镇 法定代表人或授权代表： 马超 电话： 开户银行： A银行股份有限公司四方城分行营业部 账号："
+      }, {
+        "locationId" : "LOC-00071-C2",
+        "columnOrdinal" : 2,
+        "text" : "乙方：天下会装饰工程有限公司 （公章）地址：四方城市和平区南营门街道南京路235号河川4048号 法定代表人或授权代表： 雄霸 电话： 1999999999 开户银行：中国工商银行股份有限公司四方城西广开支行 账号：030207030ABDCDFG2"
+      } ]
+    }, {
+      "locationId" : "LOC-00072",
+      "kind" : "PARAGRAPH",
+      "text" : "签订日期： 2026 年5月13日",
+      "sectionPath" : [ "第一部分 协议书" ]
+    }, {
+      "locationId" : "LOC-00073",
+      "kind" : "HEADING",
+      "text" : "第二部分 合同条款",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00074",
+      "kind" : "PARAGRAPH",
+      "text" : "一、采购流程",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00075",
+      "kind" : "PARAGRAPH",
+      "text" : "1.本合同有效期间，乙方同意甲方指定平台作为采购业务平台（以下简称“采购平台”），乙方承诺按该采购平台的要求注册成为平台的供应商，乙方与采购平台的权利义务关系由其双方另行签署协议约定。在本合同期限内，乙方确认并无条件同意甲方有权随时更换采购平台，甲方书面通知乙方变更采购平台后，乙方与变更后的业务平台另行签署协议明确权利义务关系。甲方将通过该采购平台向乙方发送订单，采购流程主要分以下几个步骤：",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00076",
+      "kind" : "PARAGRAPH",
+      "text" : "1) 乙方应保证在甲方发出订单一个工作日内对该订单进行确认或拒绝。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00077",
+      "kind" : "PARAGRAPH",
+      "text" : "2) 甲方在采购平台录入的订单内容若不违背集采协议及本合同约定的内容，则乙方应予确认，该订单对甲方和乙方双方具有法律约束力。若甲方所发出订单超出本合同约定的范围，乙方有权在采购平台中对该订单所涉及产品价格、型号、数量、地点、时间等事项提出修改请求并通过采购平台传送给甲方。甲方接受该修改请求的，应在采购平台中48小时内回复确认。若甲方不做回复确认，视为不接受修改，此订单不生效。甲方按照本合同发出的订单和经双方确认一致的订单一旦生效，双方均应严格履行。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00078",
+      "kind" : "PARAGRAPH",
+      "text" : "3) 甲方向乙方发送的订单中，乙方在收到订单后2天内应与订单上显示的甲方发布人通过双方公务邮箱发送电子邮件再次确认订单执行信息（发货日期、到货时间、货物型号规格、数量），并在采购平台上确认；未包含具体交货日期的订货需求，仅作为甲方的订货意向，乙方制定经营计划参考，并根据需求意向时间在采购平台上提交交货计划，进入生产周期的前10天内与甲方确认，具体需求时间确定后，再在采购平台上确定交货时间。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00079",
+      "kind" : "PARAGRAPH",
+      "text" : "2.甲乙双方应当维护和保留采购平台内原始信息和往来信息，甲乙双方均依据民法典等法律法规规定承认电子订单的法律效力。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00080",
+      "kind" : "PARAGRAPH",
+      "text" : "3.甲方采购平台订单生效时，本合同关于甲乙方双方的权利和义务将作为该订单的默示条款，同时对甲乙方双方具有法律约束力。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00081",
+      "kind" : "PARAGRAPH",
+      "text" : "4.乙方须建立专门的团队与采购平台进行对接，并明确团队负责人。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00082",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方指定负责人：姓名【 雄霸】，联系方式【18399999000】。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00083",
+      "kind" : "PARAGRAPH",
+      "text" : "二、发票开具",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00084",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方提供的发票必须符合国家税务规定，不得使用假发票、套开发票，否则乙方应无条件更换发票，承担票面金额10%的违约金，并赔偿由此引起的甲方损失的双倍金额。同时，",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00085",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方将乙方列为不合格供应商，保留对其法律责任的追究。对于增值税专用发票，约定如下：",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00086",
+      "kind" : "PARAGRAPH",
+      "text" : "1.乙方应提供根据合同全部价款和价外费用按照适用税率向甲方开具增值税专用发票，乙方所开具的增值税专用发票必须符合《中华人民共和国发票管理办法实施细则》等相关法律法规的相关要求；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00087",
+      "kind" : "PARAGRAPH",
+      "text" : "2.乙方已确认甲方为增值税一般纳税人且采用一般计税方法，乙方须满足甲方根据本合同发票开具管理要求，开具合法有效的增值税专用发票。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00088",
+      "kind" : "PARAGRAPH",
+      "text" : "3.乙方开具发票的模式为：□A模式 √B模式",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00089",
+      "kind" : "PARAGRAPH",
+      "text" : "A模式：采用业务及发票协同平台开具发票",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00090",
+      "kind" : "PARAGRAPH",
+      "text" : "1) 经与甲方确认，乙方采用甲方的业务及发票协同平台系统开具发票，并接受该业务系统管理。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00091",
+      "kind" : "PARAGRAPH",
+      "text" : "2) 发票开具管理条款",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00092",
+      "kind" : "PARAGRAPH",
+      "text" : "a.单批货品产值确认：每批货品运到指定地点，甲方验收完成并开具产值确认单（工程/材料进度完成情况确认单），乙方在收到产值确认单后5个工作日内在业务及发票协同平台中按照接收到开票信息开具增值专用发票，并按照发票承诺函的承诺进行管理。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00093",
+      "kind" : "PARAGRAPH",
+      "text" : "b.全部货品结算产值确认阶段：乙方应在本项材料设备供货完之日起3个月内完成结算，甲方开具结算产值确认单（工程竣工结算造价审批表），乙方在收到结算产值确认单后5个工作日内，在业务及发票协同平台中依据接收到的发票信息开具与本合同结算金额相等的增值税专用发票（提供100％与结算金额相等），并按照发票承诺函的承诺进行管理。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00094",
+      "kind" : "PARAGRAPH",
+      "text" : "3) 发票送达和认证的约定",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00095",
+      "kind" : "PARAGRAPH",
+      "text" : "a.乙方应在开具增值税扣税凭证之日起3日内将增值税扣税凭证送达至甲方，甲方签收增值税专用发票的日期为送达日期。乙方开具的增值税发票不合格的，由甲方退回，乙方于接到甲方退回通知后起5日内重新开具合格的增值税专用发票并送达至甲方，由此产生的费用及其他损失由乙方自行承担。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00096",
+      "kind" : "PARAGRAPH",
+      "text" : "b.甲方在收到乙方传递的产值确认单（或结算确认单）和发票后，将其在国税业务系统中认证通过后，该增值税专用发票方可确认为合法有效凭证。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00097",
+      "kind" : "PARAGRAPH",
+      "text" : "B模式：不采用业务及发票协同平台的开票以外的其他模式",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00098",
+      "kind" : "PARAGRAPH",
+      "text" : "1) 经与甲方确认，乙方自行开具增值税专用发票并按照本合同发票管理要求进行管理。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00099",
+      "kind" : "PARAGRAPH",
+      "text" : "2) 增值税专用发票开具管理",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00100",
+      "kind" : "PARAGRAPH",
+      "text" : "a.单批货品产值确认：每批货品运到指定地点，甲方验收完成，乙方在收到产值确认单（工程/材料进度完成情况确认单）后3个工作日内开具与产值确认单金额一致的增值税专用发票，并按照发票承诺函的承诺进行管理。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00101",
+      "kind" : "PARAGRAPH",
+      "text" : "b.全部货品结算产值确认阶段：乙方应在本项材料设备供货完之日起3个月内完成结算，甲方开具结算产值确认单（工程竣工结算造价审批表），乙方在收到结算产值确认单后3个工作日内，自行开具与本合同结算金额相等的增值税专用发票（提供100％与结算金额相等），并按照发票承诺函的承诺进行管理。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00102",
+      "kind" : "PARAGRAPH",
+      "text" : "3) 发票送达和认证的约定",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00103",
+      "kind" : "PARAGRAPH",
+      "text" : "a.乙方应在开具增值税专用发票之日起5日内送达至甲方，甲方签收增值税专用发票的日期为送达日期。乙方开具的增值税扣税专用凭证不合格的，由甲方退回，乙方于接到甲方退回通知之日起5日内重新开具合格的增值税扣税专用凭证并送达至甲方，由此产生的费用及其他损失由乙方承担。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00104",
+      "kind" : "PARAGRAPH",
+      "text" : "b.经乙方确认，甲方在收到乙方传递的产值确认单（或结算确认单）和增值税专用发票后，将其在国税业务系统中认证通过后，该增值税专用发票方可确认为合法有效凭证。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00105",
+      "kind" : "PARAGRAPH",
+      "text" : "三、双方的一般权利和义务",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00106",
+      "kind" : "PARAGRAPH",
+      "text" : "除本合同约定外，甲方其他权利和义务以《四方城集团2026-2027年度强化地板产品集中采购协议》中规定为准，甲方代表是【张飞】，其职务是【项目经理】，联系电话【18729999689】。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00107",
+      "kind" : "PARAGRAPH",
+      "text" : "除本合同约定外，乙方其他权利和义务以《四方城集团2026-2027年度强化地板产品集中采购协议》中规定为准，乙方项目经理是【雄霸 】，其职务是【项目经理】，联系电话【18399999000】。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00108",
+      "kind" : "PARAGRAPH",
+      "text" : "四、材料/设备安装",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00109",
+      "kind" : "PARAGRAPH",
+      "text" : "□供货类，乙方仅需按本合同约定提供货物，安装由甲方自行或安排第三方安装单位完成。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00110",
+      "kind" : "PARAGRAPH",
+      "text" : "☑供货安装类，双方约定的安装单位为乙方，安装工程无需另行签订项目安装工程合同, 安装工程款已包括在本合同价款中。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00111",
+      "kind" : "PARAGRAPH",
+      "text" : "五、交货验收及保管方式",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00112",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方必须按甲方要求运抵甲方指定卸货地点，否则甲方有权拒收货物并视为乙方未履行完毕供货义务；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00113",
+      "kind" : "PARAGRAPH",
+      "text" : "货物到货时，包装必须完好无缺；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00114",
+      "kind" : "PARAGRAPH",
+      "text" : "订单签订时乙方提供的样本、样品甲方进行封存，作为产品验收的依据；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00115",
+      "kind" : "PARAGRAPH",
+      "text" : "到货后，甲方负责召集工程安装承包方、乙方到现场进行验收，清点货物箱数及箱内货物情况，若货物与装箱数目不相符，箱内货物有丢失或损坏，或者货物的包装、品种、型号、规格、质量等不符合本合同规定，甲方有权拒收全部或部分货物，乙方须按照甲方要求收回或补齐，乙方实际交货时间以乙方最终补齐货物时间为准，若货到12个工作小时工程安装承包方无合理原因未到，则视为该方认可到场各方的验收结果，参与交货验收的单位在货物清单上共同签字，并填写交货验收证明（参与验收方各持一份），如验收合格，则此合格证明为乙方交货的凭证，也是乙方申请付款的必要依据；如到场的任何一方验收不合格的，乙方需采取及时补救措施。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00116",
+      "kind" : "PARAGRAPH",
+      "text" : "货物在交货验收合格前所有权不转移，灭失、损坏的风险由乙方承担。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00117",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方在交货的同时应向甲方提交产品合格证、使用说明书等相关单证和资料，否则，甲方有权拒收货物并视为乙方未履行完毕供货义务。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00118",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方送货前24小时通知材料接收单位（工程安装承包方）及甲方项目部。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00119",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方在送货时需提交打印的三方验收单且必须加盖其印章，无印章的三方验收单甲方有权拒收，工程安装承包方或总包单位在货物验收合格后需要在货物验收单上共同签字、盖章，甲方则根据工程安装承包方或总包单位对货物验收合格签字、盖章后的货物验收单，在甲方指定采购平台中进行接收确认，确认后乙方可在采购平台中打印接收单，货物验收单与接收单是乙方申请付款的必要依据。如果甲方参与现场验收，发现货物与装箱数目不相符，箱内货物有丢失或损坏，或者货物的包装、品种、型号、规格、质量等不符合本合同规定的，甲方有权拒收全部或部分货物并视为乙方未履行完毕供货义务。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00120",
+      "kind" : "PARAGRAPH",
+      "text" : "根据国家或地方有关规定需要政府部门需要进行验收检查的，以政府部门出具的验收合格证明为付款的必要依据。交货后，由安装承包方保管货物，货物如有丢失或损坏的情况，由安装承包方负责照价赔偿。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00121",
+      "kind" : "PARAGRAPH",
+      "text" : "项目分期开发的，每个项目每期产品采购，乙方负责样板间送货1次，其他送货次数10次以内（包含10次）。对于超过上述次数的采购，乙方仍有义务按本合同约定负责供货，但乙方在送货前应提前和甲方就运输费用协商确认，否则不得要求甲方另行承担运输费用。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00122",
+      "kind" : "PARAGRAPH",
+      "text" : "六、施工验收方式",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00123",
+      "kind" : "PARAGRAPH",
+      "text" : "调试验收时，乙方、甲方、监理单位、安装承包方同时到场，验收合格后乙方、甲方、安装承包方在验收记录上签字。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00124",
+      "kind" : "PARAGRAPH",
+      "text" : "根据国家或地方有关规定需要政府部门验收检查的，以政府部门出具的验收合格证明为付款的必要依据。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00125",
+      "kind" : "PARAGRAPH",
+      "text" : "七、合同价款支付方式",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00126",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方向甲方承诺按照合同约定进行供货，并在供货和安装保修期内承担保修责任；甲方向乙方承诺按照合同约定的方式支付供货价款及其他应当支付的款项。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00127",
+      "kind" : "PARAGRAPH",
+      "text" : "付款条件：",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00128",
+      "kind" : "PARAGRAPH",
+      "text" : "□按节点付款",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00129",
+      "kind" : "PARAGRAPH",
+      "text" : "预付款：无预付款；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00130",
+      "kind" : "PARAGRAPH",
+      "text" : "到货验收款：每笔订单在乙方完成交货、货物经验收合格且甲方确认接收后，乙方须提",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00131",
+      "kind" : "PARAGRAPH",
+      "text" : "供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的100%，乙方开具完成产值额100%的发票；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00132",
+      "kind" : "PARAGRAPH",
+      "text" : "如乙方以先付款后发货等足以变更本合同约定付款方式的理由，单方面暂停、延迟提供货物的，因此导致的竣备延期、交付延期等工期延期带来的任何风险费用由乙方承担；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00133",
+      "kind" : "PARAGRAPH",
+      "text" : "结算款：结算完成后，付款文件齐全支付至结算总价的100%。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00134",
+      "kind" : "PARAGRAPH",
+      "text" : "√月度付款",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00135",
+      "kind" : "PARAGRAPH",
+      "text" : "预付款：无预付款；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00136",
+      "kind" : "PARAGRAPH",
+      "text" : "到货验收款：每笔订单在乙方完成交货、货物经验收合格且甲方确认接收后，乙方须提",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00137",
+      "kind" : "PARAGRAPH",
+      "text" : "供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的80%，乙方开具完成产值额100%的发票；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00138",
+      "kind" : "PARAGRAPH",
+      "text" : "如乙方以先付款后发货等足以变更本合同约定付款方式的理由，单方面暂停、延迟提供货物的，因此导致的竣备延期、交付延期等工期延期带来的任何风险费用由乙方承担；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00139",
+      "kind" : "PARAGRAPH",
+      "text" : "安装完工款：完工并验收合格后，乙方须提供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、完工验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至该批安装完工款（按含安装费的综合单价计算）的95%，乙方开具完成产值额100%的发票；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00140",
+      "kind" : "PARAGRAPH",
+      "text" : "结算款：结算完成后，付款文件齐全支付至结算总价的95%。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00141",
+      "kind" : "PARAGRAPH",
+      "text" : "单项目合同签署完毕，乙方应向甲方提交保证金额为单项目采购合同金额的的 5% 的《质量保函》，质量保函有效期 3 年（按集中交付之日起一个月后开始计算）。质量保函应为不可撤销的、见索即付的独立保函，乙方未提交《质量保函》的，甲方有权延期支付结算款直至乙方提供《质量保函》。如因乙方不履行质保义务或履行不符合约定的，因此而发生的费用及对甲方造成的损失，乙方同意甲方有权从质量保函获得索赔或从乙方与甲方/甲方任何一个参股或控股公司签订合同或订单的合同款项或货款中扣除。质量保函应为不可撤销的、见索即付的独立保函。如保修期届满前，质量保函担保人的赔偿金额已达到最高保函金额，则乙方应额外向甲方提供保证金额为上述最高保函金额的《质量保函》，担保期限和保函类型等其他要求按本条款约定执行，以此类推。且保修期届满前若出现质量保函金额不足以覆盖对甲方造成的损失，甲方有权随时要求乙方赔偿，且甲方要求赔偿不免除乙方按照本条款约定继续提供质量保函的责任。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00142",
+      "kind" : "PARAGRAPH",
+      "text" : "付款方式：",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00143",
+      "kind" : "PARAGRAPH",
+      "text" : "（1）甲方只在每月20日以转账方式集中付款（如遇节假日则顺延，具体到账日期因银行结算原因略有滞后，乙方应自行查阅账户，甲方财务部门不接受此类咨询）。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00144",
+      "kind" : "PARAGRAPH",
+      "text" : "（2）乙方在办理每一次付款手续时，都必须提交一份乙方银行的户名、账号、开户行及所在地的证明并加盖财务章。如因账号资料提供有误而产生银行退票情况，甲方在办理再次付款时，将直接扣除该笔退票金额的10％、但最高不超过5000元作为对甲方的劳务补偿款，并且被退票款项将在甲方收到合作单位的《账号信息更正声明》一个月后再次办理付款。乙方对此承担责任，并在下次申请付款之前，不得因资金理由导致工期延误、质量下降等情况发生，否则甲方有权在此基础上进一步索赔。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00145",
+      "kind" : "PARAGRAPH",
+      "text" : "（3）质量、交货期、安装工期达不到协议要求的，在处理完成之前，乙方无权要求支付任何款项。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00146",
+      "kind" : "PARAGRAPH",
+      "text" : "（4）各种乙方应承担的违约金及合同规定应扣款项在当期应付款中扣除。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00147",
+      "kind" : "PARAGRAPH",
+      "text" : "（5）乙方达到付款节点时，须于当月15日前向甲方提交《付款申请报告》以及经监理单位审核签字的《工程付款报告》、《设备材料验收单》、《分项工程验收报告》（完工时），以保证甲方于当月30日前审核确认应付款项，并向集团申报下月集中付款计划；乙方还需于当月15日前向甲方索取《纳税证明》，并于当月最后一个工作日前提供相应发票，方可于次月最后一次付款或之前一次获得该笔款项。如乙方未及时申报或未及时提供有效的付款证明文件，造成工程款延期支付，由乙方承担全部责任，并不得影响任何工程进展。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00148",
+      "kind" : "PARAGRAPH",
+      "text" : "（6）乙方申请付款前需提供本合同约定的付款申请材料和相应金额的有效的增值税专用发票，否则甲方有权暂不予以支付。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00149",
+      "kind" : "PARAGRAPH",
+      "text" : "（7）支付方式补充说明",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00150",
+      "kind" : "PARAGRAPH",
+      "text" : "A. 根据甲乙双方的交易习惯和等价有偿的缔约原则，现乙方认可并接受甲方在不同情形下可对单笔工程款/材料款（包括货款、安装款、结算款及到期应付质保金）自主选择支付形式，包括但不限于现金支付形式及ABS、保理、商业承兑汇票、国内信用证、实物等非现金支付形式。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00151",
+      "kind" : "PARAGRAPH",
+      "text" : "B. 采用在售商品房抵充以外的非现金支付时，乙方应配合相关金融机构履行开户、签署协议、委托支付款项至分包等义务。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00152",
+      "kind" : "PARAGRAPH",
+      "text" : "C. 采用在售商品房抵充以外的非现金支付时，按照甲方财务部确认的实际贴现成本计算“非现金支付调差”金额，调整金额包含在结算价款中。调整金额在进度款或结算款中进行支付，由乙方负责开具增值税发票。采用非现金方式支付所带来的其他费用由乙方自行承担，已在综合单价中予以考虑。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00153",
+      "kind" : "PARAGRAPH",
+      "text" : "D. 实物支付要求：当采用在售商品房抵充的非现金支付方式支付工程款时（包括货款、安装款、结算款及到期应付质保金）：",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00154",
+      "kind" : "PARAGRAPH",
+      "text" : "根据等价有偿的缔约原则，乙方认可并接受甲方在不同情形下自主选择工程款支付形式，即现金支付或者在售商品房抵充的非现金支付形式；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00155",
+      "kind" : "PARAGRAPH",
+      "text" : "就在售商品房抵充的非现金支付方式甲乙双方将另行签订《以房抵债协议》（以实际签署文件名称为准）约定具体内容；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00156",
+      "kind" : "PARAGRAPH",
+      "text" : "《以房抵债协议》与《商品房买卖合同》签订生效之日起，视为甲方已向乙方支付本合同项下相应工程款（具体数额依据《以房抵债协议》与《商品房买卖合同》约定的金额确定），甲方在相应工程款金额内付款义务即视为履行完毕。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00157",
+      "kind" : "PARAGRAPH",
+      "text" : "E. 甲方有权以自身名义或委托四方城企业股份有限公司/四方城下属子公司等甲方关联主体（甲方无需另行通知收款方）向本合同约定的收款方支付本合同项下甲方应支付的所有款项，且无论该支付是否备注款项性质等事项、乙方开具的发票及收据等文件备注的款项性质与合同约定是否一致，一经支付，均视为收款方已收到甲方支付的相关款项，均视为甲方已履行相关付款义务。如乙方对付款及款项有异议的，应在收款后5个自然日内向甲方提出且送达书面异议，否则视为无异议。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00158",
+      "kind" : "PARAGRAPH",
+      "text" : "八、变更处理方法",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00159",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方有权根据工程进度推迟交货或安装时间。甲方如须改变所订货品的规格型号、数量，需提前到货期30日历天通知乙方，乙方只可对因规格型号和数量的变化而造成的价差调整合同金额，但不得就甲方的变更行为收取任何其他费用。甲方对乙方发送的《发货确认函》予以书面确认后，或甲方收到乙方发送的《发货确认函》7天内未答复以致乙方认为甲方默认同意后，则甲方不可推迟交货时间或改变所订货品的规格型号、数量。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00160",
+      "kind" : "PARAGRAPH",
+      "text" : "合同签署后，甲方所发生的变更参照相应型号产品合同单价按实际使用量进行结算。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00161",
+      "kind" : "PARAGRAPH",
+      "text" : "九、违约责任",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00162",
+      "kind" : "PARAGRAPH",
+      "text" : "1.有甲方收到对乙方产品或服务的投诉达到3次并经调查属实的，或者乙方有本条特别规定以外的任何其他违约行为（包括违反本合同与集采协议规定的任何义务）达3次的，甲方有权利单方终止本合同，乙方应依法赔偿因此给甲方造成的全部损失。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00163",
+      "kind" : "PARAGRAPH",
+      "text" : "2.有下列任何情形之一的，甲方有权选择单方终止本合同：",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00164",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方不具有按本合同规定对甲方开发项目供货的能力；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00165",
+      "kind" : "PARAGRAPH",
+      "text" : "甲乙双方对新增加的甲方开发项目所在地的货物运输费用不能协商一致的；",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00166",
+      "kind" : "PARAGRAPH",
+      "text" : "甲乙任何一方根据本合同的规定单方解除或终止某一个或几个项目的项目合同的。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00167",
+      "kind" : "PARAGRAPH",
+      "text" : "3.任何一方在不符合本合同约定条件的情况下单方终止履行合同的，必须向守约方赔偿因提前终止协议而造成的全部损失（包括守约方所在的甲方或乙方的损失）。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00168",
+      "kind" : "PARAGRAPH",
+      "text" : "4.双方任何一方未能履行本合同相关条款，均属违约行为。违约行为所造成的损失概由违约方承担。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00169",
+      "kind" : "PARAGRAPH",
+      "text" : "5.乙方保证供给甲方的产品价格为其在市场上的最低销售价格，如果乙方市场销售定价调整，使得本合同价格高于乙方最低市场定价时，乙方应提前知会甲方，双方按最低价格执行，否则甲方有权单方面终止协议。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00170",
+      "kind" : "PARAGRAPH",
+      "text" : "6.乙方应遵守国家及地方相应环保政策法规，保证生产的全部过程达到当前环保政策法规规定，没有废水、废气不达标排放等不良行为，否则根据情节严重程度甲方有权决定是否解除同乙方的协议。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00171",
+      "kind" : "PARAGRAPH",
+      "text" : "7.乙方逾期交货或安装进度延误的，每逾期一天向甲方支付逾期部分货款总额的 0.5％的违约金，并赔偿因此给甲方造成的一切损失，逾期交货或安装进度延误超过 10 天的，甲方有权单方面终止本合同，另行确定供应商，乙方须向甲方支付逾期部分货款总额的 10％为违约金。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00172",
+      "kind" : "PARAGRAPH",
+      "text" : "8.乙方违反本合同规定擅自发货或者提前到货的，甲方有权拒收货物，乙方对此承担一切责任。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00173",
+      "kind" : "PARAGRAPH",
+      "text" : "9.因为货物的包装、品种、型号、规格、包装、数量、质量问题、安装工程问题致使未通过交货验收的，视为没有交货，因此造成逾期交货的，按照本合同关于逾期交货的有关规定执行。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00174",
+      "kind" : "PARAGRAPH",
+      "text" : "10.因为产品质量问题或者不符合合同要求、安装工程问题等原因致使没有一次性通过安装验收的，乙方应立即无偿换货并在 15 天内向甲方交付本合同规定的合格产品或提供安装维修服务直至验收合格，向甲方支付未通过安装验收部分产品价款的 5%违约金，并赔偿因此给甲方或第三人造成的损失；乙方逾期未交付合格产品或完成安装维修的，或者因为产品质量问题或者不符合合同要求、安装工程问题等原因致使第二次没有通过安装验收的，乙方应向甲方退还所有未合格产品已收款项，支付合同标的未合格产品总价款 10%的违约金，并赔偿因此给甲方或第三人造成的直接损失。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00175",
+      "kind" : "PARAGRAPH",
+      "text" : "11.乙方承担因为产品质量问题、安装工程问题而给甲方、第三方（包括但不限于施工人员及业主）造成一切的损失。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00176",
+      "kind" : "PARAGRAPH",
+      "text" : "12.工程质量：①乙方就其承包范围的全部工程（包括但不限于各分部分项工程），应按相关规范规程、设计及施工图纸、工程样板（如有）、验收规范或标准、甲方提出的工艺工法及质量要求等标准进行施工。甲方有权自行或委托其他检查检验方随时对乙方工程质量进行检查检验，如经检查检验发现乙方承包范围内的工程未达到前述任一标准的，乙方应采取措施在甲方规定工期内完成整改。如乙方拒不整改或经整改仍达不到要求的，甲方有权扣减或要求乙方返还检查检验不合格部分所对应的工程款，并有权委托第三方负责实施该等整改工作。前述其他检查检验方、第三方施工方因此发生的所有费用均由乙方承担，且乙方还应向甲方支付不合格部分工程所对应工程款金额20%的违约金，并赔偿甲方由此蒙受的一切损失（包括但不限于第三方向甲方索赔的费用、行政机关向甲方的罚款以及甲方因相关争议所支付的律师费等）。②乙方应向甲方支付违约金【10】万元，当工程现场出现工程质量二类问题的，乙方应向甲方支付违约金【5】万元，甲方有权从应付工程款中直接扣减上述费用。工程质量一类和二类问题以四方城集团工程技术中心发布为准。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00177",
+      "kind" : "PARAGRAPH",
+      "text" : "13.安全管理：乙方应遵守工程建设安全生产有关管理规定，履行安全主体责任，严格按安全标准组织施工，采取必要的安全防护措施，消除事故隐患。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00178",
+      "kind" : "PARAGRAPH",
+      "text" : "1）乙方应按国家法律法规标准配备专职安全员，未达标的，甲方有权统计实际缺岗人数、缺岗时间，按15000元/人·月标准进行负签证扣除。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00179",
+      "kind" : "PARAGRAPH",
+      "text" : "2）乙方每日组织安全晨会，对作业面安全风险进行告知。严禁现场工人未经安全教育即上岗。作为建筑安装等具有大体力需求和高风险作业的行业，出于保护劳动者自身健康与安全的需要，禁止60周岁以上男性、55周岁以上女性、年龄不足16周岁人员进入施工现场作业。建筑电工、建筑架子工等特种作业人员必须经建设主管部门考核合格，取得建筑施工特种作业人员操作资格证书，方可上岗从事相应作业。乙方违反年龄规定，按10000元/人标准进行负签证扣除。乙方违反持证上岗规定，甲方有权统计实际缺岗时间，按20000元/人·月标准进行负签证扣除。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00180",
+      "kind" : "PARAGRAPH",
+      "text" : "3）乙方需执行每年迭代的《集团在建项目安全文明检查标准》和《在建项目安全标准化手册》，乙方在安全评估中触犯一类问题的，按不少于50000元/条标准进行负签证扣除。乙方在安全评估中触犯二类问题的，按不少于20000元/条标准进行负签证扣除。乙方未按标准化手册内容执行的，按不少于1000元/条标准进行负签证扣除。具体扣除金额以各地区公司相关标准为准，但不得低于前述金额。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00181",
+      "kind" : "PARAGRAPH",
+      "text" : "4）乙方在动力设备、输电线路、易燃易爆地段以及临街交通要道等附近施工时，施工开始前应向监理公司提出安全防护措施，经监理公司和相关管理单位认可后实施。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00182",
+      "kind" : "PARAGRAPH",
+      "text" : "5）乙方发生生产安全责任事故或险情事件的，按《四方城集团安全生产考核与奖罚管理办法》及其他现行标准执行。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00183",
+      "kind" : "PARAGRAPH",
+      "text" : "14.工期达成：如乙方未能按集采协议及本合同约定工期要求完成供货或施工工作的，应按每日【该批次供货订单合同金额的百分之二且不少于5000元】向甲方支付违约金，如工期逾期持续或累计达【30】天及以上的，则乙方应按每日【该批次订单合同金额的百分之四且不少于10000元】向甲方支付违约金，届时，甲方有权顺延各期工程款的付款时间，并要求乙方赔偿甲方由此蒙受的一切损失（包括但不限于第三方向甲方索赔的费用、行政机关向甲方的罚款以及甲方因相关争议所支付的律师费等）。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00184",
+      "kind" : "PARAGRAPH",
+      "text" : "15.本合同约定由乙方承担的违约金、赔偿金、损失等相关费用，甲方有权直接从甲方应付给乙方的任何款项中扣除，不足抵扣的，乙方同意在甲方发出通知后10日内支付给甲方，逾期则由乙方参照逾期付款的约定承担违约责任；甲方按前述约定执行后而减少支付给乙方应付款项的，甲方不承担任何责任。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00185",
+      "kind" : "PARAGRAPH",
+      "text" : "16.甲方任何（包括但不限于施工过程中的任何工作联系函）对乙方违约或延误行为予以任何宽容、宽限或延缓行使本合同项下的任何权利，均不视为对本合同项下权利、权益的放弃或对任何违反本合同行为的许可或认可，也不影响、阻止和妨碍甲方对该权利的继续行使。即使甲方延缓行使本合同项下的任何权利或未用尽本合同项下的任何救济，乙方在本合同项下的违约责任并不因此减免。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00186",
+      "kind" : "PARAGRAPH",
+      "text" : "17.本合同或集采协议中对乙方违约责任的约定如与本条约定不一致的，以较高标准执行。",
+      "sectionPath" : [ "第二部分 合同条款" ]
+    }, {
+      "locationId" : "LOC-00187",
+      "kind" : "HEADING",
+      "text" : "第三部分 合同附件",
+      "sectionPath" : [ "第三部分 合同附件" ]
+    }, {
+      "locationId" : "LOC-00188",
+      "kind" : "APPENDIX_TITLE",
+      "text" : "附件1：阳光合作协议",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00189",
+      "kind" : "PARAGRAPH",
+      "text" : "阳光合作协议",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00190",
+      "kind" : "PARAGRAPH",
+      "text" : "(2025年10月起签署版本)",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00191",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方（全称）： 达利安造船厂",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00192",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方（全称）： 天下会装饰工程有限公司",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00193",
+      "kind" : "PARAGRAPH",
+      "text" : "甲乙双方签署了《达利安造船厂四方城翡翠大道项目北二期3强化地板产品采购合同》（以下简称“合同”），为营造健康商业环境和建立正常商业合作关系，甲乙双方经友好协商签订本合同，并作为双方共同遵守的阳光合作行为准则执行。",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00194",
+      "kind" : "PARAGRAPH",
+      "text" : "定义",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00195",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方人员定义：含甲方工作人员本人及其利益相关方（包括但不仅限于甲方工作人员的亲属、下属等），下称“甲方人员”。",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00196",
+      "kind" : "PARAGRAPH",
+      "text" : "乙方人员定义：含乙方工作人员本人及其利益相关方（包括但不仅限于乙方工作人员的亲属、分包商/班组、代理商、合作方等），下称“乙方人员”。",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00197",
+      "kind" : "PARAGRAPH",
+      "text" : "四方城集团定义：指四方城企业股份有限公司及其直接或间接参股、控股，以及虽不参股、控股但由其实际负责项目开发工作的公司。",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00198",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方责任",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00199",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方有责任向乙方介绍四方城集团阳光合作相关规定。",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00200",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方严禁甲方人员在业务合作过程出现下列行为（包括不限于）：",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00201",
+      "kind" : "PARAGRAPH",
+      "text" : "（1）商业贿赂：甲方人员收受或向乙方及乙方人员主动索要各种形式的回扣、现金、实物、证券、礼券等有价物品，或接受并参与乙方及乙方人员提供的旅游、高档宴请及其他可能影响职务行为公正履行的活动；",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00202",
+      "kind" : "PARAGRAPH",
+      "text" : "（2）行贿及其他：甲方人员要求乙方或乙方人员配合或协助进行各种形式的行贿（包括但不限于提供回扣、现金、实物、证券、礼券等有价物品）、不当利益输送在内的各类违法活动；",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00203",
+      "kind" : "PARAGRAPH",
+      "text" : "（3）利益冲突：甲方人员未经甲方批准，以本人或其亲属名义于乙方或其关联单位处直接或变相参股、任职、兼职或获取其它利益；甲方禁止引入四方城集团离职员工或其亲属直接或变相持股、控制的公司成为四方城集团供应商；",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00204",
+      "kind" : "PARAGRAPH",
+      "text" : "2． 本协议自双方加盖公章签字后生效。双方同意本协议的效力溯及于合同生效之日。",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00205",
+      "kind" : "PARAGRAPH",
+      "text" : "（以下无正文，为《阳光合作协议》签署页）",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00206",
+      "kind" : "PARAGRAPH",
+      "text" : "甲方: 达利安造船厂 乙方: 天下会装饰工程有限公司",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00207",
+      "kind" : "PARAGRAPH",
+      "text" : "（公章） （公章）",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00208",
+      "kind" : "PARAGRAPH",
+      "text" : "法定代表人/授权代表签字： 马超 法定代表人/授权代表签字： 雄霸",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    }, {
+      "locationId" : "LOC-00209",
+      "kind" : "PARAGRAPH",
+      "text" : "签订日期： 2026 年5月13日",
+      "sectionPath" : [ "附件1：阳光合作协议" ]
+    } ]
+  },
+  "requiredOutput" : {
+    "format" : "STRICT_JSON_ONLY",
+    "opinionEnum" : [ "CONSISTENT", "INCONSISTENT", "NOT_ENOUGH_EVIDENCE", "NOT_APPLICABLE" ],
+    "fields" : [ "reviewPointCode", "opinion", "confidence", "candidateValues", "evidenceQuotes", "opaqueLocations", "insufficiencyReason" ],
+    "instruction" : "Return one opinion for every review point. Cite only supplied opaque location IDs. Do not invent missing evidence."
+  }
+}

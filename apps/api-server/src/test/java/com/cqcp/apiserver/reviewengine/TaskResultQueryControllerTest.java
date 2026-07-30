@@ -2,6 +2,7 @@ package com.cqcp.apiserver.reviewengine;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(TaskResultQueryController.class)
@@ -54,11 +56,32 @@ class TaskResultQueryControllerTest {
     }
 
     @Test
+    void returnsExactExecutionSnapshotWithoutLatestFallback() throws Exception {
+        when(service.getResult("task-001", "execution-001")).thenReturn(snapshot());
+
+        mockMvc.perform(get("/api/v1/tasks/task-001/result")
+                        .queryParam("executionId", "execution-001"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.taskId").value("task-001"))
+                .andExpect(jsonPath("$.executionId").value("execution-001"));
+    }
+
+    @Test
+    void returnsNotFoundForNonCanonicalExecutionIdentity() throws Exception {
+        mockMvc.perform(get("/api/v1/tasks/task-001/result")
+                        .queryParam("executionId", " execution-001 "))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.title").value("TASK_RESULT_NOT_FOUND"));
+    }
+
+    @Test
     void returnsNotFoundWhenTaskDoesNotExist() throws Exception {
         when(service.getResult("missing-task")).thenThrow(new TaskResultNotFoundException("missing-task"));
 
         mockMvc.perform(get("/api/v1/tasks/missing-task/result"))
                 .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith(
+                        MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.title").value("TASK_RESULT_NOT_FOUND"));
     }
 
@@ -68,6 +91,8 @@ class TaskResultQueryControllerTest {
 
         mockMvc.perform(get("/api/v1/tasks/task-001/result"))
                 .andExpect(status().isConflict())
+                .andExpect(content().contentTypeCompatibleWith(
+                        MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.title").value("TASK_RESULT_NOT_READY"));
     }
 

@@ -1,0 +1,32 @@
+{
+  "schemaVersion" : "task-eval-002-track-b-manifest-v1",
+  "status" : "PACKETS_READY_ZERO_ELIGIBLE_CALLS",
+  "modelCallsAllowed" : false,
+  "packetCount" : 27,
+  "familyPlanCount" : 9,
+  "candidateOccurrenceCount" : 57,
+  "sourceR7ManifestSha256" : "f01d93f9739d4dcb75f1ddcf7facdf66447a888103022b26db24ce998f2588dc",
+  "admissionConclusion" : "CURRENT_R7_HAS_ZERO_ELIGIBLE_ROLES_DOES_NOT_ADMIT_PROVIDER",
+  "samples" : [ {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "path" : "CQCP-MVP-DOCX-001.track-b.json",
+    "sha256" : "8c7e09473f3d208e9219e4d56c00ee7fcd4d39241df534918ce40c1819db707f",
+    "packetCount" : 9,
+    "familyPlanCount" : 3,
+    "modelCallsAllowed" : false
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "path" : "CQCP-MVP-DOCX-002.track-b.json",
+    "sha256" : "7d0263cdd4939dccad1e5db943b924b46b1bd9b9875467162a6542e9457d93ea",
+    "packetCount" : 9,
+    "familyPlanCount" : 3,
+    "modelCallsAllowed" : false
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "path" : "CQCP-MVP-DOCX-003.track-b.json",
+    "sha256" : "203147ff01588ba26cbb2eae11a236da54fce96a2785a78b353c83c3daee1e43",
+    "packetCount" : 9,
+    "familyPlanCount" : 3,
+    "modelCallsAllowed" : false
+  } ]
+}

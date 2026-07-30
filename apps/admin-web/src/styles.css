@@ -45,6 +45,36 @@ body {
   margin: 0 auto 24px;
 }
 
+.workbench-grid {
+  width: min(1500px, 100%);
+  margin: 0 auto 24px;
+}
+
+.result-workbench-header,
+.result-summary-panel,
+.task-list-panel {
+  width: min(1500px, 100%);
+}
+
+.model-profile-grid {
+  width: min(1500px, 100%);
+  margin: 0 auto 24px;
+}
+
+.model-profile-panel {
+  width: 100%;
+}
+
+.model-profile-list {
+  display: grid;
+  gap: 12px;
+}
+
+.management-access-control {
+  width: min(100%, 720px);
+  margin-top: 16px;
+}
+
 .preview-card {
   border-radius: 20px;
 }
@@ -128,6 +158,94 @@ body {
   background: rgba(15, 118, 110, 0.06);
 }
 
+.document-preview-card .ant-card-body {
+  padding: 0;
+}
+
+.document-preview {
+  max-height: 72vh;
+  overflow: auto;
+  padding: 24px;
+  scroll-behavior: smooth;
+  background: #fff;
+}
+
+.document-block {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.document-block .ant-typography {
+  margin-bottom: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.document-block.is-heading {
+  margin-top: 20px;
+}
+
+.document-table-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0;
+  padding: 0;
+  border: 1px solid #d9e2ec;
+}
+
+.document-table-cell {
+  min-height: 44px;
+  padding: 10px;
+  border-right: 1px solid #d9e2ec;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.document-table-cell:last-child {
+  border-right: 0;
+}
+
+.is-primary-evidence {
+  border-color: #0f766e !important;
+  background: rgba(15, 118, 110, 0.16);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+}
+
+.is-related-evidence {
+  border-color: #67e8f9 !important;
+  background: rgba(103, 232, 249, 0.12);
+}
+
+.point-filter-card {
+  margin-bottom: 12px;
+}
+
+.point-filter-card .ant-typography {
+  margin: 0;
+}
+
+.family-collapse {
+  background: transparent;
+}
+
+.task-execution-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.task-item-actions {
+  display: grid;
+  justify-items: end;
+  align-content: space-between;
+  gap: 18px;
+}
+
 .status-alert,
 .status-note {
   margin-top: 18px;
@@ -177,6 +295,15 @@ body {
   .completeness-grid,
   .structured-field-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .document-preview {
+    max-height: 55vh;
+    padding: 14px;
+  }
+
+  .task-item-actions {
+    justify-items: start;
   }
 }
 

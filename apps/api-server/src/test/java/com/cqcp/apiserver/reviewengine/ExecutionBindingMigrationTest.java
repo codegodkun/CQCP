@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,12 +38,202 @@ class ExecutionBindingMigrationTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    void v1AndV2MigrationsApplied() {
+    void v1ThroughV3MigrationsApplied() {
         var versions = jdbcTemplate.queryForList(
                 "SELECT version FROM flyway_schema_history ORDER BY version");
-        assertThat(versions).hasSize(2);
+        assertThat(versions).hasSize(3);
         assertThat(versions.get(0).get("version")).isEqualTo("1");
         assertThat(versions.get(1).get("version")).isEqualTo("2");
+        assertThat(versions.get(2).get("version")).isEqualTo("3");
+    }
+
+    @Test
+    void v3SecretReferenceAndConnectivitySchemaDoNotContainRawSecretColumns() {
+        var modelColumns = jdbcTemplate.queryForList("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'model_profile_config_version'
+                ORDER BY column_name
+                """, String.class);
+        var connectivityColumns = jdbcTemplate.queryForList("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name = 'model_profile_connectivity_test'
+                ORDER BY column_name
+                """, String.class);
+
+        assertThat(modelColumns).contains("secret_ref");
+        assertThat(modelColumns)
+                .noneMatch(name -> name.matches("(?i).*(api_key|raw_secret|secret_value|authorization).*"));
+        assertThat(connectivityColumns)
+                .contains(
+                        "connectivity_test_id",
+                        "profile_code",
+                        "config_version",
+                        "status",
+                        "http_status_class",
+                        "model_available",
+                        "duration_ms",
+                        "tested_at")
+                .noneMatch(name -> name.matches("(?i).*(body|header|prompt|api_key|secret|stack).*"));
+    }
+
+    @Test
+    void secretRequiredProfileMustUseAReference() {
+        assertThrows(DataIntegrityViolationException.class, () ->
+                jdbcTemplate.update("""
+                        INSERT INTO model_profile_config_version (
+                            profile_code, config_version, display_name,
+                            provider_type, endpoint_alias, model_name,
+                            enabled, usage_scope, is_default_for_new_task,
+                            secret_required, secret_ref, readiness_status,
+                            timeout_seconds, retry_count,
+                            effective_from, created_at
+                        ) VALUES (
+                            'PUBLIC_WITHOUT_REF', 'public-without-ref-v1', 'Invalid Public',
+                            'PUBLIC_OPENAI_COMPATIBLE', 'deepseek-official', 'deepseek-v4-pro',
+                            false, 'EVALUATION', false,
+                            true, NULL, 'NOT_READY',
+                            30, 0,
+                            '2026-07-28T00:00:00Z', '2026-07-28T00:00:00Z'
+                        )
+                        """));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "CQCP_SECRET_SENTINEL",
+            "plain-text-secret",
+            "env:CQCP_DB_PASSWORD",
+            "env:CQCP_MODEL_OTHER_SECRET",
+            "file:/run/secrets/unrelated"
+    })
+    void databaseRejectsUnfrozenOrPlaintextSecretReferences(String secretRef) {
+        assertThrows(DataIntegrityViolationException.class, () ->
+                insertPublicProfile("INVALID_SECRET_REF", secretRef));
+    }
+
+    @Test
+    void databaseAcceptsOnlyFrozenDeepSeekSecretReference() {
+        insertPublicProfile(
+                "VALID_DEEPSEEK_SECRET_REF",
+                "env:CQCP_MODEL_DEEPSEEK_API_KEY");
+
+        assertThat(jdbcTemplate.queryForObject(
+                "SELECT secret_ref FROM model_profile_config_version "
+                        + "WHERE profile_code = 'VALID_DEEPSEEK_SECRET_REF'",
+                String.class))
+                .isEqualTo("env:CQCP_MODEL_DEEPSEEK_API_KEY");
+    }
+
+    @Test
+    void databaseRejectsUnsupportedPublicModelId() {
+        assertThrows(DataIntegrityViolationException.class, () ->
+                insertPublicProfileWith(
+                        "INVALID_PUBLIC_MODEL",
+                        "deepseek-chat",
+                        "EVALUATION",
+                        false,
+                        false));
+    }
+
+    @Test
+    void databaseRejectsPublicProfileOutsideDisabledEvaluationBoundary() {
+        assertThrows(DataIntegrityViolationException.class, () ->
+                insertPublicProfileWith(
+                        "INVALID_PUBLIC_SCOPE",
+                        "deepseek-v4-pro",
+                        "PRODUCTION_REVIEW",
+                        true,
+                        true));
+    }
+
+    @Test
+    void databaseRejectsInPlaceModelProfileContentMutation() {
+        insertPublicProfile(
+                "IMMUTABLE_PUBLIC_PROFILE",
+                "env:CQCP_MODEL_DEEPSEEK_API_KEY");
+
+        assertThrows(DataIntegrityViolationException.class, () ->
+                jdbcTemplate.update("""
+                        UPDATE model_profile_config_version
+                        SET model_name = 'deepseek-v4-flash'
+                        WHERE profile_code = 'IMMUTABLE_PUBLIC_PROFILE'
+                        """));
+    }
+
+    @Test
+    void databaseAllowsOnlyLifecycleMutationInPlace() {
+        insertPublicProfile(
+                "LIFECYCLE_PUBLIC_PROFILE",
+                "env:CQCP_MODEL_DEEPSEEK_API_KEY");
+
+        assertThat(jdbcTemplate.update("""
+                UPDATE model_profile_config_version
+                SET readiness_status = 'READY'
+                WHERE profile_code = 'LIFECYCLE_PUBLIC_PROFILE'
+                """)).isOne();
+        assertThat(jdbcTemplate.queryForObject("""
+                SELECT readiness_status
+                FROM model_profile_config_version
+                WHERE profile_code = 'LIFECYCLE_PUBLIC_PROFILE'
+                """, String.class)).isEqualTo("READY");
+    }
+
+    private void insertPublicProfile(String profileCode, String secretRef) {
+        jdbcTemplate.update("""
+                INSERT INTO model_profile_config_version (
+                    profile_code, config_version, display_name,
+                    provider_type, endpoint_alias, model_name,
+                    enabled, usage_scope, is_default_for_new_task,
+                    secret_required, secret_ref, readiness_status,
+                    timeout_seconds, retry_count,
+                    effective_from, created_at
+                ) VALUES (
+                    ?, ?, 'Secret Ref Constraint',
+                    'PUBLIC_OPENAI_COMPATIBLE', 'deepseek-official', 'deepseek-v4-pro',
+                    false, 'EVALUATION', false,
+                    true, ?, 'NOT_READY',
+                    30, 0,
+                    '2026-07-28T00:00:00Z', '2026-07-28T00:00:00Z'
+                )
+                """,
+                profileCode,
+                profileCode.toLowerCase(java.util.Locale.ROOT) + "-v1",
+                secretRef);
+    }
+
+    private void insertPublicProfileWith(
+            String profileCode,
+            String modelName,
+            String usageScope,
+            boolean enabled,
+            boolean defaultForNewTask) {
+        jdbcTemplate.update("""
+                INSERT INTO model_profile_config_version (
+                    profile_code, config_version, display_name,
+                    provider_type, endpoint_alias, model_name,
+                    enabled, usage_scope, is_default_for_new_task,
+                    secret_required, secret_ref, readiness_status,
+                    timeout_seconds, retry_count,
+                    effective_from, created_at
+                ) VALUES (
+                    ?, ?, 'Public Boundary Constraint',
+                    'PUBLIC_OPENAI_COMPATIBLE', 'deepseek-official', ?,
+                    ?, ?, ?,
+                    true, 'env:CQCP_MODEL_DEEPSEEK_API_KEY', 'NOT_READY',
+                    30, 0,
+                    '2026-07-28T00:00:00Z', '2026-07-28T00:00:00Z'
+                )
+                """,
+                profileCode,
+                profileCode.toLowerCase(java.util.Locale.ROOT) + "-v1",
+                modelName,
+                enabled,
+                usageScope,
+                defaultForNewTask);
     }
 
     @Test

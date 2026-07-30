@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,8 +24,7 @@ class HumanAnchorGroundTruthFixtureTest {
     private static final Path FIXTURE_ROOT =
             Path.of("..", "..", "packages", "test-fixtures").normalize();
     private static final Path XLSX_PATH =
-            Path.of("..", "..", "outputs", "task-data-001-anchor-template",
-                    "TASK-DATA-001-human-anchor-template.xlsx").normalize();
+            resourcePath("/human-anchor-source/TASK-DATA-001-human-anchor-template.xlsx");
     private static final Path HUMAN_ANCHORS_DIR = FIXTURE_ROOT.resolve("human-anchors");
     private static final Path EXPECTED_DIR = FIXTURE_ROOT.resolve("expected");
 
@@ -88,6 +88,15 @@ class HumanAnchorGroundTruthFixtureTest {
     };
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static Path resourcePath(String path) {
+        try {
+            return Path.of(Objects.requireNonNull(
+                    HumanAnchorGroundTruthFixtureTest.class.getResource(path)).toURI());
+        } catch (Exception error) {
+            throw new IllegalStateException("Unable to resolve test resource " + path, error);
+        }
+    }
 
     // --- 1. Frozen counts ---
 

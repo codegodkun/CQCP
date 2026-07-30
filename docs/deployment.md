@@ -288,6 +288,63 @@ Compose 镜像 build/start、API 健康、真实浏览器创建/轮询/结果跳
 持久化必须属于同一次验收。`MVP_DEMO_MOCK` 仅证明受控 Demo 可运行，不代表公网模型、
 GPU、Pilot 或 Production Ready。
 
+## MILESTONE-MVP-002 Secret 与 endpoint 部署约束
+
+Model Profile 不保存 raw KEY。需要 secret 的 provider 只配置 server-side reference：
+
+- `env:CQCP_MODEL_DEEPSEEK_API_KEY`：由进程环境注入。
+- `file:/run/secrets/cqcp-model-deepseek-api-key`：必须位于配置的受控根目录内，
+  且只能是该根目录的直接子文件；symlink/reparse point、目录、嵌套路径和缺失文件
+  均 fail closed。内容必须是 strict UTF-8 且不超过 16 KiB。
+
+首版 `deepseek-official` 只接受以上两个精确引用。应用 allowlist 与 PostgreSQL
+CHECK 同时拒绝 `env:CQCP_DB_PASSWORD`、其他环境变量或无关 Secret 文件。
+
+Secret 轮换通过替换部署环境变量或 Secret 文件完成；CQCP 不提供旧值保留、读取或
+浏览器写入接口。运行日志、HTTP 响应、数据库、Snapshot、stage log、TuningPacket 和
+异常不得包含解析后的 secret。
+
+Secret 文件读取必须绑定受控根目录 identity。Linux 使用
+`SecureDirectoryStream` 的相对 `NOFOLLOW_LINKS` 打开；Windows 使用
+`NOFOLLOW_LINKS + NOSHARE_DELETE` 文件句柄并在读取前后复核根目录/文件 identity。
+部署文件系统无法提供所需安全打开语义时，不得退化为普通路径读取。
+
+`endpointAlias` 由服务端映射到固定 HTTPS endpoint；`deepseek-official` 固定为
+`https://api.deepseek.com`，不能由部署环境替换为其他公网 URL；请求也不能提交 URL。
+allowlist 校验拒绝 userinfo、fragment、非 HTTPS、localhost、私网/保留 IP、DNS
+解析到非公网地址和 redirect。IPv6 只接纳 `2000::/3` global unicast，并拒绝 IETF
+special、documentation、NAT64/IPv4 translation、6to4 等转换范围，不能只依赖 JDK
+site-local 分类。IPv4 按 IANA special-purpose registry 精确拒绝
+`192.0.0.0/24`、`192.0.2.0/24`、`192.88.99.0/24`、`198.51.100.0/24` 等特殊/
+文档范围，但不得误拒相邻的普通公网段。DNS 的全部 answer 校验后通过 request-scoped resolver
+固定到实际连接并保留原 TLS hostname，不允许连接阶段重新解析。连通测试只对已保存
+profile 调用 `/models`，设置独立 timeout 与 1 MiB
+响应上限，并将 401/403/429/5xx、timeout、模型不存在、畸形响应等转换为稳定类别，
+不得透传第三方 body 或底层堆栈。
+
+评测 runner 与 Provider capability reader 还必须在读取 capability 内容、Secret、
+DNS、claim 或网络前拒绝 TLS/proxy/额外 CA/OpenSSL 环境旁路。POSIX stable-open
+固定使用受信任绝对路径 Python 3.10+ helper，以逐级 `dir_fd/O_NOFOLLOW` 持有父目录
+并复核 dev/inode/time identity；Windows 固定使用 PowerShell 7+ native handle
+helper，持有 repo/父目录 handle、拒绝 reparse，并禁止最终文件 share-write/delete。
+helper、解释器或版本不可用时 fail closed，不得退化为普通 pathname open。
+
+Compose/部署必须注入 `CQCP_ADMIN_API_TOKEN`；可选
+`CQCP_ADMIN_READONLY_TOKEN` 用于验证已认证非 Admin 的 `403` 边界。所有
+`/api/admin/**` 由后端校验 Bearer header，未配置 Admin token 时 fail closed。
+
+ADR-020 同时使用这两个部署 Secret 保护 execution 任务清单、合同 preview 与原始
+DOCX 下载：Admin 和只读 token 均可执行只读工作台请求，匿名/未知 token 返回 `401`；
+只读 token 仍不可进入 `/api/admin/**`。反向代理不得把 token 写入 access log、URL 或
+响应；浏览器端只保存在当前 React 内存会话。
+
+PUBLIC profile 首批只能是 disabled/unbound `EVALUATION`。部署 Secret 已配置、连通
+测试成功或 profile `READY` 都不代表 Provider 已进入 execution；普通 Demo 继续使用
+`MVP_DEMO_MOCK`。execution-scoped activation 只由内部 activation-aware
+EVALUATION resolver 消费，不修改 PUBLIC lifecycle，普通 Task Creation、Demo 和
+外部 caller 永远不能解析该 binding。未有绑定 exact input/dispatch/call-set hash 的
+一次性外发授权时，DeepSeek 评测 runner 必须在读取 KEY、DNS 或网络调用前停止。
+
 ## 待确认
 
 - 部署拓扑。

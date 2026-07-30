@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public final class PersistentTaskResultStore implements TaskResultStore {
 
-    private static final String FIND_LATEST_SNAPSHOT_SQL = """
+    private static final String SNAPSHOT_COLUMNS = """
             SELECT
                 task_id,
                 execution_id,
@@ -53,10 +53,18 @@ public final class PersistentTaskResultStore implements TaskResultStore {
                 evidence_selector_version,
                 created_at
             FROM review_result_snapshot
+            """;
+
+    private static final String FIND_LATEST_SNAPSHOT_SQL = SNAPSHOT_COLUMNS + """
             WHERE task_id = ?
               AND superseded_by_execution_id IS NULL
             ORDER BY created_at DESC
             LIMIT 1
+            """;
+
+    private static final String FIND_SNAPSHOT_SQL = SNAPSHOT_COLUMNS + """
+            WHERE task_id = ?
+              AND execution_id = ?
             """;
 
     private static final String EXISTS_TASK_SQL = """
@@ -64,6 +72,15 @@ public final class PersistentTaskResultStore implements TaskResultStore {
                 SELECT 1
                 FROM task
                 WHERE task_id = ?
+            )
+            """;
+
+    private static final String EXISTS_EXECUTION_SQL = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM execution
+                WHERE task_id = ?
+                  AND execution_id = ?
             )
             """;
 
@@ -91,11 +108,33 @@ public final class PersistentTaskResultStore implements TaskResultStore {
     }
 
     @Override
+    public boolean hasExecution(String taskId, String executionId) {
+        Objects.requireNonNull(taskId, "taskId");
+        Objects.requireNonNull(executionId, "executionId");
+        return Boolean.TRUE.equals(
+                jdbcTemplate.queryForObject(EXISTS_EXECUTION_SQL, Boolean.class, taskId, executionId));
+    }
+
+    @Override
     public Optional<ReviewResultSnapshot> findLatestSnapshot(String taskId) {
         Objects.requireNonNull(taskId, "taskId");
         var rows = jdbcTemplate.queryForList(FIND_LATEST_SNAPSHOT_SQL, taskId);
         if (rows.isEmpty()) {
             return Optional.empty();
+        }
+        return Optional.of(mapSnapshot(rows.getFirst()));
+    }
+
+    @Override
+    public Optional<ReviewResultSnapshot> findSnapshot(String taskId, String executionId) {
+        Objects.requireNonNull(taskId, "taskId");
+        Objects.requireNonNull(executionId, "executionId");
+        var rows = jdbcTemplate.queryForList(FIND_SNAPSHOT_SQL, taskId, executionId);
+        if (rows.isEmpty()) {
+            return Optional.empty();
+        }
+        if (rows.size() != 1) {
+            throw new IllegalStateException("Expected one snapshot for exact execution identity");
         }
         return Optional.of(mapSnapshot(rows.getFirst()));
     }

@@ -34,6 +34,23 @@ class PersistentTaskResultStoreTest {
     }
 
     @Test
+    void returnsSnapshotForExactTaskExecutionIdentity() {
+        var snapshot = snapshot();
+        when(jdbcTemplate.queryForList(anyString(), eq("task-001"), eq("execution-001")))
+                .thenReturn(List.of(snapshotRow(snapshot)));
+
+        assertThat(store.findSnapshot("task-001", "execution-001")).contains(snapshot);
+    }
+
+    @Test
+    void exactSnapshotDoesNotFallBackToAnotherExecution() {
+        when(jdbcTemplate.queryForList(anyString(), eq("task-001"), eq("execution-old")))
+                .thenReturn(List.of());
+
+        assertThat(store.findSnapshot("task-001", "execution-old")).isEmpty();
+    }
+
+    @Test
     void returnsEmptyWhenPersistentSnapshotDoesNotExist() {
         when(jdbcTemplate.queryForList(anyString(), eq("missing-task"))).thenReturn(List.of());
 
@@ -49,6 +66,23 @@ class PersistentTaskResultStoreTest {
 
         assertThat(store.hasTask("task-001")).isTrue();
         assertThat(store.hasTask("missing-task")).isFalse();
+    }
+
+    @Test
+    void reportsExactExecutionExistence() {
+        when(jdbcTemplate.queryForObject(
+                anyString(),
+                eq(Boolean.class),
+                eq("task-001"),
+                eq("execution-001"))).thenReturn(true);
+        when(jdbcTemplate.queryForObject(
+                anyString(),
+                eq(Boolean.class),
+                eq("task-001"),
+                eq("execution-other"))).thenReturn(false);
+
+        assertThat(store.hasExecution("task-001", "execution-001")).isTrue();
+        assertThat(store.hasExecution("task-001", "execution-other")).isFalse();
     }
 
     @Test

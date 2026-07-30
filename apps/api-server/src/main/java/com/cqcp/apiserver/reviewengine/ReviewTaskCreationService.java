@@ -109,6 +109,8 @@ public class ReviewTaskCreationService {
         // — file checks —
         if (originalFilename == null || originalFilename.isBlank()) {
             errors.add(new FieldError("file", "EMPTY_FILE", "file 不能为空"));
+        } else if (originalFilename.indexOf('\r') >= 0 || originalFilename.indexOf('\n') >= 0) {
+            errors.add(new FieldError("file", "INVALID_FILE_NAME", "file 名称包含非法字符"));
         } else if (!originalFilename.toLowerCase(Locale.ROOT).endsWith(".docx")) {
             errors.add(new FieldError("file", "UNSUPPORTED_FILE_TYPE", "仅支持 DOCX 文件"));
         }
@@ -355,8 +357,10 @@ public class ReviewTaskCreationService {
 
         // ===== Phase 3: Document persistence =====
         long sizeBytes;
+        String sha256;
         try {
             sizeBytes = documentStore.save(docRef, fileData);
+            sha256 = documentStore.sha256(taskId, docRef);
         } catch (Exception e) {
             throw e;
         }
@@ -380,7 +384,7 @@ public class ReviewTaskCreationService {
         }
 
         // ===== Phase 6: DB inserts =====
-        var contractMetadata = buildContractMetadata(root, originalFilename, docRef, sizeBytes);
+        var contractMetadata = buildContractMetadata(root, originalFilename, docRef, sizeBytes, sha256);
         var normalizedSnapshot = normalizeSnapshot(sf);
 
         repository.insertTask(
@@ -407,11 +411,16 @@ public class ReviewTaskCreationService {
 
     /** Build contract_metadata as an ObjectNode. businessDocumentId is from metadata root. */
     private static ObjectNode buildContractMetadata(
-            JsonNode root, String originalFileName, String documentReference, long sizeBytes) {
+            JsonNode root,
+            String originalFileName,
+            String documentReference,
+            long sizeBytes,
+            String sha256) {
         var meta = PLAIN_MAPPER.createObjectNode();
         meta.put("originalFileName", originalFileName);
         meta.put("documentReference", documentReference);
         meta.put("sizeBytes", sizeBytes);
+        meta.put("sha256", sha256);
         if (root.has("businessDocumentId")) {
             var bd = root.get("businessDocumentId");
             if (bd.isNull() || !bd.isTextual()) {

@@ -172,7 +172,7 @@ class TaskResultQueryServiceTest {
     private VersionReferences defaultVersionReferences() {
         return new VersionReferences(
                 "contract-type-v1",
-                "ruleset-v1",
+                "v20260705.1",
                 "budget-v1",
                 "model-v1",
                 "parser-v1",
