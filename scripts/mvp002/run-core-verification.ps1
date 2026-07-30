@@ -126,6 +126,8 @@ function Read-EvidenceReferences {
         "outputs/task-eval-002/opinion-seal.json",
         "outputs/task-eval-002/deepseek-opinion-seal.json",
         "outputs/task-eval-002/unblind-report.json",
+        "outputs/task-eval-002/track-b-admission.json",
+        "outputs/task-eval-002/track-b-admission-history/63a4645daa62b48c9f902c94676164f0b8da7bf98c9a19588553c44d2c06d4af/track-b-admission.json",
         "outputs/task-eval-002/track-b-admission-run-v3/admission-report.json",
         "outputs/task-eval-002/model-provider-gate.json",
         "outputs/task-mvp-002/browser-evidence-current/browser-assertions.json",
@@ -289,7 +291,10 @@ try {
         node scripts/blind-evaluation/prepare-track-b-dispatch.mjs . verify
     }
     Invoke-Logged "track-b-opinion-seal" $repo {
-        node scripts/blind-evaluation/track-b-opinion-contract.mjs . verify
+        node scripts/blind-evaluation/track-b-opinion-contract.mjs `
+            . `
+            verify `
+            outputs/task-eval-002/track-b-admission-history/63a4645daa62b48c9f902c94676164f0b8da7bf98c9a19588553c44d2c06d4af/track-b-admission.json
     }
     Invoke-Logged "track-b-admission-verify" $repo {
         node scripts/blind-evaluation/seal-and-evaluate-track-b-admission.mjs . verify

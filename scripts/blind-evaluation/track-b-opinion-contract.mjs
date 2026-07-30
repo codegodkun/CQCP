@@ -10,7 +10,29 @@ const dispatchPath = path.join(outputRoot, "track-b-dispatch.json");
 const dispatchHashPath = path.join(outputRoot, "track-b-dispatch.sha256");
 const opinionRoot = path.join(outputRoot, "track-b-codex-opinions");
 const sealPath = path.join(outputRoot, "track-b-codex-seal.json");
-const admissionPath = path.join(outputRoot, "track-b-admission.json");
+const admissionRelativePath =
+  process.argv[4] ?? "outputs/task-eval-002/track-b-admission.json";
+assert.match(
+  admissionRelativePath,
+  /^[A-Za-z0-9._/-]+$/,
+  "TRACK_B_ADMISSION_PATH_INVALID",
+);
+assert.ok(
+  !admissionRelativePath.includes(".."),
+  "TRACK_B_ADMISSION_PATH_TRAVERSAL",
+);
+const admissionPath = path.resolve(
+  root,
+  ...admissionRelativePath.split("/"),
+);
+assert.ok(
+  admissionPath.startsWith(`${root}${path.sep}`),
+  "TRACK_B_ADMISSION_PATH_OUTSIDE_ROOT",
+);
+assert.ok(
+  process.argv[4] === undefined || mode === "verify",
+  "TRACK_B_ADMISSION_OVERRIDE_VERIFY_ONLY",
+);
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const posixRelative = (absolutePath) =>
   path.relative(root, absolutePath).split(path.sep).join("/");

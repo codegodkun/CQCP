@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
@@ -55,11 +56,24 @@ const makeFixture = async () => {
   return root;
 };
 
-const runContract = (root, mode = "create") =>
-  spawnSync(process.execPath, [contractPath, root, mode], {
+const runContract = (
+  root,
+  mode = "create",
+  admissionRelativePath = undefined,
+) =>
+  spawnSync(
+    process.execPath,
+    [
+      contractPath,
+      root,
+      mode,
+      ...(admissionRelativePath ? [admissionRelativePath] : []),
+    ],
+    {
     cwd: repoRoot,
     encoding: "utf8",
-  });
+    },
+  );
 
 test("Track B v2 seal binds dispatch, prompt, R7, agents, times, and opinions", async () => {
   const root = await makeFixture();
@@ -103,6 +117,44 @@ test("Track B strict schema rejects a string disguised as an empty array", async
     const result = runContract(root);
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /selectedOccurrenceIds must be an array/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("Track B v2 seal verifies its hash-addressed admission after v3 supersedes the live path", async () => {
+  const root = await makeFixture();
+  try {
+    const create = runContract(root);
+    assert.equal(create.status, 0, create.stderr);
+    const admissionPath = path.join(
+      root,
+      "outputs/task-eval-002/track-b-admission.json",
+    );
+    const admissionBytes = await readFile(admissionPath);
+    const admissionSha256 = createHash("sha256")
+      .update(admissionBytes)
+      .digest("hex");
+    const historyRelativePath =
+      `outputs/task-eval-002/track-b-admission-history/` +
+      `${admissionSha256}/track-b-admission.json`;
+    const historyPath = path.join(
+      root,
+      ...historyRelativePath.split("/"),
+    );
+    await mkdir(path.dirname(historyPath), { recursive: true });
+    await writeFile(historyPath, admissionBytes);
+    await writeFile(
+      admissionPath,
+      JSON.stringify({
+        schemaVersion: "task-eval-002-track-b-admission-v3",
+        status: "SUPERSEDING_ADMISSION",
+      }),
+      "utf8",
+    );
+
+    const verify = runContract(root, "verify", historyRelativePath);
+    assert.equal(verify.status, 0, verify.stderr);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
