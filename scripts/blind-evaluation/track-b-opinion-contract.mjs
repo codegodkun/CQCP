@@ -208,8 +208,26 @@ for (const assignment of dispatch.assignments) {
     assignment.packetPath,
     `outputs/task-eval-002/track-b-inputs-v1/${manifestSample.path}`,
   );
+  assert.match(
+    manifestSample.path,
+    /^[A-Za-z0-9._-]+$/,
+    "TRACK_B_PACKET_FILENAME_INVALID",
+  );
   assert.equal(assignment.packetSetSha256, manifestSample.sha256);
-  const packetFile = await readRelative(assignment.packetPath, "packetPath");
+  const packetFile = packetManifestOverrideRelativePath === undefined
+    ? await readRelative(assignment.packetPath, "packetPath")
+    : {
+        absolutePath: path.join(
+          path.dirname(packetManifestFile.absolutePath),
+          manifestSample.path,
+        ),
+        bytes: await readFile(
+          path.join(
+            path.dirname(packetManifestFile.absolutePath),
+            manifestSample.path,
+          ),
+        ),
+      };
   assert.equal(
     sha256(packetFile.bytes),
     assignment.packetSetSha256,

@@ -204,13 +204,18 @@ test("Track B v2 seal verifies hash-equivalent history after live R7 advances", 
     assert.equal(create.status, 0, create.stderr);
     const historyRoot = path.join(root, "history/track-b-v2");
     await mkdir(historyRoot, { recursive: true });
+    const historicalPacketRoot = path.join(
+      historyRoot,
+      "track-b-inputs-v1",
+    );
     const historicalManifestRelativePath =
-      "history/track-b-v2/packet-manifest.json";
+      "history/track-b-v2/track-b-inputs-v1/manifest.json";
     const historicalR7RelativePath =
       "history/track-b-v2/source-r7-run-manifest.json";
     await cp(
-      path.join(root, "outputs/task-eval-002/track-b-inputs-v1/manifest.json"),
-      path.join(root, ...historicalManifestRelativePath.split("/")),
+      path.join(root, "outputs/task-eval-002/track-b-inputs-v1"),
+      historicalPacketRoot,
+      { recursive: true },
     );
     await cp(
       path.join(
@@ -221,6 +226,15 @@ test("Track B v2 seal verifies hash-equivalent history after live R7 advances", 
     );
     await writeFile(
       path.join(root, "outputs/task-eval-002/track-b-inputs-v1/manifest.json"),
+      "{}\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(
+        root,
+        "outputs/task-eval-002/track-b-inputs-v1/" +
+          "CQCP-MVP-DOCX-001.track-b.json",
+      ),
       "{}\n",
       "utf8",
     );
