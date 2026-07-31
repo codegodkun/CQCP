@@ -132,6 +132,7 @@ const CORE_APP_PATHS = new Set([
   "apps/api-server/build.gradle.kts",
   "apps/api-server/src/main/java/com/cqcp/apiserver/evaluation/BlindEvaluationProjectionGenerator.java",
   "apps/api-server/src/main/java/com/cqcp/apiserver/modelgateway/AdminApiAuthenticationFilter.java",
+  "apps/api-server/src/test/java/com/cqcp/apiserver/modelgateway/AdminApiAuthenticationFilterTokenConfigurationTest.java",
   "apps/api-server/src/main/java/com/cqcp/apiserver/modelgateway/ModelConnectivityClient.java",
   "apps/api-server/src/main/java/com/cqcp/apiserver/modelgateway/ModelEndpointAllowlist.java",
   "apps/api-server/src/main/java/com/cqcp/apiserver/modelgateway/ModelProfileAdminController.java",
