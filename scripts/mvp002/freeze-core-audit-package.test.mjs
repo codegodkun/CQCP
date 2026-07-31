@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { validateVerificationSummary } from "./freeze-core-audit-package.mjs";
+import {
+  gitBytes,
+  validateVerificationSummary,
+} from "./freeze-core-audit-package.mjs";
 
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
@@ -71,6 +75,35 @@ test("verification summary rejects network calls and Provider inclusion", () => 
       () => validateVerificationSummary(root, summaryPath),
       /Expected values to be strictly equal/,
     );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("binary freeze diff supports a Core subject larger than Node's default buffer", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cqcp-core-diff-"));
+  const git = (...args) =>
+    execFileSync("git", args, { cwd: root, encoding: "utf8" });
+  try {
+    git("init");
+    git("config", "user.name", "CQCP Test");
+    git("config", "user.email", "cqcp-test@example.invalid");
+    const largePath = path.join(root, "large.txt");
+    fs.writeFileSync(
+      largePath,
+      `${Array(80000).fill("before-value").join("\n")}\n`,
+    );
+    git("add", "large.txt");
+    git("commit", "-m", "base");
+    fs.writeFileSync(
+      largePath,
+      `${Array(80000).fill("after-value").join("\n")}\n`,
+    );
+    git("add", "large.txt");
+    git("commit", "-m", "change");
+
+    const diff = gitBytes(root, "diff", "--binary", "HEAD^", "HEAD");
+    assert.ok(diff.length > 1024 * 1024);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

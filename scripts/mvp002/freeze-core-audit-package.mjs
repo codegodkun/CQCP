@@ -16,6 +16,7 @@ import {
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
 const canonicalJson = (value) => `${JSON.stringify(value, null, 2)}\n`;
+const GIT_DIFF_MAX_BUFFER_BYTES = 64 * 1024 * 1024;
 
 function gitText(repoRoot, ...args) {
   return execFileSync("git", args, {
@@ -24,10 +25,11 @@ function gitText(repoRoot, ...args) {
   }).trim();
 }
 
-function gitBytes(repoRoot, ...args) {
+export function gitBytes(repoRoot, ...args) {
   return execFileSync("git", args, {
     cwd: repoRoot,
     encoding: null,
+    maxBuffer: GIT_DIFF_MAX_BUFFER_BYTES,
   });
 }
 
