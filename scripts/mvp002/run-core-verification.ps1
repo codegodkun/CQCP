@@ -231,8 +231,10 @@ $coreNodeTests = @(
     "scripts/blind-evaluation/track-b-deepseek-execution-claim-contract.test.mjs",
     "scripts/blind-evaluation/track-b-opinion-contract.test.mjs",
     "scripts/blind-evaluation/track-b-provider-request-contract.test.mjs",
+    "scripts/mvp002/browser-evidence-contract.test.mjs",
     "scripts/mvp002/core-subject.test.mjs",
     "scripts/mvp002/freeze-core-audit-package.test.mjs",
+    "scripts/mvp002/runtime-provenance-contract.test.mjs",
     "scripts/validate-review-assets.test.mjs"
 )
 foreach ($testPath in $coreNodeTests) {
@@ -395,9 +397,6 @@ try {
     Invoke-Logged "openapi-consistency" $repo {
         node scripts/mvp002/verify-openapi.mjs .
     }
-    Invoke-Logged "browser-evidence" $repo {
-        node scripts/mvp002/verify-browser-evidence.mjs .
-    }
     Invoke-Logged "git-diff-check" $repo {
         git diff --check 1035739b751386176e47c6871738a62bff86de02 HEAD
     }
@@ -405,6 +404,9 @@ try {
         & (Join-Path $repo "scripts/mvp002/run-compose-acceptance.ps1") `
             -RepoRoot $repo `
             -EvidenceRoot $evidenceRoot
+    }
+    Invoke-Logged "browser-evidence" $repo {
+        node scripts/mvp002/verify-browser-evidence.mjs .
     }
 
     $adminWebTestCount = Read-LoggedTestCount `

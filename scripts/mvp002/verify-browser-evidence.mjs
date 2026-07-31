@@ -4,52 +4,72 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
+import {
+  assertBrowserTransportEvidence,
+  parseBrowserEventStream,
+  parseNginxBrowserAccessLog
+} from "./browser-evidence-contract.mjs";
+import { assertRedactedResolvedComposeConfig } from "./runtime-provenance-contract.mjs";
+
 const repoRoot = path.resolve(process.argv[2] ?? ".");
 const evidenceRoot = path.join(
   repoRoot,
   "outputs/task-mvp-002/browser-evidence-current"
 );
-const assertionsPath = path.join(evidenceRoot, "browser-assertions.json");
-const browserUploadPath = path.join(
-  evidenceRoot,
-  "browser-upload-result.json"
-);
-const rawObservationPath = path.join(
-  evidenceRoot,
-  "browser-raw-observation.json"
-);
-const evidence = JSON.parse(fs.readFileSync(assertionsPath, "utf8"));
-const browserUpload = JSON.parse(fs.readFileSync(browserUploadPath, "utf8"));
-const rawObservation = JSON.parse(
-  fs.readFileSync(rawObservationPath, "utf8")
-);
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
-const fileHash = (relativePath) =>
-  sha256(fs.readFileSync(path.join(repoRoot, ...relativePath.split("/"))));
+const filePath = (relativePath) =>
+  path.join(repoRoot, ...relativePath.split("/"));
+const fileBytes = (relativePath) => fs.readFileSync(filePath(relativePath));
+const readJson = (relativePath) =>
+  JSON.parse(fs.readFileSync(filePath(relativePath), "utf8"));
+const assertFileReference = (reference, prefix = "outputs/task-mvp-002/") => {
+  assert.equal(reference.path.startsWith(prefix), true, "evidence path escaped task root");
+  const bytes = fileBytes(reference.path);
+  if (reference.size !== undefined) assert.equal(bytes.length, reference.size);
+  assert.equal(sha256(bytes), reference.sha256, `evidence changed: ${reference.path}`);
+  return bytes;
+};
 
-assert.equal(evidence.schemaVersion, "task-mvp-002-browser-evidence-v4");
+const assertionsPath = path.join(evidenceRoot, "browser-assertions.json");
+const evidence = JSON.parse(fs.readFileSync(assertionsPath, "utf8"));
+assert.equal(evidence.schemaVersion, "task-mvp-002-browser-evidence-v5");
 assert.equal(evidence.status, "PASS");
-assert.equal(
-  rawObservation.schemaVersion,
-  "task-mvp-002-browser-raw-observation-v1"
-);
-assert.equal(rawObservation.status, "PASS");
-assert.deepEqual(browserUpload.rawBrowserObservation, {
-  path: path.relative(repoRoot, rawObservationPath).replaceAll("\\", "/"),
-  sha256: sha256(fs.readFileSync(rawObservationPath))
+
+const captureManifestBytes = assertFileReference(evidence.captureManifest);
+const capture = JSON.parse(captureManifestBytes.toString("utf8"));
+assert.equal(capture.schemaVersion, "task-mvp-002-browser-capture-v1");
+assert.equal(capture.status, "COMPLETE");
+assert.equal(capture.browser.controlSurface, "DIRECT_CHROME_DEVTOOLS_PROTOCOL");
+const eventStreamBytes = assertFileReference(capture.eventStream);
+const accessLogBytes = assertFileReference(capture.serverAccessLog);
+const events = parseBrowserEventStream(eventStreamBytes);
+const accessEntries = parseNginxBrowserAccessLog(accessLogBytes);
+
+const uploadEvidenceBytes = assertFileReference(evidence.browserUploadEvidence);
+const upload = JSON.parse(uploadEvidenceBytes.toString("utf8"));
+assert.equal(upload.schemaVersion, "task-mvp-002-browser-upload-v2");
+assert.equal(upload.status, "PASS");
+assert.equal(upload.uploadChannel, "CHROME_CDP_NATIVE_FILE_CHOOSER");
+assert.deepEqual(upload.eventStream, capture.eventStream);
+assert.deepEqual(upload.serverAccessLog, capture.serverAccessLog);
+
+const transport = assertBrowserTransportEvidence(events, accessEntries, {
+  uploadTaskId: upload.taskId,
+  uploadExecutionId: upload.executionId,
+  primaryTaskId: evidence.primaryExecution.taskId,
+  primaryExecutionId: evidence.primaryExecution.executionId,
+  maliciousTaskId: evidence.maliciousBodyExecution.taskId,
+  maliciousExecutionId: evidence.maliciousBodyExecution.executionId
 });
-assert.equal(
-  fileHash(evidence.runtimeProvenance.path),
-  evidence.runtimeProvenance.sha256,
-  "bound runtime provenance changed"
-);
-const runtimeProvenance = JSON.parse(
-  fs.readFileSync(
-    path.join(repoRoot, ...evidence.runtimeProvenance.path.split("/")),
-    "utf8"
-  )
-);
+assert.deepEqual(capture.transport, transport);
+assert.deepEqual(capture.identities.upload, {
+  taskId: upload.taskId,
+  executionId: upload.executionId
+});
+
+const runtimeProvenanceBytes = assertFileReference(evidence.runtimeProvenance);
+const runtimeProvenance = JSON.parse(runtimeProvenanceBytes.toString("utf8"));
 assert.equal(
   runtimeProvenance.subject.sourceStateSha256,
   evidence.runtimeProvenance.sourceStateSha256
@@ -62,69 +82,43 @@ assert.equal(
   runtimeProvenance.compose.services["admin-web"].imageId,
   evidence.runtimeProvenance.adminWebImageId
 );
+const resolvedComposeBytes = fileBytes(runtimeProvenance.compose.resolvedConfig.path);
+assert.equal(resolvedComposeBytes.length, runtimeProvenance.compose.resolvedConfig.size);
+assert.equal(sha256(resolvedComposeBytes), runtimeProvenance.compose.resolvedConfig.sha256);
+assertRedactedResolvedComposeConfig(resolvedComposeBytes);
 const provenanceVerification = spawnSync(
   process.execPath,
   [
-    path.join(
-      repoRoot,
-      "scripts/mvp002/capture-runtime-provenance.mjs"
-    ),
+    path.join(repoRoot, "scripts/mvp002/capture-runtime-provenance.mjs"),
     repoRoot,
     "verify",
-    path.dirname(
-      path.join(
-        repoRoot,
-        ...evidence.runtimeProvenance.path.split("/")
-      )
-    ),
+    path.dirname(filePath(evidence.runtimeProvenance.path)),
     "cqcp-mvp002-acceptance",
     "deploy/compose/compose.yml",
     "scripts/mvp002/compose.acceptance.override.yml"
   ],
-  {
-    cwd: repoRoot,
-    encoding: "utf8",
-    windowsHide: true
-  }
+  { cwd: repoRoot, encoding: "utf8", windowsHide: true }
 );
 assert.equal(
   provenanceVerification.status,
   0,
   `runtime provenance verification failed: ${provenanceVerification.stderr}`
 );
-assert.equal(
-  fileHash(evidence.composeEvidence.path),
-  evidence.composeEvidence.sha256,
-  "bound Compose evidence changed"
-);
-const compose = JSON.parse(
-  fs.readFileSync(
-    path.join(repoRoot, ...evidence.composeEvidence.path.split("/")),
-    "utf8"
-  )
-);
+
+const composeEvidenceBytes = assertFileReference(evidence.composeEvidence);
+const compose = JSON.parse(composeEvidenceBytes.toString("utf8"));
 assert.equal(compose.schemaVersion, "task-mvp-002-compose-acceptance-v2");
 assert.equal(compose.status, "PASS");
-assert.deepEqual(compose.runtimeProvenance, {
-  path: evidence.runtimeProvenance.path,
-  sha256: evidence.runtimeProvenance.sha256
-});
 assert.equal(compose.taskId, evidence.primaryExecution.taskId);
 assert.equal(compose.executionId, evidence.primaryExecution.executionId);
 assert.equal(compose.resultExecutionId, evidence.primaryExecution.executionId);
-assert.equal(
-  compose.sourceSha256,
-  evidence.primaryExecution.sourceDocumentSha256
-);
+assert.equal(compose.sourceSha256, evidence.primaryExecution.sourceDocumentSha256);
 assert.equal(compose.downloadSha256, evidence.primaryExecution.downloadSha256);
 assert.equal(compose.externalModelNetworkAttempted, false);
 assert.equal(compose.adminSecurity.taskListUnauthenticatedStatus, 401);
 assert.equal(compose.adminSecurity.previewUnauthenticatedStatus, 401);
 assert.equal(compose.adminSecurity.readonlyWorkbenchAccess, true);
-assert.equal(
-  compose.maliciousBodyExecution.taskId,
-  evidence.maliciousBodyExecution.taskId
-);
+assert.equal(compose.maliciousBodyExecution.taskId, evidence.maliciousBodyExecution.taskId);
 assert.equal(
   compose.maliciousBodyExecution.executionId,
   evidence.maliciousBodyExecution.executionId
@@ -137,190 +131,135 @@ assert.equal(
   compose.maliciousBodyExecution.previewText,
   evidence.maliciousBodyExecution.previewText
 );
-assert.equal(
-  compose.maliciousBodyExecution.sourceSha256,
-  evidence.maliciousBodyExecution.sourceDocumentSha256
-);
 
+const oneEvent = (type) => {
+  const matches = events.filter((event) => event.type === type);
+  assert.equal(matches.length, 1, `expected exactly one raw event: ${type}`);
+  return matches[0].payload;
+};
+const taskList = oneEvent("CQCP.taskListDomObservation");
+const exactResult = oneEvent("CQCP.exactResultDomObservation");
+const sourceLocation = oneEvent("CQCP.sourceLocationDomObservation");
+const nativeDownload = oneEvent("CQCP.nativeDownloadFileObservation");
+const modelProfile = oneEvent("CQCP.modelProfileDomObservation");
+const maliciousBody = oneEvent("CQCP.maliciousBodyDomObservation");
+const authenticatedStorage = oneEvent("CQCP.authenticatedStorageObservation");
+const reloadedStorage = oneEvent("CQCP.reloadedStorageObservation");
+const finalStorage = oneEvent("CQCP.finalStorageObservation");
+
+assert.equal(taskList.visible, true);
 assert.equal(
-  fileHash(evidence.browserUploadEvidence.path),
-  evidence.browserUploadEvidence.sha256,
-  "bound browser upload evidence changed"
+  taskList.resultHref,
+  `/review/results/${evidence.primaryExecution.taskId}?executionId=${evidence.primaryExecution.executionId}`
 );
-assert.equal(browserUpload.status, "PASS");
-assert.equal(
-  browserUpload.uploadChannel,
-  "BROWSER_FILE_CHOOSER_OBSERVED"
-);
-assert.equal(
-  rawObservation.upload.fileChooserEvent.source,
-  "PLAYWRIGHT_PAGE_EVENT"
-);
-assert.equal(rawObservation.upload.fileChooserEvent.accepted, true);
-assert.equal(rawObservation.upload.fileChooserEvent.isMultiple, false);
-assert.equal(rawObservation.upload.httpStatus, 202);
-assert.equal(rawObservation.upload.taskId, browserUpload.taskId);
-assert.equal(rawObservation.upload.executionId, browserUpload.executionId);
-assert.equal(
-  rawObservation.upload.sourceSha256,
-  browserUpload.sourceSha256
-);
-assert.equal(
-  rawObservation.upload.resultUrl,
-  `/review/results/${browserUpload.taskId}?executionId=${browserUpload.executionId}`
-);
-assert.equal(
-  browserUpload.taskId,
-  evidence.assertions.browserFileUpload.taskId
-);
-assert.equal(
-  browserUpload.executionId,
-  evidence.assertions.browserFileUpload.executionId
-);
-assert.equal(browserUpload.executionStatus, "SUCCESS");
-assert.equal(
-  browserUpload.sourceSha256,
-  evidence.primaryExecution.sourceDocumentSha256
-);
-assert.equal(browserUpload.sourceSha256, browserUpload.downloadSha256);
-assert.equal(browserUpload.sourceSha256, browserUpload.storedHeaderSha256);
-assert.equal(browserUpload.resultExecutionId, browserUpload.executionId);
-assert.equal(browserUpload.taskListExecutionId, browserUpload.executionId);
-assert.equal(browserUpload.authorizationPersisted, false);
+assert.equal(exactResult.renderedExecutionId, evidence.primaryExecution.executionId);
+assert.equal(exactResult.parserText, "parser parser-docx-word-v20260724.1");
+assert.equal(sourceLocation.blockId, evidence.assertions.sourceLocation.blockId);
+assert.equal(sourceLocation.className.includes("is-primary-evidence"), true);
+assert.equal(nativeDownload.sha256, evidence.primaryExecution.sourceDocumentSha256);
+assert.equal(nativeDownload.size, upload.sourceSize);
+assert.equal(capture.nativeDownload.sha256, nativeDownload.sha256);
+assert.equal(modelProfile.bodyText.includes("DEEPSEEK_EVAL_ACCEPTANCE"), true);
+assert.equal(modelProfile.bodyText.includes("disabled"), true);
+assert.equal(modelProfile.bodyText.includes("EVALUATION"), true);
+assert.equal(modelProfile.bodyText.includes("Secret 未配置"), true);
+assert.equal(modelProfile.bodyText.includes("SECRET_MISSING"), true);
+assert.equal(modelProfile.bodyText.includes("MVP_DEMO_MOCK"), true);
+assert.equal(modelProfile.bodyText.includes("enabled"), true);
+assert.equal(maliciousBody.blockId, evidence.maliciousBodyExecution.previewBlockId);
+assert.equal(maliciousBody.textContent, evidence.maliciousBodyExecution.previewText);
+assert.equal(maliciousBody.imageElementCount, 0);
+assert.equal(maliciousBody.inlineHandlerAttributeCount, 0);
+assert.equal(/<img\b/i.test(maliciousBody.outerHTML), false);
+assert.equal(maliciousBody.outerHTML.includes("&lt;img"), true);
+assert.equal(authenticatedStorage.localStorage.length, 0);
+assert.equal(authenticatedStorage.sessionStorage.length, 0);
+assert.equal(authenticatedStorage.passwordInputs.some(Boolean), false);
+assert.equal(reloadedStorage.localStorage.length, 0);
+assert.equal(reloadedStorage.sessionStorage.length, 0);
+assert.equal(reloadedStorage.passwordInputs.some(Boolean), false);
+assert.equal(finalStorage.localStorage.length, 0);
+assert.equal(finalStorage.sessionStorage.length, 0);
+assert.equal(finalStorage.passwordInputs.some(Boolean), false);
+
+assert.equal(upload.sourceSha256, evidence.primaryExecution.sourceDocumentSha256);
+assert.equal(upload.sourceSha256, upload.downloadSha256);
+assert.equal(upload.sourceSha256, upload.storedHeaderSha256);
+assert.equal(upload.executionStatus, "SUCCESS");
+assert.equal(upload.resultExecutionId, upload.executionId);
+assert.equal(upload.taskListExecutionId, upload.executionId);
+assert.equal(upload.authorizationPersisted, false);
 
 for (const [name, assertion] of Object.entries(evidence.assertions)) {
   assert.equal(assertion.status, "PASS", `browser assertion failed: ${name}`);
 }
-assert.equal(
-  evidence.assertions.taskList.resultHref,
-  `/review/results/${evidence.primaryExecution.taskId}?executionId=${evidence.primaryExecution.executionId}`
-);
-assert.equal(
-  evidence.assertions.exactResult.renderedExecutionId,
-  evidence.primaryExecution.executionId
-);
-assert.equal(evidence.assertions.sourceLocation.evidenceTextReverseSearchUsed, false);
 assert.equal(evidence.assertions.managementAccess.rowsVisibleBeforeAuthentication, false);
+assert.equal(evidence.assertions.managementAccess.rowsVisibleAfterAuthentication, true);
 assert.equal(evidence.assertions.managementAccess.tokenPersistedAcrossReload, false);
 assert.equal(evidence.assertions.managementAccess.tokenVisibleAfterAuthentication, false);
 assert.equal(evidence.assertions.managementAccess.tokenPresentInUrl, false);
-assert.equal(evidence.assertions.download.authenticatedFetchCompleted, true);
-assert.equal(evidence.assertions.download.blobByteLength, browserUpload.sourceSize);
-assert.equal(evidence.assertions.download.browserDispatchTriggered, true);
-assert.equal(evidence.assertions.download.tokenPresentInUrl, false);
+assert.equal(evidence.assertions.download.nativeEventCaptured, true);
+assert.equal(evidence.assertions.download.nativeFileCaptured, true);
+assert.equal(evidence.assertions.download.sha256, nativeDownload.sha256);
 assert.equal(evidence.assertions.modelStatus.adminTokenVisibleAfterAuthentication, false);
-assert.equal(evidence.assertions.modelStatus.rawAuthorizationCaptured, false);
 assert.equal(evidence.assertions.browserFileUpload.fileChooserUsed, true);
-assert.equal(evidence.assertions.browserFileUpload.resultUrlExact, true);
-assert.equal(evidence.assertions.maliciousBodyTextSafety.parserBacked, true);
-assert.equal(evidence.assertions.maliciousBodyTextSafety.renderedAsText, true);
+assert.equal(evidence.assertions.browserFileUpload.chooserMultiple, false);
+assert.equal(evidence.assertions.browserFileUpload.taskId, upload.taskId);
+assert.equal(evidence.assertions.browserFileUpload.executionId, upload.executionId);
 assert.equal(evidence.assertions.maliciousBodyTextSafety.maliciousImageCount, 0);
 assert.equal(evidence.assertions.maliciousBodyTextSafety.inlineHandlerCount, 0);
 assert.equal(evidence.assertions.maliciousBodyTextSafety.javascriptDialogPresent, false);
 assert.equal(evidence.assertions.browserConsole.errorCount, 0);
 assert.equal(evidence.assertions.browserConsole.warningCount, 0);
-assert.equal(rawObservation.consoleEntries.length, 0);
-assert.equal(rawObservation.dialogs.length, 0);
-assert.equal(
-  rawObservation.maliciousBody.taskId,
-  evidence.maliciousBodyExecution.taskId
-);
-assert.equal(
-  rawObservation.maliciousBody.executionId,
-  evidence.maliciousBodyExecution.executionId
-);
-assert.equal(
-  rawObservation.maliciousBody.previewBlockId,
-  evidence.maliciousBodyExecution.previewBlockId
-);
-assert.equal(
-  rawObservation.maliciousBody.textContent,
-  evidence.maliciousBodyExecution.previewText
-);
-assert.equal(rawObservation.maliciousBody.imageElementCount, 0);
-assert.equal(rawObservation.maliciousBody.inlineHandlerAttributeCount, 0);
-assert.equal(
-  /<img\b/i.test(rawObservation.maliciousBody.outerHTML),
-  false
-);
-assert.equal(
-  rawObservation.maliciousBody.outerHTML.includes("&lt;img"),
-  true
-);
-const maliciousBox = rawObservation.maliciousBody.boundingBox;
-const viewport = rawObservation.viewport;
-assert.ok(maliciousBox.width > 0 && maliciousBox.height > 0);
-assert.ok(maliciousBox.x < viewport.width && maliciousBox.y < viewport.height);
-assert.ok(
-  maliciousBox.x + maliciousBox.width > 0 &&
-    maliciousBox.y + maliciousBox.height > 0
-);
-assert.ok(rawObservation.networkRequests.length > 0);
-assert.equal(
-  rawObservation.networkRequests.every((request) =>
-    ["localhost", "127.0.0.1"].includes(new URL(request.url).hostname)
-  ),
-  true,
-  "browser observed a non-local network request"
-);
-assert.equal(evidence.screenshots.length, 7);
-assert.equal(
-  evidence.screenshots.some(
-    (screenshot) =>
-      screenshot.path === rawObservation.maliciousBody.screenshot.path &&
-      screenshot.sha256 === rawObservation.maliciousBody.screenshot.sha256
-  ),
-  true,
-  "visible malicious-text screenshot is not bound to the raw observation"
-);
 
-for (const screenshot of evidence.screenshots) {
-  assert.equal(
-    fileHash(screenshot.path),
-    screenshot.sha256,
-    `browser screenshot changed: ${screenshot.path}`
-  );
-}
-const assertionBytes = fs.readFileSync(assertionsPath);
-const browserUploadBytes = fs.readFileSync(browserUploadPath);
-const rawObservationBytes = fs.readFileSync(rawObservationPath);
-const runtimeProvenanceBytes = fs.readFileSync(
-  path.join(repoRoot, ...evidence.runtimeProvenance.path.split("/"))
-);
-const composeBytes = fs.readFileSync(
-  path.join(repoRoot, ...evidence.composeEvidence.path.split("/"))
-);
-const forbiddenCredentialMarkers = [
-  "mvp002-acceptance-admin",
-  "mvp002-acceptance-readonly",
-  "Authorization: Bearer"
-];
-for (const marker of forbiddenCredentialMarkers) {
-  for (const bytes of [
-    assertionBytes,
-    browserUploadBytes,
-    rawObservationBytes,
-    runtimeProvenanceBytes,
-    composeBytes
-  ]) {
+assert.equal(evidence.screenshots.length, 7);
+assert.deepEqual(evidence.screenshots, capture.screenshots);
+for (const screenshot of evidence.screenshots) assertFileReference(screenshot);
+
+for (const event of events) {
+  if (event.type.startsWith("Network.") && event.payload.url) {
     assert.equal(
-      bytes.includes(Buffer.from(marker)),
-      false,
-      `browser evidence persisted a credential marker: ${marker}`
+      ["localhost", "127.0.0.1"].includes(new URL(event.payload.url).hostname),
+      true,
+      "browser observed a non-local network request"
     );
   }
 }
 
-process.stdout.write(
-  `${JSON.stringify({
-    status: "PASS",
-    browser: evidence.browser,
-    taskId: evidence.primaryExecution.taskId,
-    executionId: evidence.primaryExecution.executionId,
-    browserUploadTaskId: browserUpload.taskId,
-    maliciousBodyTaskId: evidence.maliciousBodyExecution.taskId,
-    rawObservationSha256: sha256(rawObservationBytes),
-    screenshotCount: evidence.screenshots.length,
-    assertions: Object.keys(evidence.assertions).length
-  })}\n`
-);
+const evidenceBytes = [
+  fs.readFileSync(assertionsPath),
+  captureManifestBytes,
+  eventStreamBytes,
+  accessLogBytes,
+  uploadEvidenceBytes,
+  runtimeProvenanceBytes,
+  resolvedComposeBytes,
+  composeEvidenceBytes,
+  ...evidence.screenshots.map((screenshot) => fileBytes(screenshot.path))
+];
+for (const marker of [
+  "mvp002-acceptance-admin",
+  "mvp002-acceptance-readonly",
+  "Authorization: Bearer",
+  "admin-sentinel",
+  "readonly-sentinel"
+]) {
+  assert.equal(
+    evidenceBytes.some((bytes) => bytes.includes(Buffer.from(marker))),
+    false,
+    `browser evidence persisted a credential marker: ${marker}`
+  );
+}
+
+process.stdout.write(`${JSON.stringify({
+  status: "PASS",
+  browser: evidence.browser,
+  taskId: evidence.primaryExecution.taskId,
+  executionId: evidence.primaryExecution.executionId,
+  browserUploadTaskId: upload.taskId,
+  maliciousBodyTaskId: evidence.maliciousBodyExecution.taskId,
+  eventStreamSha256: sha256(eventStreamBytes),
+  accessLogSha256: sha256(accessLogBytes),
+  screenshotCount: evidence.screenshots.length,
+  assertions: Object.keys(evidence.assertions).length
+})}\n`);

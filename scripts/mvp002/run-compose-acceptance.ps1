@@ -42,8 +42,13 @@ $env:CQCP_API_ACCEPTANCE_CONTEXT = $apiRuntimeContext
 $env:CQCP_ACCEPTANCE_NGINX_TEMPLATE = (
     Resolve-Path (Join-Path $repo "scripts/mvp002/nginx.acceptance.conf.template")
 ).Path
-$env:CQCP_ADMIN_API_TOKEN = "mvp002-acceptance-admin"
-$env:CQCP_ADMIN_READONLY_TOKEN = "mvp002-acceptance-readonly"
+$previousAdminApiToken = [Environment]::GetEnvironmentVariable("CQCP_ADMIN_API_TOKEN")
+$previousAdminReadonlyToken = [Environment]::GetEnvironmentVariable("CQCP_ADMIN_READONLY_TOKEN")
+$env:CQCP_ADMIN_API_TOKEN = "adm-" + [guid]::NewGuid().ToString("N")
+$env:CQCP_ADMIN_READONLY_TOKEN = "ro-" + [guid]::NewGuid().ToString("N")
+if ($env:CQCP_ADMIN_API_TOKEN -eq $env:CQCP_ADMIN_READONLY_TOKEN) {
+    throw "Acceptance credentials must be distinct."
+}
 Remove-Item Env:\DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
 Remove-Item Env:\CQCP_DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
 Remove-Item Env:\CQCP_MODEL_DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
@@ -159,7 +164,7 @@ try {
         -SkipHttpErrorCheck
     $readonlyApi = Invoke-WebRequest `
         -Uri "$baseUrl/api/admin/model-profiles" `
-        -Headers @{Authorization = "Bearer mvp002-acceptance-readonly"} `
+        -Headers @{Authorization = "Bearer $env:CQCP_ADMIN_READONLY_TOKEN"} `
         -SkipHttpErrorCheck
     $unauthenticatedTaskList = Invoke-WebRequest `
         -Uri "$baseUrl/api/review/tasks" `
@@ -174,8 +179,8 @@ try {
             -or $unauthenticatedPreview.StatusCode -ne 401) {
         throw "Admin authentication/authorization gate is inconsistent."
     }
-    $adminHeaders = @{Authorization = "Bearer mvp002-acceptance-admin"}
-    $readonlyHeaders = @{Authorization = "Bearer mvp002-acceptance-readonly"}
+    $adminHeaders = @{Authorization = "Bearer $env:CQCP_ADMIN_API_TOKEN"}
+    $readonlyHeaders = @{Authorization = "Bearer $env:CQCP_ADMIN_READONLY_TOKEN"}
 
     $fixturePath = Join-Path $repo "packages/test-fixtures/docx/1、奔腾公司企鹅岛项目三标段土建总承包工程合同_缩减版.docx"
     $maliciousFixturePath = Join-Path $runtimeRoot "malicious-preview-body.docx"
@@ -412,6 +417,19 @@ try {
     $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $summaryPath -Encoding utf8
     $summary | ConvertTo-Json -Depth 8
 
+    & node `
+        (Join-Path $repo "scripts/mvp002/capture-browser-evidence.mjs") `
+        $repo `
+        (Join-Path $repo "outputs/task-mvp-002/browser-evidence-current") `
+        $summaryPath
+    if ($LASTEXITCODE -ne 0) {
+        throw "Direct Chrome browser evidence capture failed with exit code $LASTEXITCODE."
+    }
+    & node (Join-Path $repo "scripts/mvp002/verify-browser-evidence.mjs") $repo
+    if ($LASTEXITCODE -ne 0) {
+        throw "Browser evidence verification failed with exit code $LASTEXITCODE."
+    }
+
     & docker @compose logs --no-color 2>&1 | Set-Content -LiteralPath $composeLogPath -Encoding utf8
 } finally {
     if ($started -and -not $KeepRunning) {
@@ -422,5 +440,15 @@ try {
     }
     if ($KeepRunning -and $started) {
         Write-Output "Compose acceptance stack kept running for browser evidence capture."
+    }
+    if ($null -eq $previousAdminApiToken) {
+        Remove-Item Env:\CQCP_ADMIN_API_TOKEN -ErrorAction SilentlyContinue
+    } else {
+        $env:CQCP_ADMIN_API_TOKEN = $previousAdminApiToken
+    }
+    if ($null -eq $previousAdminReadonlyToken) {
+        Remove-Item Env:\CQCP_ADMIN_READONLY_TOKEN -ErrorAction SilentlyContinue
+    } else {
+        $env:CQCP_ADMIN_READONLY_TOKEN = $previousAdminReadonlyToken
     }
 }

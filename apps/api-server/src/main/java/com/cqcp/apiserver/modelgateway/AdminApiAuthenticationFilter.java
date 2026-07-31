@@ -33,6 +33,12 @@ final class AdminApiAuthenticationFilter extends OncePerRequestFilter {
             @Value("${cqcp.admin-api.readonly-token:}") String readonlyToken) {
         this.adminToken = normalize(adminToken);
         this.readonlyToken = normalize(readonlyToken);
+        if (this.adminToken != null
+                && this.readonlyToken != null
+                && secureEquals(this.adminToken, this.readonlyToken)) {
+            throw new IllegalStateException(
+                    "Admin 与只读管理凭据不得配置为相同值");
+        }
     }
 
     @Override

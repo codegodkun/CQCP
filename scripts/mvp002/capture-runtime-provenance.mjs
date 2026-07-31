@@ -4,6 +4,12 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
+import {
+  REDACTION_ALGORITHM,
+  assertRedactedResolvedComposeConfig,
+  redactResolvedComposeConfig
+} from "./runtime-provenance-contract.mjs";
+
 const repoRoot = path.resolve(process.argv[2] ?? ".");
 const mode = process.argv[3] ?? "verify";
 const requestedEvidenceRoot = path.resolve(
@@ -150,7 +156,9 @@ function captureRuntime() {
       path.join(repoRoot, ...relativePath.split("/"))
     ])
   ];
-  const composeConfig = run("docker", [...composeArgs, "config"]);
+  const composeConfig = redactResolvedComposeConfig(
+    run("docker", [...composeArgs, "config"])
+  );
   const resolvedConfigPath = path.join(
     requestedEvidenceRoot,
     "resolved-compose-config.yaml"
@@ -229,7 +237,8 @@ function captureRuntime() {
       resolvedConfig: {
         path: relativePosix(resolvedConfigPath),
         size: composeConfig.length,
-        sha256: sha256(composeConfig)
+        sha256: sha256(composeConfig),
+        redactionAlgorithm: REDACTION_ALGORITHM
       },
       services
     }
@@ -278,6 +287,11 @@ function verifyRuntime() {
     "resolved Compose config escaped the evidence root"
   );
   const resolvedConfig = fs.readFileSync(resolvedConfigPath);
+  assert.equal(
+    evidence.compose.resolvedConfig.redactionAlgorithm,
+    REDACTION_ALGORITHM
+  );
+  assertRedactedResolvedComposeConfig(resolvedConfig);
   assert.equal(resolvedConfig.length, evidence.compose.resolvedConfig.size);
   assert.equal(
     sha256(resolvedConfig),

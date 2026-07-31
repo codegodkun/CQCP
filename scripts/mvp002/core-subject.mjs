@@ -86,8 +86,10 @@ const CORE_BLIND_SCRIPT_NAMES = new Set([
 ]);
 
 const CORE_MVP002_SCRIPT_NAMES = new Set([
+  "browser-evidence-contract.mjs",
+  "browser-evidence-contract.test.mjs",
   "Dockerfile.api-runtime",
-  "capture-browser-upload-evidence.ps1",
+  "capture-browser-evidence.mjs",
   "capture-runtime-provenance.mjs",
   "compose.acceptance.override.yml",
   "core-subject.mjs",
@@ -100,6 +102,8 @@ const CORE_MVP002_SCRIPT_NAMES = new Set([
   "run-compose-acceptance.ps1",
   "run-core-verification.ps1",
   "run-formal-r7.ps1",
+  "runtime-provenance-contract.mjs",
+  "runtime-provenance-contract.test.mjs",
   "verify-browser-evidence.mjs",
   "verify-openapi.mjs",
   "verify-r7-evidence.mjs",

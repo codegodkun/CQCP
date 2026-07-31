@@ -74,6 +74,28 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   保持 canonical artifact path identity；Track B contract 与 Core scope 定向回归
   合计 `15/15 PASS`。该结论只证明最小 fixture/dispatch/seal 同源修复，新的完整
   verification、freeze 与三方从零审计仍待执行。
+- 同源修复后的候选 HEAD `33890cb80178134371f8589a8aa117332f7c6a12` 已完成
+  一轮完整 verification 和 freeze；CC AUDIT 与代码/架构 Codex auditor 曾给出
+  `GO`，但测试/安全 Codex auditor 给出 `NO_GO（P1=2 / P2=1 / blocking=3）`，
+  因此该轮三份结论已全部失效。三个根因为：浏览器汇总 JSON 未由不可变原始事件
+  与服务端 access log 独立重建；resolved Compose config 保存验收 token；Admin 与
+  readonly token 配成相同值时先命中 Admin 分支。
+- 上述三项已完成最小整改和定向验证：相同 token 在 Filter 构造期 fail closed，并
+  覆盖相同、缺失、单角色和轮换场景；resolved Compose config 使用字段级确定性
+  脱敏并保留 Secret Reference；旧自报式 browser capture 入口已移除，Compose
+  每轮生成独立短期随机 token，由隔离 Chrome 直接通过 CDP 捕获 native
+  filechooser、network、console/dialog、native download 与 DOM 事件，验证器同时
+  解析绑定 Chrome Nginx access log。Node 负向回归 `13/13`、鉴权定向 Gradle
+  `4/4` 通过；首次真实重建在修正旧固定 token 请求后通过，绑定 primary
+  `TASK_7e642342e98b4af4b3b4574a15047bcf / EXEC_ef28692a49214cc09b2645916448044a`、
+  browser upload `TASK_b4e3ddce26c94d9aa5c1d27481993799 /
+  EXEC_69a4fd5a55b9401a8761c035accaf0f4`、malicious
+  `TASK_9acaccfbdce54b849c7a2273bead0b27 / EXEC_f1aad66e69bc4e2d99f6d90d82431e52`；
+  CDP event stream SHA 为
+  `08918f1b77dcaa65812e08004dc119eb5a3d8bedcc4fc88fb0a474ac362d4f39`，
+  Chrome access log SHA 为
+  `32b50aba526a48c4c00430d180cd64e4de4e1f9c8018558f1d9c9b6608af6bcd`。
+  这些只是整改定向证据；完整 verification、新 freeze 与三方从零审计仍未开始。
 
 ## 当前活跃任务
 
@@ -85,7 +107,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. `ea19a52a…` 三方审计已 `NO_GO` 并失效，永远不能用于后续收口。
+1. `ea19a52a…` 及 `33890cb…` 对应的三方审计均已因 `NO_GO` 失效，永远不能用于
+   后续收口；其中任一旧 `GO` 也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
    CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
@@ -96,13 +119,12 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 完成 `contextType` provenance、Core/Provider 派生门禁、Compose 配置同源
-   provenance、逐轮 JUnit 冻结和 D1/Memory 叙事同步，执行定向回归后形成新的
-   clean Core candidate commit。
-2. 在新 HEAD 上重新执行 R7，并以受控浏览器
-   原始 filechooser/console/dialog/network/DOM 证据和默认拒绝模型 egress 的 Compose
-   证据重建 `scripts/mvp002/run-core-verification.ps1` 全量结果。
-3. 冻结新 subject，执行 CC AUDIT 与两个全新 Codex 独立审计；旧审计结论不复用。
+1. 对本轮三项审计整改执行完整定向回归，形成新的 clean Core candidate commit。
+2. 在新 HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
+   OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
+   验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
+3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex
+   独立审计；旧审计会话和结论不复用。
 4. 三审全零 GO 后 push、创建 PR、等待 CI；满足既有授权条件后 merge。
 5. Core merge 后建立并执行一次新的 Track B holdout；失败即停止并重新收敛。
 
