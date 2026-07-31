@@ -214,7 +214,7 @@ try {
         Join-Path $repo "outputs/task-034-mvp-e2e-acceptance-v3/r7-evidence-seal.json"
     ) -Raw | ConvertFrom-Json
 
-    Invoke-Logged "d1-combined-443" (Join-Path $repo "apps/api-server") {
+    Invoke-Logged "d1-combined-444" (Join-Path $repo "apps/api-server") {
         gradle test --no-daemon --rerun-tasks `
             --tests "com.cqcp.apiserver.reviewengine.ConsistencyCandidateCollectorTest" `
             --tests "com.cqcp.apiserver.reviewengine.ConsistencySetCollectorTest" `
@@ -229,11 +229,11 @@ try {
             --tests "com.cqcp.apiserver.reviewengine.VersionedRatioScopeV20260729Test"
     }
     $d1CombinedCounts = Read-BackendTestCounts
-    if ($d1CombinedCounts.tests -ne 443 `
+    if ($d1CombinedCounts.tests -ne 444 `
             -or $d1CombinedCounts.failures -ne 0 `
             -or $d1CombinedCounts.errors -ne 0 `
             -or $d1CombinedCounts.skipped -ne 0) {
-        throw "D1 combined gate must be exactly 443/0/0/0."
+        throw "D1 combined gate must be exactly 444/0/0/0."
     }
 
     Invoke-Logged "d2-seam-test" (Join-Path $repo "apps/api-server") {
