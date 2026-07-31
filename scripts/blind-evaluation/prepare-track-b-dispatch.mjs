@@ -59,6 +59,9 @@ const sourceR7ManifestReadPath = resolveRelativeOverride(
   sourceR7ManifestArtifactPath,
   "TRACK_B_SOURCE_R7_OVERRIDE",
 );
+const packetReadRoot = packetManifestOverrideRelativePath === undefined
+  ? packetRoot
+  : path.dirname(manifestReadPath);
 
 const manifestBytes = await readFile(manifestReadPath);
 const manifest = JSON.parse(manifestBytes.toString("utf8"));
@@ -94,8 +97,9 @@ const agentTasks = [
 const assignedAt = new Date().toISOString();
 const assignments = [];
 for (const [index, sample] of manifest.samples.entries()) {
-  const packetPath = path.join(packetRoot, sample.path);
-  const packetBytes = await readFile(packetPath);
+  const packetArtifactPath = path.join(packetRoot, sample.path);
+  const packetReadPath = path.join(packetReadRoot, sample.path);
+  const packetBytes = await readFile(packetReadPath);
   const packetHash = sha256(packetBytes);
   if (packetHash !== sample.sha256) {
     throw new Error(`TRACK_B_HASH_MISMATCH:${sample.sampleId}`);
@@ -133,7 +137,7 @@ for (const [index, sample] of manifest.samples.entries()) {
     agentTask: agentTasks[index],
     forkTurns: "none",
     assignedAt,
-    packetPath: posixRelative(packetPath),
+    packetPath: posixRelative(packetArtifactPath),
     packetSetSha256: packetHash,
   });
 }

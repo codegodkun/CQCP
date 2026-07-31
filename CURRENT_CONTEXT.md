@@ -69,9 +69,11 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   `203/208`、5 项失败，故未生成 verification summary 或 canonical freeze。
   主 Codex 已从原封存工作区恢复与历史 manifest SHA 精确匹配的三份 packet，
   将 packet + manifest 作为同一 test-resource directory 供 `makeFixture` 消费，
-  并将三份 packet 纳入 Core subject 闭包；Track B contract 与 Core scope 定向
-  回归合计 `14/14 PASS`。该结论只证明最小 fixture 修复，新的完整 verification、
-  freeze 与三方从零审计仍待执行。
+  将三份 packet 纳入 Core subject 闭包，并令 dispatch 的 verify-only historical
+  override 从 manifest 同目录读取 packet bytes、同时保持 canonical artifact path
+  identity；Track B contract 与 Core scope 定向回归合计 `15/15 PASS`。该结论只
+  证明最小 fixture/dispatch 同源修复，新的完整 verification、freeze 与三方从零
+  审计仍待执行。
 
 ## 当前活跃任务
 

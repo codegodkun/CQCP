@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 const scriptRoot = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptRoot, "../..");
 const contractPath = path.join(scriptRoot, "track-b-opinion-contract.mjs");
+const dispatchPath = path.join(scriptRoot, "prepare-track-b-dispatch.mjs");
 
 const makeFixture = async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "cqcp-track-b-"));
@@ -88,6 +89,26 @@ const runContract = (
     {
     cwd: repoRoot,
     encoding: "utf8",
+    },
+  );
+
+const runDispatch = (
+  root,
+  packetManifestOverrideRelativePath,
+  sourceR7ManifestOverrideRelativePath,
+) =>
+  spawnSync(
+    process.execPath,
+    [
+      dispatchPath,
+      root,
+      "verify",
+      packetManifestOverrideRelativePath,
+      sourceR7ManifestOverrideRelativePath,
+    ],
+    {
+      cwd: repoRoot,
+      encoding: "utf8",
     },
   );
 
@@ -218,6 +239,46 @@ test("Track B v2 seal verifies hash-equivalent history after live R7 advances", 
       "outputs/task-eval-002/track-b-admission.json",
       historicalManifestRelativePath,
       historicalR7RelativePath,
+    );
+    assert.equal(verify.status, 0, verify.stderr);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("Track B dispatch verifies historical packets after live packet path advances", async () => {
+  const root = await makeFixture();
+  try {
+    const historyRoot = path.join(root, "history/track-b-v2");
+    const historicalPacketRoot = path.join(historyRoot, "track-b-inputs-v1");
+    const historicalR7Path = path.join(historyRoot, "source-r7-run-manifest.json");
+    await mkdir(historyRoot, { recursive: true });
+    await cp(
+      path.join(root, "outputs/task-eval-002/track-b-inputs-v1"),
+      historicalPacketRoot,
+      { recursive: true },
+    );
+    await cp(
+      path.join(
+        root,
+        "outputs/task-034-mvp-e2e-acceptance-v3/run-manifest.json",
+      ),
+      historicalR7Path,
+    );
+    await writeFile(
+      path.join(
+        root,
+        "outputs/task-eval-002/track-b-inputs-v1/" +
+          "CQCP-MVP-DOCX-001.track-b.json",
+      ),
+      "{}\n",
+      "utf8",
+    );
+
+    const verify = runDispatch(
+      root,
+      "history/track-b-v2/track-b-inputs-v1/manifest.json",
+      "history/track-b-v2/source-r7-run-manifest.json",
     );
     assert.equal(verify.status, 0, verify.stderr);
   } finally {
