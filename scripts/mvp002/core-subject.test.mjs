@@ -42,6 +42,10 @@ test("Core scope admits product paths and rejects Provider/audit/evidence paths"
     isCoreSourcePath("outputs/task-eval-002/freeze-manifest.json"),
     false,
   );
+  assert.equal(
+    isCoreSourcePath("apps/admin-web/src/provider/InnocentRename.ts"),
+    false,
+  );
 });
 
 test("Core changed-path gate fails closed on one excluded path", () => {
@@ -68,6 +72,63 @@ test("Core import closure rejects a Provider dependency", () => {
     assert.throws(
       () =>
         assertCoreImportClosure(root, ["scripts/mvp002/core-subject.mjs"]),
+      /excluded Provider\/audit code/,
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("Core import closure rejects a TypeScript Provider dependency", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cqcp-core-ts-"));
+  try {
+    const corePath = path.join(root, "apps/admin-web/src/App.tsx");
+    const providerPath = path.join(
+      root,
+      "apps/admin-web/src/provider/client.ts",
+    );
+    fs.mkdirSync(path.dirname(providerPath), { recursive: true });
+    fs.writeFileSync(corePath, 'import "./provider/client";\n', "utf8");
+    fs.writeFileSync(providerPath, "export const call = () => 1;\n", "utf8");
+    assert.throws(
+      () => assertCoreImportClosure(root, ["apps/admin-web/src/App.tsx"]),
+      /excluded Provider\/audit code/,
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("Core import closure rejects a Java Provider dependency", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cqcp-core-java-"));
+  try {
+    const corePath = path.join(
+      root,
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java",
+    );
+    const providerPath = path.join(
+      root,
+      "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/DeepSeekProviderAdapter.java",
+    );
+    fs.mkdirSync(path.dirname(corePath), { recursive: true });
+    fs.writeFileSync(
+      corePath,
+      [
+        "package com.cqcp.apiserver.reviewengine;",
+        "import com.cqcp.apiserver.reviewengine.DeepSeekProviderAdapter;",
+      ].join("\n"),
+      "utf8",
+    );
+    fs.writeFileSync(
+      providerPath,
+      "package com.cqcp.apiserver.reviewengine;\n",
+      "utf8",
+    );
+    assert.throws(
+      () =>
+        assertCoreImportClosure(root, [
+          "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java",
+        ]),
       /excluded Provider\/audit code/,
     );
   } finally {

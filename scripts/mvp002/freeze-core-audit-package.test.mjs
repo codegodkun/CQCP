@@ -14,6 +14,54 @@ import {
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
 
+function writeJUnitEvidence(root, runName, tests) {
+  const runRoot = path.join(
+    root,
+    "outputs/task-mvp-002/core-audit/verification/junit",
+    runName,
+  );
+  fs.mkdirSync(runRoot, { recursive: true });
+  const xml = Buffer.from(
+    `<testsuite name="${runName}" tests="${tests}" failures="0" errors="0" skipped="0"></testsuite>\n`,
+  );
+  const xmlPath = path.join(runRoot, `TEST-${runName}.xml`);
+  fs.writeFileSync(xmlPath, xml);
+  const relativeXmlPath = path
+    .relative(root, xmlPath)
+    .split(path.sep)
+    .join("/");
+  const counts = {
+    suites: 1,
+    tests,
+    failures: 0,
+    errors: 0,
+    skipped: 0,
+  };
+  const manifest = {
+    schemaVersion: "task-mvp-002-junit-evidence-v1",
+    runName,
+    counts,
+    files: [{
+      path: relativeXmlPath,
+      size: xml.length,
+      sha256: sha256(xml),
+    }],
+  };
+  const manifestBytes = Buffer.from(`${JSON.stringify(manifest)}\n`);
+  const manifestPath = path.join(runRoot, "junit-manifest.json");
+  fs.writeFileSync(manifestPath, manifestBytes);
+  return {
+    runName,
+    manifestPath: path
+      .relative(root, manifestPath)
+      .split(path.sep)
+      .join("/"),
+    manifestSize: manifestBytes.length,
+    manifestSha256: sha256(manifestBytes),
+    counts,
+  };
+}
+
 test("verification summary binds every log and external evidence byte", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "cqcp-core-freeze-"));
   try {
@@ -23,11 +71,30 @@ test("verification summary binds every log and external evidence byte", () => {
     const evidenceBytes = Buffer.from('{"status":"PASS"}\n');
     fs.writeFileSync(path.join(root, "logs/test.log"), logBytes);
     fs.writeFileSync(path.join(root, "evidence/result.json"), evidenceBytes);
+    const boundary = Buffer.from(
+      `${JSON.stringify({
+        schemaVersion: "task-mvp-002-core-boundary-v1",
+        status: "PASS",
+        providerA0Included: false,
+      })}\n`,
+    );
+    const boundaryPath = path.join(root, "evidence/core-boundary.json");
+    fs.writeFileSync(boundaryPath, boundary);
+    const junitEvidence = [
+      writeJUnitEvidence(root, "d1-combined", 444),
+      writeJUnitEvidence(root, "d2-seam", 20),
+      writeJUnitEvidence(root, "backend-first", 891),
+      writeJUnitEvidence(root, "backend-repeat", 891),
+    ];
     const summary = {
-      schemaVersion: "task-mvp-002-core-verification-v1",
+      schemaVersion: "task-mvp-002-core-verification-v2",
       status: "PASS",
       networkModelCalls: 0,
       providerA0Included: false,
+      coreBoundary: {
+        path: "evidence/core-boundary.json",
+        sha256: sha256(boundary),
+      },
       subject: {
         baseCommit: "1035739b751386176e47c6871738a62bff86de02",
         headCommit: "a".repeat(40),
@@ -44,6 +111,8 @@ test("verification summary binds every log and external evidence byte", () => {
         size: evidenceBytes.length,
         sha256: sha256(evidenceBytes),
       }],
+      backend: junitEvidence.at(-1).counts,
+      junitEvidence,
     };
     const summaryPath = path.join(root, "summary.json");
     fs.writeFileSync(summaryPath, `${JSON.stringify(summary)}\n`);
@@ -68,7 +137,7 @@ test("verification summary rejects another subject HEAD", () => {
     fs.writeFileSync(
       summaryPath,
       `${JSON.stringify({
-        schemaVersion: "task-mvp-002-core-verification-v1",
+        schemaVersion: "task-mvp-002-core-verification-v2",
         status: "PASS",
         networkModelCalls: 0,
         providerA0Included: false,
@@ -102,7 +171,7 @@ test("verification summary rejects network calls and Provider inclusion", () => 
     fs.writeFileSync(
       summaryPath,
       `${JSON.stringify({
-        schemaVersion: "task-mvp-002-core-verification-v1",
+        schemaVersion: "task-mvp-002-core-verification-v2",
         status: "PASS",
         networkModelCalls: 1,
         providerA0Included: true,

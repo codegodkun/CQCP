@@ -11,6 +11,7 @@ import {
   assertCoreImportClosure,
   CORE_BASE_COMMIT,
   CORE_SCOPE_VERSION,
+  deriveCoreBoundaryEvidence,
   normalizeRepoPath,
 } from "./core-subject.mjs";
 
@@ -124,6 +125,7 @@ export function validateVerificationSummary(
   repoRoot,
   summaryPath,
   expectedHeadCommit = null,
+  expectedSubjectPaths = null,
 ) {
   assert.equal(
     fs.existsSync(summaryPath) && fs.statSync(summaryPath).isFile(),
@@ -134,7 +136,7 @@ export function validateVerificationSummary(
   const summary = JSON.parse(bytes.toString("utf8"));
   assert.equal(
     summary.schemaVersion,
-    "task-mvp-002-core-verification-v1",
+    "task-mvp-002-core-verification-v2",
   );
   assert.equal(summary.status, "PASS");
   assert.equal(summary.networkModelCalls, 0);
@@ -171,6 +173,10 @@ export function validateVerificationSummary(
     Array.isArray(summary.evidenceReferences) &&
       summary.evidenceReferences.length > 0,
   );
+  assert.ok(
+    Array.isArray(summary.junitEvidence) &&
+      summary.junitEvidence.length === 4,
+  );
 
   for (const run of summary.runs) {
     assert.equal(run.exitCode, 0, `Verification run failed: ${run.name}`);
@@ -201,6 +207,118 @@ export function validateVerificationSummary(
       `Evidence hash mismatch: ${evidence.path}`,
     );
   }
+  const coreBoundaryPath = path.resolve(
+    repoRoot,
+    summary.coreBoundary?.path ?? "",
+  );
+  assert.equal(
+    fs.existsSync(coreBoundaryPath) &&
+      fs.statSync(coreBoundaryPath).isFile(),
+    true,
+    "Core boundary evidence is missing",
+  );
+  const coreBoundaryBytes = fs.readFileSync(coreBoundaryPath);
+  assert.equal(
+    sha256(coreBoundaryBytes),
+    summary.coreBoundary.sha256,
+    "Core boundary evidence hash mismatch",
+  );
+  const coreBoundary = JSON.parse(coreBoundaryBytes.toString("utf8"));
+  assert.equal(coreBoundary.status, "PASS");
+  assert.equal(coreBoundary.providerA0Included, false);
+  assert.equal(summary.providerA0Included, coreBoundary.providerA0Included);
+  if (expectedSubjectPaths !== null) {
+    assert.deepEqual(
+      coreBoundary,
+      deriveCoreBoundaryEvidence(repoRoot, expectedSubjectPaths),
+      "Core boundary evidence is not derived from the frozen subject",
+    );
+  }
+
+  const expectedJUnitRuns = new Map([
+    ["d1-combined", 444],
+    ["d2-seam", 20],
+    ["backend-first", null],
+    ["backend-repeat", null],
+  ]);
+  const verifiedJUnit = new Map();
+  for (const reference of summary.junitEvidence) {
+    assert.equal(
+      expectedJUnitRuns.has(reference.runName),
+      true,
+      `Unexpected JUnit evidence run: ${reference.runName}`,
+    );
+    assert.equal(
+      verifiedJUnit.has(reference.runName),
+      false,
+      `Duplicate JUnit evidence run: ${reference.runName}`,
+    );
+    const manifestPath = path.resolve(repoRoot, reference.manifestPath);
+    const expectedPrefix = `${path.resolve(
+      repoRoot,
+      "outputs/task-mvp-002/core-audit/verification/junit",
+      reference.runName,
+    )}${path.sep}`;
+    assert.equal(
+      `${manifestPath}${path.sep}`.startsWith(expectedPrefix),
+      true,
+      `JUnit manifest escaped its run directory: ${reference.manifestPath}`,
+    );
+    const manifestBytes = fs.readFileSync(manifestPath);
+    assert.equal(manifestBytes.length, reference.manifestSize);
+    assert.equal(sha256(manifestBytes), reference.manifestSha256);
+    const manifest = JSON.parse(manifestBytes.toString("utf8"));
+    assert.equal(
+      manifest.schemaVersion,
+      "task-mvp-002-junit-evidence-v1",
+    );
+    assert.equal(manifest.runName, reference.runName);
+    assert.deepEqual(manifest.counts, reference.counts);
+    assert.equal(manifest.files.length, manifest.counts.suites);
+    const recomputed = {
+      suites: manifest.files.length,
+      tests: 0,
+      failures: 0,
+      errors: 0,
+      skipped: 0,
+    };
+    for (const file of manifest.files) {
+      const absolute = path.resolve(repoRoot, file.path);
+      assert.equal(
+        `${absolute}${path.sep}`.startsWith(expectedPrefix),
+        true,
+        `JUnit XML escaped its run directory: ${file.path}`,
+      );
+      const bytes = fs.readFileSync(absolute);
+      assert.equal(bytes.length, file.size);
+      assert.equal(sha256(bytes), file.sha256);
+      const suiteTag = bytes
+        .toString("utf8")
+        .match(/<testsuite\b[^>]*>/)?.[0];
+      assert.ok(suiteTag, `Missing testsuite element: ${file.path}`);
+      for (const field of ["tests", "failures", "errors", "skipped"]) {
+        const value = suiteTag.match(
+          new RegExp(`\\b${field}="([0-9]+)"`),
+        )?.[1];
+        recomputed[field] += Number(value ?? 0);
+      }
+    }
+    assert.deepEqual(recomputed, manifest.counts);
+    const expectedTests = expectedJUnitRuns.get(reference.runName);
+    if (expectedTests !== null) {
+      assert.equal(recomputed.tests, expectedTests);
+    }
+    assert.equal(recomputed.failures, 0);
+    assert.equal(recomputed.errors, 0);
+    assert.equal(recomputed.skipped, 0);
+    verifiedJUnit.set(reference.runName, recomputed);
+  }
+  assert.deepEqual(
+    verifiedJUnit.get("backend-first"),
+    verifiedJUnit.get("backend-repeat"),
+    "Backend repeat JUnit evidence differs",
+  );
+  assert.deepEqual(summary.backend, verifiedJUnit.get("backend-repeat"));
   return {
     path: normalizeRepoPath(path.relative(repoRoot, summaryPath)),
     size: bytes.length,
@@ -259,6 +377,7 @@ export function buildCoreFreeze(repoRoot, summaryPath) {
     absoluteRoot,
     path.resolve(summaryPath),
     headCommit,
+    subjectPaths,
   );
   const tree = gitText(absoluteRoot, "rev-parse", `${headCommit}^{tree}`);
   const sourceStatusSha256 = sha256(Buffer.from(canonicalJson(statusRecords)));
@@ -302,7 +421,7 @@ export function buildCoreFreeze(repoRoot, summaryPath) {
       },
       evidenceReferences: verification.summary.evidenceReferences,
       exclusions: {
-        providerA0: true,
+        providerA0: !verification.summary.providerA0Included,
         providerAuditTransport: true,
         outputsAsSource: true,
         modelNetworkCallsDuringVerification: true,

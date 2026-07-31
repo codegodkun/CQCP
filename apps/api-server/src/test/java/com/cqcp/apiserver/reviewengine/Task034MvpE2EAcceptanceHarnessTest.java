@@ -1076,6 +1076,9 @@ class Task034MvpE2eAcceptanceHarnessTest {
             assertThat(output.actualAnchors()).isEqualTo(queriedPoint.sourceAnchors());
             assertThat(output.evidenceSummary()).containsExactlyElementsOf(
                     queriedPoint.sourceAnchors().stream().map(SourceAnchorSummary::evidenceSummary).toList());
+            assertThat(queriedPoint.sourceAnchors())
+                    .allSatisfy(anchor -> assertThat(anchor.contextType())
+                            .isIn("NORMAL", "TOC"));
         }
         Map<ReviewPointCode, PointStatus> statusByPoint = snapshot.pointResults().stream()
                 .collect(Collectors.toMap(PointReviewResult::reviewPointCode, PointReviewResult::pointStatus));

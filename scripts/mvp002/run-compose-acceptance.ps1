@@ -329,7 +329,10 @@ try {
         (Join-Path $repo "scripts/mvp002/capture-runtime-provenance.mjs") `
         $repo `
         "capture" `
-        $evidence
+        $evidence `
+        "cqcp-mvp002-acceptance" `
+        "deploy/compose/compose.yml" `
+        "scripts/mvp002/compose.acceptance.override.yml"
     if ($LASTEXITCODE -ne 0) {
         throw "Runtime provenance capture failed with exit code $LASTEXITCODE."
     }

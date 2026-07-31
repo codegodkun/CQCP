@@ -26,10 +26,24 @@ const outputPath = path.join(
   requestedEvidenceRoot,
   "runtime-provenance.json"
 );
-const composeFiles = [
+const expectedComposeFiles = [
   "deploy/compose/compose.yml",
-  "outputs/task-mvp-002/compose.acceptance.override.yml"
+  "scripts/mvp002/compose.acceptance.override.yml"
 ];
+const composeProject = process.argv[5] ?? "";
+const composeFiles = process.argv.slice(6).map((filePath) =>
+  filePath.replaceAll("\\", "/")
+);
+assert.equal(
+  composeProject,
+  "cqcp-mvp002-acceptance",
+  "runtime provenance requires the acceptance Compose project"
+);
+assert.deepEqual(
+  composeFiles,
+  expectedComposeFiles,
+  "runtime provenance must receive the executor's exact frozen Compose files"
+);
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
 const run = (command, args, options = {}) => {
@@ -130,13 +144,18 @@ function captureRuntime() {
   const composeArgs = [
     "compose",
     "-p",
-    "cqcp-mvp002-acceptance",
+    composeProject,
     ...composeFiles.flatMap((relativePath) => [
       "-f",
       path.join(repoRoot, ...relativePath.split("/"))
     ])
   ];
   const composeConfig = run("docker", [...composeArgs, "config"]);
+  const resolvedConfigPath = path.join(
+    requestedEvidenceRoot,
+    "resolved-compose-config.yaml"
+  );
+  fs.writeFileSync(resolvedConfigPath, composeConfig);
   const services = {};
   for (const serviceName of ["api-server", "admin-web", "postgres"]) {
     const containerId = run("docker", [
@@ -165,12 +184,34 @@ function captureRuntime() {
       /^sha256:[a-f0-9]{64}$/,
       `invalid image ID for ${serviceName}`
     );
-    services[serviceName] = { containerId, imageId };
+    const inspect = JSON.parse(
+      run("docker", ["inspect", containerId]).toString("utf8")
+    );
+    assert.equal(inspect.length, 1);
+    const labels = inspect[0].Config?.Labels ?? {};
+    assert.equal(labels["com.docker.compose.project"], composeProject);
+    assert.equal(labels["com.docker.compose.service"], serviceName);
+    assert.match(
+      labels["com.docker.compose.config-hash"] ?? "",
+      /^[a-f0-9]{64}$/
+    );
+    const networks = Object.keys(
+      inspect[0].NetworkSettings?.Networks ?? {}
+    ).sort((left, right) => left.localeCompare(right, "en"));
+    assert.ok(networks.length > 0, `missing live networks for ${serviceName}`);
+    services[serviceName] = {
+      containerId,
+      imageId,
+      composeProject: labels["com.docker.compose.project"],
+      composeService: labels["com.docker.compose.service"],
+      composeConfigHash: labels["com.docker.compose.config-hash"],
+      networks
+    };
   }
 
   const bootJar = bootJars[0];
   const evidence = {
-    schemaVersion: "task-mvp-002-runtime-provenance-v1",
+    schemaVersion: "task-mvp-002-runtime-provenance-v2",
     status: "PASS",
     capturedAt: new Date().toISOString(),
     subject: currentSubject(),
@@ -180,12 +221,16 @@ function captureRuntime() {
       sha256: sha256(fs.readFileSync(bootJar))
     },
     compose: {
-      project: "cqcp-mvp002-acceptance",
+      project: composeProject,
       files: composeFiles.map((relativePath) => ({
         path: relativePath,
         sha256: hashFile(relativePath)
       })),
-      resolvedConfigSha256: sha256(composeConfig),
+      resolvedConfig: {
+        path: relativePosix(resolvedConfigPath),
+        size: composeConfig.length,
+        sha256: sha256(composeConfig)
+      },
       services
     }
   };
@@ -201,9 +246,14 @@ function verifyRuntime() {
   const evidence = JSON.parse(fs.readFileSync(outputPath, "utf8"));
   assert.equal(
     evidence.schemaVersion,
-    "task-mvp-002-runtime-provenance-v1"
+    "task-mvp-002-runtime-provenance-v2"
   );
   assert.equal(evidence.status, "PASS");
+  assert.equal(evidence.compose.project, composeProject);
+  assert.deepEqual(
+    evidence.compose.files.map((composeFile) => composeFile.path),
+    composeFiles
+  );
   assert.deepEqual(
     currentSubject(),
     evidence.subject,
@@ -216,6 +266,23 @@ function verifyRuntime() {
       `bound compose file changed: ${composeFile.path}`
     );
   }
+  const resolvedConfigPath = path.resolve(
+    repoRoot,
+    evidence.compose.resolvedConfig.path
+  );
+  assert.equal(
+    `${resolvedConfigPath}${path.sep}`.startsWith(
+      `${requestedEvidenceRoot}${path.sep}`
+    ),
+    true,
+    "resolved Compose config escaped the evidence root"
+  );
+  const resolvedConfig = fs.readFileSync(resolvedConfigPath);
+  assert.equal(resolvedConfig.length, evidence.compose.resolvedConfig.size);
+  assert.equal(
+    sha256(resolvedConfig),
+    evidence.compose.resolvedConfig.sha256
+  );
   for (const serviceName of ["api-server", "admin-web", "postgres"]) {
     assert.match(
       evidence.compose.services[serviceName].containerId,
@@ -225,6 +292,19 @@ function verifyRuntime() {
       evidence.compose.services[serviceName].imageId,
       /^sha256:[a-f0-9]{64}$/
     );
+    assert.equal(
+      evidence.compose.services[serviceName].composeProject,
+      composeProject
+    );
+    assert.equal(
+      evidence.compose.services[serviceName].composeService,
+      serviceName
+    );
+    assert.match(
+      evidence.compose.services[serviceName].composeConfigHash,
+      /^[a-f0-9]{64}$/
+    );
+    assert.ok(evidence.compose.services[serviceName].networks.length > 0);
   }
   return evidence;
 }

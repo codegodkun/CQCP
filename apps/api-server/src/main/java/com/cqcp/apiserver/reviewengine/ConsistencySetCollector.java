@@ -376,7 +376,8 @@ final class ConsistencySetCollector {
             var loc = "TABLE_CELL".equals(c.previewAnchorLevel()) ? "TABLE_CELL"
                     : (c.blockId() != null && !c.blockId().isBlank() ? "BLOCK_LEVEL" : null);
             result.add(new PointEvidenceOccurrence(ce.canonicalValue(), c.blockId(), c.blockText(),
-                    c.sectionPath(), c.regionType(), EvidenceConfidenceLevel.HIGH.name(), loc, c.previewElementRef()));
+                    c.sectionPath(), c.regionType(), c.contextType(),
+                    EvidenceConfidenceLevel.HIGH.name(), loc, c.previewElementRef()));
         }
         result.sort((a, b) -> {
             var cmp = Integer.compare(indexOf(doc, a.blockId()), indexOf(doc, b.blockId()));
@@ -405,7 +406,7 @@ final class ConsistencySetCollector {
         var first = occs.isEmpty() ? null : occs.getFirst();
         var summary = "一致性扫描 READY: " + (distinctValues.size() == 1 ? "值=" + distinctValues.getFirst() : distinctValues.size() + " 个不同值");
         return new PointEvidence(code, role, cv, EvidenceStatus.CONFIRMED,
-                "NATIVE_WORD", "STRUCTURED", null,
+                "NATIVE_WORD", "STRUCTURED", first != null ? first.contextType() : null,
                 first != null ? first.blockId() : null, EvidenceConfidenceLevel.HIGH.name(), summary,
                 null, null,
                 List.of(new EvidenceSlotCoverage(keyOf(code), true, true, EvidenceSlotCoverageStatus.SATISFIED, null, true)),

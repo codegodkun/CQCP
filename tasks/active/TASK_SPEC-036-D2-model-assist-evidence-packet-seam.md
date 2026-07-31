@@ -72,7 +72,9 @@ Task Level：`L3 高风险治理`
    字段；所有 candidate anchor 可追溯到输入 occurrence。
 4. 三份 R7 same-run 输入生成恰好 27 个 packet、3 个 sample family-plan 集合；
    `modelCallsAllowed=false`、27/27 `ZERO_CALL_REQUIRED`，没有全文 fallback。
-5. TASK-034 R7、既有 413、D1 30、合并 443、Track B seam tests 与完整后端门禁全部通过。
+5. TASK-034 R7、审计整改后既有 414、D1 30、合并 444、Track B seam tests
+   与完整后端门禁全部通过；每轮 JUnit XML 必须独立保存并哈希，不能依赖后续
+   Gradle run 覆盖后的共享目录。
 6. 未取得样本公网外发授权时 DeepSeek runner 仍在网络前返回
    `EXTERNAL_EGRESS_NOT_AUTHORIZED`。
 

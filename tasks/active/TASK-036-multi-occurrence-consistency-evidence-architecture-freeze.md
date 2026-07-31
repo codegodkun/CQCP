@@ -200,7 +200,7 @@ TASK-034 R7 PASS / MILESTONE FINAL AUDIT PENDING
 * 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`。
 * MVP-002 worktree 增量：B1 versioned policy、B2 loader/gate、C1 inactive runtime
   core 和 C2 execution activation 已集成；定向联合回归 413/413。
-* D1/R7 增量：D1 30/30、与既有回归合并 443/443；R7 为 27/27
+* D1/R7 增量：D1 30/30、独立审计安全整改后与既有回归合并 444/444；R7 为 27/27
   candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
   70 production semantic ledger、0 SYS/Finding。
 * D2/Track B 增量：seam 20/20；3 份包、27 packet、9 plan、57 occurrence，
@@ -212,5 +212,10 @@ TASK-034 R7 PASS / MILESTONE FINAL AUDIT PENDING
 * 2026-07-31 中途收敛：B1/B2/C1/C2/D1/D2 runtime seam 纳入先行 Core
   integration unit；Core 完整验证、正式三方全零审计、CI 和 merge 后才可声明
   `seamIntegratedIntoMainline=true`。该顺序不授权 Provider A0、A1/A2 或 A3。
+* 2026-07-31 `ea19a52a…` 三审发现 consistency occurrence 未携带 parser
+  `contextType`，使点级 SourceAnchor 与 Runtime EvidencePacket 输出 `null`。
+  限定整改为 occurrence 级 provenance 贯通与非空 enum 校验；不修改
+  CandidateResolver、EvidenceSlot、裁判或 Finding。旧 freeze 已失效，必须从
+  新 HEAD 重跑 R7 和三审。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
   `TASK-028 / TASK-031 / TASK-032` 已解锁；未授权 commit、push、PR 或 merge。

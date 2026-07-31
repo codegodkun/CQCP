@@ -261,8 +261,10 @@ structured `paymentMethod`、sampleId、fixture、人工 expected、human
 
 宿主命令均在 PowerShell 7 执行，统一带 `--no-daemon --rerun-tasks`：
 
-1. 既有 C1/C2/R6B 回归类固定为以下 10 类，D1 不增加或删除其 test invocation；
-   基线与 D1 后均须精确 `413 tests / 0 failures / 0 errors / 0 skipped`：
+1. 既有 C1/C2/R6B 回归类固定为以下 10 类，D1 不增加或删除其 test class；
+   R10/R11 安全整改新增的 1 个防御性 invocation 属于独立审计整改例外，
+   不改变 D1 业务范围；整改后的基线与 D1 后均须精确
+   `414 tests / 0 failures / 0 errors / 0 skipped`：
    - `ConsistencyCandidateCollectorTest`
    - `ConsistencySetCollectorTest`
    - `MinimalCandidateResolverTest`
@@ -280,7 +282,8 @@ structured `paymentMethod`、sampleId、fixture、人工 expected、human
    block；ledger/SYS；dataflow invariance；v29 loader/gate/release rollback；
    ordinary binding 不变、bridge 同值污染替换 adversarial、production branch
    ledger 与 human exclusion 分账。必须为 `30/0/0/0`。
-3. 两组合并门禁必须精确 `443/0/0/0`；XML testcase 名、计数和 console
+3. 两组合并门禁必须精确 `444/0/0/0`；每轮 XML testcase 名、计数、逐文件
+   SHA-256 和 console
    SHA-256 进入 R7 审计包。
 4. Node review-assets validator/tests 必须全部通过；v15 两个 hash 必须与 §1
    一致；v2 六个 output 文件 SHA-256 必须保持：
@@ -341,8 +344,10 @@ binding 必须保持。任何一项变化均表示回滚失败。
 * `v20260729.1` assets、loader/release/gate、inactive branch classifier 与五类
   point-local ratio probe 已在 `codex/task-mvp-002` worktree 实现；v15 asset 与
   v2 六个历史输出 hash 保持冻结。
-* 既有 10 类回归为 `413/0/0/0`，D1 动态门禁为 `30/0/0/0`，合并为
-  `443/0/0/0`；当前 subject 的最终统一验证已通过并保存原始 console。
+* 既有 10 类回归在独立审计安全整改后为 `414/0/0/0`，D1 动态门禁为
+  `30/0/0/0`，合并为 `444/0/0/0`；计数变化仅同步已接受的防御性回归
+  invocation，不扩大 D1 业务实现范围。最终统一验证须保存每轮不可覆盖的原始
+  JUnit XML、逐文件 SHA-256 与 console。
 * 正式 R7 已通过真实双 property 门禁运行；`formal-test-result.xml` 为
   `1/0/0/0`，R7 为 27/27 candidate `MATCH`、27/27 `PointStatus=PASS`、
   57 `MATCHED` + 6 human `EXCLUDED`、70 production semantic-exclusion

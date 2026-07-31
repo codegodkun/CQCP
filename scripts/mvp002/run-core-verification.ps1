@@ -10,6 +10,9 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 
 $repo = [System.IO.Path]::GetFullPath($RepoRoot)
 $evidenceRoot = Join-Path $repo "outputs/task-mvp-002/core-audit/verification"
+if (Test-Path -LiteralPath $evidenceRoot) {
+    Remove-Item -LiteralPath $evidenceRoot -Recurse -Force
+}
 New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
 $runs = [System.Collections.Generic.List[object]]::new()
 
@@ -101,6 +104,60 @@ function Read-BackendTestCounts {
     return $counts
 }
 
+function Save-BackendTestEvidence {
+    param(
+        [string]$RunName,
+        [object]$Counts
+    )
+    if ($RunName -notmatch "^[a-z0-9-]+$") {
+        throw "Unsafe JUnit evidence run name: $RunName"
+    }
+    $testResultRoot = Join-Path $repo "apps/api-server/build/test-results/test"
+    $sourceFiles = @(
+        Get-ChildItem -LiteralPath $testResultRoot -Filter "TEST-*.xml" |
+            Sort-Object -Property Name
+    )
+    if ($sourceFiles.Count -ne $Counts.suites) {
+        throw "JUnit source suite count changed before capture for $RunName."
+    }
+    $runRoot = Join-Path $evidenceRoot "junit/$RunName"
+    New-Item -ItemType Directory -Force -Path $runRoot | Out-Null
+    $files = @($sourceFiles | ForEach-Object {
+        $destination = Join-Path $runRoot $_.Name
+        Copy-Item -LiteralPath $_.FullName -Destination $destination
+        [ordered]@{
+            path = [System.IO.Path]::GetRelativePath(
+                $repo,
+                $destination
+            ).Replace("\", "/")
+            size = (Get-Item -LiteralPath $destination).Length
+            sha256 = Get-Sha256 $destination
+        }
+    })
+    $manifestPath = Join-Path $runRoot "junit-manifest.json"
+    $manifest = [ordered]@{
+        schemaVersion = "task-mvp-002-junit-evidence-v1"
+        runName = $RunName
+        counts = $Counts
+        files = $files
+    }
+    [System.IO.File]::WriteAllText(
+        $manifestPath,
+        ($manifest | ConvertTo-Json -Depth 8) + [Environment]::NewLine,
+        [System.Text.UTF8Encoding]::new($false)
+    )
+    return [ordered]@{
+        runName = $RunName
+        manifestPath = [System.IO.Path]::GetRelativePath(
+            $repo,
+            $manifestPath
+        ).Replace("\", "/")
+        manifestSize = (Get-Item -LiteralPath $manifestPath).Length
+        manifestSha256 = Get-Sha256 $manifestPath
+        counts = $Counts
+    }
+}
+
 function Read-LoggedTestCount {
     param(
         [string]$LogName,
@@ -131,8 +188,11 @@ function Read-EvidenceReferences {
         "outputs/task-eval-002/track-b-admission-run-v3/admission-report.json",
         "outputs/task-eval-002/model-provider-gate.json",
         "outputs/task-mvp-002/browser-evidence-current/browser-assertions.json",
+        "outputs/task-mvp-002/core-audit/verification/core-boundary.json",
         "outputs/task-mvp-002/core-audit/verification/compose-network-policy.json",
-        "outputs/task-mvp-002/core-audit/verification/compose-acceptance-summary.json"
+        "outputs/task-mvp-002/core-audit/verification/compose-acceptance-summary.json",
+        "outputs/task-mvp-002/core-audit/verification/runtime-provenance.json",
+        "outputs/task-mvp-002/core-audit/verification/resolved-compose-config.yaml"
     )
     return @($required | ForEach-Object {
         $absolute = Join-Path $repo $_
@@ -206,6 +266,18 @@ try {
     Invoke-Logged "core-scope-test" $repo {
         node --test scripts/mvp002/core-subject.test.mjs
     }
+    Invoke-Logged "core-boundary" $repo {
+        node scripts/mvp002/derive-core-boundary.mjs `
+            $repo `
+            (Join-Path $evidenceRoot "core-boundary.json")
+    }
+    $coreBoundaryEvidence = Get-Content -LiteralPath (
+        Join-Path $evidenceRoot "core-boundary.json"
+    ) -Raw | ConvertFrom-Json
+    if ($coreBoundaryEvidence.status -ne "PASS" `
+            -or [bool]$coreBoundaryEvidence.providerA0Included) {
+        throw "Core boundary evidence did not exclude Provider A0."
+    }
     Invoke-Logged "formal-r7-evidence" $repo {
         & (Join-Path $repo "scripts/mvp002/run-formal-r7.ps1") `
             -RepoRoot $repo
@@ -229,6 +301,9 @@ try {
             --tests "com.cqcp.apiserver.reviewengine.VersionedRatioScopeV20260729Test"
     }
     $d1CombinedCounts = Read-BackendTestCounts
+    $d1JUnitEvidence = Save-BackendTestEvidence `
+        -RunName "d1-combined" `
+        -Counts $d1CombinedCounts
     if ($d1CombinedCounts.tests -ne 444 `
             -or $d1CombinedCounts.failures -ne 0 `
             -or $d1CombinedCounts.errors -ne 0 `
@@ -241,6 +316,9 @@ try {
             --tests "com.cqcp.apiserver.reviewengine.ModelAssistRuntimeSeamTest"
     }
     $d2SeamCounts = Read-BackendTestCounts
+    $d2JUnitEvidence = Save-BackendTestEvidence `
+        -RunName "d2-seam" `
+        -Counts $d2SeamCounts
     if ($d2SeamCounts.tests -ne 20 `
             -or $d2SeamCounts.failures -ne 0 `
             -or $d2SeamCounts.errors -ne 0 `
@@ -258,10 +336,16 @@ try {
         gradle test --no-daemon --rerun-tasks
     }
     $backendFirstCounts = Read-BackendTestCounts
+    $backendFirstJUnitEvidence = Save-BackendTestEvidence `
+        -RunName "backend-first" `
+        -Counts $backendFirstCounts
     Invoke-Logged "backend-test-repeat" (Join-Path $repo "apps/api-server") {
         gradle test --no-daemon --rerun-tasks
     }
     $backendRepeatCounts = Read-BackendTestCounts
+    $backendRepeatJUnitEvidence = Save-BackendTestEvidence `
+        -RunName "backend-repeat" `
+        -Counts $backendRepeatCounts
     if (($backendFirstCounts | ConvertTo-Json -Compress) `
             -ne ($backendRepeatCounts | ConvertTo-Json -Compress)) {
         throw "Repeated backend test counts differ."
@@ -339,7 +423,7 @@ try {
     }
 
     $summary = [ordered]@{
-        schemaVersion = "task-mvp-002-core-verification-v1"
+        schemaVersion = "task-mvp-002-core-verification-v2"
         status = "PASS"
         generatedAt = [DateTimeOffset]::UtcNow.ToString("O")
         powerShellVersion = $PSVersionTable.PSVersion.ToString()
@@ -350,7 +434,13 @@ try {
                 ) -Raw | ConvertFrom-Json
             ).modelNetworkEvidence.observedAttemptCount
         )
-        providerA0Included = $false
+        providerA0Included = [bool]$coreBoundaryEvidence.providerA0Included
+        coreBoundary = [ordered]@{
+            path = "outputs/task-mvp-002/core-audit/verification/core-boundary.json"
+            sha256 = Get-Sha256 (
+                Join-Path $evidenceRoot "core-boundary.json"
+            )
+        }
         subject = [ordered]@{
             baseCommit = "1035739b751386176e47c6871738a62bff86de02"
             headCommit = $verifiedHeadCommit
@@ -363,6 +453,12 @@ try {
             cleanupPolicy = "DROP_WITH_FORCE_IN_FINALLY"
         }
         backend = $backendRepeatCounts
+        junitEvidence = @(
+            $d1JUnitEvidence,
+            $d2JUnitEvidence,
+            $backendFirstJUnitEvidence,
+            $backendRepeatJUnitEvidence
+        )
         backendRuns = @(
             [ordered]@{ name = "backend-test"; counts = $backendFirstCounts },
             [ordered]@{ name = "backend-test-repeat"; counts = $backendRepeatCounts }

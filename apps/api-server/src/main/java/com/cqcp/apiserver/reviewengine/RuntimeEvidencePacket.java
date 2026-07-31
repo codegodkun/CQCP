@@ -287,6 +287,7 @@ final class RuntimeEvidencePacketBuilder {
                     evidence.evidenceSummary(),
                     evidence.sectionPath(),
                     evidence.regionType(),
+                    evidence.contextType(),
                     evidence.confidence(),
                     evidence.locationLevel(),
                     evidence.previewElementRef()));
@@ -305,7 +306,7 @@ final class RuntimeEvidencePacketBuilder {
                             occurrence.previewElementRef(),
                             occurrence.sectionPath(),
                             occurrence.regionType(),
-                            evidence.contextType(),
+                            occurrence.contextType(),
                             reliable)));
         }
         return List.copyOf(result);

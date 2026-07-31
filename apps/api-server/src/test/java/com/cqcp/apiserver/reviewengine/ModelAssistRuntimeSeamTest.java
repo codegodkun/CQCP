@@ -261,7 +261,10 @@ class ModelAssistRuntimeSeamTest {
 
         assertThat(packet.candidateOccurrences()).hasSize(2);
         assertThat(packet.candidateOccurrences())
-                .allSatisfy(occurrence -> assertThat(occurrence.sourceAnchor().reliable()).isTrue());
+                .allSatisfy(occurrence -> {
+                    assertThat(occurrence.sourceAnchor().reliable()).isTrue();
+                    assertThat(occurrence.sourceAnchor().contextType()).isEqualTo("NORMAL");
+                });
         assertThat(serialized.toLowerCase())
                 .doesNotContain("expected", "groundtruth", "humananchor", "verdict", "finding");
         assertThat(serialized).doesNotContain("合同全文");
@@ -437,6 +440,7 @@ class ModelAssistRuntimeSeamTest {
                                 "A模式按月支付至70%",
                                 List.of("付款条款"),
                                 "BODY",
+                                "NORMAL",
                                 "HIGH",
                                 "BLOCK_LEVEL",
                                 null),
@@ -446,6 +450,7 @@ class ModelAssistRuntimeSeamTest {
                                 "进度款支付至70%",
                                 List.of("付款条款"),
                                 "BODY",
+                                "NORMAL",
                                 "HIGH",
                                 "BLOCK_LEVEL",
                                 null)));

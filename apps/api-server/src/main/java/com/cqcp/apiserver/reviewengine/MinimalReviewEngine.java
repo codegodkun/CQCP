@@ -1,6 +1,7 @@
 package com.cqcp.apiserver.reviewengine;
 
 import com.cqcp.apiserver.tuning.PointDiagnostic;
+import com.cqcp.apiserver.wordparser.WordParserSpikeDocument;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -465,7 +466,7 @@ public class MinimalReviewEngine {
                         occurrence.blockId(),
                         evidence.sourceOrigin(),
                         evidence.sourceExtractionMode(),
-                        evidence.contextType(),
+                        occurrence.contextType(),
                         occurrence.evidenceSummary(),
                         occurrence.sectionPath(),
                         occurrence.regionType(),
@@ -921,6 +922,7 @@ record PointEvidenceOccurrence(
         String evidenceSummary,
         List<String> sectionPath,
         String regionType,
+        String contextType,
         String confidence,
         String locationLevel,
         String previewElementRef) {
@@ -934,6 +936,7 @@ record PointEvidenceOccurrence(
                 candidate.blockText(),
                 candidate.sectionPath(),
                 candidate.regionType(),
+                candidate.contextType(),
                 EvidenceConfidenceLevel.HIGH.name(),
                 blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
                 candidate.previewElementRef());
@@ -941,6 +944,8 @@ record PointEvidenceOccurrence(
 
     PointEvidenceOccurrence {
         sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
+        Objects.requireNonNull(contextType, "contextType");
+        WordParserSpikeDocument.ContextType.valueOf(contextType);
     }
 }
 

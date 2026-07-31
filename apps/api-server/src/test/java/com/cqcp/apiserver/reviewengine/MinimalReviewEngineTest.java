@@ -261,6 +261,9 @@ class MinimalReviewEngineTest {
                         "table:party-table/row:1/cell:0",
                         "table:party-table/row:1/cell:1",
                         "table:party-table/row:1");
+        assertThat(passPoint.sourceAnchors())
+                .extracting(SourceAnchorSummary::contextType)
+                .containsOnly("NORMAL");
 
         var mismatch = "另一家甲方公司";
         var errorOccurrences = List.of(
@@ -364,7 +367,15 @@ class MinimalReviewEngineTest {
                 "party-table",
                 1,
                 previewElementRef != null && previewElementRef.contains("/cell:") ? 1 : null,
-                previewElementRef);
+                previewElementRef,
+                "NORMAL",
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "HIGH",
+                previewElementRef != null && previewElementRef.contains("/cell:")
+                        ? "TABLE_CELL"
+                        : "BLOCK_LEVEL",
+                List.of());
     }
 
     private Map<ReviewPointCode, PointStatus> statusByPoint(List<PointReviewResult> pointResults) {
@@ -722,7 +733,8 @@ class MinimalReviewEngineTest {
                 List.of("Section"), "BODY", "BLOCK_LEVEL", null,
                 List.of(new PointEvidenceOccurrence(
                         canonical, blockId, "block text",
-                        List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null)));
+                        List.of("Section"), "BODY", "NORMAL",
+                        "HIGH", "BLOCK_LEVEL", null)));
     }
 
     private PointEvidence multiValueEvidence(
@@ -741,10 +753,12 @@ class MinimalReviewEngineTest {
                 List.of(
                         new PointEvidenceOccurrence(
                                 c1, b1, "block1 text",
-                                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null),
+                                List.of("Section"), "BODY", "NORMAL",
+                                "HIGH", "BLOCK_LEVEL", null),
                         new PointEvidenceOccurrence(
                                 c2, b2, "block2 text",
-                                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null)));
+                                List.of("Section"), "BODY", "NORMAL",
+                                "HIGH", "BLOCK_LEVEL", null)));
     }
 
     private static String canonicalizeForTest(String value, ReviewPointCode code) {
@@ -1086,9 +1100,9 @@ class MinimalReviewEngineTest {
                 .put("warrantyRetentionRatio", "5").build();
         // Two different identities (block-a, block-b) with SAME canonical value
         var occ1 = new PointEvidenceOccurrence("甲方公司", "block-a", "textA",
-                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+                List.of("Section"), "BODY", "NORMAL", "HIGH", "BLOCK_LEVEL", null);
         var occ2 = new PointEvidenceOccurrence("甲方公司", "block-b", "textB",
-                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+                List.of("Section"), "BODY", "NORMAL", "HIGH", "BLOCK_LEVEL", null);
         var evidence = new PointEvidence(
                 ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "PARTY_A", null,
                 EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",
@@ -1114,9 +1128,9 @@ class MinimalReviewEngineTest {
                 .put("warrantyRetentionRatio", "5").build();
         // Two identities, DIFFERENT canonical values, candidateValue is non-null (projection from first)
         var occ1 = new PointEvidenceOccurrence("甲方公司A", "block-a", "textA",
-                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+                List.of("Section"), "BODY", "NORMAL", "HIGH", "BLOCK_LEVEL", null);
         var occ2 = new PointEvidenceOccurrence("甲方公司B", "block-b", "textB",
-                List.of("Section"), "BODY", "HIGH", "BLOCK_LEVEL", null);
+                List.of("Section"), "BODY", "NORMAL", "HIGH", "BLOCK_LEVEL", null);
         var evidence = new PointEvidence(
                 ReviewPointCode.PARTY_A_NAME_CONSISTENCY, "PARTY_A", "甲方公司A",
                 EvidenceStatus.CONFIRMED, "NATIVE_WORD", "STRUCTURED", "NORMAL",

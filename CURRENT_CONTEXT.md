@@ -53,6 +53,17 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   历史 packet manifest 与 R7 manifest 现以原始 SHA-256 fixture 封存，verify-only
   override 必须成对提供且仍须匹配 dispatch hash；当前 R7 不回退。定向 contract
   `7/7` 与历史链 direct verify 已通过。
+- Core 冻结 `ea19a52ad1bfdb0a9ae25d4082b8af03a3fcbbbe7a6f5bcbbdced9a9e85f9db5`
+  （HEAD `006bfa8c9901506137695d314ce9afa61ee39507`）已完成三方从零审计并判定
+  `NO_GO`，现封存为
+  `outputs/task-mvp-002/core-audit/freeze-invalidated-ea19a52a/`。两个 Codex
+  auditor 分别发现 occurrence `contextType` 丢失、Core/Provider 范围证明可
+  false-negative、Compose provenance 错绑旧 outputs override、四轮 Gradle
+  原始 JUnit 未独立冻结；CC AUDIT 发现 D1/D2 计数文档滞后和本文件叙事滞后。
+- 上述六项 finding 均绑定同一 `ea19a52a…`，旧三份审计结论及其 verification
+  不得用于后续 GO。单批最小源码整改已经完成，定向 D1/D2 为
+  `444/444`、`20/20`，Core 范围负向 Node tests 为 `11/11`；整改没有启动
+  Provider A0/A1/A2，没有执行模型公网调用，也没有改变 Finding/verdict。
 
 ## 当前活跃任务
 
@@ -64,20 +75,21 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. blocking findings 与 Track B 历史/live 路径错配已整改；当前最后一批源码和
-   Memory Writeback 尚未形成最终 candidate commit。提交后必须从零重建 R7、
-   Compose/browser、完整验证和 immutable freeze。
-2. 同一 Core subject 的 CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor
-   尚未全部达到 `GO / P0=P1=P2=blocking=0`。
+1. `ea19a52a…` 三方审计已 `NO_GO` 并失效，永远不能用于后续收口。
+2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
+   四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
+   CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
+   结果以 hash-bound outputs 和 Git 事实为真源，本文不复制运行中状态。
 3. CI、PR 与 merge 尚未完成；没有主线 merge 就不能声明 TASK-036 seam 已集成。
 4. 新 Track B admission holdout 尚未创建：固定 12 packet（9 eligible + 3
    controls），人工 ground truth 必须在模型访问前封印，正式运行只允许一次。
 
 ## 下一步
 
-1. 形成包含 blocking-fix、Track B 历史证据路径修复与本次 Memory Writeback 的
+1. 完成 `contextType` provenance、Core/Provider 派生门禁、Compose 配置同源
+   provenance、逐轮 JUnit 冻结和 D1/Memory 叙事同步，执行定向回归后形成新的
    clean Core candidate commit。
-2. 在该最终 HEAD 上重新执行 R7，并以受控浏览器
+2. 在新 HEAD 上重新执行 R7，并以受控浏览器
    原始 filechooser/console/dialog/network/DOM 证据和默认拒绝模型 egress 的 Compose
    证据重建 `scripts/mvp002/run-core-verification.ps1` 全量结果。
 3. 冻结新 subject，执行 CC AUDIT 与两个全新 Codex 独立审计；旧审计结论不复用。

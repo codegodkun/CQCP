@@ -1334,11 +1334,12 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                         PointEvidenceOccurrence::blockId,
                         PointEvidenceOccurrence::locationLevel,
                         PointEvidenceOccurrence::regionType,
+                        PointEvidenceOccurrence::contextType,
                         PointEvidenceOccurrence::confidence,
                         PointEvidenceOccurrence::previewElementRef)
                 .containsExactlyInAnyOrder(
-                        tuple("70", "block-progress-70", "BLOCK_LEVEL", "BODY", "HIGH", null),
-                        tuple("75", "block-outside-75", "BLOCK_LEVEL", "BODY", "HIGH", null));
+                        tuple("70", "block-progress-70", "BLOCK_LEVEL", "BODY", "NORMAL", "HIGH", null),
+                        tuple("75", "block-outside-75", "BLOCK_LEVEL", "BODY", "NORMAL", "HIGH", null));
         // Slot coverage: single SATISFIED slot with reliableAnchor=true
         assertThat(c1ProgressEv.slotCoverages()).hasSize(1);
         assertThat(c1ProgressEv.slotCoverages()).allMatch(s ->

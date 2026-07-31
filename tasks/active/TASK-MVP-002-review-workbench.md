@@ -161,5 +161,11 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   DOM、Compose transport 计数、Provider-free Core 边界和任务叙事冲突均已修复；
   旧 Track B v2 evidence 改用 hash-equivalent 历史 fixture 验证，不覆盖当前 R7。
   最终 candidate 的 Compose/browser、完整验证、freeze 与三审仍须从零重建。
+* 2026-07-31 第二轮冻结 `ea19a52a…` 已由 CC AUDIT 与两个全新 Codex auditor
+  从零审计并统一 `NO_GO`。六项 finding 为 occurrence `contextType` provenance
+  丢失、Core app 全路径默认放行与 Provider 排除常量、Compose provenance 使用
+  错误 override、D1/D2/backend 原始 JUnit 被覆盖、D1/D2 计数文档滞后及
+  `CURRENT_CONTEXT.md` 叙事滞后。该 freeze 与 verification 已显式封存为
+  invalidated 历史证据；主 Codex 仅修复这六项，不启动 Provider。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。
