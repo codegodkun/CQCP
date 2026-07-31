@@ -48,7 +48,8 @@ foreach ($path in @(
 if (-not (Test-Path -LiteralPath $apiServer -PathType Container)) {
     throw "API server directory does not exist."
 }
-$branch = (& git -C $repo branch --show-current).Trim()
+$branch = [string](& git -C $repo branch --show-current)
+$branch = $branch.Trim()
 if ($LASTEXITCODE -ne 0) {
     throw "Formal R7 cannot resolve the current branch."
 }
