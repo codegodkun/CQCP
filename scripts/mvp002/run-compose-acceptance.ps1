@@ -39,6 +39,9 @@ $env:CQCP_WEB_PORT = "15175"
 $env:CQCP_UPLOAD_HOST_PATH = (Join-Path $runtimeRoot "uploads")
 $apiRuntimeContext = Join-Path $runtimeRoot "api-image"
 $env:CQCP_API_ACCEPTANCE_CONTEXT = $apiRuntimeContext
+$env:CQCP_ACCEPTANCE_NGINX_TEMPLATE = (
+    Resolve-Path (Join-Path $repo "scripts/mvp002/nginx.acceptance.conf.template")
+).Path
 $env:CQCP_ADMIN_API_TOKEN = "mvp002-acceptance-admin"
 $env:CQCP_ADMIN_READONLY_TOKEN = "mvp002-acceptance-readonly"
 Remove-Item Env:\DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
@@ -72,6 +75,7 @@ $summaryPath = Join-Path $evidence "compose-acceptance-summary.json"
 $downloadPath = Join-Path $runtimeRoot "downloaded.docx"
 $composeLogPath = Join-Path $evidence "compose-services.log"
 $networkEvidencePath = Join-Path $evidence "compose-network-policy.json"
+$baseUrl = "http://localhost:15175"
 $started = $false
 
 try {
@@ -82,13 +86,29 @@ try {
     }
     $started = $true
 
-    $networkInspectRaw = & docker network inspect cqcp_mvp002_acceptance_internal
+    $networkInspectRaw = & docker network inspect cqcp_mvp002_acceptance_model_isolated
     if ($LASTEXITCODE -ne 0) {
         throw "Acceptance network inspection failed."
     }
     $networkInspect = @($networkInspectRaw | ConvertFrom-Json)
     if ($networkInspect.Count -ne 1 -or -not $networkInspect[0].Internal) {
         throw "Acceptance network must be internal/default-deny."
+    }
+    $apiContainerId = (& docker @compose ps -q api-server).Trim()
+    if ($LASTEXITCODE -ne 0 -or $apiContainerId -notmatch "^[a-f0-9]{64}$") {
+        throw "Acceptance API container identity is unavailable."
+    }
+    $apiInspect = @(& docker inspect $apiContainerId | ConvertFrom-Json)
+    if ($LASTEXITCODE -ne 0 -or $apiInspect.Count -ne 1) {
+        throw "Acceptance API container inspection failed."
+    }
+    $apiNetworks = @($apiInspect[0].NetworkSettings.Networks.PSObject.Properties)
+    if ($apiNetworks.Count -ne 1 `
+            -or $apiNetworks[0].Name -ne $networkInspect[0].Name `
+            -or -not [string]::IsNullOrWhiteSpace(
+                [string]$apiNetworks[0].Value.Gateway
+            )) {
+        throw "Acceptance API must have only the internal model-isolated network and no gateway."
     }
     $networkEvidence = [ordered]@{
         schemaVersion = "task-mvp-002-compose-network-policy-v1"
@@ -99,6 +119,15 @@ try {
         internal = [bool]$networkInspect[0].Internal
         attachable = [bool]$networkInspect[0].Attachable
         ingress = [bool]$networkInspect[0].Ingress
+        apiContainerId = $apiContainerId
+        apiNetworks = @($apiNetworks | ForEach-Object {
+            [ordered]@{
+                name = $_.Name
+                networkId = $_.Value.NetworkID
+                gateway = [string]$_.Value.Gateway
+                ipAddress = [string]$_.Value.IPAddress
+            }
+        })
         modelEndpointEgressAllowed = $false
     }
     $networkEvidence | ConvertTo-Json -Depth 6 |
@@ -107,7 +136,7 @@ try {
     $health = $null
     for ($attempt = 1; $attempt -le 90; $attempt++) {
         try {
-            $health = Invoke-RestMethod -Uri "http://localhost:18082/actuator/health"
+            $health = Invoke-RestMethod -Uri "$baseUrl/actuator/health"
             if ($health.status -eq "UP") {
                 break
             }
@@ -118,25 +147,25 @@ try {
     if ($null -eq $health -or $health.status -ne "UP") {
         throw "API did not become healthy."
     }
-    $webRoot = Invoke-WebRequest -Uri "http://localhost:15175/review/tasks"
+    $webRoot = Invoke-WebRequest -Uri "$baseUrl/review/tasks"
     if ($webRoot.StatusCode -ne 200) {
         throw "Admin web did not serve the review task route."
     }
     $unauthenticatedApi = Invoke-WebRequest `
-        -Uri "http://localhost:18082/api/admin/model-profiles" `
+        -Uri "$baseUrl/api/admin/model-profiles" `
         -SkipHttpErrorCheck
     $unauthenticatedWeb = Invoke-WebRequest `
-        -Uri "http://localhost:15175/api/admin/model-profiles" `
+        -Uri "$baseUrl/api/admin/model-profiles" `
         -SkipHttpErrorCheck
     $readonlyApi = Invoke-WebRequest `
-        -Uri "http://localhost:18082/api/admin/model-profiles" `
+        -Uri "$baseUrl/api/admin/model-profiles" `
         -Headers @{Authorization = "Bearer mvp002-acceptance-readonly"} `
         -SkipHttpErrorCheck
     $unauthenticatedTaskList = Invoke-WebRequest `
-        -Uri "http://localhost:18082/api/review/tasks" `
+        -Uri "$baseUrl/api/review/tasks" `
         -SkipHttpErrorCheck
     $unauthenticatedPreview = Invoke-WebRequest `
-        -Uri "http://localhost:18082/api/review/tasks/task-unknown/executions/execution-unknown/document-preview" `
+        -Uri "$baseUrl/api/review/tasks/task-unknown/executions/execution-unknown/document-preview" `
         -SkipHttpErrorCheck
     if ($unauthenticatedApi.StatusCode -ne 401 `
             -or $unauthenticatedWeb.StatusCode -ne 401 `
@@ -163,12 +192,12 @@ try {
     } | ConvertTo-Json -Depth 8 -Compress
     $creation = Invoke-RestMethod `
         -Method Post `
-        -Uri "http://localhost:18082/api/review/tasks" `
+        -Uri "$baseUrl/api/review/tasks" `
         -Form @{file = Get-Item -LiteralPath $fixturePath; metadata = $metadata}
 
     $status = $null
     for ($attempt = 1; $attempt -le 120; $attempt++) {
-        $status = Invoke-RestMethod -Uri "http://localhost:18082/api/review/tasks/$($creation.taskId)/executions/$($creation.executionId)"
+        $status = Invoke-RestMethod -Uri "$baseUrl/api/review/tasks/$($creation.taskId)/executions/$($creation.executionId)"
         if ($status.terminal) {
             break
         }
@@ -178,15 +207,15 @@ try {
         throw "Execution did not reach SUCCESS."
     }
 
-    $result = Invoke-RestMethod -Uri "http://localhost:18082/api/v1/tasks/$($creation.taskId)/result?executionId=$($creation.executionId)"
+    $result = Invoke-RestMethod -Uri "$baseUrl/api/v1/tasks/$($creation.taskId)/result?executionId=$($creation.executionId)"
     $taskList = Invoke-RestMethod `
-        -Uri "http://localhost:18082/api/review/tasks?page=0&size=20&statusGroup=COMPLETED&q=%E5%A5%94%E8%85%BE" `
+        -Uri "$baseUrl/api/review/tasks?page=0&size=20&statusGroup=COMPLETED&q=%E5%A5%94%E8%85%BE" `
         -Headers $readonlyHeaders
     $preview = Invoke-RestMethod `
-        -Uri "http://localhost:18082/api/review/tasks/$($creation.taskId)/executions/$($creation.executionId)/document-preview" `
+        -Uri "$baseUrl/api/review/tasks/$($creation.taskId)/executions/$($creation.executionId)/document-preview" `
         -Headers $readonlyHeaders
     $download = Invoke-WebRequest `
-        -Uri "http://localhost:18082/api/review/tasks/$($creation.taskId)/executions/$($creation.executionId)/document" `
+        -Uri "$baseUrl/api/review/tasks/$($creation.taskId)/executions/$($creation.executionId)/document" `
         -Headers $readonlyHeaders `
         -OutFile $downloadPath `
         -PassThru
@@ -211,12 +240,12 @@ try {
     } | ConvertTo-Json -Depth 8 -Compress
     $maliciousCreation = Invoke-RestMethod `
         -Method Post `
-        -Uri "http://localhost:18082/api/review/tasks" `
+        -Uri "$baseUrl/api/review/tasks" `
         -Form @{file = Get-Item -LiteralPath $maliciousFixturePath; metadata = $maliciousMetadata}
     $maliciousStatus = $null
     for ($attempt = 1; $attempt -le 120; $attempt++) {
         $maliciousStatus = Invoke-RestMethod `
-            -Uri "http://localhost:18082/api/review/tasks/$($maliciousCreation.taskId)/executions/$($maliciousCreation.executionId)"
+            -Uri "$baseUrl/api/review/tasks/$($maliciousCreation.taskId)/executions/$($maliciousCreation.executionId)"
         if ($maliciousStatus.terminal) {
             break
         }
@@ -228,7 +257,7 @@ try {
         throw "Malicious-body execution did not reach SUCCESS."
     }
     $maliciousPreview = Invoke-RestMethod `
-        -Uri "http://localhost:18082/api/review/tasks/$($maliciousCreation.taskId)/executions/$($maliciousCreation.executionId)/document-preview" `
+        -Uri "$baseUrl/api/review/tasks/$($maliciousCreation.taskId)/executions/$($maliciousCreation.executionId)/document-preview" `
         -Headers $readonlyHeaders
     $maliciousBlock = $maliciousPreview.blocks |
         Where-Object { $_.text -eq $maliciousText } |
@@ -257,21 +286,21 @@ try {
     } | ConvertTo-Json -Compress
     $createdProfile = Invoke-RestMethod `
         -Method Post `
-        -Uri "http://localhost:18082/api/admin/model-profiles" `
+        -Uri "$baseUrl/api/admin/model-profiles" `
         -Headers $adminHeaders `
         -ContentType "application/json" `
         -Body $profileBody
     $connectivity = Invoke-RestMethod `
         -Method Post `
-        -Uri "http://localhost:18082/api/admin/model-profiles/DEEPSEEK_EVAL_ACCEPTANCE/connectivity-tests" `
+        -Uri "$baseUrl/api/admin/model-profiles/DEEPSEEK_EVAL_ACCEPTANCE/connectivity-tests" `
         -Headers $adminHeaders `
         -ContentType "application/json" `
         -Body "{}"
     $profiles = Invoke-RestMethod `
-        -Uri "http://localhost:18082/api/admin/model-profiles" `
+        -Uri "$baseUrl/api/admin/model-profiles" `
         -Headers $adminHeaders
     $networkAttemptMetric = Invoke-RestMethod `
-        -Uri "http://localhost:18082/actuator/metrics/cqcp.model.connectivity.network.attempts"
+        -Uri "$baseUrl/actuator/metrics/cqcp.model.connectivity.network.attempts"
     $networkAttemptCount = @(
         $networkAttemptMetric.measurements |
         Where-Object statistic -eq "COUNT" |

@@ -93,6 +93,7 @@ const CORE_MVP002_SCRIPT_NAMES = new Set([
   "create-malicious-preview-docx.ps1",
   "freeze-core-audit-package.mjs",
   "freeze-core-audit-package.test.mjs",
+  "nginx.acceptance.conf.template",
   "run-compose-acceptance.ps1",
   "run-core-verification.ps1",
   "run-formal-r7.ps1",

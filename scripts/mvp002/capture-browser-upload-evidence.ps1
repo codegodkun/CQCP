@@ -41,7 +41,7 @@ New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
 $evidencePath = Join-Path $evidenceRoot "browser-upload-result.json"
 $sourcePath = Join-Path $repo "packages/test-fixtures/docx/1、奔腾公司企鹅岛项目三标段土建总承包工程合同_缩减版.docx"
 $downloadPath = Join-Path ([System.IO.Path]::GetTempPath()) "cqcp-mvp002-browser-upload-download.docx"
-$baseUrl = "http://localhost:18082"
+$baseUrl = "http://localhost:15175"
 $headers = @{ Authorization = "Bearer $env:CQCP_ADMIN_READONLY_TOKEN" }
 $observationPath = [System.IO.Path]::GetFullPath(
     (Join-Path $repo $BrowserObservationRelativePath)
