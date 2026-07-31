@@ -64,6 +64,14 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   不得用于后续 GO。单批最小源码整改已经完成，定向 D1/D2 为
   `444/444`、`20/20`，Core 范围负向 Node tests 为 `11/11`；整改没有启动
   Provider A0/A1/A2，没有执行模型公网调用，也没有改变 Finding/verdict。
+- 送审就绪性 CC 复核随后确认：当前 Formal R7 已绑定候选 HEAD 并通过，但
+  `core-node-test` 因 Track B fixture 混用 live packet 与历史 manifest 而
+  `203/208`、5 项失败，故未生成 verification summary 或 canonical freeze。
+  主 Codex 已从原封存工作区恢复与历史 manifest SHA 精确匹配的三份 packet，
+  将 packet + manifest 作为同一 test-resource directory 供 `makeFixture` 消费，
+  并将三份 packet 纳入 Core subject 闭包；Track B contract 与 Core scope 定向
+  回归合计 `14/14 PASS`。该结论只证明最小 fixture 修复，新的完整 verification、
+  freeze 与三方从零审计仍待执行。
 
 ## 当前活跃任务
 

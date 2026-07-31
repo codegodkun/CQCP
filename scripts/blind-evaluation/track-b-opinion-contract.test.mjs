@@ -20,23 +20,22 @@ const makeFixture = async () => {
     { recursive: true },
   );
   await mkdir(path.join(root, "scripts/blind-evaluation"), { recursive: true });
-  for (const directory of [
-    "track-b-inputs-v1",
-    "track-b-codex-opinions",
-  ]) {
-    await cp(
-      path.join(repoRoot, "outputs/task-eval-002", directory),
-      path.join(outputRoot, directory),
-      { recursive: true },
-    );
-  }
   await cp(
     path.join(
       repoRoot,
       "apps/api-server/src/test/resources/blind-evaluation-source/" +
-        "task-eval-002/track-b-inputs-v1/manifest.json",
+        "task-eval-002/track-b-inputs-v1",
     ),
-    path.join(outputRoot, "track-b-inputs-v1/manifest.json"),
+    path.join(outputRoot, "track-b-inputs-v1"),
+    { recursive: true },
+  );
+  await cp(
+    path.join(
+      repoRoot,
+      "outputs/task-eval-002/track-b-codex-opinions",
+    ),
+    path.join(outputRoot, "track-b-codex-opinions"),
+    { recursive: true },
   );
   for (const file of [
     "track-b-dispatch.json",
