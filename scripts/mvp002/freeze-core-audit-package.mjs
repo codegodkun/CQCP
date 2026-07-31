@@ -119,7 +119,11 @@ function fileRecord(repoRoot, headCommit, record) {
   };
 }
 
-export function validateVerificationSummary(repoRoot, summaryPath) {
+export function validateVerificationSummary(
+  repoRoot,
+  summaryPath,
+  expectedHeadCommit = null,
+) {
   assert.equal(
     fs.existsSync(summaryPath) && fs.statSync(summaryPath).isFile(),
     true,
@@ -134,6 +138,33 @@ export function validateVerificationSummary(repoRoot, summaryPath) {
   assert.equal(summary.status, "PASS");
   assert.equal(summary.networkModelCalls, 0);
   assert.equal(summary.providerA0Included, false);
+  assert.equal(
+    summary.subject?.baseCommit,
+    CORE_BASE_COMMIT,
+    "Verification summary base does not match the Core subject",
+  );
+  assert.match(
+    summary.subject?.headCommit ?? "",
+    /^[a-f0-9]{40}$/,
+    "Verification summary HEAD is invalid",
+  );
+  assert.match(
+    summary.subject?.tree ?? "",
+    /^[a-f0-9]{40}$/,
+    "Verification summary tree is invalid",
+  );
+  if (expectedHeadCommit !== null) {
+    assert.equal(
+      summary.subject.headCommit,
+      expectedHeadCommit,
+      "Verification summary belongs to a different HEAD",
+    );
+    assert.equal(
+      summary.subject.tree,
+      gitText(repoRoot, "rev-parse", `${expectedHeadCommit}^{tree}`),
+      "Verification summary belongs to a different source tree",
+    );
+  }
   assert.ok(Array.isArray(summary.runs) && summary.runs.length > 0);
   assert.ok(
     Array.isArray(summary.evidenceReferences) &&
@@ -222,6 +253,7 @@ export function buildCoreFreeze(repoRoot, summaryPath) {
   const verification = validateVerificationSummary(
     absoluteRoot,
     path.resolve(summaryPath),
+    headCommit,
   );
   const tree = gitText(absoluteRoot, "rev-parse", `${headCommit}^{tree}`);
   const sourceStatusSha256 = sha256(Buffer.from(canonicalJson(statusRecords)));

@@ -320,6 +320,14 @@ try {
     $coreNodeTestCount = Read-LoggedTestCount `
         -LogName "core-node-test.log" `
         -Pattern "(?m)^\D*tests\s+(\d+)\s*$"
+    $verifiedHeadCommit = (& git -C $repo rev-parse HEAD).Trim()
+    if ($LASTEXITCODE -ne 0 -or $verifiedHeadCommit -notmatch "^[a-f0-9]{40}$") {
+        throw "Unable to bind verification summary to HEAD."
+    }
+    $verifiedTree = (& git -C $repo rev-parse "$verifiedHeadCommit`^{tree}").Trim()
+    if ($LASTEXITCODE -ne 0 -or $verifiedTree -notmatch "^[a-f0-9]{40}$") {
+        throw "Unable to bind verification summary to the source tree."
+    }
 
     $summary = [ordered]@{
         schemaVersion = "task-mvp-002-core-verification-v1"
@@ -328,6 +336,11 @@ try {
         powerShellVersion = $PSVersionTable.PSVersion.ToString()
         networkModelCalls = 0
         providerA0Included = $false
+        subject = [ordered]@{
+            baseCommit = "1035739b751386176e47c6871738a62bff86de02"
+            headCommit = $verifiedHeadCommit
+            tree = $verifiedTree
+        }
         postgres = [ordered]@{
             engine = "PostgreSQL"
             isolatedDatabase = $databaseName

@@ -28,6 +28,11 @@ test("verification summary binds every log and external evidence byte", () => {
       status: "PASS",
       networkModelCalls: 0,
       providerA0Included: false,
+      subject: {
+        baseCommit: "1035739b751386176e47c6871738a62bff86de02",
+        headCommit: "a".repeat(40),
+        tree: "b".repeat(40),
+      },
       runs: [{
         name: "test",
         exitCode: 0,
@@ -50,6 +55,40 @@ test("verification summary binds every log and external evidence byte", () => {
     assert.throws(
       () => validateVerificationSummary(root, summaryPath),
       /Evidence hash mismatch|Expected values to be strictly equal/,
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("verification summary rejects another subject HEAD", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cqcp-core-freeze-"));
+  try {
+    const summaryPath = path.join(root, "summary.json");
+    fs.writeFileSync(
+      summaryPath,
+      `${JSON.stringify({
+        schemaVersion: "task-mvp-002-core-verification-v1",
+        status: "PASS",
+        networkModelCalls: 0,
+        providerA0Included: false,
+        subject: {
+          baseCommit: "1035739b751386176e47c6871738a62bff86de02",
+          headCommit: "a".repeat(40),
+          tree: "b".repeat(40),
+        },
+        runs: [{}],
+        evidenceReferences: [{}],
+      })}\n`,
+    );
+    assert.throws(
+      () =>
+        validateVerificationSummary(
+          root,
+          summaryPath,
+          "c".repeat(40),
+        ),
+      /different HEAD/,
     );
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
