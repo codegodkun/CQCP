@@ -76,7 +76,10 @@ const provenanceVerification = spawnSync(
         repoRoot,
         ...evidence.runtimeProvenance.path.split("/")
       )
-    )
+    ),
+    "cqcp-mvp002-acceptance",
+    "deploy/compose/compose.yml",
+    "scripts/mvp002/compose.acceptance.override.yml"
   ],
   {
     cwd: repoRoot,
