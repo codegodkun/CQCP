@@ -30,6 +30,14 @@ const makeFixture = async () => {
       { recursive: true },
     );
   }
+  await cp(
+    path.join(
+      repoRoot,
+      "apps/api-server/src/test/resources/blind-evaluation-source/" +
+        "task-eval-002/track-b-inputs-v1/manifest.json",
+    ),
+    path.join(outputRoot, "track-b-inputs-v1/manifest.json"),
+  );
   for (const file of [
     "track-b-dispatch.json",
     "track-b-dispatch.sha256",
@@ -42,7 +50,8 @@ const makeFixture = async () => {
   await cp(
     path.join(
       repoRoot,
-      "outputs/task-034-mvp-e2e-acceptance-v3/run-manifest.json",
+      "apps/api-server/src/test/resources/blind-evaluation-source/" +
+        "task-034-mvp-e2e-acceptance-v3/run-manifest.json",
     ),
     path.join(
       root,
@@ -60,6 +69,8 @@ const runContract = (
   root,
   mode = "create",
   admissionRelativePath = undefined,
+  packetManifestOverrideRelativePath = undefined,
+  sourceR7ManifestOverrideRelativePath = undefined,
 ) =>
   spawnSync(
     process.execPath,
@@ -68,6 +79,12 @@ const runContract = (
       root,
       mode,
       ...(admissionRelativePath ? [admissionRelativePath] : []),
+      ...(packetManifestOverrideRelativePath
+        ? [
+            packetManifestOverrideRelativePath,
+            sourceR7ManifestOverrideRelativePath,
+          ]
+        : []),
     ],
     {
     cwd: repoRoot,
@@ -154,6 +171,55 @@ test("Track B v2 seal verifies its hash-addressed admission after v3 supersedes 
     );
 
     const verify = runContract(root, "verify", historyRelativePath);
+    assert.equal(verify.status, 0, verify.stderr);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("Track B v2 seal verifies hash-equivalent history after live R7 advances", async () => {
+  const root = await makeFixture();
+  try {
+    const create = runContract(root);
+    assert.equal(create.status, 0, create.stderr);
+    const historyRoot = path.join(root, "history/track-b-v2");
+    await mkdir(historyRoot, { recursive: true });
+    const historicalManifestRelativePath =
+      "history/track-b-v2/packet-manifest.json";
+    const historicalR7RelativePath =
+      "history/track-b-v2/source-r7-run-manifest.json";
+    await cp(
+      path.join(root, "outputs/task-eval-002/track-b-inputs-v1/manifest.json"),
+      path.join(root, ...historicalManifestRelativePath.split("/")),
+    );
+    await cp(
+      path.join(
+        root,
+        "outputs/task-034-mvp-e2e-acceptance-v3/run-manifest.json",
+      ),
+      path.join(root, ...historicalR7RelativePath.split("/")),
+    );
+    await writeFile(
+      path.join(root, "outputs/task-eval-002/track-b-inputs-v1/manifest.json"),
+      "{}\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(
+        root,
+        "outputs/task-034-mvp-e2e-acceptance-v3/run-manifest.json",
+      ),
+      "{}\n",
+      "utf8",
+    );
+
+    const verify = runContract(
+      root,
+      "verify",
+      "outputs/task-eval-002/track-b-admission.json",
+      historicalManifestRelativePath,
+      historicalR7RelativePath,
+    );
     assert.equal(verify.status, 0, verify.stderr);
   } finally {
     await rm(root, { recursive: true, force: true });

@@ -5,16 +5,27 @@ import path from "node:path";
 
 const root = path.resolve(process.argv[2] ?? ".");
 const mode = process.argv[3] ?? "create";
+const packetManifestOverrideRelativePath = process.argv[4];
+const sourceR7ManifestOverrideRelativePath = process.argv[5];
+assert.equal(
+  packetManifestOverrideRelativePath !== undefined,
+  sourceR7ManifestOverrideRelativePath !== undefined,
+  "TRACK_B_HISTORICAL_OVERRIDE_PAIR_REQUIRED",
+);
+assert.ok(
+  packetManifestOverrideRelativePath === undefined || mode === "verify",
+  "TRACK_B_HISTORICAL_OVERRIDE_VERIFY_ONLY",
+);
 const outputRoot = path.join(root, "outputs/task-eval-002");
 const packetRoot = path.join(outputRoot, "track-b-inputs-v1");
-const manifestPath = path.join(packetRoot, "manifest.json");
+const manifestArtifactPath = path.join(packetRoot, "manifest.json");
 const promptPath = path.join(
   root,
   "scripts/blind-evaluation/track-b-opinion-prompt.txt",
 );
 const dispatchPath = path.join(outputRoot, "track-b-dispatch.json");
 const dispatchHashPath = path.join(outputRoot, "track-b-dispatch.sha256");
-const sourceR7ManifestPath = path.join(
+const sourceR7ManifestArtifactPath = path.join(
   root,
   "outputs/task-034-mvp-e2e-acceptance-v3/run-manifest.json",
 );
@@ -27,11 +38,32 @@ const parseIso = (value, label) => {
   assert.ok(Number.isFinite(millis), `${label} must be ISO-8601`);
   return millis;
 };
+const resolveRelativeOverride = (relativePath, defaultPath, label) => {
+  if (relativePath === undefined) return defaultPath;
+  assert.match(relativePath, /^[A-Za-z0-9._/-]+$/, `${label}_INVALID`);
+  assert.ok(!relativePath.includes(".."), `${label}_TRAVERSAL`);
+  const absolutePath = path.resolve(root, ...relativePath.split("/"));
+  assert.ok(
+    absolutePath.startsWith(`${root}${path.sep}`),
+    `${label}_OUTSIDE_ROOT`,
+  );
+  return absolutePath;
+};
+const manifestReadPath = resolveRelativeOverride(
+  packetManifestOverrideRelativePath,
+  manifestArtifactPath,
+  "TRACK_B_PACKET_MANIFEST_OVERRIDE",
+);
+const sourceR7ManifestReadPath = resolveRelativeOverride(
+  sourceR7ManifestOverrideRelativePath,
+  sourceR7ManifestArtifactPath,
+  "TRACK_B_SOURCE_R7_OVERRIDE",
+);
 
-const manifestBytes = await readFile(manifestPath);
+const manifestBytes = await readFile(manifestReadPath);
 const manifest = JSON.parse(manifestBytes.toString("utf8"));
 const promptBytes = await readFile(promptPath);
-const sourceR7ManifestBytes = await readFile(sourceR7ManifestPath);
+const sourceR7ManifestBytes = await readFile(sourceR7ManifestReadPath);
 if (
   manifest.schemaVersion !== "task-eval-002-track-b-manifest-v1" ||
   manifest.status !== "PACKETS_READY_ZERO_ELIGIBLE_CALLS" ||
@@ -111,9 +143,9 @@ if (mode === "create") {
     schemaVersion: "task-eval-002-track-b-dispatch-v2",
     track: "TRACK_B_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
     createdAt: assignedAt,
-    packetManifestPath: posixRelative(manifestPath),
+    packetManifestPath: posixRelative(manifestArtifactPath),
     packetManifestSha256: sha256(manifestBytes),
-    sourceR7ManifestPath: posixRelative(sourceR7ManifestPath),
+    sourceR7ManifestPath: posixRelative(sourceR7ManifestArtifactPath),
     sourceR7ManifestSha256: sha256(sourceR7ManifestBytes),
     promptPath: posixRelative(promptPath),
     promptSha256: sha256(promptBytes),
@@ -148,9 +180,12 @@ if (mode === "create") {
   assert.equal(sha256(dispatchBytes), expectedDispatchHash);
   assert.equal(dispatch.schemaVersion, "task-eval-002-track-b-dispatch-v2");
   assert.equal(dispatch.track, "TRACK_B_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION");
-  assert.equal(dispatch.packetManifestPath, posixRelative(manifestPath));
+  assert.equal(dispatch.packetManifestPath, posixRelative(manifestArtifactPath));
   assert.equal(dispatch.packetManifestSha256, sha256(manifestBytes));
-  assert.equal(dispatch.sourceR7ManifestPath, posixRelative(sourceR7ManifestPath));
+  assert.equal(
+    dispatch.sourceR7ManifestPath,
+    posixRelative(sourceR7ManifestArtifactPath),
+  );
   assert.equal(dispatch.sourceR7ManifestSha256, sha256(sourceR7ManifestBytes));
   assert.equal(dispatch.promptPath, posixRelative(promptPath));
   assert.equal(dispatch.promptSha256, sha256(promptBytes));

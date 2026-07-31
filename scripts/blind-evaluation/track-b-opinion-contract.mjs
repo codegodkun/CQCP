@@ -12,6 +12,17 @@ const opinionRoot = path.join(outputRoot, "track-b-codex-opinions");
 const sealPath = path.join(outputRoot, "track-b-codex-seal.json");
 const admissionRelativePath =
   process.argv[4] ?? "outputs/task-eval-002/track-b-admission.json";
+const packetManifestOverrideRelativePath = process.argv[5];
+const sourceR7ManifestOverrideRelativePath = process.argv[6];
+assert.equal(
+  packetManifestOverrideRelativePath !== undefined,
+  sourceR7ManifestOverrideRelativePath !== undefined,
+  "TRACK_B_HISTORICAL_OVERRIDE_PAIR_REQUIRED",
+);
+assert.ok(
+  packetManifestOverrideRelativePath === undefined || mode === "verify",
+  "TRACK_B_HISTORICAL_OVERRIDE_VERIFY_ONLY",
+);
 assert.match(
   admissionRelativePath,
   /^[A-Za-z0-9._/-]+$/,
@@ -103,7 +114,7 @@ assert.ok(Array.isArray(dispatch.assignments), "assignments must be an array");
 assert.equal(dispatch.assignments.length, 3);
 
 const packetManifestFile = await readRelative(
-  dispatch.packetManifestPath,
+  packetManifestOverrideRelativePath ?? dispatch.packetManifestPath,
   "packetManifestPath",
 );
 assert.equal(
@@ -120,7 +131,7 @@ assert.equal(packetManifest.familyPlanCount, 9);
 assert.equal(packetManifest.candidateOccurrenceCount, 57);
 
 const sourceR7ManifestFile = await readRelative(
-  dispatch.sourceR7ManifestPath,
+  sourceR7ManifestOverrideRelativePath ?? dispatch.sourceR7ManifestPath,
   "sourceR7ManifestPath",
 );
 assert.equal(

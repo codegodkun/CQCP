@@ -3,7 +3,8 @@
 状态：Track A Codex + DeepSeek 封存完成 / Track B run-v3 已解盲为
 NO_GO_MODEL_MISMATCH / Provider admission 未建立 /
 12 packet 模型未见 holdout 已确认、尚未构建 /
-Core 不含 standing grant / 冻结 45568f… 审计 NO_GO 后整改中
+Core 不含 standing grant / 45568f… blocking causes 与历史证据路径错配已整改 /
+最终同 HEAD 证据与三审待重建
 
 类型：Evaluation / Data Governance / Model Governance
 
@@ -161,5 +162,8 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   holdout。
 * Core source diff 排除 Provider A0、standing/CC 传输和 `outputs/**`；冻结包仅以
   SHA-256 引用 R7、Track A/B、browser 与 Compose 派生证据。
+* 旧 Track B v2 dispatch 所绑定的 packet manifest 与 R7 manifest 已按原始
+  SHA-256 固化为历史 fixture；verify-only override 必须成对提供且严格匹配旧
+  dispatch，current-HEAD R7 继续独立重建。定向 contract `7/7` 已通过。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：评测正确性、模型职责与公网数据治理。

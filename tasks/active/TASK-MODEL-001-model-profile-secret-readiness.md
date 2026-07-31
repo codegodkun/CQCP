@@ -1,6 +1,6 @@
 # TASK-MODEL-001：Model Profile、Secret Reference 与 Readiness
 
-状态：已实现 / junction 与单 sentinel 证据已满足 / 冻结 45568f… 审计 NO_GO 后整改中
+状态：已实现 / 45568f… blocking causes 已整改 / 最终同 HEAD 证据与三审待重建
 
 类型：Model Governance / Security / Database / Admin API
 

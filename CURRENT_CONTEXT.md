@@ -45,6 +45,14 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   ARCHITECTURE 混入 Provider attempt contract，以及 TASK 状态叙事冲突。
 - 上述 NO_GO 使 `fa869af3b79f0e417a9a3de5f5630dcbe4fd5885` 上的 Compose/browser、
   formal verification 与 freeze 全部只能作为失效历史证据，不得用于最终收口。
+- `45568f…` 的六类 blocking causes 已完成原子整改：Worker 只消费已校验的
+  DOCX byte snapshot；R7 绑定当前 HEAD/tree/source closure；browser 证据改为
+  原始 filechooser/network/DOM/console/dialog 事实；模型外呼计数来自 Compose
+  transport；Core 架构与 Provider contract 分离；父 TASK 状态叙事已收敛。
+- 正式验证随后暴露旧 Track B v2 dispatch 与 current-HEAD R7 共用 live 路径。
+  历史 packet manifest 与 R7 manifest 现以原始 SHA-256 fixture 封存，verify-only
+  override 必须成对提供且仍须匹配 dispatch hash；当前 R7 不回退。定向 contract
+  `7/7` 与历史链 direct verify 已通过。
 
 ## 当前活跃任务
 
@@ -56,8 +64,9 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. 正在按失效冻结的 blocking findings 原子整改；修复后必须在新的最终 candidate
-   commit 上从零重建 R7、Compose/browser、完整验证和 immutable freeze。
+1. blocking findings 与 Track B 历史/live 路径错配已整改；当前最后一批源码和
+   Memory Writeback 尚未形成最终 candidate commit。提交后必须从零重建 R7、
+   Compose/browser、完整验证和 immutable freeze。
 2. 同一 Core subject 的 CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor
    尚未全部达到 `GO / P0=P1=P2=blocking=0`。
 3. CI、PR 与 merge 尚未完成；没有主线 merge 就不能声明 TASK-036 seam 已集成。
@@ -66,8 +75,9 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 只修复冻结 `45568f…` 的 blocking causes，并运行定向回归。
-2. 形成 clean Core candidate commit；在当前 HEAD 上重新执行 R7，并以受控浏览器
+1. 形成包含 blocking-fix、Track B 历史证据路径修复与本次 Memory Writeback 的
+   clean Core candidate commit。
+2. 在该最终 HEAD 上重新执行 R7，并以受控浏览器
    原始 filechooser/console/dialog/network/DOM 证据和默认拒绝模型 egress 的 Compose
    证据重建 `scripts/mvp002/run-core-verification.ps1` 全量结果。
 3. 冻结新 subject，执行 CC AUDIT 与两个全新 Codex 独立审计；旧审计结论不复用。

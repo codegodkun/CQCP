@@ -10,9 +10,9 @@
 
 | 任务 | Task Level | 当前状态 | Core 边界 |
 |---|---|---|---|
-| `TASK-MVP-002` | L3 | 实现与 junction 补证完成；冻结 45568f… 审计 NO_GO，整改及重建待完成 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
-| `TASK-MODEL-001` | L3 | 实现与三项补证完成；冻结 45568f… 审计 NO_GO，整改及重建待完成 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity |
-| `TASK-EVAL-002` | L3 | Track A 完成；旧 run-v3 为 `NO_GO_MODEL_MISMATCH`；新 holdout 未开始 | Track A、Track B EvidencePacket、严格模型意见与解盲 |
+| `TASK-MVP-002` | L3 | 实现与 45568f… blocking causes 整改完成；最终同 HEAD 证据/三审待重建 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
+| `TASK-MODEL-001` | L3 | 实现、补证与 45568f… blocking causes 整改完成；最终同 HEAD 证据/三审待重建 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity |
+| `TASK-EVAL-002` | L3 | Track A 完成；旧 run-v3 为 `NO_GO_MODEL_MISMATCH`；历史/live 证据路径已分离；新 holdout 未开始 | Track A、Track B EvidencePacket、严格模型意见与解盲 |
 | `TASK-034` | L3 | v29/R7 限定样本证据进入 Core | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED |
 | `TASK-036` | L3 | B/C/D seam 进入 Core，主线集成待 merge | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket |
 

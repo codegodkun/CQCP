@@ -1,6 +1,6 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / Windows junction 证据已满足 / 冻结 45568f… 审计 NO_GO 后整改中
+状态：已实现 / 45568f… blocking causes 已整改 / 最终同 HEAD 证据与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -157,5 +157,9 @@ Integration unit：`MILESTONE-MVP-002-CORE`
 * 2026-07-31 Core 收敛：本任务与 TASK-MODEL-001、已完成 M3 证据、TASK-034 R7、
   TASK-036 seam 组成先行 integration unit。Provider A0、Track B 新 holdout、A1/A2
   不进入本 Core diff。
+* 2026-07-31 审计整改：Worker DOCX snapshot、current-HEAD R7、浏览器原始事件/
+  DOM、Compose transport 计数、Provider-free Core 边界和任务叙事冲突均已修复；
+  旧 Track B v2 evidence 改用 hash-equivalent 历史 fixture 验证，不覆盖当前 R7。
+  最终 candidate 的 Compose/browser、完整验证、freeze 与三审仍须从零重建。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。
