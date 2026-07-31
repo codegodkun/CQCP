@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   assertCoreChangedPaths,
+  assertCoreContentBoundary,
   assertCoreImportClosure,
   CORE_BASE_COMMIT,
   CORE_SCOPE_VERSION,
@@ -236,6 +237,10 @@ export function buildCoreFreeze(repoRoot, summaryPath) {
   const subjectPaths = assertCoreChangedPaths(
     statusRecords.map((record) => record.path),
   );
+  const contentBoundary = assertCoreContentBoundary(
+    absoluteRoot,
+    subjectPaths,
+  );
   const importClosure = assertCoreImportClosure(absoluteRoot, subjectPaths);
   const sourceFiles = statusRecords.map((record) =>
     fileRecord(absoluteRoot, headCommit, record),
@@ -267,6 +272,7 @@ export function buildCoreFreeze(repoRoot, summaryPath) {
     sourceStatusSha256,
     fullDiffSha256,
     sourceFiles,
+    contentBoundary,
     importClosure,
     verificationSummarySha256: verification.sha256,
     evidenceReferences: verification.summary.evidenceReferences,
@@ -286,6 +292,7 @@ export function buildCoreFreeze(repoRoot, summaryPath) {
       subjectPaths,
       sourceStatusSha256,
       sourceFiles,
+      contentBoundary,
       importClosure,
       fullDiffSha256,
       verificationSummary: {

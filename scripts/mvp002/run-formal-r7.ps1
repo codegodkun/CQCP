@@ -11,7 +11,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 $repo = [System.IO.Path]::GetFullPath($RepoRoot)
 $apiServer = Join-Path $repo "apps/api-server"
 $outputRoot = Join-Path $repo "outputs/task-034-mvp-e2e-acceptance-v3"
-$verificationRoot = Join-Path $repo "outputs/task-mvp-002/audit/verification"
+$verificationRoot = Join-Path $repo "outputs/task-mvp-002/core-audit/verification"
 $rawLogPath = Join-Path $verificationRoot "formal-r7.log"
 $testXmlPath = Join-Path $apiServer (
     "build/test-results/test/" +
@@ -20,7 +20,10 @@ $testXmlPath = Join-Path $apiServer (
 $formalXmlPath = Join-Path $outputRoot "formal-test-result.xml"
 $sealPath = Join-Path $outputRoot "r7-evidence-seal.json"
 $expectedBranch = "codex/task-mvp-002"
-$expectedCommit = "WORKTREE-MVP002-FINAL-R8"
+$expectedCommit = (& git -C $repo rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0 -or $expectedCommit -notmatch "^[a-f0-9]{40}$") {
+    throw "Formal R7 cannot resolve the current HEAD."
+}
 
 foreach ($path in @(
         $apiServer,
@@ -46,7 +49,17 @@ if (-not (Test-Path -LiteralPath $apiServer -PathType Container)) {
     throw "API server directory does not exist."
 }
 $branch = (& git -C $repo branch --show-current).Trim()
-if ($LASTEXITCODE -ne 0 -or $branch -ne $expectedBranch) {
+if ($LASTEXITCODE -ne 0) {
+    throw "Formal R7 cannot resolve the current branch."
+}
+if ([string]::IsNullOrWhiteSpace($branch)) {
+    $branchHead = (& git -C $repo rev-parse "refs/heads/$expectedBranch").Trim()
+    if ($LASTEXITCODE -ne 0 -or $branchHead -ne $expectedCommit) {
+        throw "Detached Formal R7 HEAD is not bound to $expectedBranch."
+    }
+    $branch = $expectedBranch
+}
+if ($branch -ne $expectedBranch) {
     throw "Formal R7 must run on branch $expectedBranch; current branch is '$branch'."
 }
 

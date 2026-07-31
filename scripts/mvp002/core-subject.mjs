@@ -4,7 +4,17 @@ import path from "node:path";
 
 export const CORE_BASE_COMMIT =
   "1035739b751386176e47c6871738a62bff86de02";
-export const CORE_SCOPE_VERSION = "mvp002-core-subject-v1";
+export const CORE_SCOPE_VERSION = "mvp002-core-subject-v2";
+
+const FORBIDDEN_CORE_CONTENT = new Map([
+  [
+    "docs/ARCHITECTURE.md",
+    [
+      "provider-attempt-outcome-contract-v1.json",
+      "task-model-002-provider-attempt-outcome-contract-v1",
+    ],
+  ],
+]);
 
 const CORE_BLIND_SCRIPT_NAMES = new Set([
   "blind-evidence-chain.mjs",
@@ -77,6 +87,7 @@ const CORE_MVP002_SCRIPT_NAMES = new Set([
   "Dockerfile.api-runtime",
   "capture-browser-upload-evidence.ps1",
   "capture-runtime-provenance.mjs",
+  "compose.acceptance.override.yml",
   "core-subject.mjs",
   "core-subject.test.mjs",
   "create-malicious-preview-docx.ps1",
@@ -211,6 +222,29 @@ export function assertCoreImportClosure(repoRoot, subjectPaths) {
     }
   }
   return [...visited].sort();
+}
+
+export function assertCoreContentBoundary(repoRoot, subjectPaths) {
+  const checked = [];
+  for (const [filePath, forbiddenMarkers] of FORBIDDEN_CORE_CONTENT) {
+    if (!subjectPaths.includes(filePath)) continue;
+    const absolutePath = path.resolve(repoRoot, filePath);
+    assert.equal(
+      fs.existsSync(absolutePath) && fs.statSync(absolutePath).isFile(),
+      true,
+      `Core content-boundary file is missing: ${filePath}`,
+    );
+    const text = fs.readFileSync(absolutePath, "utf8");
+    for (const marker of forbiddenMarkers) {
+      assert.equal(
+        text.includes(marker),
+        false,
+        `Core content imports excluded Provider contract marker: ${filePath} -> ${marker}`,
+      );
+    }
+    checked.push(filePath);
+  }
+  return checked.sort();
 }
 
 export function coreScriptPaths() {

@@ -1,12 +1,12 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / Core-first 收敛已确认 / Windows junction 证据与最终三审未满足
+状态：已实现 / Windows junction 证据已满足 / 冻结 45568f… 审计 NO_GO 后整改中
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
 Task Level：`L3 高风险治理`
 
-Integration unit：`MILESTONE-MVP-002`
+Integration unit：`MILESTONE-MVP-002-CORE`
 
 优先级：P0
 

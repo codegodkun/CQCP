@@ -3227,13 +3227,6 @@ COMPOSING: 3m
 remainingStageTime >= modelCallTimeout + nextBackoff + modelValidationReserve
 ```
 
-进入 `REVIEWING_MODEL` 时必须以唯一 stage STARTED 事件冻结
-`stageAttempt / stageStartedAt / stageTimeoutConfigVersion / stageTimeoutAt`。
-Provider logical-call claim 保存并把这四项纳入 canonical identity；Repository 与
-PostgreSQL 都从 immutable stage log 重算。attempt 2/3 必须逐字节复用相同 stage
-identity，只允许其 `modelCallTimeoutAt` 在固定 `stageTimeoutAt` 内收紧，不得把
-20 分钟上限按 attempt 重置。
-
 `modelValidationReserve` 是平台运行配置，默认 `30s`，允许范围 `15s..120s`，随运行配置版本和变更原因审计，不属于业务规则集。调整依据是脱敏后的 artifact output size 与 schema validation p99，不做每次调用的历史预测或动态自适应。若实际校验仍超过 reserve，当前 attempt 按 stage timeout 失败，不允许突破 `stageTimeoutAt`。
 
 调整职责：
@@ -3285,40 +3278,6 @@ maxAttempts = 3
 backoff = exponential factor 2, initial 30s, max 5m
 no successful artifact after retries -> SYS-MODEL-UNAVAILABLE
 ```
-
-Provider attempt 的唯一规范 truth table 为
-`scripts/blind-evaluation/provider-attempt-outcome-contract-v1.json`
-（schema `task-model-002-provider-attempt-outcome-contract-v1`，SHA-256
-`105d2ceaf3a73b02621418b3c275bf403447ec300435602290cecae3b080ef22`）。
-request submission 固定为
-`NOT_SUBMITTED / PARTIAL_OR_UNKNOWN / SUBMITTED`，response classification 固定为
-`NONE / INCOMPLETE / COMPLETE`。只有 durable outcome 已提交的零字节 pre-send
-timeout/unavailable，或完整 429/5xx，才允许在同一
-authorization/claim/request bytes/stage deadline 内自动 retry。
-`RESPONSE_TOO_LARGE` 固定为 `SUBMITTED/INCOMPLETE` 且不重试。任一 byte 可能
-已提交但没有完整响应时均为 `UNKNOWN_SIDE_EFFECT`；outcome commit 前 crash 即使
-曾收到完整 response，也没有可信 durable category，恢复后自动重发为零。
-full-write 返回值不能证明第三方未执行。
-redirect 固定为
-`REJECTED / REDIRECT_REJECTED / SUBMITTED / COMPLETE / no-retry`。machine
-validator 使用独立 expected records，对 16 个 durable rows 与 4 个 recovery rows
-逐行逐字段 deep-equal；枚举合法但 tuple 矛盾的变体必须 fail closed。
-
-`maxAttempts`、attempt `createdAt` 与 `modelCallTimeoutAt` 只从 immutable
-`model_profile_config_version` 和数据库时钟派生，不接受 caller 自报：
-
-```text
-createdAt = transaction_timestamp()
-maxAttempts = min(profile.retryCount + 1, 3)
-modelCallTimeoutAt =
-  createdAt + min(profile.timeoutSeconds, 240) seconds
-```
-
-Repository 预计算，PostgreSQL trigger 锁定 profile row 后重算；profile timeout
-只允许 `1..240`、retry count 只允许 `0..3`，并要求
-`modelCallTimeoutAt + modelValidationReserve <= stageTimeoutAt`。automatic retry
-先等待 backoff，再开始新的 intent 插入事务；新的 attempt 起点不能重置固定 stage
-deadline。
 
 失败 attempt 计入 `operationalCallAttempts` 和诊断，不计入 `successfulModelCallsUsed`；预算面板必须同时展示两者，避免“attempt=3 但预算只用了 1 次”的误解。已有成功 artifact 时，重试直接复用，不重复调用模型。
 

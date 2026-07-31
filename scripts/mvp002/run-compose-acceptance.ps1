@@ -31,7 +31,7 @@ $compose = @(
     "compose",
     "-p", "cqcp-mvp002-acceptance",
     "-f", (Join-Path $repo "deploy/compose/compose.yml"),
-    "-f", (Join-Path $repo "outputs/task-mvp-002/compose.acceptance.override.yml")
+    "-f", (Join-Path $repo "scripts/mvp002/compose.acceptance.override.yml")
 )
 $env:CQCP_DB_PORT = "54331"
 $env:CQCP_API_PORT = "18082"
@@ -41,6 +41,9 @@ $apiRuntimeContext = Join-Path $runtimeRoot "api-image"
 $env:CQCP_API_ACCEPTANCE_CONTEXT = $apiRuntimeContext
 $env:CQCP_ADMIN_API_TOKEN = "mvp002-acceptance-admin"
 $env:CQCP_ADMIN_READONLY_TOKEN = "mvp002-acceptance-readonly"
+Remove-Item Env:\DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
+Remove-Item Env:\CQCP_DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
+Remove-Item Env:\CQCP_MODEL_DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
 
 New-Item -ItemType Directory -Force -Path $evidence | Out-Null
 if (Test-Path -LiteralPath $runtimeRoot) {
@@ -68,6 +71,7 @@ Copy-Item `
 $summaryPath = Join-Path $evidence "compose-acceptance-summary.json"
 $downloadPath = Join-Path $runtimeRoot "downloaded.docx"
 $composeLogPath = Join-Path $evidence "compose-services.log"
+$networkEvidencePath = Join-Path $evidence "compose-network-policy.json"
 $started = $false
 
 try {
@@ -77,6 +81,28 @@ try {
         throw "Compose build/start failed with exit code $LASTEXITCODE."
     }
     $started = $true
+
+    $networkInspectRaw = & docker network inspect cqcp_mvp002_acceptance_internal
+    if ($LASTEXITCODE -ne 0) {
+        throw "Acceptance network inspection failed."
+    }
+    $networkInspect = @($networkInspectRaw | ConvertFrom-Json)
+    if ($networkInspect.Count -ne 1 -or -not $networkInspect[0].Internal) {
+        throw "Acceptance network must be internal/default-deny."
+    }
+    $networkEvidence = [ordered]@{
+        schemaVersion = "task-mvp-002-compose-network-policy-v1"
+        status = "PASS"
+        capturedAt = [DateTimeOffset]::UtcNow.ToString("O")
+        networkName = $networkInspect[0].Name
+        networkId = $networkInspect[0].Id
+        internal = [bool]$networkInspect[0].Internal
+        attachable = [bool]$networkInspect[0].Attachable
+        ingress = [bool]$networkInspect[0].Ingress
+        modelEndpointEgressAllowed = $false
+    }
+    $networkEvidence | ConvertTo-Json -Depth 6 |
+        Set-Content -LiteralPath $networkEvidencePath -Encoding utf8
 
     $health = $null
     for ($attempt = 1; $attempt -le 90; $attempt++) {
@@ -244,6 +270,16 @@ try {
     $profiles = Invoke-RestMethod `
         -Uri "http://localhost:18082/api/admin/model-profiles" `
         -Headers $adminHeaders
+    $networkAttemptMetric = Invoke-RestMethod `
+        -Uri "http://localhost:18082/actuator/metrics/cqcp.model.connectivity.network.attempts"
+    $networkAttemptCount = @(
+        $networkAttemptMetric.measurements |
+        Where-Object statistic -eq "COUNT" |
+        Select-Object -ExpandProperty value
+    )
+    if ($networkAttemptCount.Count -ne 1 -or [double]$networkAttemptCount[0] -ne 0) {
+        throw "Acceptance observed a model connectivity network attempt."
+    }
     $mock = $profiles.items | Where-Object profileCode -eq "MVP_DEMO_MOCK"
 
     if ($createdProfile.enabled -or $createdProfile.defaultForNewTask) {
@@ -327,7 +363,19 @@ try {
             defaultForNewTask = $mock.defaultForNewTask
             readiness = $mock.readiness
         }
-        externalModelNetworkAttempted = $false
+        modelNetworkEvidence = [ordered]@{
+            metricName = $networkAttemptMetric.name
+            observedAttemptCount = [double]$networkAttemptCount[0]
+            networkPolicyPath = [System.IO.Path]::GetRelativePath(
+                $repo,
+                $networkEvidencePath
+            ).Replace("\", "/")
+            networkPolicySha256 = (
+                Get-FileHash -LiteralPath $networkEvidencePath -Algorithm SHA256
+            ).Hash.ToLowerInvariant()
+            internalDefaultDeny = [bool]$networkInspect[0].Internal
+        }
+        externalModelNetworkAttempted = ([double]$networkAttemptCount[0] -ne 0)
     }
     $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $summaryPath -Encoding utf8
     $summary | ConvertTo-Json -Depth 8

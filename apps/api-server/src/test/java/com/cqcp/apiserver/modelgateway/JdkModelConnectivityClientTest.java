@@ -132,6 +132,29 @@ class JdkModelConnectivityClientTest {
         assertThat(transportCalls).hasValue(0);
     }
 
+    @Test
+    void observerCountsEachConnectivityNetworkAttempt() {
+        var observedAttempts = new AtomicInteger();
+        var client = new JdkModelConnectivityClient(
+                new ObjectMapper(),
+                endpoint -> {
+                    throw new IOException("blocked for test");
+                },
+                (endpoint, secret, timeout, pinned) -> {
+                    throw new AssertionError("transport must not be reached");
+                },
+                observedAttempts::incrementAndGet);
+
+        var outcome = client.test(
+                URI.create("https://api.deepseek.com"),
+                "deepseek-v4-pro",
+                "secret",
+                Duration.ofSeconds(1));
+
+        assertThat(outcome.status()).isEqualTo(ConnectivityStatus.NETWORK_ERROR);
+        assertThat(observedAttempts).hasValue(1);
+    }
+
     private void assertStatus(int httpStatus, String upstreamBody, ConnectivityStatus expected) {
         status.set(httpStatus);
         body.set(upstreamBody);

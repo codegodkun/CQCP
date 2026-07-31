@@ -5,7 +5,9 @@ param(
     [string]$TaskId,
     [Parameter(Mandatory = $true)]
     [string]$ExecutionId,
-    [string]$EvidenceRelativePath = "outputs/task-mvp-002/browser-evidence-current"
+    [string]$EvidenceRelativePath = "outputs/task-mvp-002/browser-evidence-current",
+    [string]$BrowserObservationRelativePath =
+        "outputs/task-mvp-002/browser-evidence-current/browser-raw-observation.json"
 )
 
 $ErrorActionPreference = "Stop"
@@ -41,8 +43,30 @@ $sourcePath = Join-Path $repo "packages/test-fixtures/docx/1、奔腾公司企�
 $downloadPath = Join-Path ([System.IO.Path]::GetTempPath()) "cqcp-mvp002-browser-upload-download.docx"
 $baseUrl = "http://localhost:18082"
 $headers = @{ Authorization = "Bearer $env:CQCP_ADMIN_READONLY_TOKEN" }
+$observationPath = [System.IO.Path]::GetFullPath(
+    (Join-Path $repo $BrowserObservationRelativePath)
+)
+if (-not "$observationPath".StartsWith(
+        "$allowedEvidenceRoot$([System.IO.Path]::DirectorySeparatorChar)",
+        [System.StringComparison]::OrdinalIgnoreCase
+    )) {
+    throw "BrowserObservationRelativePath must remain under outputs/task-mvp-002."
+}
+if (-not (Test-Path -LiteralPath $observationPath -PathType Leaf)) {
+    throw "Raw browser observation is required."
+}
 
 try {
+    $observation = Get-Content -LiteralPath $observationPath -Raw |
+        ConvertFrom-Json
+    if ($observation.schemaVersion -ne "task-mvp-002-browser-raw-observation-v1" `
+            -or $observation.status -ne "PASS" `
+            -or $observation.upload.fileChooserEvent.source -ne "PLAYWRIGHT_PAGE_EVENT" `
+            -or $observation.upload.fileChooserEvent.accepted -ne $true `
+            -or $observation.upload.taskId -ne $TaskId `
+            -or $observation.upload.executionId -ne $ExecutionId) {
+        throw "Raw browser observation does not prove the requested file chooser upload."
+    }
     $status = Invoke-RestMethod `
         -Uri "$baseUrl/api/review/tasks/$TaskId/executions/$ExecutionId"
     $result = Invoke-RestMethod `
@@ -92,7 +116,16 @@ try {
         schemaVersion = "task-mvp-002-browser-upload-v1"
         status = "PASS"
         capturedAt = [DateTimeOffset]::UtcNow.ToString("O")
-        uploadChannel = "BROWSER_FILE_CHOOSER"
+        uploadChannel = "BROWSER_FILE_CHOOSER_OBSERVED"
+        rawBrowserObservation = [ordered]@{
+            path = [System.IO.Path]::GetRelativePath(
+                $repo,
+                $observationPath
+            ).Replace("\", "/")
+            sha256 = (
+                Get-FileHash -LiteralPath $observationPath -Algorithm SHA256
+            ).Hash.ToLowerInvariant()
+        }
         sourceFixture = "packages/test-fixtures/docx/1、奔腾公司企鹅岛项目三标段土建总承包工程合同_缩减版.docx"
         sourceSize = $sourceFile.Length
         sourceSha256 = $sourceSha

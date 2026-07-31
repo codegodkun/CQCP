@@ -6,6 +6,7 @@ import test from "node:test";
 
 import {
   assertCoreChangedPaths,
+  assertCoreContentBoundary,
   assertCoreImportClosure,
   coreScriptPaths,
   isCoreSourcePath,
@@ -74,6 +75,26 @@ test("Core import closure rejects a Provider dependency", () => {
   }
 });
 
+test("Core content boundary rejects Provider attempt contract leakage", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "cqcp-core-content-"));
+  try {
+    const architecturePath = path.join(root, "docs/ARCHITECTURE.md");
+    fs.mkdirSync(path.dirname(architecturePath), { recursive: true });
+    fs.writeFileSync(
+      architecturePath,
+      "provider-attempt-outcome-contract-v1.json\n",
+      "utf8",
+    );
+    assert.throws(
+      () =>
+        assertCoreContentBoundary(root, ["docs/ARCHITECTURE.md"]),
+      /excluded Provider contract marker/,
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("Current Core script allowlist has a Provider-free import closure", () => {
   const closure = assertCoreImportClosure(repoRoot, coreScriptPaths());
   assert.ok(closure.includes("scripts/mvp002/core-subject.mjs"));
@@ -82,5 +103,9 @@ test("Current Core script allowlist has a Provider-free import closure", () => {
       /(?:provider-contract-|standing-egress|cc-audit)/.test(filePath),
     ),
     false,
+  );
+  assert.deepEqual(
+    assertCoreContentBoundary(repoRoot, ["docs/ARCHITECTURE.md"]),
+    ["docs/ARCHITECTURE.md"],
   );
 });

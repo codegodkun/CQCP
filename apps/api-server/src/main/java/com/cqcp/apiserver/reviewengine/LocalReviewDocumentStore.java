@@ -162,23 +162,6 @@ class LocalReviewDocumentStore {
         return Files.exists(resolve(documentReference));
     }
 
-    /**
-     * Read one bounded byte snapshot from a path that remains bound to the
-     * validated task directory for the whole operation.
-     *
-     * @param taskId             loaded task identifier
-     * @param documentReference  stored reference, e.g. {@code "TASK_abc/32hexchars.docx"}
-     * @return defensive byte snapshot, or empty if the path cannot be proven safe
-     */
-    java.util.Optional<Path> readDocumentPathForExecution(
-            String taskId,
-            String documentReference) {
-        if (readDocumentSnapshot(taskId, documentReference).isEmpty()) {
-            return java.util.Optional.empty();
-        }
-        return java.util.Optional.of(realRoot.resolve(Path.of(documentReference)).normalize());
-    }
-
     java.util.Optional<StoredDocumentSnapshot> readDocumentSnapshot(
             String taskId,
             String documentReference) {
@@ -517,6 +500,29 @@ class LocalReviewDocumentStore {
         @Override
         public byte[] content() {
             return content.clone();
+        }
+
+        long size() {
+            return content.length;
+        }
+
+        String sha256() {
+            try {
+                return HexFormat.of().formatHex(
+                        MessageDigest.getInstance("SHA-256").digest(content));
+            } catch (NoSuchAlgorithmException exception) {
+                throw new IllegalStateException("SHA-256 is unavailable", exception);
+            }
+        }
+
+        boolean matches(long expectedSize, String expectedSha256) {
+            return expectedSize >= 0
+                    && expectedSha256 != null
+                    && expectedSha256.matches("[a-f0-9]{64}")
+                    && size() == expectedSize
+                    && MessageDigest.isEqual(
+                            sha256().getBytes(java.nio.charset.StandardCharsets.US_ASCII),
+                            expectedSha256.getBytes(java.nio.charset.StandardCharsets.US_ASCII));
         }
     }
 

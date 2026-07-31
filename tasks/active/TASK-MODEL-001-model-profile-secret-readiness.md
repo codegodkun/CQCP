@@ -1,12 +1,12 @@
 # TASK-MODEL-001：Model Profile、Secret Reference 与 Readiness
 
-状态：已实现 / Core-first 收敛已确认 / junction 与单 sentinel 证据待补 / 三审未满足
+状态：已实现 / junction 与单 sentinel 证据已满足 / 冻结 45568f… 审计 NO_GO 后整改中
 
 类型：Model Governance / Security / Database / Admin API
 
 Task Level：`L3 高风险治理`
 
-Integration unit：`MILESTONE-MVP-002`
+Integration unit：`MILESTONE-MVP-002-CORE`
 
 优先级：P0
 

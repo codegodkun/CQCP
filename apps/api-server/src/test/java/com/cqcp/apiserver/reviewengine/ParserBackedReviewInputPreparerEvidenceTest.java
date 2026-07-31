@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -24,6 +25,26 @@ class ParserBackedReviewInputPreparerEvidenceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ParserBackedReviewInputPreparer preparer =
             new ParserBackedReviewInputPreparer(new DocxWordParserSpike());
+
+    @Test
+    void workerSnapshotIsDefensiveAndParserNeverReopensTheLogicalPath() throws IOException {
+        var fixtureCase = loadFixtureCase(
+                FIXTURE_ROOT.resolve("expected").resolve("CQCP-MVP-DOCX-001.json"));
+        var sourceBytes = Files.readAllBytes(fixtureCase.docxPath());
+        var reference = TaskExecutionDocumentReference.forSnapshot(
+                "TASK_snapshot/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.docx",
+                fixtureCase.sampleId(),
+                sourceBytes);
+        Arrays.fill(sourceBytes, (byte) 0);
+
+        var parsed = preparer.parse(reference);
+
+        assertThat(parsed.document().blocks()).isNotEmpty();
+        assertThat(reference.docxPath()).doesNotExist();
+        var returnedSnapshot = reference.documentSnapshot();
+        Arrays.fill(returnedSnapshot, (byte) 0);
+        assertThat(preparer.parse(reference).document().blocks()).isNotEmpty();
+    }
 
     @Test
     void positiveFixturesBuildExpectedCandidateValuesAndAnchors() throws IOException {

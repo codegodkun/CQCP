@@ -3,14 +3,13 @@
 状态：Track A Codex + DeepSeek 封存完成 / Track B run-v3 已解盲为
 NO_GO_MODEL_MISMATCH / Provider admission 未建立 /
 12 packet 模型未见 holdout 已确认、尚未构建 /
-MVP-002 standing egress grant 机器门禁已实现 /
-MILESTONE FINAL AUDIT PENDING
+Core 不含 standing grant / 冻结 45568f… 审计 NO_GO 后整改中
 
 类型：Evaluation / Data Governance / Model Governance
 
 Task Level：`L3 高风险治理`
 
-Integration unit：`MILESTONE-MVP-002`
+Integration unit：`MILESTONE-MVP-002-CORE`
 
 优先级：P0
 

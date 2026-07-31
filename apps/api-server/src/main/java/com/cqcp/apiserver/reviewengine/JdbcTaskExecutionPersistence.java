@@ -123,9 +123,11 @@ public class JdbcTaskExecutionPersistence implements TaskExecutionPersistence {
             """;
 
     private static final String LOAD_EXECUTION_TASK_SQL = """
-            SELECT t.task_id, t.contract_name, t.structured_fields_snapshot::text AS sf_snapshot,
-                   t.contract_metadata ->> 'documentReference' AS doc_ref,
-                   e.execution_id, e.status, e.current_stage,
+             SELECT t.task_id, t.contract_name, t.structured_fields_snapshot::text AS sf_snapshot,
+                    t.contract_metadata ->> 'documentReference' AS doc_ref,
+                    t.contract_metadata ->> 'sizeBytes' AS doc_size_bytes,
+                    t.contract_metadata ->> 'sha256' AS doc_sha256,
+                    e.execution_id, e.status, e.current_stage,
                    e.contract_type_profile_version, e.rule_set_version,
                    e.review_budget_profile_version, e.model_profile_code,
                    e.model_config_version, e.parser_version, e.prompt_version,
@@ -269,7 +271,12 @@ public class JdbcTaskExecutionPersistence implements TaskExecutionPersistence {
                     rs.getString("model_profile_code"), rs.getString("provider_type"),
                     rs.getString("model_name"), rs.getString("endpoint_alias"),
                     toInstant(rs.getTimestamp("started_at")), toInstant(rs.getTimestamp("finished_at")));
-            return new LoadedExecutionState(task, exec, rs.getString("doc_ref"));
+            return new LoadedExecutionState(
+                    task,
+                    exec,
+                    rs.getString("doc_ref"),
+                    parseExpectedDocumentSize(rs.getString("doc_size_bytes")),
+                    rs.getString("doc_sha256"));
         });
         return rows.isEmpty() ? Optional.empty() : Optional.of(rows.getFirst());
     }
@@ -444,6 +451,34 @@ public class JdbcTaskExecutionPersistence implements TaskExecutionPersistence {
     private static Timestamp toTimestamp(Instant i) { return i == null ? null : Timestamp.from(i); }
     static Instant toInstant(Timestamp ts) { return ts == null ? null : ts.toInstant(); }
 
-    record LoadedExecutionState(ReviewTaskRecord task, TaskExecutionRecord execution, String documentReference) {}
+    private static long parseExpectedDocumentSize(String value) {
+        if (value == null || !value.matches("(?:0|[1-9][0-9]*)")) {
+            throw new IllegalStateException("Stored document size is invalid");
+        }
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException exception) {
+            throw new IllegalStateException("Stored document size is invalid", exception);
+        }
+    }
+
+    record LoadedExecutionState(
+            ReviewTaskRecord task,
+            TaskExecutionRecord execution,
+            String documentReference,
+            long documentSizeBytes,
+            String documentSha256) {
+
+        LoadedExecutionState {
+            Objects.requireNonNull(task, "task");
+            Objects.requireNonNull(execution, "execution");
+            Objects.requireNonNull(documentReference, "documentReference");
+            if (documentSizeBytes < 0
+                    || documentSha256 == null
+                    || !documentSha256.matches("[a-f0-9]{64}")) {
+                throw new IllegalStateException("Stored document integrity metadata is invalid");
+            }
+        }
+    }
     record ExecutionStatusRow(String taskId, String status, String currentStage) {}
 }

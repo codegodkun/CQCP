@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -12,6 +13,11 @@ const read = (relativePath) => fs.readFileSync(absolute(relativePath), "utf8");
 const readJson = (relativePath) => JSON.parse(read(relativePath));
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
+const gitText = (...args) =>
+  execFileSync("git", args, {
+    cwd: root,
+    encoding: "utf8",
+  }).trim();
 const artifact = (relativePath) => {
   const bytes = fs.readFileSync(absolute(relativePath));
   return { path: relativePath, sha256: sha256(bytes), size: bytes.length };
@@ -59,7 +65,8 @@ const consolePath = `${outputRoot}/console-summary.md`;
 const occurrencePath = `${outputRoot}/occurrence-comparison.csv`;
 const ledgerPath = `${outputRoot}/production-branch-scope-ledger.json`;
 const formalXmlPath = `${outputRoot}/formal-test-result.xml`;
-const rawLogPath = "outputs/task-mvp-002/audit/verification/formal-r7.log";
+const rawLogPath =
+  "outputs/task-mvp-002/core-audit/verification/formal-r7.log";
 const samplePaths = ["001", "002", "003"].map(
   (suffix) => `${outputRoot}/sample-results/CQCP-MVP-DOCX-${suffix}.json`,
 );
@@ -80,7 +87,39 @@ const coverageCounts = occurrenceRows.slice(1).reduce((counts, row) => {
 }, {});
 const formalXml = read(formalXmlPath);
 const rawLog = read(rawLogPath);
-const expectedCommit = "WORKTREE-MVP002-FINAL-R8";
+const expectedCommit = gitText("rev-parse", "HEAD");
+const expectedTree = gitText("rev-parse", `${expectedCommit}^{tree}`);
+const expectedBranch = "codex/task-mvp-002";
+const currentBranch = gitText("branch", "--show-current");
+if (currentBranch.length === 0) {
+  assert.equal(
+    gitText("rev-parse", `refs/heads/${expectedBranch}`),
+    expectedCommit,
+    "Detached Formal R7 HEAD is not bound to the expected branch",
+  );
+} else {
+  assert.equal(currentBranch, expectedBranch);
+}
+const sourceClosurePaths = [
+  "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine",
+  "apps/api-server/src/main/java/com/cqcp/apiserver/wordparser",
+  "apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine",
+  "apps/api-server/src/test/resources",
+  "packages/review-assets",
+  "packages/test-fixtures",
+];
+const sourceClosureListing = gitText(
+  "ls-tree",
+  "-r",
+  "--full-tree",
+  expectedCommit,
+  "--",
+  ...sourceClosurePaths,
+);
+assert.notEqual(sourceClosureListing, "", "Formal R7 source closure is empty");
+const sourceClosureSha256 = sha256(
+  Buffer.from(`${sourceClosureListing}\n`, "utf8"),
+);
 const formalSuiteMatch = formalXml.match(
   /<testsuite[^>]*\btests="(\d+)"[^>]*\bskipped="(\d+)"[^>]*\bfailures="(\d+)"[^>]*\berrors="(\d+)"/,
 );
@@ -100,7 +139,7 @@ const assertions = {
   manifest:
     manifest.formalMode === true &&
     manifest.commit === expectedCommit &&
-    manifest.branch === "codex/task-mvp-002" &&
+    manifest.branch === expectedBranch &&
     manifest.samples?.length === 3 &&
     manifest.samples.every(
       (sample) =>
@@ -188,10 +227,17 @@ const artifacts = [
   ...samplePaths,
 ].map(artifact);
 const sealCore = {
-  schemaVersion: "task-034-r7-evidence-seal-v1",
+  schemaVersion: "task-034-r7-evidence-seal-v2",
   status: "PASS",
+  subject: {
+    headCommit: expectedCommit,
+    tree: expectedTree,
+    branch: expectedBranch,
+    sourceClosurePaths,
+    sourceClosureSha256,
+  },
   command:
-    `JAVA_TOOL_OPTIONS="-Dcqcp.task034.formal=true -Dcqcp.task034.formalInput=true -Dcqcp.task034.commit=${expectedCommit} -Dcqcp.task034.branch=codex/task-mvp-002 -Dcqcp.task034.gradleVersion=8.10.2" gradle test --no-daemon --rerun-tasks --tests "com.cqcp.apiserver.reviewengine.Task034MvpE2eAcceptanceHarnessTest.formalAcceptanceEntryPointIsPropertyAndInputGated"`,
+    `JAVA_TOOL_OPTIONS="-Dcqcp.task034.formal=true -Dcqcp.task034.formalInput=true -Dcqcp.task034.commit=${expectedCommit} -Dcqcp.task034.branch=${expectedBranch} -Dcqcp.task034.gradleVersion=8.10.2" gradle test --no-daemon --rerun-tasks --tests "com.cqcp.apiserver.reviewengine.Task034MvpE2eAcceptanceHarnessTest.formalAcceptanceEntryPointIsPropertyAndInputGated"`,
   assertions,
   artifacts,
 };

@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Objects;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.hc.client5.http.DnsResolver;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.config.RequestConfig;
@@ -25,6 +26,14 @@ interface ModelConnectivityClient {
             String modelName,
             String secret,
             Duration timeout);
+}
+
+@FunctionalInterface
+interface ModelNetworkAttemptObserver {
+
+    ModelNetworkAttemptObserver NO_OP = () -> {};
+
+    void beforeNetworkAttempt();
 }
 
 @FunctionalInterface
@@ -68,22 +77,45 @@ final class JdkModelConnectivityClient implements ModelConnectivityClient {
     private final ObjectMapper objectMapper;
     private final EndpointAddressResolver addressResolver;
     private final PinnedModelHttpTransport transport;
+    private final ModelNetworkAttemptObserver networkAttemptObserver;
 
     @Autowired
-    JdkModelConnectivityClient(ObjectMapper objectMapper) {
+    JdkModelConnectivityClient(ObjectMapper objectMapper, MeterRegistry meterRegistry) {
         this(
                 objectMapper,
                 ModelEndpointAllowlist::resolveValidatedAddresses,
-                new ApachePinnedModelHttpTransport());
+                new ApachePinnedModelHttpTransport(),
+                metricObserver(meterRegistry));
     }
 
     JdkModelConnectivityClient(
             ObjectMapper objectMapper,
             EndpointAddressResolver addressResolver,
             PinnedModelHttpTransport transport) {
+        this(
+                objectMapper,
+                addressResolver,
+                transport,
+                ModelNetworkAttemptObserver.NO_OP);
+    }
+
+    JdkModelConnectivityClient(
+            ObjectMapper objectMapper,
+            EndpointAddressResolver addressResolver,
+            PinnedModelHttpTransport transport,
+            ModelNetworkAttemptObserver networkAttemptObserver) {
         this.objectMapper = Objects.requireNonNull(objectMapper, "objectMapper");
         this.addressResolver = Objects.requireNonNull(addressResolver, "addressResolver");
         this.transport = Objects.requireNonNull(transport, "transport");
+        this.networkAttemptObserver = Objects.requireNonNull(
+                networkAttemptObserver,
+                "networkAttemptObserver");
+    }
+
+    private static ModelNetworkAttemptObserver metricObserver(MeterRegistry meterRegistry) {
+        var counter = Objects.requireNonNull(meterRegistry, "meterRegistry")
+                .counter("cqcp.model.connectivity.network.attempts");
+        return counter::increment;
     }
 
     @Override
@@ -94,6 +126,7 @@ final class JdkModelConnectivityClient implements ModelConnectivityClient {
             Duration timeout) {
         var started = System.nanoTime();
         try {
+            networkAttemptObserver.beforeNetworkAttempt();
             var pinnedAddresses = addressResolver.resolveAndValidate(endpoint);
             var response = transport.get(endpoint, secret, timeout, pinnedAddresses);
             var status = response.statusCode();

@@ -14,15 +14,31 @@ const browserUploadPath = path.join(
   evidenceRoot,
   "browser-upload-result.json"
 );
+const rawObservationPath = path.join(
+  evidenceRoot,
+  "browser-raw-observation.json"
+);
 const evidence = JSON.parse(fs.readFileSync(assertionsPath, "utf8"));
 const browserUpload = JSON.parse(fs.readFileSync(browserUploadPath, "utf8"));
+const rawObservation = JSON.parse(
+  fs.readFileSync(rawObservationPath, "utf8")
+);
 const sha256 = (bytes) =>
   crypto.createHash("sha256").update(bytes).digest("hex");
 const fileHash = (relativePath) =>
   sha256(fs.readFileSync(path.join(repoRoot, ...relativePath.split("/"))));
 
-assert.equal(evidence.schemaVersion, "task-mvp-002-browser-evidence-v3");
+assert.equal(evidence.schemaVersion, "task-mvp-002-browser-evidence-v4");
 assert.equal(evidence.status, "PASS");
+assert.equal(
+  rawObservation.schemaVersion,
+  "task-mvp-002-browser-raw-observation-v1"
+);
+assert.equal(rawObservation.status, "PASS");
+assert.deepEqual(browserUpload.rawBrowserObservation, {
+  path: path.relative(repoRoot, rawObservationPath).replaceAll("\\", "/"),
+  sha256: sha256(fs.readFileSync(rawObservationPath))
+});
 assert.equal(
   fileHash(evidence.runtimeProvenance.path),
   evidence.runtimeProvenance.sha256,
@@ -129,7 +145,27 @@ assert.equal(
   "bound browser upload evidence changed"
 );
 assert.equal(browserUpload.status, "PASS");
-assert.equal(browserUpload.uploadChannel, "BROWSER_FILE_CHOOSER");
+assert.equal(
+  browserUpload.uploadChannel,
+  "BROWSER_FILE_CHOOSER_OBSERVED"
+);
+assert.equal(
+  rawObservation.upload.fileChooserEvent.source,
+  "PLAYWRIGHT_PAGE_EVENT"
+);
+assert.equal(rawObservation.upload.fileChooserEvent.accepted, true);
+assert.equal(rawObservation.upload.fileChooserEvent.isMultiple, false);
+assert.equal(rawObservation.upload.httpStatus, 202);
+assert.equal(rawObservation.upload.taskId, browserUpload.taskId);
+assert.equal(rawObservation.upload.executionId, browserUpload.executionId);
+assert.equal(
+  rawObservation.upload.sourceSha256,
+  browserUpload.sourceSha256
+);
+assert.equal(
+  rawObservation.upload.resultUrl,
+  `/review/results/${browserUpload.taskId}?executionId=${browserUpload.executionId}`
+);
 assert.equal(
   browserUpload.taskId,
   evidence.assertions.browserFileUpload.taskId
@@ -180,7 +216,60 @@ assert.equal(evidence.assertions.maliciousBodyTextSafety.inlineHandlerCount, 0);
 assert.equal(evidence.assertions.maliciousBodyTextSafety.javascriptDialogPresent, false);
 assert.equal(evidence.assertions.browserConsole.errorCount, 0);
 assert.equal(evidence.assertions.browserConsole.warningCount, 0);
+assert.equal(rawObservation.consoleEntries.length, 0);
+assert.equal(rawObservation.dialogs.length, 0);
+assert.equal(
+  rawObservation.maliciousBody.taskId,
+  evidence.maliciousBodyExecution.taskId
+);
+assert.equal(
+  rawObservation.maliciousBody.executionId,
+  evidence.maliciousBodyExecution.executionId
+);
+assert.equal(
+  rawObservation.maliciousBody.previewBlockId,
+  evidence.maliciousBodyExecution.previewBlockId
+);
+assert.equal(
+  rawObservation.maliciousBody.textContent,
+  evidence.maliciousBodyExecution.previewText
+);
+assert.equal(rawObservation.maliciousBody.imageElementCount, 0);
+assert.equal(rawObservation.maliciousBody.inlineHandlerAttributeCount, 0);
+assert.equal(
+  /<img\b/i.test(rawObservation.maliciousBody.outerHTML),
+  false
+);
+assert.equal(
+  rawObservation.maliciousBody.outerHTML.includes("&lt;img"),
+  true
+);
+const maliciousBox = rawObservation.maliciousBody.boundingBox;
+const viewport = rawObservation.viewport;
+assert.ok(maliciousBox.width > 0 && maliciousBox.height > 0);
+assert.ok(maliciousBox.x < viewport.width && maliciousBox.y < viewport.height);
+assert.ok(
+  maliciousBox.x + maliciousBox.width > 0 &&
+    maliciousBox.y + maliciousBox.height > 0
+);
+assert.ok(rawObservation.networkRequests.length > 0);
+assert.equal(
+  rawObservation.networkRequests.every((request) =>
+    ["localhost", "127.0.0.1"].includes(new URL(request.url).hostname)
+  ),
+  true,
+  "browser observed a non-local network request"
+);
 assert.equal(evidence.screenshots.length, 7);
+assert.equal(
+  evidence.screenshots.some(
+    (screenshot) =>
+      screenshot.path === rawObservation.maliciousBody.screenshot.path &&
+      screenshot.sha256 === rawObservation.maliciousBody.screenshot.sha256
+  ),
+  true,
+  "visible malicious-text screenshot is not bound to the raw observation"
+);
 
 for (const screenshot of evidence.screenshots) {
   assert.equal(
@@ -191,6 +280,7 @@ for (const screenshot of evidence.screenshots) {
 }
 const assertionBytes = fs.readFileSync(assertionsPath);
 const browserUploadBytes = fs.readFileSync(browserUploadPath);
+const rawObservationBytes = fs.readFileSync(rawObservationPath);
 const runtimeProvenanceBytes = fs.readFileSync(
   path.join(repoRoot, ...evidence.runtimeProvenance.path.split("/"))
 );
@@ -206,6 +296,7 @@ for (const marker of forbiddenCredentialMarkers) {
   for (const bytes of [
     assertionBytes,
     browserUploadBytes,
+    rawObservationBytes,
     runtimeProvenanceBytes,
     composeBytes
   ]) {
@@ -225,6 +316,7 @@ process.stdout.write(
     executionId: evidence.primaryExecution.executionId,
     browserUploadTaskId: browserUpload.taskId,
     maliciousBodyTaskId: evidence.maliciousBodyExecution.taskId,
+    rawObservationSha256: sha256(rawObservationBytes),
     screenshotCount: evidence.screenshots.length,
     assertions: Object.keys(evidence.assertions).length
   })}\n`

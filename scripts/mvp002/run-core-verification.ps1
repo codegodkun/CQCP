@@ -131,6 +131,7 @@ function Read-EvidenceReferences {
         "outputs/task-eval-002/track-b-admission-run-v3/admission-report.json",
         "outputs/task-eval-002/model-provider-gate.json",
         "outputs/task-mvp-002/browser-evidence-current/browser-assertions.json",
+        "outputs/task-mvp-002/core-audit/verification/compose-network-policy.json",
         "outputs/task-mvp-002/core-audit/verification/compose-acceptance-summary.json"
     )
     return @($required | ForEach-Object {
@@ -199,13 +200,15 @@ $env:CQCP_DB_USERNAME = "cqcp"
 $env:CQCP_DB_PASSWORD = "cqcp"
 Remove-Item Env:\DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
 Remove-Item Env:\CQCP_DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
+Remove-Item Env:\CQCP_MODEL_DEEPSEEK_API_KEY -ErrorAction SilentlyContinue
 
 try {
     Invoke-Logged "core-scope-test" $repo {
         node --test scripts/mvp002/core-subject.test.mjs
     }
     Invoke-Logged "formal-r7-evidence" $repo {
-        node scripts/mvp002/verify-r7-evidence.mjs . verify
+        & (Join-Path $repo "scripts/mvp002/run-formal-r7.ps1") `
+            -RepoRoot $repo
     }
     $formalR7Evidence = Get-Content -LiteralPath (
         Join-Path $repo "outputs/task-034-mvp-e2e-acceptance-v3/r7-evidence-seal.json"
@@ -334,7 +337,13 @@ try {
         status = "PASS"
         generatedAt = [DateTimeOffset]::UtcNow.ToString("O")
         powerShellVersion = $PSVersionTable.PSVersion.ToString()
-        networkModelCalls = 0
+        networkModelCalls = [int](
+            (
+                Get-Content -LiteralPath (
+                    Join-Path $evidenceRoot "compose-acceptance-summary.json"
+                ) -Raw | ConvertFrom-Json
+            ).modelNetworkEvidence.observedAttemptCount
+        )
         providerA0Included = $false
         subject = [ordered]@{
             baseCommit = "1035739b751386176e47c6871738a62bff86de02"

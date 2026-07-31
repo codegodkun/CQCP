@@ -36,6 +36,15 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   lease。
 - 旧 Track B run-v3 解盲结果为 Codex 15/15、DeepSeek 6/15、controls 3/3，
   `providerAdmission=NOT_ESTABLISHED`。同一已解盲 corpus 不得再次作为独立 admission。
+- Core 冻结 `45568f205597d7532a1e1efa1d9cc496d160bb1a8d27f3a7dcd78f310e2ad1bc`
+  已失效并封存为
+  `outputs/task-mvp-002/core-audit/freeze-rejected-45568f20/`。两名全新 Codex
+  审计员均返回 `NO_GO`：代码/架构侧为 `P1=2 / P2=1`，测试/安全侧为
+  `P1=4`。已确认根因为 DOCX 安全快照后按路径重开、R7 未绑定当前 HEAD、
+  Browser 关键断言缺少原始事件/DOM 证据、零模型外呼为脚本常量、Core
+  ARCHITECTURE 混入 Provider attempt contract，以及 TASK 状态叙事冲突。
+- 上述 NO_GO 使 `fa869af3b79f0e417a9a3de5f5630dcbe4fd5885` 上的 Compose/browser、
+  formal verification 与 freeze 全部只能作为失效历史证据，不得用于最终收口。
 
 ## 当前活跃任务
 
@@ -47,8 +56,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. Core-only 完整验证、Compose/browser 重建和 immutable freeze 尚未在最终 candidate
-   commit 上完成。
+1. 正在按失效冻结的 blocking findings 原子整改；修复后必须在新的最终 candidate
+   commit 上从零重建 R7、Compose/browser、完整验证和 immutable freeze。
 2. 同一 Core subject 的 CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor
    尚未全部达到 `GO / P0=P1=P2=blocking=0`。
 3. CI、PR 与 merge 尚未完成；没有主线 merge 就不能声明 TASK-036 seam 已集成。
@@ -57,11 +66,12 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 形成 clean Core candidate commit；运行
-   `scripts/mvp002/run-core-verification.ps1`。
-2. 冻结 `freeze-core-audit-package.mjs` 生成的同一 subject，执行 CC AUDIT 与两个
-   全新 Codex 独立审计。
-3. 三审全零 GO 后 push、创建 PR、等待 CI；满足既有授权条件后 merge。
-4. Core merge 后建立并执行一次新的 Track B holdout；失败即停止并重新收敛。
+1. 只修复冻结 `45568f…` 的 blocking causes，并运行定向回归。
+2. 形成 clean Core candidate commit；在当前 HEAD 上重新执行 R7，并以受控浏览器
+   原始 filechooser/console/dialog/network/DOM 证据和默认拒绝模型 egress 的 Compose
+   证据重建 `scripts/mvp002/run-core-verification.ps1` 全量结果。
+3. 冻结新 subject，执行 CC AUDIT 与两个全新 Codex 独立审计；旧审计结论不复用。
+4. 三审全零 GO 后 push、创建 PR、等待 CI；满足既有授权条件后 merge。
+5. Core merge 后建立并执行一次新的 Track B holdout；失败即停止并重新收敛。
 
 不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

@@ -121,7 +121,12 @@ final class ParserBackedReviewInputPreparer {
     ParsedContractDocument parse(TaskExecutionDocumentReference documentReference) {
         Objects.requireNonNull(documentReference, "documentReference");
         try {
-            return new ParsedContractDocument(documentReference, parser.parse(documentReference.docxPath()));
+            var parsed = documentReference.hasDocumentSnapshot()
+                    ? parser.parse(
+                            documentReference.documentSnapshot(),
+                            documentReference.docxPath().getFileName().toString())
+                    : parser.parse(documentReference.docxPath());
+            return new ParsedContractDocument(documentReference, parsed);
         } catch (IOException exception) {
             throw new IllegalStateException("Failed to parse docx: " + documentReference.docxPath(), exception);
         }

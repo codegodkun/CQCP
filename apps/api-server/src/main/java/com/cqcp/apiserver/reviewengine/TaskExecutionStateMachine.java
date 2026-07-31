@@ -386,10 +386,36 @@ record TaskExecutionRequest(
     }
 }
 
-record TaskExecutionDocumentReference(Path docxPath, String sampleId) {
+record TaskExecutionDocumentReference(Path docxPath, String sampleId, byte[] documentSnapshot) {
+
+    TaskExecutionDocumentReference(Path docxPath, String sampleId) {
+        this(docxPath, sampleId, null);
+    }
+
+    static TaskExecutionDocumentReference forSnapshot(
+            String documentReference,
+            String sampleId,
+            byte[] documentSnapshot) {
+        Objects.requireNonNull(documentReference, "documentReference");
+        return new TaskExecutionDocumentReference(
+                Path.of(documentReference),
+                sampleId,
+                Objects.requireNonNull(documentSnapshot, "documentSnapshot"));
+    }
+
     TaskExecutionDocumentReference {
         Objects.requireNonNull(docxPath, "docxPath");
         Objects.requireNonNull(sampleId, "sampleId");
+        documentSnapshot = documentSnapshot == null ? null : documentSnapshot.clone();
+    }
+
+    @Override
+    public byte[] documentSnapshot() {
+        return documentSnapshot == null ? null : documentSnapshot.clone();
+    }
+
+    boolean hasDocumentSnapshot() {
+        return documentSnapshot != null;
     }
 }
 

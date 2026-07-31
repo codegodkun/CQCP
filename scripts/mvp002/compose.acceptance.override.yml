@@ -1,0 +1,14 @@
+services:
+  api-server:
+    build:
+      context: ${CQCP_API_ACCEPTANCE_CONTEXT}
+      dockerfile: Dockerfile
+
+networks:
+  default:
+    name: cqcp_mvp002_acceptance_internal
+    internal: true
+
+volumes:
+  cqcp_postgres_data:
+    name: cqcp_mvp002_acceptance_postgres_data
