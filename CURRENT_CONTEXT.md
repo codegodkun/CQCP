@@ -119,6 +119,27 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   Formal R7 新 seal SHA-256 为
   `9cfb8ea3eeb895b752779567f996c38ae90d2baf5b1461db229e8e123d4acb86`。新的完整
   verification、freeze 与三方从零审计仍待执行。
+- 上述 party 修复进入候选 HEAD
+  `e044768fe7ac3aba6a0d4a0d2633261f4f141272` 后，完整 verification 全部通过：
+  D1=`447`、D2=`20`、两轮 backend 各 `898`、admin-web=`70`、Core Node=`215`，
+  Compose/PostgreSQL、direct Chrome、R7、OpenAPI、Track A/B 与 bootJar 均通过；
+  freeze subjectIdentity 为
+  `5bcfe410c6366313ff220552ba4f5845dceefb92ac20a9335aa4aa83523b293b`。
+  CC AUDIT 与测试/安全 Codex auditor 给出 `GO`，代码/架构 Codex auditor 给出
+  `NO_GO（P1=1 / blocking=1）`，故该轮三份结论整体失效。阻断根因是 legacy 与
+  `v20260715.1` 可达的 whole-text fallback 在拼接全文提取数值后丢失原 matcher
+  block/span，再由 `findBlock` 按 label + candidate value containment 选择首块并
+  提升为 fully-attributed anchor。该轮 freeze、verification、R7、browser 与三份
+  审计报告已封存到 `outputs/task-mvp-002/core-audit/*-invalidated-5bcfe410/` 及
+  `outputs/task-mvp-002/browser-evidence-invalidated-5bcfe410/`。
+- 主 Codex 已完成该 finding 的最小红绿整改：先用 4 条 regression 复现错误首块、
+  重复数字、split-table value span、重叠 TABLE_CELL fail-closed 和错误 anchor
+  进入业务 PASS；红测为 `33 tests / 3 failures`，修复后
+  `ParserBackedReviewInputPreparerEvidenceTest=33/33`。fallback 现在逐 block 扫描，
+  通过 offset-preserving projection 将同一次 matcher 的 value group 映回原文 span；
+  TABLE_CELL 只有唯一 parser-issued cell span 命中才保留可靠 attribution，否则在
+  v15 preflight 前 `SYS_EVIDENCE_BUNDLE_INVALID / NOT_CONCLUDED`。D1 新硬门禁已同步
+  为 `451/451`；尚未执行新的完整 verification、R7、freeze 或三方审计。
 
 ## 当前活跃任务
 
@@ -130,7 +151,7 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. `ea19a52a…`、`33890cb…` 及 `81e47f…` 对应的三方审计均已因 `NO_GO`
+1. `ea19a52a…`、`33890cb…`、`81e47f…` 及 `5bcfe410…` 对应的三方审计均已因 `NO_GO`
    失效，永远不能用于后续收口；其中任一旧 `GO` 也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
@@ -142,8 +163,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 将 `81e47f…` SourceAnchor P1 原子修复与阶段记忆写回形成新的 clean Core
-   candidate commit。
+1. 将 `5bcfe410…` whole-text fallback SourceAnchor P1 原子修复、D1=451 门禁与
+   本阶段记忆写回形成新的 clean Core candidate commit。
 2. 在新 HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。

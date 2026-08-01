@@ -346,9 +346,11 @@ binding 必须保持。任何一项变化均表示回滚失败。
   v2 六个历史输出 hash 保持冻结。
 * 既有 10 类回归在独立审计安全整改后为 `414/0/0/0`，D1 动态门禁为
   `30/0/0/0`，当时合并为 `444/0/0/0`。MVP-002 Core `81e47f…` 审计发现
-  SourceAnchor provenance P1 后，新增 3 条仅针对 parser-issued structural span、
-  重复值错误 cell 与不可映射 fail-closed 的防御性回归；当前统一门禁因此为
-  `447/0/0/0`，不改变 D1 的 30 个业务 invocation，也不扩大 D1 业务实现范围。
+  首轮 SourceAnchor provenance P1 后新增 3 条 parser-issued structural span、
+  重复值错误 cell 与不可映射 fail-closed 回归；后续全路径审计再新增 4 条
+  legacy/v15 fallback 的错误首块、重复数字、split-table value span、重叠 cell
+  fail-closed 与最终裁判防御性回归。当前统一门禁因此为 `451/0/0/0`，不改变
+  D1 的 30 个业务 invocation，也不扩大 D1 业务实现范围。
   最终统一验证须保存每轮不可覆盖的原始
   JUnit XML、逐文件 SHA-256 与 console。
 * 正式 R7 已通过真实双 property 门禁运行；`formal-test-result.xml` 为

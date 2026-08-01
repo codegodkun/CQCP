@@ -1,6 +1,6 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / 45568f… blocking causes 已整改 / 最终同 HEAD 证据与三审待重建
+状态：已实现 / 5bcfe410… 全路径 SourceAnchor P1 已整改 / 最终同 HEAD 证据与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -167,5 +167,12 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   错误 override、D1/D2/backend 原始 JUnit 被覆盖、D1/D2 计数文档滞后及
   `CURRENT_CONTEXT.md` 叙事滞后。该 freeze 与 verification 已显式封存为
   invalidated 历史证据；主 Codex 仅修复这六项，不启动 Provider。
+* 2026-08-01 冻结 `5bcfe410…` 的 CC AUDIT 与测试/安全 Codex auditor 为 `GO`，
+  代码/架构 Codex auditor 为 `NO_GO（P1=1 / blocking=1）`，三份结论已整体
+  失效并封存。finding 证明 legacy/v15 whole-text fallback 会先丢失 matcher
+  block/span，再按 candidate value 选择首块并构造错误 SourceAnchor。主 Codex
+  以 4 条红绿回归完成最小整改：逐 block、offset-preserving matcher group 映射，
+  TABLE_CELL 非唯一 span 在裁判前 fail closed；定向测试 `33/33`，D1 硬门禁同步为
+  `451/451`。新的完整 verification、freeze 与三审尚未开始。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。

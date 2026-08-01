@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-07-31
+更新日期：2026-08-01
 
 ## MILESTONE-MVP-002：审核工作台、模型安全与盲态评测
 
@@ -10,15 +10,16 @@
 
 | 任务 | Task Level | 当前状态 | Core 边界 |
 |---|---|---|---|
-| `TASK-MVP-002` | L3 | `ea19a52a…` 三审 NO_GO；六项限定源码整改完成，收口以新 HEAD 的机器证据/三审为准 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
-| `TASK-MODEL-001` | L3 | 实现与补证保留；`ea19a52a…` Core 证据链 NO_GO 后待同一新 HEAD 重建 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity |
+| `TASK-MVP-002` | L3 | `5bcfe410…` 三审因 whole-text fallback SourceAnchor P1 整体失效；最小红绿整改与 D1=451 定向门禁已通过，待新 HEAD 全量验证/冻结/三审 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
+| `TASK-MODEL-001` | L3 | 实现与补证保留；最新 Core 证据轮整体失效，待同一新 HEAD 重建 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity |
 | `TASK-EVAL-002` | L3 | Track A 完成；旧 run-v3 为 `NO_GO_MODEL_MISMATCH`；历史/live 证据路径已分离；新 holdout 未开始 | Track A、Track B EvidencePacket、严格模型意见与解盲 |
 | `TASK-034` | L3 | v29/R7 限定样本证据进入 Core | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED |
 | `TASK-036` | L3 | B/C/D seam 进入 Core，主线集成待 merge | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket |
 
 Core source diff 明确排除 Provider A0、standing/CC 审计传输、A1/A2/A3 与
 `outputs/**`。派生 R7、M3、browser、Compose 证据由冻结清单按 SHA-256 引用。
-`ea19a52a…` 旧 freeze/verification 已失效；任何新源码变化后只接受重新生成且
+`ea19a52a…`、`33890cb…`、`81e47f…` 与 `5bcfe410…` 的旧 freeze/verification
+均已失效；任何新源码变化后只接受重新生成且
 绑定新 HEAD/tree 的证据和三份全新审计报告。
 
 完成条件：

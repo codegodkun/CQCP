@@ -386,8 +386,8 @@ final class ParserBackedReviewInputPreparer {
                         PREPAYMENT_LABEL_HINTS, PREPAYMENT_PATTERNS, false));
                 if (mode == ProbeExecutionMode.LEGACY) {
                     probeObserver.observe(reviewPointCode, mode, "WHOLE_TEXT");
-                    candidates.addAll(collectWholeTextCandidates(reviewPointCode, candidateRole, blocks,
-                            PREPAYMENT_LABEL_HINTS, List.of()));
+                    candidates.addAll(collectBlockScopedFallbackCandidates(
+                            reviewPointCode, candidateRole, blocks, List.of()));
                 }
                 if (candidates.isEmpty()) {
                     probeObserver.observe(reviewPointCode, mode, "ROLE");
@@ -410,8 +410,8 @@ final class ParserBackedReviewInputPreparer {
                 candidates.addAll(collectPatternCandidates(reviewPointCode, candidateRole, blocks,
                         labelHintsFor(reviewPointCode), directPatternsFor(reviewPointCode), false));
                 probeObserver.observe(reviewPointCode, mode, "WHOLE_TEXT");
-                candidates.addAll(collectWholeTextCandidates(reviewPointCode, candidateRole, blocks,
-                        labelHintsFor(reviewPointCode), fallbackPatternsFor(reviewPointCode)));
+                candidates.addAll(collectBlockScopedFallbackCandidates(
+                        reviewPointCode, candidateRole, blocks, fallbackPatternsFor(reviewPointCode)));
                 if (candidates.isEmpty()) {
                     probeObserver.observe(reviewPointCode, mode, "ROLE");
                     candidates.addAll(collectRoleBlockPercentFallbackCandidates(
@@ -563,21 +563,41 @@ final class ParserBackedReviewInputPreparer {
         return List.copyOf(result);
     }
 
-    private List<EvidenceCandidate> collectWholeTextCandidates(
+    private List<EvidenceCandidate> collectBlockScopedFallbackCandidates(
             ReviewPointCode code, String role,
             List<WordParserSpikeDocument.DocumentBlock> blocks,
-            List<String> labelHints, List<Pattern> patterns) {
+            List<Pattern> patterns) {
         if (patterns.isEmpty()) return List.of();
         Set<EvidenceCandidate> result = new LinkedHashSet<>();
-        var fullText = joinSearchableText(blocks);
-        for (Pattern pattern : patterns) {
-            var m = pattern.matcher(fullText);
-            while (m.find()) {
-                var v = m.groupCount() == 0 ? "0" : stripTrailingZeros(m.group(1));
-                if (v == null || v.isBlank()) continue;
-                var block = findBlock(blocks, labelHints, v);
-                if (block.isEmpty()) continue;
-                result.add(candidateForBlock(code, role, v, block.orElseThrow(), true, true, true));
+        for (var block : blocks) {
+            var projection = searchTextProjection(block.text());
+            for (Pattern pattern : patterns) {
+                var m = pattern.matcher(projection.normalizedText());
+                while (m.find()) {
+                    var group = m.groupCount() == 0 ? 0 : 1;
+                    var v = group == 0 ? "0" : stripTrailingZeros(m.group(group));
+                    if (v == null || v.isBlank()) continue;
+                    var sourceSpan = projection.sourceSpan(m.start(group), m.end(group));
+                    if (sourceSpan.isEmpty()) continue;
+                    var span = sourceSpan.orElseThrow();
+                    var reliableStructuralAttribution =
+                            block.previewAnchorLevel()
+                                    != WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL
+                            || matchingCellIndex(
+                                    block,
+                                    span.startOffset(),
+                                    span.endOffset()).isPresent();
+                    result.add(candidateForMatch(
+                            code,
+                            role,
+                            v,
+                            block,
+                            true,
+                            true,
+                            reliableStructuralAttribution,
+                            span.startOffset(),
+                            span.endOffset()));
+                }
             }
         }
         return List.copyOf(result);
@@ -958,11 +978,9 @@ final class ParserBackedReviewInputPreparer {
             WordParserSpikeDocument.DocumentBlock block,
             boolean rls, boolean vfs, boolean bas, int start, int end) {
         Integer ci = null;
-        if (start >= 0 && end >= start) {
-            ci = block.tableCells().stream()
-                    .filter(cell -> start >= cell.startOffset() && end <= cell.endOffset())
-                    .map(WordParserSpikeDocument.TableCellSpan::cellIndex)
-                    .findFirst().orElse(null);
+        var structuralSpanSupplied = start >= 0 && end >= start;
+        if (structuralSpanSupplied) {
+            ci = matchingCellIndex(block, start, end).orElse(null);
         }
         return new EvidenceCandidate(code, role, value, block.blockId(), block.text(), rls, vfs, bas,
                 block.sectionPath(), block.regionType().name(), block.tableId(), block.rowIndex(), ci,
@@ -970,6 +988,20 @@ final class ParserBackedReviewInputPreparer {
                 block.contextType().name(), block.sourceOrigin().name(),
                 block.sourceExtractionMode().name(), block.blockConfidence().name(),
                 block.previewAnchorLevel().name(), List.of());
+    }
+
+    private Optional<Integer> matchingCellIndex(
+            WordParserSpikeDocument.DocumentBlock block,
+            int start,
+            int end) {
+        var matchingCellIndexes = block.tableCells().stream()
+                .filter(cell -> start >= cell.startOffset() && end <= cell.endOffset())
+                .map(WordParserSpikeDocument.TableCellSpan::cellIndex)
+                .distinct()
+                .toList();
+        return matchingCellIndexes.size() == 1
+                ? Optional.of(matchingCellIndexes.getFirst())
+                : Optional.empty();
     }
 
     private String previewElementRef(String tableId, Integer rowIndex, Integer cellIndex) {
@@ -1007,28 +1039,6 @@ final class ParserBackedReviewInputPreparer {
         int ei = blocks.size();
         for (int i = si; i < blocks.size(); i++) { if (end.test(blocks.get(i))) { ei = i; break; } }
         return blocks.subList(si, ei);
-    }
-
-    private Optional<WordParserSpikeDocument.DocumentBlock> findBlock(
-            List<WordParserSpikeDocument.DocumentBlock> blocks,
-            List<String> labelHints, String value) {
-        var nv = normalizeSearchText(value);
-        for (var block : blocks) {
-            if (labelHints.stream().anyMatch(block.text()::contains)
-                    && normalizeSearchText(block.normalizedText()).contains(nv))
-                return Optional.of(block);
-        }
-        for (var block : blocks) {
-            if (normalizeSearchText(block.normalizedText()).contains(nv)) return Optional.of(block);
-        }
-        return Optional.empty();
-    }
-
-    private String joinSearchableText(List<WordParserSpikeDocument.DocumentBlock> blocks) {
-        return blocks.stream()
-                .map(WordParserSpikeDocument.DocumentBlock::normalizedText)
-                .map(ParserBackedReviewInputPreparer::normalizeSearchText)
-                .reduce("", (l, r) -> l + "\n" + r);
     }
 
     private String summarizeEvidence(ReviewPointCode code, String blockText, String candidateValue) {
@@ -1195,6 +1205,38 @@ final class ParserBackedReviewInputPreparer {
         return n.isBlank() ? raw : n;
     }
 
+    private static SearchTextProjection searchTextProjection(String text) {
+        var source = text == null ? "" : text;
+        var normalized = new StringBuilder(source.length());
+        var startOffsets = new ArrayList<Integer>();
+        var endOffsets = new ArrayList<Integer>();
+        for (int offset = 0; offset < source.length();) {
+            var codePoint = source.codePointAt(offset);
+            var sourceWidth = Character.charCount(codePoint);
+            var sourceEnd = offset + sourceWidth;
+            if (codePoint != ','
+                    && codePoint != '。'
+                    && codePoint != '（'
+                    && codePoint != '）'
+                    && codePoint != ':'
+                    && codePoint != '：'
+                    && !Character.isWhitespace(codePoint)
+                    && !Character.isSpaceChar(codePoint)) {
+                var before = normalized.length();
+                normalized.appendCodePoint(Character.toLowerCase(codePoint));
+                for (int index = before; index < normalized.length(); index++) {
+                    startOffsets.add(offset);
+                    endOffsets.add(sourceEnd);
+                }
+            }
+            offset = sourceEnd;
+        }
+        return new SearchTextProjection(
+                normalized.toString(),
+                startOffsets.stream().mapToInt(Integer::intValue).toArray(),
+                endOffsets.stream().mapToInt(Integer::intValue).toArray());
+    }
+
     private static String normalizeSearchText(String text) {
         return text == null ? "" : text.replace(' ', ' ').replaceAll("\\s+", "")
                 .replace(",", "").replace("。", "").replace("（", "").replace("）", "")
@@ -1244,6 +1286,27 @@ final class ParserBackedReviewInputPreparer {
     }
 
     private record PartyMatch(String value, int startOffset, int endOffset) {
+    }
+
+    private record SearchTextProjection(
+            String normalizedText,
+            int[] sourceStartOffsets,
+            int[] sourceEndOffsets) {
+
+        Optional<SourceSpan> sourceSpan(int start, int end) {
+            if (start < 0
+                    || end <= start
+                    || end > sourceStartOffsets.length
+                    || end > sourceEndOffsets.length) {
+                return Optional.empty();
+            }
+            return Optional.of(new SourceSpan(
+                    sourceStartOffsets[start],
+                    sourceEndOffsets[end - 1]));
+        }
+    }
+
+    private record SourceSpan(int startOffset, int endOffset) {
     }
 
     private static String toMojibake(String value) {

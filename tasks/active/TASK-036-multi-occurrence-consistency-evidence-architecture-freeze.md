@@ -201,8 +201,9 @@ TASK-034 R7 PASS / MILESTONE FINAL AUDIT PENDING
 * MVP-002 worktree 增量：B1 versioned policy、B2 loader/gate、C1 inactive runtime
   core 和 C2 execution activation 已集成；定向联合回归 413/413。
 * D1/R7 增量：D1 30/30；独立审计安全整改后曾与既有回归合并为 444/444，
-  MVP-002 Core SourceAnchor provenance P1 整改再增加 3 条防御性回归，当前完整
-  门禁为 447/447；R7 为 27/27
+  MVP-002 Core 首轮 SourceAnchor provenance P1 整改增加 3 条，随后全路径
+  fallback provenance P1 整改再增加 4 条防御性回归，当前完整门禁为
+  451/451；R7 为 27/27
   candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
   70 production semantic ledger、0 SYS/Finding。
 * D2/Track B 增量：seam 20/20；3 份包、27 packet、9 plan、57 occurrence，

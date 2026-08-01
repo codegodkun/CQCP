@@ -148,6 +148,125 @@ class ParserBackedReviewInputPreparerEvidenceTest {
     }
 
     @Test
+    void legacyWholeTextFallbackUsesMatcherBlockWhenEarlierLabelContainsDuplicateNumber() {
+        var decoy = paymentParagraphBlock(
+                "settlement-decoy",
+                "结算款术语参见第95条");
+        var matched = paymentParagraphBlock(
+                "settlement-matched",
+                "应按结算金额的95%付款");
+
+        var candidates = preparer.probeAllForPoint(
+                ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                "SETTLEMENT_PAYMENT_RATIO",
+                List.of(decoy, matched),
+                ParserBackedReviewInputPreparer.ProbeExecutionMode.LEGACY,
+                "MONTHLY");
+
+        assertThat(candidates).singleElement().satisfies(candidate -> {
+            assertThat(candidate.candidateValue()).isEqualTo("95");
+            assertThat(candidate.blockId()).isEqualTo("settlement-matched");
+            assertThat(candidate.blockText()).isEqualTo(matched.text());
+        });
+    }
+
+    @Test
+    void legacyWholeTextFallbackMapsSplitTableValueSpanToParserCell() {
+        var labelCell = "结算金额的";
+        var valueCell = "95%";
+        var text = labelCell + valueCell;
+        var block = tableSettlementBlock(
+                "settlement-split-table",
+                text,
+                List.of(
+                        new WordParserSpikeDocument.TableCellSpan(
+                                0, labelCell, 0, labelCell.length()),
+                        new WordParserSpikeDocument.TableCellSpan(
+                                1, valueCell, labelCell.length(), text.length())));
+
+        var candidates = preparer.probeAllForPoint(
+                ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                "SETTLEMENT_PAYMENT_RATIO",
+                List.of(block),
+                ParserBackedReviewInputPreparer.ProbeExecutionMode.LEGACY,
+                "MONTHLY");
+
+        assertThat(candidates).singleElement().satisfies(candidate -> {
+            assertThat(candidate.candidateValue()).isEqualTo("95");
+            assertThat(candidate.blockId()).isEqualTo("settlement-split-table");
+            assertThat(candidate.cellIndex()).isEqualTo(1);
+            assertThat(candidate.previewElementRef())
+                    .isEqualTo("table:settlement-table/row:0/cell:1");
+        });
+    }
+
+    @Test
+    void ambiguousWholeTextFallbackTableCellSpanFailsClosedBeforeDeterministicVerdict() {
+        var labelCell = "结算金额的";
+        var valueCell = "95%";
+        var text = labelCell + valueCell;
+        var block = tableSettlementBlock(
+                "settlement-overlapping-cells",
+                text,
+                List.of(
+                        new WordParserSpikeDocument.TableCellSpan(
+                                0, text, 0, text.length()),
+                        new WordParserSpikeDocument.TableCellSpan(
+                                1, valueCell, labelCell.length(), text.length())));
+        var runtimePreparer = new ParserBackedReviewInputPreparer(
+                new FixedBlocksContractParser(List.of(block)));
+        var fixtureCase = settlementFixtureCase("settlement-overlapping-cells");
+        var request = newRequest(fixtureCase);
+        var parsed = runtimePreparer.parse(request.documentReference());
+        var indexed = runtimePreparer.index(parsed);
+        var plan = runtimePreparer.plan(indexed);
+        var reviewInput = runtimePreparer.build(request, plan, makeTestSnapshot());
+        var evidence = reviewInput.pointEvidences().get(
+                ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.SYSTEM_FAILURE);
+        assertThat(evidence.diagnosticCode()).isEqualTo("SYS_EVIDENCE_BUNDLE_INVALID");
+        assertThat(evidence.notConcludedReason()).isEqualTo(NotConcludedReasonCode.INTERNAL_RULE_ERROR);
+        assertThat(evidence.candidateValue()).isNull();
+        assertThat(evidence.occurrences()).isEmpty();
+        assertThat(evidence.slotCoverages()).singleElement().satisfies(slot -> {
+            assertThat(slot.reliableAnchor()).isFalse();
+            assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.PARTIAL);
+        });
+    }
+
+    @Test
+    void wrongWholeTextFallbackAnchorCannotReachBusinessVerdict() {
+        var decoy = paymentParagraphBlock(
+                "settlement-decoy",
+                "结算款术语参见第95条");
+        var matched = paymentParagraphBlock(
+                "settlement-matched",
+                "应按结算金额的95%付款");
+        var runtimePreparer = new ParserBackedReviewInputPreparer(
+                new FixedBlocksContractParser(List.of(decoy, matched)));
+        var reviewInput = buildReviewInput(
+                runtimePreparer,
+                settlementFixtureCase("settlement-wrong-anchor-verdict"));
+        var evidence = reviewInput.pointEvidences().get(
+                ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
+        assertThat(evidence.blockId()).isEqualTo("settlement-matched");
+
+        var point = new MinimalReviewEngine().review(reviewInput).pointResults().stream()
+                .filter(result -> result.reviewPointCode()
+                        == ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY)
+                .findFirst()
+                .orElseThrow();
+        assertThat(point.pointStatus()).isEqualTo(PointStatus.PASS);
+        assertThat(point.sourceAnchors()).singleElement().satisfies(anchor ->
+                assertThat(anchor.blockId()).isEqualTo("settlement-matched"));
+        assertThat(point.sourceAnchors()).noneSatisfy(anchor ->
+                assertThat(anchor.blockId()).isEqualTo("settlement-decoy"));
+    }
+
+    @Test
     void unmappablePartySpanFailsClosedBeforeDeterministicVerdict() {
         var fixtureCase = new FixtureCase(
                 "party-cross-cell-fail-closed",
@@ -204,6 +323,68 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                 tableCells,
                 WordParserSpikeDocument.ConfidenceLevel.HIGH,
                 WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
+    }
+
+    private WordParserSpikeDocument.DocumentBlock paymentParagraphBlock(
+            String blockId,
+            String text) {
+        return new WordParserSpikeDocument.DocumentBlock(
+                blockId,
+                WordParserSpikeDocument.BlockType.PARAGRAPH,
+                text,
+                text,
+                List.of("付款条款"),
+                WordParserSpikeDocument.RegionType.BODY,
+                WordParserSpikeDocument.ContextType.NORMAL,
+                WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "settlement.docx",
+                null,
+                null,
+                List.of(),
+                WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+    }
+
+    private WordParserSpikeDocument.DocumentBlock tableSettlementBlock(
+            String blockId,
+            String text,
+            List<WordParserSpikeDocument.TableCellSpan> tableCells) {
+        return new WordParserSpikeDocument.DocumentBlock(
+                blockId,
+                WordParserSpikeDocument.BlockType.TABLE_ROW,
+                text,
+                text,
+                List.of("付款条款"),
+                WordParserSpikeDocument.RegionType.BODY,
+                WordParserSpikeDocument.ContextType.NORMAL,
+                WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "settlement.docx",
+                "settlement-table",
+                0,
+                tableCells,
+                WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
+    }
+
+    private FixtureCase settlementFixtureCase(String sampleId) {
+        return new FixtureCase(
+                sampleId,
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "甲方公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "70")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
     }
 
     @Test
@@ -1071,6 +1252,47 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                             "DOCX", "test", "zh-CN", text.length(), 1, 0, 1, 0, 0, false,
                             WordParserSpikeDocument.ParseStatus.GOOD,
                             "HIGH", 0, 0, 0, List.of()));
+        }
+    }
+
+    private static final class FixedBlocksContractParser extends DocxWordParserSpike {
+
+        private final List<WordParserSpikeDocument.DocumentBlock> blocks;
+
+        private FixedBlocksContractParser(List<WordParserSpikeDocument.DocumentBlock> blocks) {
+            this.blocks = List.copyOf(blocks);
+        }
+
+        @Override
+        public WordParserSpikeDocument parse(Path docxPath) {
+            var characterCount = blocks.stream()
+                    .mapToInt(block -> block.text().length())
+                    .sum();
+            var tableRowCount = (int) blocks.stream()
+                    .filter(block -> block.type() == WordParserSpikeDocument.BlockType.TABLE_ROW)
+                    .count();
+            return new WordParserSpikeDocument(
+                    new WordParserSpikeDocument.Metadata("fixed-blocks", "settlement.docx"),
+                    blocks,
+                    List.of(),
+                    List.of(),
+                    new WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX",
+                            "test",
+                            "zh-CN",
+                            characterCount,
+                            blocks.size(),
+                            0,
+                            tableRowCount,
+                            0,
+                            0,
+                            false,
+                            WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH",
+                            0,
+                            0,
+                            0,
+                            List.of()));
         }
     }
 

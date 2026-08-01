@@ -288,7 +288,7 @@ try {
         Join-Path $repo "outputs/task-034-mvp-e2e-acceptance-v3/r7-evidence-seal.json"
     ) -Raw | ConvertFrom-Json
 
-    Invoke-Logged "d1-combined-447" (Join-Path $repo "apps/api-server") {
+    Invoke-Logged "d1-combined-451" (Join-Path $repo "apps/api-server") {
         gradle test --no-daemon --rerun-tasks `
             --tests "com.cqcp.apiserver.reviewengine.ConsistencyCandidateCollectorTest" `
             --tests "com.cqcp.apiserver.reviewengine.ConsistencySetCollectorTest" `
@@ -306,11 +306,11 @@ try {
     $d1JUnitEvidence = Save-BackendTestEvidence `
         -RunName "d1-combined" `
         -Counts $d1CombinedCounts
-    if ($d1CombinedCounts.tests -ne 447 `
+    if ($d1CombinedCounts.tests -ne 451 `
             -or $d1CombinedCounts.failures -ne 0 `
             -or $d1CombinedCounts.errors -ne 0 `
             -or $d1CombinedCounts.skipped -ne 0) {
-        throw "D1 combined gate must be exactly 447/0/0/0."
+        throw "D1 combined gate must be exactly 451/0/0/0."
     }
 
     Invoke-Logged "d2-seam-test" (Join-Path $repo "apps/api-server") {

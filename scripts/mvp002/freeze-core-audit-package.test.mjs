@@ -81,7 +81,7 @@ test("verification summary binds every log and external evidence byte", () => {
     const boundaryPath = path.join(root, "evidence/core-boundary.json");
     fs.writeFileSync(boundaryPath, boundary);
     const junitEvidence = [
-      writeJUnitEvidence(root, "d1-combined", 447),
+      writeJUnitEvidence(root, "d1-combined", 451),
       writeJUnitEvidence(root, "d2-seam", 20),
       writeJUnitEvidence(root, "backend-first", 891),
       writeJUnitEvidence(root, "backend-repeat", 891),
