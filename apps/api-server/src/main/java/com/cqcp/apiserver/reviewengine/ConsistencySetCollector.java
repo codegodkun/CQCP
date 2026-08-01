@@ -190,6 +190,19 @@ final class ConsistencySetCollector {
                 return roleConflict(reviewPointCode, candidateRole, "not in ledger CANDIDATE_EMITTED");
         }
 
+        for (var candidate : rawCandidates) {
+            if (!candidate.blockAttributionSignal()
+                    && "TABLE_CELL".equals(candidate.previewAnchorLevel())) {
+                var anchorIssue = validateAnchor(candidate, document);
+                if (anchorIssue != null) {
+                    return lineageFail(
+                            reviewPointCode,
+                            candidateRole,
+                            "unreliable TABLE_CELL attribution: " + anchorIssue);
+                }
+            }
+        }
+
         if (rawCandidates.stream().anyMatch(c -> !c.blockAttributionSignal()))
             return roleConflict(reviewPointCode, candidateRole, "missing blockAttribution");
 

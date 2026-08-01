@@ -215,9 +215,23 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                                 1, valueCell, labelCell.length(), text.length())));
         var runtimePreparer = new ParserBackedReviewInputPreparer(
                 new FixedBlocksContractParser(List.of(block)));
+        var candidates = runtimePreparer.probeAllForPoint(
+                ReviewPointCode.SETTLEMENT_PAYMENT_RATIO_CONSISTENCY,
+                "SETTLEMENT_PAYMENT_RATIO",
+                List.of(block),
+                ParserBackedReviewInputPreparer.ProbeExecutionMode.LEGACY,
+                "MONTHLY");
+        assertThat(candidates).singleElement().satisfies(candidate -> {
+            assertThat(candidate.blockAttributionSignal()).isFalse();
+            assertThat(candidate.previewAnchorLevel()).isEqualTo("TABLE_CELL");
+            assertThat(candidate.cellIndex()).isNull();
+            assertThat(candidate.previewElementRef())
+                    .isEqualTo("table:settlement-table/row:0");
+        });
         var fixtureCase = settlementFixtureCase("settlement-overlapping-cells");
         var request = newRequest(fixtureCase);
         var parsed = runtimePreparer.parse(request.documentReference());
+        assertThat(parsed.document().scopeCoverageReport().verified()).isTrue();
         var indexed = runtimePreparer.index(parsed);
         var plan = runtimePreparer.plan(indexed);
         var reviewInput = runtimePreparer.build(request, plan, makeTestSnapshot());
@@ -287,6 +301,7 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         var crossCellPreparer = new ParserBackedReviewInputPreparer(new CrossCellPartyContractParser());
         var request = newRequest(fixtureCase);
         var parsed = crossCellPreparer.parse(request.documentReference());
+        assertThat(parsed.document().scopeCoverageReport().verified()).isTrue();
         var indexed = crossCellPreparer.index(parsed);
         var plan = crossCellPreparer.plan(indexed);
         var reviewInput = crossCellPreparer.build(request, plan, makeTestSnapshot());
@@ -1251,7 +1266,8 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                     new WordParserSpikeDocument.ParseQualityReport(
                             "DOCX", "test", "zh-CN", text.length(), 1, 0, 1, 0, 0, false,
                             WordParserSpikeDocument.ParseStatus.GOOD,
-                            "HIGH", 0, 0, 0, List.of()));
+                            "HIGH", 0, 0, 0, List.of()),
+                    verifiedScopeCoverage());
         }
     }
 
@@ -1292,8 +1308,17 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                             0,
                             0,
                             0,
-                            List.of()));
+                            List.of()),
+                    verifiedScopeCoverage());
         }
+    }
+
+    private static WordParserSpikeDocument.ScopeCoverageReport verifiedScopeCoverage() {
+        return new WordParserSpikeDocument.ScopeCoverageReport(
+                true,
+                List.of("TOC", "HEADER_FOOTER", "DELETED", "VOIDED"),
+                List.of(),
+                List.of());
     }
 
     private static final class SameValueProgressContractParser extends DocxWordParserSpike {
