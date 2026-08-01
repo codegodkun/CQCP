@@ -167,10 +167,13 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   SHA-256 固化为历史 fixture；verify-only override 必须成对提供且严格匹配旧
   dispatch，current-HEAD R7 继续独立重建。定向 contract `7/7` 已通过。
 * PR #37 的 Linux CI 证明 Track A checked-in manifest/input hash 与 TASK-036 v2
-  historical output hash 曾依赖 Windows CRLF 工作区字节。当前修复把所有参与
-  原始字节 hash 的文本输入/expected 精确约束为 LF，并让 Track A generator 显式
-  写 `\n`；不修改盲评内容、人工 decisions、CQCP actual 语义或 Provider 边界。
-  Windows 与完全断网 Linux 的同一组定向测试均为 `31/31 PASS`。该证据只关闭
-  跨平台字节确定性根因，不替代新 HEAD 的完整 verification、freeze 或三审。
+  historical output hash 曾依赖 Windows CRLF 工作区字节。LF 候选 `76f5685…`
+  又在完整验证的 `blind-unblind` 阶段证明：直接迁移为 LF 会破坏 immutable Track A
+  freeze/DeepSeek seal 对三份 ground truth 的历史 SHA 绑定。当前修复因此不迁移
+  seal，而是以 `text eol=crlf` 保持 Git blob 不变并跨平台检出历史 CRLF bytes，同时让 Track A generator 跨平台显式写
+  CRLF；盲评内容、人工 decisions、CQCP actual 语义与 Provider 边界均不变。
+  Windows 与完全断网 Linux 定向均为 `31/31 PASS`，直接 unblind 恢复 27 项完成。
+  该证据只关闭跨平台字节与历史 seal 兼容根因，不替代新 HEAD 的完整 verification、
+  freeze 或三审。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：评测正确性、模型职责与公网数据治理。

@@ -294,7 +294,7 @@ public final class BlindEvaluationProjectionGenerator {
     private void writeJson(Path path, JsonNode node) throws IOException {
         Files.createDirectories(path.getParent());
         var printer = new DefaultPrettyPrinter();
-        printer.indentObjectsWith(new DefaultIndenter("  ", "\n"));
+        printer.indentObjectsWith(new DefaultIndenter("  ", "\r\n"));
         var bytes = mapper.writer(printer).writeValueAsBytes(node);
         Files.write(path, bytes);
     }

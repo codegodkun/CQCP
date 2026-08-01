@@ -159,13 +159,13 @@ class VersionedRatioScopeV20260729Test {
         expected.put("occurrence-comparison.csv",
                 "4bf012bc8b6d0071584bab0d8d3cc916cfa7f93681cb4314d8280373648cdb8d");
         expected.put("run-manifest.json",
-                "8c2b68a408ea27e0f04dbf5e6f854457d3da926386b518dbdfe951404aa0ae25");
+                "7635cf2158a8fcee371f5a5d082700ca85817b00f87ecb481b6adc78b8dd7cff");
         expected.put("sample-results/CQCP-MVP-DOCX-001.json",
-                "b8cc8d6f5b7f20fcc01db2b6b68ce5716d0f36d4fc5f918cceaf71b802d5d940");
+                "db17e982e89553f17da807175b854746224c1186ceedcea2f139ce46abe1c734");
         expected.put("sample-results/CQCP-MVP-DOCX-002.json",
-                "43d02bdd0e6f7d519614e1fae1518c784c5551ecea96d3e43520c92d6d121d40");
+                "a8f52a16b26830d03287353b465260d432a4058c8641e67832546d29ac636be9");
         expected.put("sample-results/CQCP-MVP-DOCX-003.json",
-                "b53ccb5e6bbd21db266ca601ad5b1137d7c7617eec32b12ed189cf6e4e6f3480");
+                "646efeef88495d3cfccd556d90079126e6a1630946ce2ab3467ee516cd283903");
         expected.forEach((relative, hash) -> {
             try {
                 assertThat(sha256(V2_OUTPUT.resolve(relative))).as(relative).isEqualTo(hash);

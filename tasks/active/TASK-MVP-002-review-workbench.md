@@ -1,7 +1,8 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / 847bb2c… Core 三审全零 GO 后 PR #37 CI 暴露跨平台字节缺陷 /
-5 文件 LF 修复已完成 Windows + Linux 定向验证 / 新完整 verification、freeze 与三审待重建
+状态：已实现 / PR #37 CI 暴露跨平台字节缺陷 / 76f5685… LF 候选完整验证在
+Track A seal 身份处 fail closed / 历史 CRLF bytes 保留修复已完成 Windows + Linux
+定向验证及 unblind 回归 / 新 candidate 已形成、完整 verification、freeze 与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -188,9 +189,12 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   已完成 Core verification，并以 subject `3bc24a84…` 取得 CC AUDIT、代码/架构
   Codex auditor、测试/安全 Codex auditor 三份全零 `GO`。PR #37 随后暴露两个新
   门禁事实：PR body 缺少 `CQCP Authorization Evidence`，Linux backend 的 Track A
-  投影与 TASK-036 v2 hash 测试因 Windows CRLF 字节固化而失败。当前限定修复只涉及
-  `.gitattributes`、Track A JSON writer/测试/manifest 与 v2 hash 常量；Windows 和
-  完全断网 Linux 定向测试均为 `31/31 PASS`。由于 tracked diff 已变化，`3bc24a84…`
-  的 verification/freeze/三审均不得用于新候选收口；尚未执行新的完整 verification。
+  投影与 TASK-036 v2 hash 测试因 Windows CRLF 字节固化而失败。LF 候选
+  `76f5685…` 随后的完整验证在 `blind-unblind` 发现三份 ground truth 与历史
+  immutable seal 的 CRLF SHA 不一致并 fail closed；未生成 verification summary。
+  当前限定修复改为以 `text eol=crlf` 保持 Git blob 不变并跨平台检出历史 CRLF bytes，同时让 generator 显式写 CRLF，
+  不迁移 seal；Windows 与完全断网 Linux 定向均为 `31/31 PASS`，直接 unblind
+  恢复 27 项完成。本批次形成新 candidate；仍须从零执行完整 verification、freeze
+  与三审。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。

@@ -169,13 +169,23 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   `Authorization evidence check` 因 PR body 缺少必填区块失败，backend Linux CI
   因 Track A 与 TASK-036 v2 的 Windows CRLF hash 固化出现 2 个失败；admin-web CI
   通过。该 PR 当前未 merge。
-- 主 Codex 已完成限定 5 文件跨平台字节修复：所有参与原始 byte hash 的文本输入与
-  expected 使用精确 LF attributes；Track A JSON writer 显式写 `\n`；manifest 和
-  v2 hash 改为 canonical LF；既有测试增加禁止 CR 的断言。Windows 定向
-  `31/31`、完全断网 Linux Java 21 / Gradle 8.10.2 定向 `31/31` 均通过，
-  `git diff --check` 通过。该结果只证明两个原 CI failure cause 已被定向关闭；
-  本批次形成新的候选提交，但尚未执行新完整 verification。`3bc24a84…` 及其三份
-  旧 GO 已因 tracked diff 变化整体失效，不得组合用于后续收口。
+- 候选提交 `76f56856c07e8c35a08144131ead9a68f4bc5356` 曾把相关工件统一为 LF。
+  从零完整 verification 在产品、D1=`451/451`、D2=`20/20`、两轮 backend
+  各 `902/902`、admin-web=`70/70`、Core Node=`215/215`、bootJar、R7、
+  blind freeze 和 DeepSeek seal 通过后，于 `blind-unblind` fail closed：当前三份
+  LF human ground truth 与 immutable Track A freeze/DeepSeek seal 绑定的历史 CRLF
+  SHA 不一致；失败日志为
+  `outputs/task-mvp-002/core-audit/verification/blind-unblind.log`，SHA-256
+  `04ee667b7c39444fe4218d43ce613191c9604dc73e129530d548ca8271e11376`。
+  未生成 verification summary，Compose/browser、freeze 和审计均未启动。
+- 本批次限定修复保留历史 seal，不做 identity migration：hash-sensitive
+  fixture/expected 使用 `text eol=crlf` 保持 Git blob 不变并跨平台检出历史 CRLF bytes，Track A writer 在所有平台
+  显式写 CRLF，manifest 与 TASK-036 v2 恢复历史 SHA。Windows 定向 `31/31`、
+  仓库只读且 `--network none --offline` 的 Linux Java 21 / Gradle 8.10.2 定向
+  `31/31` 均通过；直接 `unblind` 恢复为
+  `TRACK_A_CODEX_AND_DEEPSEEK_COMPLETE_TRACK_B_ZERO_ELIGIBLE_SAMPLE`、`27` 项。
+  该结果只关闭当前字节身份冲突；新的完整 verification 仍须从零执行。
+  `3bc24a84…` 及其三份旧 GO 已整体失效，不得组合用于后续收口。
 
 ## 当前活跃任务
 
@@ -201,7 +211,7 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 对当前 5 文件字节修复及本阶段 Memory Writeback 执行 Core exact-path、
+1. 对当前历史 CRLF 字节保留修复及本阶段 Memory Writeback 执行 Core exact-path、
    Provider-free、`outputs/**` 排除与 `git diff --check` 边界复核，形成新的候选提交。
 2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器

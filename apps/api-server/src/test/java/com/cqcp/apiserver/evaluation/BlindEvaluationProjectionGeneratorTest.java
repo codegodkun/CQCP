@@ -35,9 +35,13 @@ class BlindEvaluationProjectionGeneratorTest {
         var firstRun = new LinkedHashMap<String, byte[]>();
         for (var relativePath : GENERATED_FILES) {
             var generatedBytes = Files.readAllBytes(output.resolve(relativePath));
-            assertThat(new String(generatedBytes, StandardCharsets.UTF_8))
-                    .as(relativePath + " uses canonical LF line endings")
-                    .doesNotContain("\r");
+            var generatedText = new String(generatedBytes, StandardCharsets.UTF_8);
+            assertThat(generatedText)
+                    .as(relativePath + " uses the sealed canonical CRLF bytes")
+                    .contains("\r\n");
+            assertThat(generatedText.replace("\r\n", ""))
+                    .as(relativePath + " has no lone CR or LF")
+                    .doesNotContain("\r", "\n");
             firstRun.put(relativePath, generatedBytes);
         }
 
