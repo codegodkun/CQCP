@@ -203,8 +203,8 @@ Fresh Verification and Final Audit Pending
   core 和 C2 execution activation 已集成；定向联合回归 413/413。
 * D1/R7 增量：D1 30/30；独立审计安全整改后曾与既有回归合并为 444/444，
   MVP-002 Core 首轮 SourceAnchor provenance P1 整改增加 3 条，随后全路径
-  fallback provenance P1 整改再增加 4 条防御性回归，当前完整门禁为
-  451/451；R7 为 27/27
+  fallback provenance P1 整改再增加 4 条防御性回归，后续 TABLE_ROW capture
+  span P1 整改增加 1 条，当前完整门禁为 452/452；R7 为 27/27
   candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
   70 production semantic ledger、0 SYS/Finding。
 * D2/Track B 增量：seam 20/20；3 份包、27 packet、9 plan、57 occurrence，
@@ -229,5 +229,9 @@ Fresh Verification and Final Audit Pending
   输出 `BLOCK_LEVEL`。红测 `32/4 failures`，绿测 `32/32`，扩大定向 `200/200`；
   不改变 CandidateResolver、EvidenceSlot、deterministic verdict 或 Finding。
   `8d01dd9a…` 已失效，新 R7、完整 verification、freeze 与三审待重建。
+* 2026-08-02 `91d5e16…` 的 D1 11 个 suites 已全部通过，实际计数为
+  `452/0/0/0`；verification/freeze 固定 451 的门禁因新增 ParserBacked evidence
+  回归而滞后。当前仅同步计数与 validator fixture，Node 定向 `11/11 PASS`，不改变
+  D1 生产语义。新的完整 verification、freeze 与三审仍待重建。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
   `TASK-028 / TASK-031 / TASK-032` 已解锁；未授权 commit、push、PR 或 merge。

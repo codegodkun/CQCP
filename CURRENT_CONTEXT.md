@@ -225,6 +225,19 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   anchor 也改用公共 `BLOCK_LEVEL`。当前只有该 test-only 文件和本阶段项目记忆为
   working-tree 增量；为避免把 dirty worktree 伪绑定到 `97b55a0…`，尚未执行新的
   Formal R7 或完整 verification。
+- 上述 test-only 修复以提交 `91d5e161aa0eba03317a883e1ef93238931a3b44`
+  形成 clean candidate。新 Formal R7 已恢复 `57 MATCHED + 6 EXCLUDED` 并完成
+  seal/verify，seal SHA 为
+  `bf199763f5f6ef2dbbc97b4869ce2b1f099fe5b69d35e8c6661b1ad2358e6100`；
+  完整 verification 随后在 D1 精确计数门禁停止。11 个 D1 suites 实际为
+  `452 tests / 0 failures / 0 errors / 0 skipped`，而 verification/freeze 脚本仍固定
+  451；新增项为本轮 P1 ParserBacked evidence 回归，属于门禁计数滞后，不是产品
+  测试失败。partial verification 与本轮 R7 已分别封存为
+  `verification-failed-91d5e16-d1-count/`、`r7-superseded-91d5e16-d1-count/`，未运行
+  D2、backend 全量、Compose/browser，也未创建 freeze 或审计。
+- 当前 working-tree 增量仅把 D1 当前门禁同步为 452：verification log 名称、精确
+  计数、freeze validator 与其 fixture 同步更新；freeze/core-scope Node 定向合计
+  `11/11 PASS`，脚本中无残留当前 451 门禁。历史运行的 451 数字保持不变。
 
 ## 当前活跃任务
 
@@ -250,8 +263,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 完成 TASK-034 test-only resolver 修复的边界复核和阶段性 Memory Writeback，形成
-   一个有意义的新 clean candidate；不得在 dirty worktree 生成 Formal R7 证据。
+1. 完成 D1 452 门禁同步的边界复核和阶段性 Memory Writeback，形成一个有意义的
+   新 clean candidate；历史 451 运行记录不得改写。
 2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。

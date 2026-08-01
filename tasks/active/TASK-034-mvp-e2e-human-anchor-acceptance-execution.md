@@ -1,8 +1,8 @@
 # TASK-034：MVP E2E 人工 anchor 正式验收执行
 
-状态：Active / 历史 v29 Formal R7 `PASS` / `97b55a0…` verification 暴露
-test-only public anchor resolver 回归 / 单文件红绿与 harness `19/19` PASS /
-Fresh Formal R7 and Milestone Final Audit Pending
+状态：Active / `91d5e16…` Formal R7 `PASS` and Sealed / Core verification
+stopped at stale D1 451 count gate / D1 452 sync targeted PASS / Fresh Full
+Verification and Milestone Final Audit Pending
 
 类型：Codex 主控正式验收任务
 
@@ -416,3 +416,9 @@ commit、push、PR 或 merge。
   `1/1 PASS`，完整 harness `19/19 PASS`。该修复不修改生产代码、人工答案、
   CandidateResolver、Finding/verdict 或 Provider；新的 Formal R7 只允许在 clean
   candidate 上运行。
+* 2026-08-02 test-only 修复提交 `91d5e16…` 的 Formal R7 已重新达到
+  `57 MATCHED + 6 EXCLUDED`，seal/verify SHA 为 `bf199763…`。完整 verification
+  随后因 D1 实际 `452/0/0/0`、脚本仍固定 451 而停止；这是 evidence count gate
+  滞后，不是 R7 或产品测试失败。当前仅同步 verification/freeze 计数门禁，Node
+  定向 `11/11 PASS`；`91d5e16…` 的 R7 因后续 tracked 脚本变化而 superseded，
+  下一 Formal R7 必须从新 clean candidate 生成。
