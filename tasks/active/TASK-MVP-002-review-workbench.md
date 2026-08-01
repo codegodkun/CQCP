@@ -1,6 +1,6 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / 5bcfe410… 全路径 SourceAnchor P1 已整改 / 最终同 HEAD 证据与三审待重建
+状态：已实现 / c156b4a7… TABLE_CELL 回归假阳性已原子整改 / 最终同 HEAD 证据与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -174,5 +174,14 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   以 4 条红绿回归完成最小整改：逐 block、offset-preserving matcher group 映射，
   TABLE_CELL 非唯一 span 在裁判前 fail closed；定向测试 `33/33`，D1 硬门禁同步为
   `451/451`。新的完整 verification、freeze 与三审尚未开始。
+* 2026-08-01 候选 HEAD `fc32b55…` 的完整 verification 与 freeze
+  `c156b4a7…` 已通过，但第一份全新代码/架构 Codex auditor 返回
+  `NO_GO（P1=1 / blocking=1）`，本轮随即停止且未发送 CC AUDIT。finding 证明
+  重叠 TABLE_CELL 回归使用 unverified scope，导致 scope 前置门禁代偿真实
+  attribution/anchor 路径。提交 `d00dcca…` 现已让测试 fixture 使用 verified
+  scope，并只将缺少可靠 parser-issued cell identity 的 TABLE_CELL attribution
+  映射为 `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR`；普通 block
+  attribution 的 role-conflict 契约不变。红测 `2/1 failure`，绿测定向 `2/2`、
+  preparer `33/33`、collector `91/91`；新完整 verification、freeze 与三审待重建。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。

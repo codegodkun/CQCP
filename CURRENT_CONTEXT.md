@@ -147,6 +147,22 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   `verification-failed-067db30-core-boundary/`。整改只把该单一当月文件加入
   `CORE_EXACT_PATHS`，并增加“2026-08 允许、2026-09 拒绝”的负向边界断言；不放宽
   `changelog/` 目录，不改变业务或 Provider 边界。
+- 候选 HEAD `fc32b55d36870203a3d5d21543cb453b01b78d74` 随后完成一次完整
+  Core verification 并冻结为 subjectIdentity
+  `c156b4a741df1e24a4bf3bc9c52d31237cf9d6597f19d3344f7d393961d7cf80`。
+  第一份全新代码/架构 Codex auditor 返回 `NO_GO（P1=1 / blocking=1）`，因此
+  该轮依硬停止条件终止，未向 CC 发送新审计、未启动第二名 Codex auditor，也未
+  push/PR/CI。finding 证明两个 TABLE_CELL fail-closed 用例的测试 parser 使用
+  `ScopeCoverageReport.unverified()`，其中重叠 cell 用例被 scope 前置门禁代偿；
+  verified-scope 下真实结果为 `SYS_ROLE_CONFLICT / EVIDENCE_AMBIGUOUS`。
+- 主 Codex 已以提交 `d00dcca0e8dab8760fe5851cd894758e6f99eb46` 完成该 finding 的
+  限定原子修复：测试 fixture 明确提供 verified scope 并断言候选确实携带
+  `TABLE_CELL + blockAttribution=false + 无 cell identity`；collector 仅把这种
+  不可靠 TABLE_CELL identity 映射为
+  `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR`，普通 BLOCK_LEVEL
+  attribution mismatch 继续保持既有 role-conflict 语义。红测为 `2 tests / 1
+  failure`，修复后定向 `2/2`、完整 preparer `33/33`、collector `91/91`。新的完整
+  verification、freeze 与三方从零审计尚未开始。
 
 ## 当前活跃任务
 
@@ -158,8 +174,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. `ea19a52a…`、`33890cb…`、`81e47f…` 及 `5bcfe410…` 对应的三方审计均已因 `NO_GO`
-   失效，永远不能用于后续收口；其中任一旧 `GO` 也不得单独复用。
+1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…` 及 `c156b4a7…` 对应的审计轮
+   均已因 `NO_GO` 失效，永远不能用于后续收口；其中任一旧 `GO` 也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
    CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
@@ -170,9 +186,9 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 将 `5bcfe410…` whole-text fallback SourceAnchor P1 原子修复、D1=451 门禁与
-   本阶段记忆写回形成新的 clean Core candidate commit。
-2. 在新 HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
+1. 将 `c156b4a7…` 审计 finding 的原子修复与本阶段记忆写回形成新的 clean Core
+   candidate HEAD。
+2. 在该新 HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
 3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex
