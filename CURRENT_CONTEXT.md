@@ -108,12 +108,16 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   ARCHITECTURE 的 parser-issued SourceAnchor provenance 门禁。该轮 freeze、
   verification、browser runtime 和审计观察已分别封存到
   `outputs/task-mvp-002/core-audit/*-invalidated-81e47f/`。
-- 主 Codex 已完成该 P1 的限定原子修复：party candidate 现在携带 line matcher 在
-  parser joined text 中的原始 span，并仅由 `TableCellSpan.startOffset/endOffset`
-  映射 cell identity；跨 cell span 不再按候选值搬移到单元格，而是在一致性裁判前
-  `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR` fail closed。新增跨 cell、
-  重复值/错误 cell 和裁判前 fail-closed 三项回归；定向 `3/3` 与完整
-  `ParserBackedReviewInputPreparerEvidenceTest 29/29` 均通过。新的完整
+- 主 Codex 已完成该 P1 的限定原子修复：party candidate 现在从同一次 line matcher
+  捕获中按 parser join 分隔符与既有字段边界裁出实际值 span，并仅由
+  `TableCellSpan.startOffset/endOffset` 映射 cell identity；不再读取
+  `tableCells[].text` 或反向搜索 `candidateValue`。label/value 分处相邻 cell 时由
+  parser-issued structural span 定位 value cell；span 不可映射时在一致性裁判前
+  `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR` fail closed。新增结构化 cell
+  split、重复值/错误 cell 和不可映射 fail-closed 三项回归；定向 `3/3`、完整
+  `ParserBackedReviewInputPreparerEvidenceTest 29/29` 与原始 Formal R7 均通过，
+  Formal R7 新 seal SHA-256 为
+  `9cfb8ea3eeb895b752779567f996c38ae90d2baf5b1461db229e8e123d4acb86`。新的完整
   verification、freeze 与三方从零审计仍待执行。
 
 ## 当前活跃任务

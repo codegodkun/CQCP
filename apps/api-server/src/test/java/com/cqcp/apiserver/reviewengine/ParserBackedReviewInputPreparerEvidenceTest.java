@@ -91,7 +91,7 @@ class ParserBackedReviewInputPreparerEvidenceTest {
     }
 
     @Test
-    void partyCandidateCrossCellMatchDoesNotRelocateByCandidateValue() {
+    void partyCandidateUsesStructuralSpanForLabelValueCellSplit() {
         var firstCell = "甲方：";
         var secondCell = "目标公司";
         var text = firstCell + " | " + secondCell;
@@ -113,8 +113,8 @@ class ParserBackedReviewInputPreparerEvidenceTest {
 
         assertThat(candidates).singleElement().satisfies(candidate -> {
             assertThat(candidate.candidateValue()).isEqualTo(secondCell);
-            assertThat(candidate.cellIndex()).isNull();
-            assertThat(candidate.previewElementRef()).isEqualTo("table:party-table/row:0");
+            assertThat(candidate.cellIndex()).isEqualTo(1);
+            assertThat(candidate.previewElementRef()).isEqualTo("table:party-table/row:0/cell:1");
         });
     }
 
@@ -148,7 +148,7 @@ class ParserBackedReviewInputPreparerEvidenceTest {
     }
 
     @Test
-    void crossCellPartyMatchFailsClosedBeforeDeterministicVerdict() {
+    void unmappablePartySpanFailsClosedBeforeDeterministicVerdict() {
         var fixtureCase = new FixtureCase(
                 "party-cross-cell-fail-closed",
                 FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
@@ -1059,7 +1059,7 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                             new WordParserSpikeDocument.TableCellSpan(
                                     0, firstCell, 0, firstCell.length()),
                             new WordParserSpikeDocument.TableCellSpan(
-                                    1, secondCell, secondCellStart, text.length())),
+                                    1, secondCell, secondCellStart + 1, text.length())),
                     WordParserSpikeDocument.ConfidenceLevel.HIGH,
                     WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
             return new WordParserSpikeDocument(

@@ -37,6 +37,9 @@ final class ParserBackedReviewInputPreparer {
                             + "|承\\s*包\\s*方\\s*[（(]\\s*以\\s*下\\s*简\\s*称\\s*乙\\s*方\\s*[）)]"
                             + "|乙\\s*方\\s*（\\s*全\\s*称\\s*）|乙\\s*方)\\s*[:：]\\s*(.+)$"),
             patternVariants("^尊敬的\\s*(.+?)[：:]?$"));
+    private static final List<String> PARTY_VALUE_BOUNDARY_MARKERS = List.of(
+            "地址", "法定代表人", "授权代表", "电话", "开户银行", "账号",
+            "乙方", "甲方", "（公章）", "(公章)", "（盖章）", "(盖章)", "日期");
 
     private static final List<String> TOTAL_AMOUNT_LABEL_HINTS = textVariants("合同固定总价", "合同暂定总价", "含税总价", "签约合同价", "材料/设备含税总价");
     private static final List<String> TAX_AMOUNT_LABEL_HINTS = textVariants("增值税税款", "税金");
@@ -309,18 +312,17 @@ final class ParserBackedReviewInputPreparer {
                     for (var line : splitLineSpans(block.text())) {
                         String matched = null;
                         int matchStart = -1;
-                        int matchEnd = -1;
                         for (Pattern p : blockPatterns) {
                             var m = p.matcher(line.text());
                             if (m.find()) {
                                 matched = m.group(1);
                                 matchStart = line.startOffset() + m.start(1);
-                                matchEnd = line.startOffset() + m.end(1);
                                 break;
                             }
                         }
                         if (matched == null) continue;
-                        var value = cleanPartyValue(matched);
+                        var partyMatch = partyMatch(matched, matchStart);
+                        var value = partyMatch.value();
                         if (!value.isBlank()) {
                             boolean vfs = isPartyNameValueValid(value);
                             boolean bas = block.blockId() != null && !block.blockId().isBlank();
@@ -341,8 +343,8 @@ final class ParserBackedReviewInputPreparer {
                                             rls,
                                             vfs,
                                             bas,
-                                            matchStart,
-                                            matchEnd));
+                                            partyMatch.startOffset(),
+                                            partyMatch.endOffset()));
                         }
                     }
                 }
@@ -1114,13 +1116,36 @@ final class ParserBackedReviewInputPreparer {
     private String cleanPartyValue(String value) {
         var cleaned = value.replace('|', ' ').replaceAll("\\s+", " ").trim();
         if (cleaned.endsWith("。")) cleaned = cleaned.substring(0, cleaned.length() - 1).trim();
-        for (String marker : List.of(
-                "地址", "法定代表人", "授权代表", "电话", "开户银行", "账号",
-                "乙方", "甲方", "（公章）", "(公章)", "（盖章）", "(盖章)", "日期")) {
+        for (String marker : PARTY_VALUE_BOUNDARY_MARKERS) {
             var idx = cleaned.indexOf(marker);
             if (idx > 0) cleaned = cleaned.substring(0, idx).trim();
         }
         return cleaned;
+    }
+
+    private PartyMatch partyMatch(String matched, int absoluteStartOffset) {
+        int start = 0;
+        while (start < matched.length() && isLineTrimWhitespace(matched.charAt(start))) start++;
+        if (start < matched.length() && matched.charAt(start) == '|') {
+            start++;
+            while (start < matched.length() && isLineTrimWhitespace(matched.charAt(start))) start++;
+        }
+
+        int end = matched.length();
+        int separator = matched.indexOf('|', start);
+        if (separator >= 0) end = separator;
+        for (String marker : PARTY_VALUE_BOUNDARY_MARKERS) {
+            int markerIndex = matched.indexOf(marker, start);
+            if (markerIndex > start && markerIndex < end) end = markerIndex;
+        }
+        while (end > start && isLineTrimWhitespace(matched.charAt(end - 1))) end--;
+        if (end > start && matched.charAt(end - 1) == '。') {
+            end--;
+            while (end > start && isLineTrimWhitespace(matched.charAt(end - 1))) end--;
+        }
+
+        var value = start < end ? cleanPartyValue(matched.substring(start, end)) : "";
+        return new PartyMatch(value, absoluteStartOffset + start, absoluteStartOffset + end);
     }
 
     private static boolean isPartyNameValueValid(String value) {
@@ -1216,6 +1241,9 @@ final class ParserBackedReviewInputPreparer {
     }
 
     private record LineSpan(String text, int startOffset) {
+    }
+
+    private record PartyMatch(String value, int startOffset, int endOffset) {
     }
 
     private static String toMojibake(String value) {
