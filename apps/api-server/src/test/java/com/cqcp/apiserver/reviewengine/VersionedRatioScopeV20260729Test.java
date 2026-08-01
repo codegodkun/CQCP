@@ -304,6 +304,22 @@ class VersionedRatioScopeV20260729Test {
                 ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
                 "无预付款但另行约定10%",
                 List.of());
+
+        var tableCell = tableBlock(
+                "prepayment-zero-cell",
+                "本工程无预付款。",
+                List.of("本工程无预付款。"));
+        assertThat(probe(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                List.of(tableCell),
+                List.of(tableCell)))
+                .singleElement()
+                .satisfies(candidate -> {
+                    assertThat(candidate.candidateValue()).isEqualTo("0");
+                    assertThat(candidate.cellIndex()).isZero();
+                    assertThat(candidate.previewElementRef())
+                            .isEqualTo("table:ratio-table/row:0/cell:0");
+                });
     }
 
     private void engineeringProgressGrammar() {
@@ -315,6 +331,23 @@ class VersionedRatioScopeV20260729Test {
                 ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
                 "B模式：按节点付款，节点完成后支付70%",
                 List.of());
+
+        var tableText = "A模式：按月形象进度付款，甲方支付上月完成合格形象进度产值的70%；";
+        var tableRow = tableBlock(
+                "progress-table-cell",
+                tableText,
+                List.of(tableText));
+        assertThat(probe(
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                List.of(tableRow),
+                List.of(tableRow)))
+                .singleElement()
+                .satisfies(candidate -> {
+                    assertThat(candidate.candidateValue()).isEqualTo("70");
+                    assertThat(candidate.cellIndex()).isZero();
+                    assertThat(candidate.previewElementRef())
+                            .isEqualTo("table:ratio-table/row:0/cell:0");
+                });
     }
 
     private void productProgressSameBlock() {
@@ -506,6 +539,42 @@ class VersionedRatioScopeV20260729Test {
                 List.of(),
                 WordParserSpikeDocument.ConfidenceLevel.HIGH,
                 WordParserSpikeDocument.PreviewAnchorLevel.BLOCK_LEVEL);
+    }
+
+    private static WordParserSpikeDocument.DocumentBlock tableBlock(
+            String id,
+            String text,
+            List<String> cells) {
+        var spans = new java.util.ArrayList<WordParserSpikeDocument.TableCellSpan>();
+        int offset = 0;
+        for (int cellIndex = 0; cellIndex < cells.size(); cellIndex++) {
+            var cell = cells.get(cellIndex);
+            spans.add(new WordParserSpikeDocument.TableCellSpan(
+                    cellIndex,
+                    cell,
+                    offset,
+                    offset + cell.length()));
+            offset += cell.length();
+            if (cellIndex + 1 < cells.size()) {
+                offset += " | ".length();
+            }
+        }
+        return new WordParserSpikeDocument.DocumentBlock(
+                id,
+                WordParserSpikeDocument.BlockType.TABLE_ROW,
+                text,
+                text,
+                List.of("付款条款"),
+                WordParserSpikeDocument.RegionType.BODY,
+                WordParserSpikeDocument.ContextType.NORMAL,
+                WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "synthetic.docx",
+                "ratio-table",
+                0,
+                List.copyOf(spans),
+                WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
     }
 
     private static WordParserSpikeDocument document(

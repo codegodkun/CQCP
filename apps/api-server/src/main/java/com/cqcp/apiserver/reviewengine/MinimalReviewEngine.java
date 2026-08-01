@@ -471,7 +471,7 @@ public class MinimalReviewEngine {
                         occurrence.sectionPath(),
                         occurrence.regionType(),
                         occurrence.confidence(),
-                        occurrence.locationLevel(),
+                        publicSourceAnchorLocationLevel(occurrence.locationLevel()),
                         occurrence.previewElementRef()));
             }
             return List.copyOf(anchors.values());
@@ -488,8 +488,14 @@ public class MinimalReviewEngine {
                 evidence.sectionPath(),
                 evidence.regionType(),
                 evidence.confidence(),
-                evidence.locationLevel(),
+                publicSourceAnchorLocationLevel(evidence.locationLevel()),
                 evidence.previewElementRef()));
+    }
+
+    private static String publicSourceAnchorLocationLevel(String internalLocationLevel) {
+        return "TABLE_CELL".equals(internalLocationLevel)
+                ? "BLOCK_LEVEL"
+                : internalLocationLevel;
     }
 
     private ReviewSummary summarize(List<PointReviewResult> pointResults) {

@@ -235,13 +235,11 @@ class MinimalReviewEngineTest {
         var fixtureCase = loadFixtureCase("CQCP-MVP-DOCX-001");
         var exactValue = fixtureCase.goldenStructuredFields().getRequired("partyAName");
         var occurrences = new ArrayList<>(List.of(
-                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1/cell:0"),
-                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1/cell:1"),
-                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1/cell:0"),
-                occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1"))
-                .stream()
-                .map(PointEvidenceOccurrence::fromSelectedCandidate)
-                .toList());
+                tableCellOccurrence(exactValue, "party-table-row", "table:party-table/row:1/cell:0"),
+                tableCellOccurrence(exactValue, "party-table-row", "table:party-table/row:1/cell:1"),
+                tableCellOccurrence(exactValue, "party-table-row", "table:party-table/row:1/cell:0"),
+                PointEvidenceOccurrence.fromSelectedCandidate(
+                        occurrenceCandidate(exactValue, "party-table-row", "table:party-table/row:1"))));
         var passEvidence = explicitPartyEvidence(exactValue, occurrences);
         occurrences.clear();
 
@@ -264,6 +262,9 @@ class MinimalReviewEngineTest {
         assertThat(passPoint.sourceAnchors())
                 .extracting(SourceAnchorSummary::contextType)
                 .containsOnly("NORMAL");
+        assertThat(passPoint.sourceAnchors())
+                .extracting(SourceAnchorSummary::locationLevel)
+                .containsOnly("BLOCK_LEVEL");
 
         var mismatch = "另一家甲方公司";
         var errorOccurrences = List.of(
@@ -376,6 +377,22 @@ class MinimalReviewEngineTest {
                         ? "TABLE_CELL"
                         : "BLOCK_LEVEL",
                 List.of());
+    }
+
+    private PointEvidenceOccurrence tableCellOccurrence(
+            String candidateValue,
+            String blockId,
+            String previewElementRef) {
+        return new PointEvidenceOccurrence(
+                candidateValue,
+                blockId,
+                "甲方：" + candidateValue,
+                List.of("合同主体"),
+                "BODY",
+                "NORMAL",
+                "HIGH",
+                "TABLE_CELL",
+                previewElementRef);
     }
 
     private Map<ReviewPointCode, PointStatus> statusByPoint(List<PointReviewResult> pointResults) {

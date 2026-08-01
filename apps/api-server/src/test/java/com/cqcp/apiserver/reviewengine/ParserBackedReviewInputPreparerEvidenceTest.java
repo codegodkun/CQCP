@@ -78,7 +78,7 @@ class ParserBackedReviewInputPreparerEvidenceTest {
     }
 
     @Test
-    void parserBackedEvidenceDowngradesCrossCellMatchToTableRowAnchor() {
+    void parserBackedEvidenceMapsCrossCellCapturedValueToParserCellAnchor() {
         var fixtureCase = loadFixtureCase(FIXTURE_ROOT.resolve("expected").resolve("CQCP-MVP-DOCX-001.json"));
         var reviewInput = buildReviewInput(
                 new ParserBackedReviewInputPreparer(new TableAnchorContractParser()),
@@ -87,7 +87,7 @@ class ParserBackedReviewInputPreparerEvidenceTest {
 
         assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
         assertThat(evidence.locationLevel()).isEqualTo("BLOCK_LEVEL");
-        assertThat(evidence.previewElementRef()).isEqualTo("table:table-1/row:0");
+        assertThat(evidence.previewElementRef()).isEqualTo("table:table-1/row:0/cell:1");
     }
 
     @Test
@@ -695,6 +695,38 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertThat(candidates).anySatisfy(c -> {
             assertThat(c.candidateValue()).isEqualTo("70");
             assertThat(c.valueFormatSignal()).isTrue();
+        });
+    }
+
+    @Test
+    void patternCandidateMapsCapturedValueInsteadOfWholeMatchToParserCell() {
+        var labelCell = "预付款比例为";
+        var separator = " | ";
+        var valueCell = "70%";
+        var text = labelCell + separator + valueCell;
+        var valueStart = labelCell.length() + separator.length();
+        var block = tableSettlementBlock(
+                "prepayment-split-table",
+                text,
+                List.of(
+                        new WordParserSpikeDocument.TableCellSpan(
+                                0, labelCell, 0, labelCell.length()),
+                        new WordParserSpikeDocument.TableCellSpan(
+                                1, valueCell, valueStart, text.length())));
+
+        var candidates = preparer.collectPatternCandidates(
+                ReviewPointCode.PREPAYMENT_RATIO_CONSISTENCY,
+                "PREPAYMENT_RATIO",
+                List.of(block),
+                List.of("预付款"),
+                List.of(Pattern.compile("预付款[^\\d]{0,60}(\\d{1,3}(?:\\.\\d+)?)\\s*%")),
+                false);
+
+        assertThat(candidates).singleElement().satisfies(candidate -> {
+            assertThat(candidate.candidateValue()).isEqualTo("70");
+            assertThat(candidate.cellIndex()).isEqualTo(1);
+            assertThat(candidate.previewElementRef())
+                    .isEqualTo("table:settlement-table/row:0/cell:1");
         });
     }
 

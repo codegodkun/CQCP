@@ -547,7 +547,8 @@ final class ParserBackedReviewInputPreparer {
             for (Pattern pattern : patterns) {
                 var m = pattern.matcher(block.text());
                 while (m.find()) {
-                    var v = m.groupCount() == 0 ? "0" : stripTrailingZeros(m.group(1));
+                    var valueGroup = m.groupCount() == 0 ? 0 : 1;
+                    var v = valueGroup == 0 ? "0" : stripTrailingZeros(m.group(valueGroup));
                     if (v == null || v.isBlank()) continue;
                     var vfs = switch (code) {
                         case CONTRACT_TOTAL_AMOUNT_CONSISTENCY, TAX_AMOUNT_FORMULA_CONSISTENCY -> isAmountValueValid(v);
@@ -556,7 +557,16 @@ final class ParserBackedReviewInputPreparer {
                              WARRANTY_RETENTION_RATIO_CONSISTENCY -> isRatioValueValid(v);
                         default -> false;
                     };
-                    result.add(candidateForMatch(code, role, v, block, rls, vfs, rls, m.start(), m.end()));
+                    result.add(candidateForMatch(
+                            code,
+                            role,
+                            v,
+                            block,
+                            rls,
+                            vfs,
+                            rls,
+                            valueGroup == 0 ? m.start() : m.start(valueGroup),
+                            valueGroup == 0 ? m.end() : m.end(valueGroup)));
                 }
             }
         }
@@ -616,7 +626,7 @@ final class ParserBackedReviewInputPreparer {
                 var v = stripTrailingZeros(m.group(1));
                 if (v == null || v.isBlank()) continue;
                 if (!isExpectedRatioValue(code, v, text)) continue;
-                matches.add(new PercentMatch(v, m.start(), m.end()));
+                matches.add(new PercentMatch(v, m.start(1), m.end(1)));
             }
             if (matches.isEmpty()) {
                 continue;
@@ -790,30 +800,31 @@ final class ParserBackedReviewInputPreparer {
         probeObserver.observe(code, ProbeExecutionMode.CONSISTENCY_FULL_SCAN_V29, "V29_DIRECT");
         var result = new LinkedHashSet<EvidenceCandidate>();
         for (var block : targetBlocks) {
-            String text = normalizeV29Text(block.text());
+            var projection = v29TextProjection(block.text());
+            String text = projection.normalizedText();
             switch (code) {
                 case PREPAYMENT_RATIO_CONSISTENCY -> {
                     if (V29_PREPAYMENT_ZERO.matcher(text).matches()) {
-                        result.add(candidateForBlock(code, role, "0", block, true, true, true));
+                        addV29ZeroCandidate(result, code, role, block, projection);
                     } else {
-                        addV29Matches(result, V29_PREPAYMENT_RATIO, code, role, block, text);
+                        addV29Matches(result, V29_PREPAYMENT_RATIO, code, role, block, projection);
                     }
                 }
                 case PROGRESS_PAYMENT_RATIO_CONSISTENCY -> {
-                    addV29Matches(result, V29_ENGINEERING_PROGRESS, code, role, block, text);
+                    addV29Matches(result, V29_ENGINEERING_PROGRESS, code, role, block, projection);
                     if (isV29ProductProgressContext(block, text, contextBlocks)) {
-                        addV29Matches(result, V29_PRODUCT_PROGRESS, code, role, block, text);
+                        addV29Matches(result, V29_PRODUCT_PROGRESS, code, role, block, projection);
                     }
                 }
                 case COMPLETION_PAYMENT_RATIO_CONSISTENCY -> {
-                    addV29Matches(result, V29_COMPLETION_ENGINEERING, code, role, block, text);
-                    addV29Matches(result, V29_COMPLETION_PRODUCT, code, role, block, text);
+                    addV29Matches(result, V29_COMPLETION_ENGINEERING, code, role, block, projection);
+                    addV29Matches(result, V29_COMPLETION_PRODUCT, code, role, block, projection);
                 }
                 case SETTLEMENT_PAYMENT_RATIO_CONSISTENCY ->
-                        addV29Matches(result, V29_SETTLEMENT, code, role, block, text);
+                        addV29Matches(result, V29_SETTLEMENT, code, role, block, projection);
                 case WARRANTY_RETENTION_RATIO_CONSISTENCY -> {
-                    addV29Matches(result, V29_WARRANTY_RETENTION, code, role, block, text);
-                    addV29Matches(result, V29_QUALITY_GUARANTEE, code, role, block, text);
+                    addV29Matches(result, V29_WARRANTY_RETENTION, code, role, block, projection);
+                    addV29Matches(result, V29_QUALITY_GUARANTEE, code, role, block, projection);
                 }
                 default -> throw new IllegalArgumentException("Not a ratio point: " + code);
             }
@@ -827,14 +838,71 @@ final class ParserBackedReviewInputPreparer {
             ReviewPointCode code,
             String role,
             WordParserSpikeDocument.DocumentBlock block,
-            String normalizedText) {
-        var matcher = pattern.matcher(normalizedText);
+            V29TextProjection projection) {
+        var matcher = pattern.matcher(projection.normalizedText());
         while (matcher.find()) {
             String value = stripTrailingZeros(matcher.group(1));
             if (isRatioValueValid(value)) {
-                result.add(candidateForBlock(code, role, value, block, true, true, true));
+                var sourceSpan = projection.sourceSpan(matcher.start(1), matcher.end(1));
+                if (sourceSpan.isPresent()) {
+                    var span = sourceSpan.orElseThrow();
+                    result.add(candidateForMatch(
+                            code,
+                            role,
+                            value,
+                            block,
+                            true,
+                            true,
+                            true,
+                            span.startOffset(),
+                            span.endOffset()));
+                } else {
+                    result.add(candidateForBlock(
+                            code,
+                            role,
+                            value,
+                            block,
+                            true,
+                            true,
+                            block.previewAnchorLevel()
+                                    != WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL));
+                }
             }
         }
+    }
+
+    private void addV29ZeroCandidate(
+            Set<EvidenceCandidate> result,
+            ReviewPointCode code,
+            String role,
+            WordParserSpikeDocument.DocumentBlock block,
+            V29TextProjection projection) {
+        var token = "无预付款";
+        var tokenStart = projection.normalizedText().lastIndexOf(token);
+        var sourceSpan = projection.sourceSpan(tokenStart, tokenStart + token.length());
+        if (sourceSpan.isPresent()) {
+            var span = sourceSpan.orElseThrow();
+            result.add(candidateForMatch(
+                    code,
+                    role,
+                    "0",
+                    block,
+                    true,
+                    true,
+                    true,
+                    span.startOffset(),
+                    span.endOffset()));
+            return;
+        }
+        result.add(candidateForBlock(
+                code,
+                role,
+                "0",
+                block,
+                true,
+                true,
+                block.previewAnchorLevel()
+                        != WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL));
     }
 
     private boolean isV29ProductProgressContext(
@@ -868,14 +936,41 @@ final class ParserBackedReviewInputPreparer {
     }
 
     private static String normalizeV29Text(String raw) {
-        if (raw == null) return "";
-        String normalized = java.text.Normalizer.normalize(raw, java.text.Normalizer.Form.NFKC)
-                .replace('：', ':');
-        var result = new StringBuilder(normalized.length());
-        normalized.codePoints()
-                .filter(cp -> !Character.isWhitespace(cp) && !Character.isSpaceChar(cp))
-                .forEach(result::appendCodePoint);
-        return result.toString();
+        return v29TextProjection(raw).normalizedText();
+    }
+
+    private static V29TextProjection v29TextProjection(String raw) {
+        var source = raw == null ? "" : raw;
+        var normalized = new StringBuilder(source.length());
+        var startOffsets = new ArrayList<Integer>();
+        var endOffsets = new ArrayList<Integer>();
+        for (int offset = 0; offset < source.length();) {
+            var codePoint = source.codePointAt(offset);
+            var sourceWidth = Character.charCount(codePoint);
+            var sourceEnd = offset + sourceWidth;
+            var sourceFragment = new String(Character.toChars(codePoint));
+            var normalizedFragment = java.text.Normalizer.normalize(
+                    sourceFragment,
+                    java.text.Normalizer.Form.NFKC).replace('：', ':');
+            for (int fragmentOffset = 0; fragmentOffset < normalizedFragment.length();) {
+                var normalizedCodePoint = normalizedFragment.codePointAt(fragmentOffset);
+                var normalizedWidth = Character.charCount(normalizedCodePoint);
+                if (!Character.isWhitespace(normalizedCodePoint)
+                        && !Character.isSpaceChar(normalizedCodePoint)) {
+                    normalized.appendCodePoint(normalizedCodePoint);
+                    for (int index = 0; index < normalizedWidth; index++) {
+                        startOffsets.add(offset);
+                        endOffsets.add(sourceEnd);
+                    }
+                }
+                fragmentOffset += normalizedWidth;
+            }
+            offset = sourceEnd;
+        }
+        return new V29TextProjection(
+                normalized.toString(),
+                startOffsets.stream().mapToInt(Integer::intValue).toArray(),
+                endOffsets.stream().mapToInt(Integer::intValue).toArray());
     }
 
     private static boolean isConsistencyFullScan(ProbeExecutionMode mode) {
@@ -1289,6 +1384,24 @@ final class ParserBackedReviewInputPreparer {
     }
 
     private record SearchTextProjection(
+            String normalizedText,
+            int[] sourceStartOffsets,
+            int[] sourceEndOffsets) {
+
+        Optional<SourceSpan> sourceSpan(int start, int end) {
+            if (start < 0
+                    || end <= start
+                    || end > sourceStartOffsets.length
+                    || end > sourceEndOffsets.length) {
+                return Optional.empty();
+            }
+            return Optional.of(new SourceSpan(
+                    sourceStartOffsets[start],
+                    sourceEndOffsets[end - 1]));
+        }
+    }
+
+    private record V29TextProjection(
             String normalizedText,
             int[] sourceStartOffsets,
             int[] sourceEndOffsets) {

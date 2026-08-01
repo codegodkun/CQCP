@@ -1,6 +1,6 @@
 # CURRENT_CONTEXT.md
 
-更新时间：2026-08-01
+更新时间：2026-08-02
 
 ## 当前阶段
 
@@ -186,6 +186,29 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   `TRACK_A_CODEX_AND_DEEPSEEK_COMPLETE_TRACK_B_ZERO_ELIGIBLE_SAMPLE`、`27` 项。
   该结果只关闭当前字节身份冲突；新的完整 verification 仍须从零执行。
   `3bc24a84…` 及其三份旧 GO 已整体失效，不得组合用于后续收口。
+- HEAD `22e44fc45decb9cb2cec41848dfcf393f2c49378` 随后完成从零 Core verification，
+  并冻结为 subject `8d01dd9ad49a1c440bf0aa4ec2eee4a09600653c721dd570f2f66be86cf2b092`；
+  manifest SHA 为 `f69d114a821c781f9d479f77f1093885938ada9e6b62baecdd264044849cc670`，
+  full diff SHA 为 `8d1d598d2fdff4ccc264131dde74821a7a787d43f2154f44be6be1b02902c6a9`，
+  verification SHA 为 `f5748d2f53e7d6c7a26fd5dca77d6aa155600e922f2c7fce3407baee31584b47`。
+  第一份全新代码/架构 Codex auditor 返回
+  `NO_GO（P1=1 / P2=1 / blocking=2）`，故依硬停止条件未启动第二名 Codex auditor、
+  未发送 CC AUDIT，也未进入 push/PR/CI/merge。P1 证明普通 pattern 与 v29 比例在
+  TABLE_ROW 中丢失捕获值原始 span，导致常见表格证据降为不可靠 row anchor；P2
+  证明内部 `TABLE_CELL` 曾泄漏到公共 `SourceAnchor.locationLevel`。审计建议新增
+  公共 `TABLE_CELL` enum 与 ADR-015/ARCHITECTURE 冲突，未被采纳；正确边界为内部
+  occurrence 保留 `TABLE_CELL`，公共 anchor 归一为 `BLOCK_LEVEL`。
+- 主 Codex 已完成上述两项 finding 的限定红绿修复，当前为 HEAD 上未提交增量：
+  ordinary pattern 使用 capture group span；v29 使用可逆 NFKC/空白 projection 将
+  capture span 映回 parser 原始 cell；“无预付款”使用精确 token span；无法可靠映射
+  时继续 fail closed。红测为 `32 tests / 4 failures`，修复后同组 `32/32`；扩大定向
+  回归为 `6 suites / 200 tests / 0 failures`；OpenAPI verifier 为
+  `PASS（8 paths / 48 schemas）`，admin-web workbench Vitest 为 `2/2`，build 通过，
+  最后清理后的 v29 class 复跑通过。未修改 CandidateResolver、EvidenceSlot、最终
+  Finding/verdict、Provider 或模型网络边界，也未执行任何模型调用。
+- 已否决 subject 的 canonical `freeze/`、`verification/` 与 browser evidence 已原样
+  封存到 `freeze-invalidated-8d01dd9a/`、`verification-invalidated-8d01dd9a/` 与
+  `browser-evidence-invalidated-8d01dd9a/`。当前尚未创建新 verification 或 freeze。
 
 ## 当前活跃任务
 
@@ -197,8 +220,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…` 及
-   `3bc24a84…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
+1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…`、
+   `3bc24a84…` 及 `8d01dd9a…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
    也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
@@ -211,8 +234,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 对当前历史 CRLF 字节保留修复及本阶段 Memory Writeback 执行 Core exact-path、
-   Provider-free、`outputs/**` 排除与 `git diff --check` 边界复核，形成新的候选提交。
+1. 完成本轮 P1/P2 原子修复的 Core exact-path、Provider-free、`outputs/**` 排除与
+   `git diff --check` 边界复核；用户确认阶段报告后形成一个有意义的新候选提交。
 2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。

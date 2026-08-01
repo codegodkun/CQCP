@@ -1,7 +1,8 @@
 # TASK-036：多出处一致性证据架构冻结
 
 状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
-TASK-034 R7 PASS / MILESTONE FINAL AUDIT PENDING
+TASK-034 R7 PASS / 8d01dd9a… Audit Findings Remediated in Working Tree /
+Fresh Verification and Final Audit Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -220,5 +221,13 @@ TASK-034 R7 PASS / MILESTONE FINAL AUDIT PENDING
   限定整改为 occurrence 级 provenance 贯通与非空 enum 校验；不修改
   CandidateResolver、EvidenceSlot、裁判或 Finding。旧 freeze 已失效，必须从
   新 HEAD 重跑 R7 和三审。
+* 2026-08-02 `8d01dd9a…` 首名代码/架构审计发现 TABLE_ROW pattern/v29 未将
+  capture value span 映射到 parser-issued cell，以及内部 `TABLE_CELL` location
+  泄漏到公共 SourceAnchor。主 Codex 已完成限定整改：ordinary pattern 采用 group
+  span，v29 采用可逆 normalized-to-source projection，“无预付款”采用精确 token
+  span；内部 occurrence 仍保留 `TABLE_CELL`，公共 SourceAnchor 按 ADR-015 统一
+  输出 `BLOCK_LEVEL`。红测 `32/4 failures`，绿测 `32/32`，扩大定向 `200/200`；
+  不改变 CandidateResolver、EvidenceSlot、deterministic verdict 或 Finding。
+  `8d01dd9a…` 已失效，新 R7、完整 verification、freeze 与三审待重建。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
   `TASK-028 / TASK-031 / TASK-032` 已解锁；未授权 commit、push、PR 或 merge。

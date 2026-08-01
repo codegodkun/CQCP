@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-08-01
+更新日期：2026-08-02
 
 ## MILESTONE-MVP-002：审核工作台、模型安全与盲态评测
 
@@ -10,11 +10,11 @@
 
 | 任务 | Task Level | 当前状态 | Core 边界 |
 |---|---|---|---|
-| `TASK-MVP-002` | L3 | `847bb2c… / 3bc24a84…` 曾完成 verification 与三审全零 GO；PR #37 CI 暴露跨平台 hash 缺陷，`76f5685…` LF 候选又在历史 seal 身份处 fail closed；CRLF bytes 保留 candidate 已形成并在 Windows/Linux 定向及 unblind 通过，待全量验证/冻结/三审 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
+| `TASK-MVP-002` | L3 | `22e44fc… / 8d01dd9a…` 首名代码架构审计 `NO_GO（P1=1 / P2=1）`；TABLE_ROW capture span 与公共 SourceAnchor locationLevel 限定修复已完成定向验证，旧 subject 已封存，待新全量验证/冻结/三审 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
 | `TASK-MODEL-001` | L3 | 实现与补证保留；`3bc24a84…` 因后续 tracked 修复失效，待同一新 HEAD 重建 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity |
 | `TASK-EVAL-002` | L3 | Track A 完成；旧 run-v3 为 `NO_GO_MODEL_MISMATCH`；历史 CRLF seal 保留修复 Windows/Linux 31/31 且 unblind 恢复；新 holdout 未开始 | Track A、Track B EvidencePacket、严格模型意见与解盲 |
 | `TASK-034` | L3 | v29/R7 限定样本证据进入 Core | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED |
-| `TASK-036` | L3 | B/C/D seam 进入 Core，主线集成待 merge | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket |
+| `TASK-036` | L3 | B/C/D seam 进入 Core；`8d01dd9a…` 的 parser cell span / 公共 anchor findings 已在 working tree 限定修复，待新 R7/verification/freeze/三审与主线 merge | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket |
 
 Core source diff 明确排除 Provider A0、standing/CC 审计传输、A1/A2/A3 与
 `outputs/**`。派生 R7、M3、browser、Compose 证据由冻结清单按 SHA-256 引用。
@@ -65,8 +65,10 @@ integration unit；A3 已拆出本 Milestone。
   `TASK_SPEC-035-A` 已实现并随 PR #32 合并；v1 历史失败不变，当前 worktree
   已以 v29/R7 正式复跑形成独立新工件
 - `TASK-036` 的 A 已随 PR #32 合并；B1/B2/C1/C2/D1/D2 已提交并进入
-  PR #37，形成 R7 与 Track B zero-call 证据；PR #37 CI 失败且尚未 merge，
-  当前历史 CRLF bytes 保留修复需形成新候选并从零完成 verification、freeze 与三审
+  PR #37，形成 R7 与 Track B zero-call 证据；PR #37 尚未 merge。后续 subject
+  `8d01dd9a…` 因 TABLE_ROW capture span 与公共 SourceAnchor locationLevel findings
+  失效；限定修复已完成定向验证，仍需从新 clean HEAD 重建 R7、完整 verification、
+  freeze 与三审
 - 2026-07-24 治理规则收敛口径：L0 默认不进入主线；L1 合并式批处理；L2 一个父 TASK 可包含多个 TASK_SPEC，默认一个 Feature PR；L3 按可回滚风险边界独立审计。普通 push 不因传输动作重复完整审计，post-merge 只有改变下一门禁时即时写回，active→done 默认在 Feature/Milestone 收口时批量完成
 - `TASK-030` A/B/C 当前批次已通过 PR #20 合并，PR #21 已合并 post-merge 状态写回，独立审计结论 `GO_WITH_CONDITIONS` 的 B1-B5 条件已满足，Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`，父任务已归档到 `tasks/done/TASK-030-review-assets-versioning-governance.md`；后续只可按单独 `TASK_SPEC` 或任务授权推进，不自动进入 `TASK-028` / `TASK-031` / `TASK-032`
 - `TASK-GOV-004` 已完成并进入归档写回准备：2026-06-27 Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地，2026-06-28 Phase 5 第一阶段 GitHub branch protection / required checks 已配置并验证，Phase 5 post-implementation 独立只读审计结论为 `GO`；PR #8 已合并，merge commit 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f`，PR head 为 `e9812bc118aa5a2f33294dcc9507566703da7517`。当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks，未进入 `TASK-028` / `TASK-031` / `TASK-032`
@@ -107,7 +109,7 @@ integration unit；A3 已拆出本 Milestone。
 | `TASK-034` | MVP E2E 人工 anchor 正式验收执行 | A / Evaluation | Active / v29 Formal R7 PASS / Milestone Final Audit Pending | 文件：`tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`；当前证据：`outputs/task-034-mvp-e2e-acceptance-v3/`；3 份样本 27/27 candidate `MATCH`、27/27 `PointStatus=PASS`、57 `MATCHED` + 6 human `EXCLUDED`、70 production semantic exclusions、0 SYS/Finding、`overallVerdict=PASS`；v1/R6B `FAIL` 工件保留；不声明 Production Ready，不进入 `TASK-028` / `TASK-031` / `TASK-032` |
 | `TASK_SPEC-034-A` | test-only MVP E2E harness | A / Test-only | Implemented / Codex ACCEPT / Independent Audit ACCEPT | 文件：`tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`；实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`；harness 13/13、既有回归 27/27；仅 test-only observer、同 task 查询和 63 occurrence 比较，未修改受保护生产或人工数据路径 |
 | `TASK-035` | MVP E2E candidate comparison 契约重基线 | A / Evaluation / Governance | Active / TASK_SPEC-035-A Merged via PR #32 / v29 Formal R7 Executed | 文件：`tasks/active/TASK-035-mvp-e2e-candidate-comparison-contract-rebaseline.md`；harness 15/15、四类回归 27/27；实现提交 `52d73b3`；PR #32 merge commit `97ef08f`；v1 历史失败不变，当前 worktree 的 v29/R7 为独立新运行 |
-| `TASK-036` | 多出处一致性证据架构冻结与分批实现治理 | A / Architecture | Active / A Merged / B1-B2-C1-C2-D1-D2 In PR #37 / R7 PASS / Fresh Verification Pending | 文件：`tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`；A 随 PR #32 合并；B1/B2/C1/C2/D1/D2 已提交并 push 至 PR #37，但尚未 merge；旧 subject 已因 tracked 字节修复失效，需从零完成完整 verification、freeze 与三审 |
+| `TASK-036` | 多出处一致性证据架构冻结与分批实现治理 | A / Architecture | Active / A Merged / B1-B2-C1-C2-D1-D2 In PR #37 / 8d01dd9a Findings Remediated / Fresh Verification Pending | 文件：`tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`；A 随 PR #32 合并；B1/B2/C1/C2/D1/D2 已提交并 push 至 PR #37，但尚未 merge；`8d01dd9a…` 的 TABLE_ROW capture span 与公共 anchor findings 已限定修复，需从新 clean HEAD 完成 R7、完整 verification、freeze 与三审 |
 | `TASK_SPEC-036-A` | 同值 occurrence provenance carrier foundation | A / Production Foundation | Implemented / Codex ACCEPT / Independent Implementation Audit GO / Merged via PR #32 | 文件：`tasks/active/TASK_SPEC-036-A-same-value-occurrence-provenance.md`；精确 2 个生产文件和 5 个测试文件；47/47 与 25/25；随 PR #32 合并，不修改现有 preparer，不激活 RuleSetVersion，不运行正式 E2E |
 | `TASK_SPEC-035-A` | test-only candidate comparison v2 | A / Test-only | Implemented / Codex ACCEPT / Independent Implementation Audit GO / Merged via PR #32 | 唯一实现文件为 `Task034MvpE2EAcceptanceHarnessTest.java`；harness 15/15、四类回归 27/27；提交 `52d73b3` 已随 PR #32 合并；未运行 formal E2E，未修改 fixture/expected/production |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |

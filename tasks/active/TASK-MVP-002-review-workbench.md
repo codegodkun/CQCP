@@ -1,8 +1,8 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / PR #37 CI 暴露跨平台字节缺陷 / 76f5685… LF 候选完整验证在
-Track A seal 身份处 fail closed / 历史 CRLF bytes 保留修复已完成 Windows + Linux
-定向验证及 unblind 回归 / 新 candidate 已形成、完整 verification、freeze 与三审待重建
+状态：已实现 / `8d01dd9a…` Core freeze 首名代码架构 auditor `NO_GO`
+（P1=1 / P2=1）/ TABLE_ROW capture span 与公共 SourceAnchor locationLevel
+限定修复已完成定向验证 / 新完整 verification、freeze 与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -196,5 +196,14 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   不迁移 seal；Windows 与完全断网 Linux 定向均为 `31/31 PASS`，直接 unblind
   恢复 27 项完成。本批次形成新 candidate；仍须从零执行完整 verification、freeze
   与三审。
+* 2026-08-02 HEAD `22e44fc45decb9cb2cec41848dfcf393f2c49378` 的 Core
+  verification 与 freeze `8d01dd9a…` 已完成，但首名全新代码/架构 auditor 返回
+  `NO_GO（P1=1 / P2=1 / blocking=2）`；第二名 Codex auditor 与 CC AUDIT 均未启动。
+  P1 为 TABLE_ROW pattern/v29 未保留捕获值原始 span；P2 为内部 `TABLE_CELL`
+  泄漏到公共 SourceAnchor。限定修复已按 ADR-015/016 保持“内部 cell identity、
+  公共 `BLOCK_LEVEL`”边界，并增加 parser-issued cell span 回归：红测
+  `32/4 failures`，绿测 `32/32`，扩大定向 `200/200`，OpenAPI verifier、
+  workbench Vitest `2/2` 与 admin-web build 均通过。旧 `8d01dd9a…` 证据已封存，
+  新完整 verification、freeze 与三审均未开始。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。
