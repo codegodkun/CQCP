@@ -1,6 +1,8 @@
 # TASK-034：MVP E2E 人工 anchor 正式验收执行
 
-状态：Active / v29 Formal R7 `PASS` / MILESTONE FINAL AUDIT PENDING
+状态：Active / 历史 v29 Formal R7 `PASS` / `97b55a0…` verification 暴露
+test-only public anchor resolver 回归 / 单文件红绿与 harness `19/19` PASS /
+Fresh Formal R7 and Milestone Final Audit Pending
 
 类型：Codex 主控正式验收任务
 
@@ -406,3 +408,11 @@ commit、push、PR 或 merge。
 * 2026-07-31 中途收敛：v29/R7 限定样本证据进入先行 Core integration unit，
   只随 Core 执行完整验证与三方全零审计；不重跑新的人工 ground truth，不把 R7
   `PASS` 当作 Track B admission 或 Provider 激活证据。
+* 2026-08-02 候选 `97b55a0…` 的 Core verification 在 Formal R7 fail closed：
+  57 条纳入 occurrence 为 `39 MATCHED / 18 NOT_OBSERVABLE`，18 条全部是人工
+  `TABLE_CELL`。test-only harness 在公共 `BLOCK_LEVEL` 分支先验证 block ref，导致
+  合法 parser-issued `table/.../cell/...` ref 未被解析；生产结果中的 cell identity
+  未丢失。新增最小公共契约红测 `1/1 FAIL`，resolver 改为 preview ref 优先后
+  `1/1 PASS`，完整 harness `19/19 PASS`。该修复不修改生产代码、人工答案、
+  CandidateResolver、Finding/verdict 或 Provider；新的 Formal R7 只允许在 clean
+  candidate 上运行。

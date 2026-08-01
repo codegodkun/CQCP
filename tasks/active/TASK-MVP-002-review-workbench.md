@@ -1,8 +1,9 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / `8d01dd9a…` Core freeze 首名代码架构 auditor `NO_GO`
-（P1=1 / P2=1）/ TABLE_ROW capture span 与公共 SourceAnchor locationLevel
-限定修复已完成定向验证 / 新完整 verification、freeze 与三审待重建
+状态：已实现 / `8d01dd9a…` findings 已由 `97b55a0…` 限定修复 /
+首次新 verification 在 TASK-034 test-only public anchor resolver fail closed /
+单文件红绿与 harness `19/19` PASS / 新 clean candidate、完整 verification、freeze
+与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -205,5 +206,12 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   `32/4 failures`，绿测 `32/32`，扩大定向 `200/200`，OpenAPI verifier、
   workbench Vitest `2/2` 与 admin-web build 均通过。旧 `8d01dd9a…` 证据已封存，
   新完整 verification、freeze 与三审均未开始。
+* 2026-08-02 修复提交 `97b55a0…` 的 Core verification 在 Formal R7 阶段停止：
+  公共 SourceAnchor 正确输出 `BLOCK_LEVEL + table cell previewElementRef`，但
+  TASK-034 test-only resolver 在 preview ref 前按 location level 短路，导致全部
+  18 条人工 TABLE_CELL occurrence 降为 `NOT_OBSERVABLE`。单文件最小红绿已将
+  resolver 调整为“preview ref 优先、缺失时 blockId fallback”，结果为红测
+  `1/1 FAIL`、绿测 `1/1 PASS`、完整 harness `19/19 PASS`。失败 evidence 已封存，
+  新 Formal R7、完整 verification、freeze 与三审均未开始。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。

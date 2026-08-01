@@ -238,6 +238,27 @@ class Task034MvpE2eAcceptanceHarnessTest {
     }
 
     @Test
+    void publicBlockLevelAnchorPrefersParserIssuedTableCellReferenceBeforeBlockFallback() {
+        ParsedContractDocument parsed = parsedDocument(List.of(
+                tableBlock("block-1", "table-1", 0, List.of("甲方", "奔腾公司"))));
+        ActualAnchor publicCellAnchor = new ActualAnchor(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                new SourceAnchorSummary(
+                        "block-1", "NATIVE_WORD", "STRUCTURED", "NORMAL", "证据",
+                        List.of(), "BODY", "HIGH", "BLOCK_LEVEL",
+                        "table:table-1/row:0/cell:1"));
+
+        var rows = compareOccurrences(
+                List.of(human("PUBLIC-CELL-01", true, "奔腾公司", "奔腾公司")),
+                parsed,
+                List.of(publicCellAnchor));
+
+        assertThat(rows.getFirst().coverageResult()).isEqualTo(CoverageResult.MATCHED);
+        assertThat(rows.getFirst().actualAnchorGranularity()).isEqualTo("TABLE_CELL");
+        assertThat(rows.getFirst().actualAnchorReference()).isEqualTo("TABLE_CELL:block-1:0:1");
+    }
+
+    @Test
     void monotonicBridgeUsesExactGranularityAndDocumentOrderWithoutTextOrCandidateSearch() {
         ParsedContractDocument parsed = parsedDocument(List.of(
                 paragraphBlock("block-1", "第一处 parser 文本"),
@@ -1544,26 +1565,22 @@ class Task034MvpE2eAcceptanceHarnessTest {
             return null;
         }
         WordParserSpikeDocument.DocumentBlock block = blocks.getFirst();
-        if ("BLOCK_LEVEL".equals(anchor.locationLevel())) {
-            if (anchor.previewElementRef() != null && !anchor.previewElementRef().isBlank()) {
-                Matcher blockMatcher = BLOCK_REF.matcher(anchor.previewElementRef());
-                if (!blockMatcher.matches() || !block.blockId().equals(blockMatcher.group(1))) {
-                    return null;
-                }
+        if (anchor.previewElementRef() == null || anchor.previewElementRef().isBlank()) {
+            if (!"BLOCK_LEVEL".equals(anchor.locationLevel())) {
+                return null;
             }
             return new ResolvedElement(
                     block.text(), "BLOCK", "BLOCK:" + block.blockId(), block.text(),
                     null, null, null);
-        }
-        if (anchor.previewElementRef() == null || anchor.previewElementRef().isBlank()) {
-            return null;
         }
         Matcher blockMatcher = BLOCK_REF.matcher(anchor.previewElementRef());
         if (blockMatcher.matches()) {
             if (!block.blockId().equals(blockMatcher.group(1))) {
                 return null;
             }
-            return null;
+            return new ResolvedElement(
+                    block.text(), "BLOCK", "BLOCK:" + block.blockId(), block.text(),
+                    null, null, null);
         }
 
         Matcher tableMatcher = TABLE_REF.matcher(anchor.previewElementRef());
@@ -2266,7 +2283,7 @@ class Task034MvpE2eAcceptanceHarnessTest {
                 ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
                 new SourceAnchorSummary(
                         blockId, "NATIVE_WORD", "STRUCTURED", "NORMAL", "证据",
-                        List.of(), "BODY", "HIGH", "TABLE_CELL",
+                        List.of(), "BODY", "HIGH", "BLOCK_LEVEL",
                         "table:" + tableId + "/row:" + row + "/cell:" + cell));
     }
 

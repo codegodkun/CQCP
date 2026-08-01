@@ -198,7 +198,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   证明内部 `TABLE_CELL` 曾泄漏到公共 `SourceAnchor.locationLevel`。审计建议新增
   公共 `TABLE_CELL` enum 与 ADR-015/ARCHITECTURE 冲突，未被采纳；正确边界为内部
   occurrence 保留 `TABLE_CELL`，公共 anchor 归一为 `BLOCK_LEVEL`。
-- 主 Codex 已完成上述两项 finding 的限定红绿修复，当前为 HEAD 上未提交增量：
+- 主 Codex 已完成上述两项 finding 的限定红绿修复，并以提交
+  `97b55a0b13facbb30397ee79c3f0b1d7b0d31d67` 形成候选：
   ordinary pattern 使用 capture group span；v29 使用可逆 NFKC/空白 projection 将
   capture span 映回 parser 原始 cell；“无预付款”使用精确 token span；无法可靠映射
   时继续 fail closed。红测为 `32 tests / 4 failures`，修复后同组 `32/32`；扩大定向
@@ -209,6 +210,21 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 - 已否决 subject 的 canonical `freeze/`、`verification/` 与 browser evidence 已原样
   封存到 `freeze-invalidated-8d01dd9a/`、`verification-invalidated-8d01dd9a/` 与
   `browser-evidence-invalidated-8d01dd9a/`。当前尚未创建新 verification 或 freeze。
+- `97b55a0…` 的首次 Core verification 启动因 sandbox 无法创建 canonical evidence
+  目录而在任何验证命令前停止；同一未变 HEAD 经获准在 sandbox 外重启后，Core
+  scope `7/7` 与 Provider-free boundary 通过，但 Formal R7 fail closed：57 条纳入
+  occurrence 中 `39 MATCHED / 18 NOT_OBSERVABLE`，18 条恰为全部人工
+  `TABLE_CELL`。根因不是生产 anchor identity 丢失，而是 test-only harness
+  `resolveElement()` 在解析 `previewElementRef` 前按公共 `BLOCK_LEVEL` 短路，未遵循
+  “preview ref 优先、否则 blockId”的已接受契约。失败 verification 与 R7 已分别
+  封存为 `verification-failed-97b55a0-formal-r7/`、
+  `r7-failed-97b55a0-public-anchor-harness/`；未生成 summary、freeze 或审计。
+- 主 Codex 已在 `Task034MvpE2EAcceptanceHarnessTest` 建立最小反馈环：新增真实公共
+  `BLOCK_LEVEL + table/.../cell/...` 红测为 `1/1 FAIL`，调整 test-only resolver 为
+  preview ref 优先后 `1/1 PASS`，完整 harness 为 `19/19 PASS`；synthetic cell
+  anchor 也改用公共 `BLOCK_LEVEL`。当前只有该 test-only 文件和本阶段项目记忆为
+  working-tree 增量；为避免把 dirty worktree 伪绑定到 `97b55a0…`，尚未执行新的
+  Formal R7 或完整 verification。
 
 ## 当前活跃任务
 
@@ -234,8 +250,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 完成本轮 P1/P2 原子修复的 Core exact-path、Provider-free、`outputs/**` 排除与
-   `git diff --check` 边界复核；用户确认阶段报告后形成一个有意义的新候选提交。
+1. 完成 TASK-034 test-only resolver 修复的边界复核和阶段性 Memory Writeback，形成
+   一个有意义的新 clean candidate；不得在 dirty worktree 生成 Formal R7 证据。
 2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
