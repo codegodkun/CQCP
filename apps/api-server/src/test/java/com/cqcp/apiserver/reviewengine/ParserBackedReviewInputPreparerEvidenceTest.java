@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import com.cqcp.apiserver.wordparser.DocxWordParserSpike;
+import com.cqcp.apiserver.wordparser.WordParserSpikeDocument;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -87,6 +88,122 @@ class ParserBackedReviewInputPreparerEvidenceTest {
         assertThat(evidence.status()).isEqualTo(EvidenceStatus.CONFIRMED);
         assertThat(evidence.locationLevel()).isEqualTo("BLOCK_LEVEL");
         assertThat(evidence.previewElementRef()).isEqualTo("table:table-1/row:0");
+    }
+
+    @Test
+    void partyCandidateCrossCellMatchDoesNotRelocateByCandidateValue() {
+        var firstCell = "甲方：";
+        var secondCell = "目标公司";
+        var text = firstCell + " | " + secondCell;
+        var secondCellStart = firstCell.length() + " | ".length();
+        var block = tablePartyBlock(
+                "party-cross-cell",
+                text,
+                List.of(
+                        new WordParserSpikeDocument.TableCellSpan(0, firstCell, 0, firstCell.length()),
+                        new WordParserSpikeDocument.TableCellSpan(
+                                1, secondCell, secondCellStart, text.length())));
+
+        var candidates = preparer.probeAllForPoint(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "PARTY_A",
+                List.of(block),
+                ParserBackedReviewInputPreparer.ProbeExecutionMode.CONSISTENCY_FULL_SCAN,
+                null);
+
+        assertThat(candidates).singleElement().satisfies(candidate -> {
+            assertThat(candidate.candidateValue()).isEqualTo(secondCell);
+            assertThat(candidate.cellIndex()).isNull();
+            assertThat(candidate.previewElementRef()).isEqualTo("table:party-table/row:0");
+        });
+    }
+
+    @Test
+    void partyCandidateUsesMatcherSpanWhenSameValueAppearsInAnotherCell() {
+        var matchedCell = "甲方：目标公司";
+        var duplicateCell = "目标公司";
+        var text = matchedCell + "\n" + duplicateCell;
+        var duplicateCellStart = matchedCell.length() + 1;
+        var block = tablePartyBlock(
+                "party-duplicate-value",
+                text,
+                List.of(
+                        new WordParserSpikeDocument.TableCellSpan(
+                                0, matchedCell, 0, matchedCell.length()),
+                        new WordParserSpikeDocument.TableCellSpan(
+                                1, duplicateCell, duplicateCellStart, text.length())));
+
+        var candidates = preparer.probeAllForPoint(
+                ReviewPointCode.PARTY_A_NAME_CONSISTENCY,
+                "PARTY_A",
+                List.of(block),
+                ParserBackedReviewInputPreparer.ProbeExecutionMode.CONSISTENCY_FULL_SCAN,
+                null);
+
+        assertThat(candidates).singleElement().satisfies(candidate -> {
+            assertThat(candidate.candidateValue()).isEqualTo(duplicateCell);
+            assertThat(candidate.cellIndex()).isZero();
+            assertThat(candidate.previewElementRef()).isEqualTo("table:party-table/row:0/cell:0");
+        });
+    }
+
+    @Test
+    void crossCellPartyMatchFailsClosedBeforeDeterministicVerdict() {
+        var fixtureCase = new FixtureCase(
+                "party-cross-cell-fail-closed",
+                FIXTURE_ROOT.resolve("docx").resolve("CQCP-MVP-DOCX-001.docx").normalize(),
+                StructuredFieldSet.builder()
+                        .put("partyAName", "目标公司")
+                        .put("partyBName", "乙方公司")
+                        .put("contractTotalAmount", "100")
+                        .put("taxExcludedAmount", "88.5")
+                        .put("taxAmount", "11.5")
+                        .put("paymentMethod", "MONTHLY")
+                        .put("prepaymentRatio", "20")
+                        .put("progressPaymentRatio", "70")
+                        .put("completionPaymentRatio", "80")
+                        .put("settlementPaymentRatio", "95")
+                        .put("warrantyRetentionRatio", "5")
+                        .build());
+        var crossCellPreparer = new ParserBackedReviewInputPreparer(new CrossCellPartyContractParser());
+        var request = newRequest(fixtureCase);
+        var parsed = crossCellPreparer.parse(request.documentReference());
+        var indexed = crossCellPreparer.index(parsed);
+        var plan = crossCellPreparer.plan(indexed);
+        var reviewInput = crossCellPreparer.build(request, plan, makeTestSnapshot());
+        var evidence = reviewInput.pointEvidences().get(ReviewPointCode.PARTY_A_NAME_CONSISTENCY);
+
+        assertThat(evidence.status()).isEqualTo(EvidenceStatus.SYSTEM_FAILURE);
+        assertThat(evidence.diagnosticCode()).isEqualTo("SYS_EVIDENCE_BUNDLE_INVALID");
+        assertThat(evidence.notConcludedReason()).isEqualTo(NotConcludedReasonCode.INTERNAL_RULE_ERROR);
+        assertThat(evidence.candidateValue()).isNull();
+        assertThat(evidence.occurrences()).isEmpty();
+        assertThat(evidence.slotCoverages()).singleElement().satisfies(slot -> {
+            assertThat(slot.reliableAnchor()).isFalse();
+            assertThat(slot.coverageStatus()).isEqualTo(EvidenceSlotCoverageStatus.PARTIAL);
+        });
+    }
+
+    private WordParserSpikeDocument.DocumentBlock tablePartyBlock(
+            String blockId,
+            String text,
+            List<WordParserSpikeDocument.TableCellSpan> tableCells) {
+        return new WordParserSpikeDocument.DocumentBlock(
+                blockId,
+                WordParserSpikeDocument.BlockType.TABLE_ROW,
+                text,
+                text,
+                List.of("合同主体"),
+                WordParserSpikeDocument.RegionType.BODY,
+                WordParserSpikeDocument.ContextType.NORMAL,
+                WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                "party.docx",
+                "party-table",
+                0,
+                tableCells,
+                WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
     }
 
     @Test
@@ -914,6 +1031,46 @@ class ParserBackedReviewInputPreparerEvidenceTest {
                                     1, secondCell, secondCellStart, text.length())),
                     com.cqcp.apiserver.wordparser.WordParserSpikeDocument.ConfidenceLevel.HIGH,
                     com.cqcp.apiserver.wordparser.WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
+        }
+    }
+
+    private static final class CrossCellPartyContractParser extends DocxWordParserSpike {
+
+        @Override
+        public WordParserSpikeDocument parse(Path docxPath) {
+            var firstCell = "甲方：";
+            var secondCell = "目标公司";
+            var text = firstCell + " | " + secondCell;
+            var secondCellStart = firstCell.length() + " | ".length();
+            var block = new WordParserSpikeDocument.DocumentBlock(
+                    "party-cross-cell",
+                    WordParserSpikeDocument.BlockType.TABLE_ROW,
+                    text,
+                    text,
+                    List.of("合同主体"),
+                    WordParserSpikeDocument.RegionType.BODY,
+                    WordParserSpikeDocument.ContextType.NORMAL,
+                    WordParserSpikeDocument.SourceOrigin.NATIVE_WORD,
+                    WordParserSpikeDocument.SourceExtractionMode.STRUCTURED,
+                    "party.docx",
+                    "party-table",
+                    0,
+                    List.of(
+                            new WordParserSpikeDocument.TableCellSpan(
+                                    0, firstCell, 0, firstCell.length()),
+                            new WordParserSpikeDocument.TableCellSpan(
+                                    1, secondCell, secondCellStart, text.length())),
+                    WordParserSpikeDocument.ConfidenceLevel.HIGH,
+                    WordParserSpikeDocument.PreviewAnchorLevel.TABLE_CELL);
+            return new WordParserSpikeDocument(
+                    new WordParserSpikeDocument.Metadata("party-cross-cell", "party.docx"),
+                    List.of(block),
+                    List.of(),
+                    List.of(),
+                    new WordParserSpikeDocument.ParseQualityReport(
+                            "DOCX", "test", "zh-CN", text.length(), 1, 0, 1, 0, 0, false,
+                            WordParserSpikeDocument.ParseStatus.GOOD,
+                            "HIGH", 0, 0, 0, List.of()));
         }
     }
 

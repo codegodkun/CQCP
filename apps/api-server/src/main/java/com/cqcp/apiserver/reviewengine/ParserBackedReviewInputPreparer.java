@@ -306,11 +306,18 @@ final class ParserBackedReviewInputPreparer {
                     if (!rls) {
                         continue;
                     }
-                    for (String line : splitLines(block.text())) {
+                    for (var line : splitLineSpans(block.text())) {
                         String matched = null;
+                        int matchStart = -1;
+                        int matchEnd = -1;
                         for (Pattern p : blockPatterns) {
-                            var m = p.matcher(line);
-                            if (m.find()) { matched = m.group(1); break; }
+                            var m = p.matcher(line.text());
+                            if (m.find()) {
+                                matched = m.group(1);
+                                matchStart = line.startOffset() + m.start(1);
+                                matchEnd = line.startOffset() + m.end(1);
+                                break;
+                            }
                         }
                         if (matched == null) continue;
                         var value = cleanPartyValue(matched);
@@ -326,14 +333,16 @@ final class ParserBackedReviewInputPreparer {
                                             rls,
                                             vfs,
                                             bas)
-                                    : candidateForPartyValue(
+                                    : candidateForMatch(
                                             reviewPointCode,
                                             candidateRole,
                                             value,
                                             block,
                                             rls,
                                             vfs,
-                                            bas));
+                                            bas,
+                                            matchStart,
+                                            matchEnd));
                         }
                     }
                 }
@@ -910,34 +919,6 @@ final class ParserBackedReviewInputPreparer {
         return candidateForMatch(code, role, value, block, rls, vfs, bas, -1, -1);
     }
 
-    private EvidenceCandidate candidateForPartyValue(
-            ReviewPointCode code,
-            String role,
-            String value,
-            WordParserSpikeDocument.DocumentBlock block,
-            boolean rls,
-            boolean vfs,
-            boolean bas) {
-        if ("TABLE_CELL".equals(block.previewAnchorLevel().name())) {
-            var comparableValue = normalizeSearchText(value);
-            var matchingCells = block.tableCells().stream()
-                    .filter(cell -> normalizeSearchText(cell.text()).contains(comparableValue))
-                    .toList();
-            if (matchingCells.size() == 1) {
-                return candidateForCell(
-                        code,
-                        role,
-                        value,
-                        block,
-                        matchingCells.getFirst().cellIndex(),
-                        rls,
-                        vfs,
-                        bas);
-            }
-        }
-        return candidateForBlock(code, role, value, block, rls, vfs, bas);
-    }
-
     private EvidenceCandidate candidateForCell(
             ReviewPointCode code,
             String role,
@@ -1159,9 +1140,27 @@ final class ParserBackedReviewInputPreparer {
         try { var d = Double.parseDouble(value); return d >= 0 && d <= 100 && Double.isFinite(d); } catch (NumberFormatException e) { return false; }
     }
 
-    private List<String> splitLines(String text) {
-        return text == null ? List.of()
-                : text.lines().map(l -> l.replace(' ', ' ').trim()).filter(l -> !l.isBlank()).toList();
+    private List<LineSpan> splitLineSpans(String text) {
+        if (text == null) return List.of();
+        var result = new ArrayList<LineSpan>();
+        var matcher = Pattern.compile("[^\\r\\n]+").matcher(text);
+        while (matcher.find()) {
+            var rawLine = matcher.group();
+            int start = 0;
+            while (start < rawLine.length() && isLineTrimWhitespace(rawLine.charAt(start))) start++;
+            int end = rawLine.length();
+            while (end > start && isLineTrimWhitespace(rawLine.charAt(end - 1))) end--;
+            if (start < end) {
+                result.add(new LineSpan(
+                        rawLine.substring(start, end).replace(' ', ' '),
+                        matcher.start() + start));
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    private boolean isLineTrimWhitespace(char value) {
+        return value <= ' ' || value == ' ';
     }
 
     private String stripTrailingZeros(String raw) {
@@ -1214,6 +1213,9 @@ final class ParserBackedReviewInputPreparer {
     }
 
     private record PercentMatch(String value, int start, int end) {
+    }
+
+    private record LineSpan(String text, int startOffset) {
     }
 
     private static String toMojibake(String value) {

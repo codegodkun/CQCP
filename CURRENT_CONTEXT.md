@@ -1,6 +1,6 @@
 # CURRENT_CONTEXT.md
 
-更新时间：2026-07-31
+更新时间：2026-08-01
 
 ## 当前阶段
 
@@ -96,6 +96,25 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   Chrome access log SHA 为
   `32b50aba526a48c4c00430d180cd64e4de4e1f9c8018558f1d9c9b6608af6bcd`。
   这些只是整改定向证据；完整 verification、新 freeze 与三方从零审计仍未开始。
+- 候选 HEAD `0cdf7ccc79c43ae5da5c53df15d1fdafc894c549` 随后完成从零完整
+  verification：两轮 backend 各 `54 suites / 895 tests`，D1=`444`、D2=`20`，
+  admin-web=`70`、Core Node=`215`，bootJar/OpenAPI/Track A/Track B/Compose +
+  direct Chrome CDP 全部通过；canonical freeze subjectIdentity 为
+  `81e47f117a5cc4e452321acf3e33349612d7e00c8010651fd69ae325daaf518a`。
+- `81e47f…` 三方审计结果为：CC AUDIT `GO`、测试/安全 Codex auditor `GO`、
+  代码/架构 Codex auditor `NO_GO（P1=1 / blocking=1）`，因此三份结论已整体
+  失效。阻断根因是 `candidateForPartyValue` 用归一化 `candidateValue` 反向搜索
+  `tableCells[].text` 并构造 `cellIndex/previewElementRef`，违反 ADR-016 与
+  ARCHITECTURE 的 parser-issued SourceAnchor provenance 门禁。该轮 freeze、
+  verification、browser runtime 和审计观察已分别封存到
+  `outputs/task-mvp-002/core-audit/*-invalidated-81e47f/`。
+- 主 Codex 已完成该 P1 的限定原子修复：party candidate 现在携带 line matcher 在
+  parser joined text 中的原始 span，并仅由 `TableCellSpan.startOffset/endOffset`
+  映射 cell identity；跨 cell span 不再按候选值搬移到单元格，而是在一致性裁判前
+  `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR` fail closed。新增跨 cell、
+  重复值/错误 cell 和裁判前 fail-closed 三项回归；定向 `3/3` 与完整
+  `ParserBackedReviewInputPreparerEvidenceTest 29/29` 均通过。新的完整
+  verification、freeze 与三方从零审计仍待执行。
 
 ## 当前活跃任务
 
@@ -107,8 +126,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. `ea19a52a…` 及 `33890cb…` 对应的三方审计均已因 `NO_GO` 失效，永远不能用于
-   后续收口；其中任一旧 `GO` 也不得单独复用。
+1. `ea19a52a…`、`33890cb…` 及 `81e47f…` 对应的三方审计均已因 `NO_GO`
+   失效，永远不能用于后续收口；其中任一旧 `GO` 也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
    CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
@@ -119,7 +138,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 对本轮三项审计整改执行完整定向回归，形成新的 clean Core candidate commit。
+1. 将 `81e47f…` SourceAnchor P1 原子修复与阶段记忆写回形成新的 clean Core
+   candidate commit。
 2. 在新 HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
