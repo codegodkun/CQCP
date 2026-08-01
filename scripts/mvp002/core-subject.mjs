@@ -246,6 +246,7 @@ const CORE_EXACT_PATHS = new Set([
   ".gitignore",
   "CURRENT_CONTEXT.md",
   "changelog/2026-07.md",
+  "changelog/2026-08.md",
   "decisions/ADR-018-model-profile-secret-reference-and-provider-readiness.md",
   "decisions/ADR-019-blind-evaluation-and-model-activation-boundary.md",
   "decisions/ADR-020-review-workbench-management-access-boundary.md",

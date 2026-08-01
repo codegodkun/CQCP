@@ -140,6 +140,13 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   TABLE_CELL 只有唯一 parser-issued cell span 命中才保留可靠 attribution，否则在
   v15 preflight 前 `SYS_EVIDENCE_BUNDLE_INVALID / NOT_CONCLUDED`。D1 新硬门禁已同步
   为 `451/451`；尚未执行新的完整 verification、R7、freeze 或三方审计。
+- 整改提交 `067db30e62227ad331c1d6372c82b589a95737e6` 首次启动完整 verification
+  时，Core boundary 在任何 R7/Compose/browser 之前因新当月
+  `changelog/2026-08.md` 未进入精确 allowlist 而 fail closed；隔离数据库已在
+  `finally` 删除，partial console 封存为
+  `verification-failed-067db30-core-boundary/`。整改只把该单一当月文件加入
+  `CORE_EXACT_PATHS`，并增加“2026-08 允许、2026-09 拒绝”的负向边界断言；不放宽
+  `changelog/` 目录，不改变业务或 Provider 边界。
 
 ## 当前活跃任务
 

@@ -16,6 +16,8 @@ const repoRoot = path.resolve(import.meta.dirname, "../..");
 
 test("Core scope admits product paths and rejects Provider/audit/evidence paths", () => {
   assert.equal(isCoreSourcePath(".gitattributes"), true);
+  assert.equal(isCoreSourcePath("changelog/2026-08.md"), true);
+  assert.equal(isCoreSourcePath("changelog/2026-09.md"), false);
   assert.equal(
     isCoreSourcePath(
       "apps/api-server/src/main/java/com/cqcp/apiserver/reviewengine/MinimalReviewEngine.java",
