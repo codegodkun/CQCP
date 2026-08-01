@@ -163,6 +163,19 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   attribution mismatch 继续保持既有 role-conflict 语义。红测为 `2 tests / 1
   failure`，修复后定向 `2/2`、完整 preparer `33/33`、collector `91/91`。新的完整
   verification、freeze 与三方从零审计尚未开始。
+- 后续 HEAD `847bb2c7a76aef2236ff7c4ca8b7ea2d0b1ed7ec` 已完成 Core verification，
+  freeze subject 为 `3bc24a842a331ca9b86f491c26904ac1d84f108ecc69bbba8a33042ab510ec5b`，
+  CC AUDIT 与两个全新 Codex auditor 均为全零 `GO`。PR #37 随后创建，但
+  `Authorization evidence check` 因 PR body 缺少必填区块失败，backend Linux CI
+  因 Track A 与 TASK-036 v2 的 Windows CRLF hash 固化出现 2 个失败；admin-web CI
+  通过。该 PR 当前未 merge。
+- 主 Codex 已完成限定 5 文件跨平台字节修复：所有参与原始 byte hash 的文本输入与
+  expected 使用精确 LF attributes；Track A JSON writer 显式写 `\n`；manifest 和
+  v2 hash 改为 canonical LF；既有测试增加禁止 CR 的断言。Windows 定向
+  `31/31`、完全断网 Linux Java 21 / Gradle 8.10.2 定向 `31/31` 均通过，
+  `git diff --check` 通过。该结果只证明两个原 CI failure cause 已被定向关闭；
+  本批次形成新的候选提交，但尚未执行新完整 verification。`3bc24a84…` 及其三份
+  旧 GO 已因 tracked diff 变化整体失效，不得组合用于后续收口。
 
 ## 当前活跃任务
 
@@ -174,26 +187,29 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 当前阻塞项
 
-1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…` 及 `c156b4a7…` 对应的审计轮
-   均已因 `NO_GO` 失效，永远不能用于后续收口；其中任一旧 `GO` 也不得单独复用。
+1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…` 及
+   `3bc24a84…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
+   也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
    CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
    结果以 hash-bound outputs 和 Git 事实为真源，本文不复制运行中状态。
-3. CI、PR 与 merge 尚未完成；没有主线 merge 就不能声明 TASK-036 seam 已集成。
+3. PR #37 已存在但 CI 失败、merge 未完成；没有主线 merge 就不能声明 TASK-036
+   seam 已集成。PR body 授权区块必须在下一次 push 触发 CI 前按真实证据补齐。
 4. 新 Track B admission holdout 尚未创建：固定 12 packet（9 eligible + 3
    controls），人工 ground truth 必须在模型访问前封印，正式运行只允许一次。
 
 ## 下一步
 
-1. 将 `c156b4a7…` 审计 finding 的原子修复与本阶段记忆写回形成新的 clean Core
-   candidate HEAD。
-2. 在该新 HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
+1. 对当前 5 文件字节修复及本阶段 Memory Writeback 执行 Core exact-path、
+   Provider-free、`outputs/**` 排除与 `git diff --check` 边界复核，形成新的候选提交。
+2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
 3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex
    独立审计；旧审计会话和结论不复用。
-4. 三审全零 GO 后 push、创建 PR、等待 CI；满足既有授权条件后 merge。
+4. 三审全零 GO 后补齐 PR #37 授权区块、push 精确受审 HEAD 并等待 CI；满足既有
+   授权条件后 merge。
 5. Core merge 后建立并执行一次新的 Track B holdout；失败即停止并重新收敛。
 
 不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

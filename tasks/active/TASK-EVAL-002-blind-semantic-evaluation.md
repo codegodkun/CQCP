@@ -4,7 +4,8 @@
 NO_GO_MODEL_MISMATCH / Provider admission 未建立 /
 12 packet 模型未见 holdout 已确认、尚未构建 /
 Core 不含 standing grant / 45568f… blocking causes 与历史证据路径错配已整改 /
-最终同 HEAD 证据与三审待重建
+跨平台 LF 字节确定性修复已完成 Windows + Linux 定向验证 /
+最终同 HEAD 完整证据与三审待重建
 
 类型：Evaluation / Data Governance / Model Governance
 
@@ -165,5 +166,11 @@ Integration unit：`MILESTONE-MVP-002-CORE`
 * 旧 Track B v2 dispatch 所绑定的 packet manifest 与 R7 manifest 已按原始
   SHA-256 固化为历史 fixture；verify-only override 必须成对提供且严格匹配旧
   dispatch，current-HEAD R7 继续独立重建。定向 contract `7/7` 已通过。
+* PR #37 的 Linux CI 证明 Track A checked-in manifest/input hash 与 TASK-036 v2
+  historical output hash 曾依赖 Windows CRLF 工作区字节。当前修复把所有参与
+  原始字节 hash 的文本输入/expected 精确约束为 LF，并让 Track A generator 显式
+  写 `\n`；不修改盲评内容、人工 decisions、CQCP actual 语义或 Provider 边界。
+  Windows 与完全断网 Linux 的同一组定向测试均为 `31/31 PASS`。该证据只关闭
+  跨平台字节确定性根因，不替代新 HEAD 的完整 verification、freeze 或三审。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：评测正确性、模型职责与公网数据治理。

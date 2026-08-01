@@ -1,6 +1,7 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / c156b4a7… TABLE_CELL 回归假阳性已原子整改 / 最终同 HEAD 证据与三审待重建
+状态：已实现 / 847bb2c… Core 三审全零 GO 后 PR #37 CI 暴露跨平台字节缺陷 /
+5 文件 LF 修复已完成 Windows + Linux 定向验证 / 新完整 verification、freeze 与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -183,5 +184,13 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   映射为 `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR`；普通 block
   attribution 的 role-conflict 契约不变。红测 `2/1 failure`，绿测定向 `2/2`、
   preparer `33/33`、collector `91/91`；新完整 verification、freeze 与三审待重建。
+* 2026-08-01 后续候选 HEAD `847bb2c7a76aef2236ff7c4ca8b7ea2d0b1ed7ec`
+  已完成 Core verification，并以 subject `3bc24a84…` 取得 CC AUDIT、代码/架构
+  Codex auditor、测试/安全 Codex auditor 三份全零 `GO`。PR #37 随后暴露两个新
+  门禁事实：PR body 缺少 `CQCP Authorization Evidence`，Linux backend 的 Track A
+  投影与 TASK-036 v2 hash 测试因 Windows CRLF 字节固化而失败。当前限定修复只涉及
+  `.gitattributes`、Track A JSON writer/测试/manifest 与 v2 hash 常量；Windows 和
+  完全断网 Linux 定向测试均为 `31/31 PASS`。由于 tracked diff 已变化，`3bc24a84…`
+  的 verification/freeze/三审均不得用于新候选收口；尚未执行新的完整 verification。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。

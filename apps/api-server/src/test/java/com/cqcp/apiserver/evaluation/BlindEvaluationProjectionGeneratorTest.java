@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -33,7 +34,11 @@ class BlindEvaluationProjectionGeneratorTest {
         generator.generate(repoRoot, trustedEvidenceRoot, output);
         var firstRun = new LinkedHashMap<String, byte[]>();
         for (var relativePath : GENERATED_FILES) {
-            firstRun.put(relativePath, Files.readAllBytes(output.resolve(relativePath)));
+            var generatedBytes = Files.readAllBytes(output.resolve(relativePath));
+            assertThat(new String(generatedBytes, StandardCharsets.UTF_8))
+                    .as(relativePath + " uses canonical LF line endings")
+                    .doesNotContain("\r");
+            firstRun.put(relativePath, generatedBytes);
         }
 
         generator.generate(repoRoot, trustedEvidenceRoot, output);

@@ -3,6 +3,8 @@ package com.cqcp.apiserver.evaluation;
 import com.cqcp.apiserver.reviewengine.RuntimeArtifactVersions;
 import com.cqcp.apiserver.wordparser.DocxWordParserSpike;
 import com.cqcp.apiserver.wordparser.WordParserSpikeDocument;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -291,7 +293,9 @@ public final class BlindEvaluationProjectionGenerator {
 
     private void writeJson(Path path, JsonNode node) throws IOException {
         Files.createDirectories(path.getParent());
-        var bytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(node);
+        var printer = new DefaultPrettyPrinter();
+        printer.indentObjectsWith(new DefaultIndenter("  ", "\n"));
+        var bytes = mapper.writer(printer).writeValueAsBytes(node);
         Files.write(path, bytes);
     }
 
