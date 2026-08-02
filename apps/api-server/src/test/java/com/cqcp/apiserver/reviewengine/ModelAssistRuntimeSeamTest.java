@@ -327,6 +327,41 @@ class ModelAssistRuntimeSeamTest {
     }
 
     @Test
+    void familyPlanTreatsSameRoleAcrossShardsAsAtomic() {
+        var firstShard = new ModelAssistEligibilityEvaluator.EligibilityDecision(
+                true, List.of(EligibilityReason.ELIGIBLE_MEDIUM_AMBIGUITY), List.of("a"));
+        var secondShard = new ModelAssistEligibilityEvaluator.EligibilityDecision(
+                true, List.of(EligibilityReason.ELIGIBLE_MEDIUM_AMBIGUITY), List.of("b"));
+        var requests = List.of(
+                new FamilyModelCallPlanner.RoleRequest(
+                        "shard-1", "PAYMENT_TERMS", "ROLE_A", 100,
+                        firstShard, List.of(candidate("a", "70", true))),
+                new FamilyModelCallPlanner.RoleRequest(
+                        "shard-2", "PAYMENT_TERMS", "ROLE_A", 90,
+                        secondShard, List.of(candidate("b", "75", true))));
+
+        var planner = new FamilyModelCallPlanner();
+        FamilyModelCallPlan coveredPlan = planner.plan(
+                "PAYMENT_TERMS", requests, "进度款70%进度款75%".length());
+
+        assertThat(coveredPlan.requestedRoles()).containsExactly("ROLE_A");
+        assertThat(coveredPlan.uncoveredRoles()).isEmpty();
+        assertThat(coveredPlan.selectedBlockIds()).containsExactly("a", "b");
+        assertThat(coveredPlan.usedEvidenceChars()).isEqualTo("进度款70%进度款75%".length());
+
+        FamilyModelCallPlan plan = planner.plan(
+                "PAYMENT_TERMS", requests, "进度款70%".length());
+
+        assertThat(plan.sourceShardIds()).containsExactly("shard-1", "shard-2");
+        assertThat(plan.requestedRoles()).isEmpty();
+        assertThat(plan.uncoveredRoles()).containsExactly("ROLE_A");
+        assertThat(plan.selectedBlockIds()).isEmpty();
+        assertThat(plan.usedEvidenceChars()).isZero();
+        assertThat(plan.modelCallAllowed()).isFalse();
+        assertThat(plan.priorityReason()).isEqualTo("HARD_BUDGET_CORE_CRITICAL_PRIORITY");
+    }
+
+    @Test
     void familyPlanHardBudgetProducesUncoveredRoleWithoutPartialBlocks() {
         var eligibleA = new ModelAssistEligibilityEvaluator.EligibilityDecision(
                 true, List.of(EligibilityReason.ELIGIBLE_MEDIUM_AMBIGUITY), List.of("a"));

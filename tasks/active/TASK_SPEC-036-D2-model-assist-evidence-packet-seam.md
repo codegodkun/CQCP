@@ -1,6 +1,7 @@
 # TASK_SPEC-036-D2：Model Assist Eligibility、Family Plan 与 EvidencePacket seam
 
-状态：IMPLEMENTED / TRACK B ZERO-CALL PASS / MILESTONE FINAL AUDIT PENDING
+状态：IMPLEMENTED / TRACK B ZERO-CALL PASS / CROSS-SHARD ROLE ATOMICITY
+REMEDIATION TARGETED PASS / FRESH CORE VERIFICATION AND AUDIT PENDING
 
 父任务：`TASK-036`
 
@@ -101,7 +102,7 @@ PR 或 merge。
 * 已实现纯规则 `ModelAssistEligibilityEvaluator`、跨 shard/role/block 去重且硬预算
   的 `FamilyModelCallPlan`，以及 byte-stable、禁止 expected/human/verdict/Finding/
   全文 fallback 的 `RuntimeEvidencePacket`。
-* `ModelAssistRuntimeSeamTest` 精确 `20/0/0/0`。R7 same-run
+* `ModelAssistRuntimeSeamTest` 精确 `21/0/0/0`。R7 same-run
   `ReviewEngineInput.pointEvidences` 生成 3 个 sample package、27 个 packet、
   9 个 family plan、57 个 candidate occurrence；所有 anchor reliable。
 * 当前 v29 三样本 27 点均为 deterministic HIGH，故 27/27
@@ -110,3 +111,10 @@ PR 或 merge。
   v2 seal 绑定 R7/manifest/prompt/dispatch/agent/task/time/opinion bytes。
 * 结论固定为 `NOT_ESTABLISHED_ZERO_ELIGIBLE_SAMPLE`：本语料证明正确零调用，
   不证明 guarded assist 质量，不放行 Provider 或 `REVIEWING_MODEL`。
+* 2026-08-02 Core subject `72b934c2…` 的代码/架构审计发现同一 role 的多个
+  shard request 被逐条预算，可能同时进入 `requestedRoles` 与 `uncoveredRoles`，
+  并保留部分 role evidence。主 Codex 已用真实双 shard/同 role/第二 block 超预算
+  回归复现 `1/1 FAIL`，随后只在 planner 内先聚合 role 的 required blocks、以该
+  role 最高 priority 排序并整体装入预算，同时增加 requested/uncovered 不相交
+  不变量。绿测为 D2 `21/21`，D2 + 历史 Track B contract 联合 `22/22`，
+  freeze/Core scope Node `11/11`；新的完整 Core verification、freeze 与三审尚未开始。

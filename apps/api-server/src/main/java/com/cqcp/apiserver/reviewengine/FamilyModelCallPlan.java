@@ -35,6 +35,9 @@ record FamilyModelCallPlan(
         if (modelCallAllowed != !requestedRoles.isEmpty()) {
             throw new IllegalArgumentException("modelCallAllowed must match requestedRoles");
         }
+        if (requestedRoles.stream().anyMatch(uncoveredRoles::contains)) {
+            throw new IllegalArgumentException("requestedRoles and uncoveredRoles must not overlap");
+        }
     }
 
     record RoleAbstention(
@@ -83,6 +86,8 @@ final class FamilyModelCallPlanner {
         Set<String> selectedBlocks = new LinkedHashSet<>();
         Set<String> uncoveredRoles = new LinkedHashSet<>();
         var ineligible = new ArrayList<FamilyModelCallPlan.RoleAbstention>();
+        var priorityByRole = new LinkedHashMap<String, Integer>();
+        var evidenceLengthsByRole = new LinkedHashMap<String, Map<String, Integer>>();
         int used = 0;
 
         for (RoleRequest request : ordered) {
@@ -96,15 +101,27 @@ final class FamilyModelCallPlanner {
 
             Map<String, Integer> requestedLengths =
                     evidenceLengths(request.candidates(), request.eligibilityDecision().requiredBlockIds());
+            priorityByRole.merge(request.candidateRole(), request.priority(), Math::max);
+            Map<String, Integer> roleEvidence = evidenceLengthsByRole.computeIfAbsent(
+                    request.candidateRole(), ignored -> new LinkedHashMap<>());
+            requestedLengths.forEach(roleEvidence::putIfAbsent);
+        }
+
+        var orderedRoles = evidenceLengthsByRole.keySet().stream()
+                .sorted(Comparator.<String>comparingInt(priorityByRole::get).reversed()
+                        .thenComparing(role -> role))
+                .toList();
+        for (String candidateRole : orderedRoles) {
+            Map<String, Integer> requestedLengths = evidenceLengthsByRole.get(candidateRole);
             int incremental = requestedLengths.entrySet().stream()
                     .filter(entry -> !selectedBlocks.contains(entry.getKey()))
                     .mapToInt(Map.Entry::getValue)
                     .sum();
             if (used + incremental > maxEvidenceChars) {
-                uncoveredRoles.add(request.candidateRole());
+                uncoveredRoles.add(candidateRole);
                 continue;
             }
-            requestedRoles.add(request.candidateRole());
+            requestedRoles.add(candidateRole);
             for (var entry : requestedLengths.entrySet()) {
                 if (selectedBlocks.add(entry.getKey())) {
                     used += entry.getValue();

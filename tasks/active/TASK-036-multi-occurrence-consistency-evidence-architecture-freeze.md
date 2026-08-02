@@ -1,8 +1,9 @@
 # TASK-036：多出处一致性证据架构冻结
 
 状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
-`ad14800c…` R7/Core verification 与 `75d86031…` 三审曾全零 GO /
-PR #37 EOL finding 双平台 `31/31` PASS / Fresh Verification and Final Audit Pending
+`c21a68d…` Core verification PASS / `72b934c2…` Code-Architecture NO_GO /
+D2 Cross-Shard Role Atomicity Targeted `21/21` PASS /
+Fresh Verification and Final Audit Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -207,7 +208,7 @@ PR #37 EOL finding 双平台 `31/31` PASS / Fresh Verification and Final Audit P
   span P1 整改增加 1 条，当前完整门禁为 452/452；R7 为 27/27
   candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
   70 production semantic ledger、0 SYS/Finding。
-* D2/Track B 增量：seam 20/20；3 份包、27 packet、9 plan、57 occurrence，
+* D2/Track B 增量：seam 21/21；3 份包、27 packet、9 plan、57 occurrence，
   v5 三个全新盲评 agent 27/27 `ZERO_CALL_REQUIRED`，seal 为
   `edcfa024dfe2cbf6c5b1fe6ca1427a91d61101dd8903f19f61c70294f1fe2970`。
   这不构成 Provider admission。
@@ -241,6 +242,15 @@ PR #37 EOL finding 双平台 `31/31` PASS / Fresh Verification and Final Audit P
   Markdown/CSV 改为 LF，保留 JSON CRLF 和所有 hash 常量；Windows 与断网 Linux
   ephemeral-commit + fresh-clone 同组回归均为 `31/31 PASS`，Linux 六个 SHA 全部
   等于冻结常量。`75d86031…` 三审已因 tracked diff 变化整体失效。
+* 2026-08-02 HEAD `c21a68d844a90dddc01b511e1b76403a5ed1c39b` 的完整 Core
+  verification 全部通过并冻结为 `72b934c271e15bbb4e5e76f24a7413015eb949f0bcb77b432177ea85ef63f84b`。
+  第一名全新代码/架构 Codex auditor 返回 `NO_GO（P2=1 / blocking=1）`：同一 role
+  跨 shard 的 required blocks 未先聚合，预算不足时可部分 requested 又 uncovered。
+  CC `deepseek-v4-flash` 审计因 `$8` budget exhausted 未产生报告，第二名 Codex
+  auditor 未启动；该轮不能用于收口。用户批准后，主 Codex 已完成限定红绿整改：
+  先按 role 聚合并去重 required blocks、以最高 priority 原子预算，集合互斥；红测
+  `1/1 FAIL`，绿测 D2 `21/21`、D2 + Track B contract `22/22`、Node `11/11`。
+  尚未执行新的完整 verification、freeze 或三审。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
   `TASK-028 / TASK-031 / TASK-032` 已解锁；Git 动作仅按用户已给出的 Core 条件式
   授权执行，merge 仍要求新 subject 三审全零、CI 全绿且 HEAD 不漂移。

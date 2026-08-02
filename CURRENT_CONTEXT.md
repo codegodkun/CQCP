@@ -258,6 +258,21 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   SHA 全部等于现有冻结常量。当前 tracked 增量为该属性修复与本阶段项目记忆；
   `75d86031…` 三份 GO 已因 tracked 内容变化整体失效；当前阶段一修复已形成 clean
   candidate，尚未对该新 HEAD 执行 verification、freeze 或审计。
+- 上述属性修复与阶段记忆形成 HEAD
+  `c21a68d844a90dddc01b511e1b76403a5ed1c39b`；完整 Core verification 全部通过，
+  freeze subject 为
+  `72b934c271e15bbb4e5e76f24a7413015eb949f0bcb77b432177ea85ef63f84b`。
+  第一名全新代码/架构 Codex auditor 返回
+  `NO_GO（P2=1 / blocking=1）`：`FamilyModelCallPlanner` 对同一 role 的跨-shard
+  request 逐条预算，可使该 role 同时 requested/uncovered 并保留部分 evidence。
+  CC `deepseek-v4-flash` 审计因 `$8` budget exhausted 未产出报告，第二名 Codex
+  auditor 未启动；`72b934c2…` 及其 verification/freeze 不得用于最终收口。
+- 用户已批准该 D2 finding 的最小修复。主 Codex 先以同 role、双 shard、第二 block
+  超预算用例复现 `1/1 FAIL`，再把 planner 改为先按 role 聚合/去重 required blocks、
+  使用 role 最高 priority 排序后整体装入硬预算，并增加 requested/uncovered 不相交
+  不变量。绿测为 D2 `21/21`，D2 + 历史 Track B runtime contract 联合 `22/22`，
+  freeze/Core scope Node `11/11`；当前只是 tracked working-tree 定向证据，尚未形成
+  新 clean HEAD，也未运行完整 verification、freeze 或三审。
 
 ## 当前活跃任务
 
@@ -270,7 +285,7 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 ## 当前阻塞项
 
 1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…`、
-   `3bc24a84…`、`8d01dd9a…` 及 `75d86031…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
+   `3bc24a84…`、`8d01dd9a…`、`75d86031…` 及 `72b934c2…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
    也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
@@ -284,9 +299,9 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 以当前 TASK-036 v2 Markdown/CSV LF 属性修复与本阶段 Memory Writeback 的 clean
-   candidate 为唯一新验证输入；JSON 历史 CRLF seal 和历史 451 运行记录不得改写。
-2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
+1. 完成当前 D2 原子预算修复的 diff/格式自检，并在既有授权下形成新的 clean
+   candidate；JSON 历史 CRLF seal、历史 451/20 运行记录不得改写。
+2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1=`452`、D2=`21`、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
 3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex
