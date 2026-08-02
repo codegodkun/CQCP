@@ -1,8 +1,8 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / `91d5e16…` Formal R7 PASS / Core verification 在 D1 实际
-452 与固定 451 门禁处停止 / D1 452 verification-freeze 同步定向 `11/11` PASS /
-新 clean candidate、完整 verification、freeze 与三审待重建
+状态：已实现 / `ad14800c…` Core verification 与 `75d86031…` 三审曾全零 GO /
+PR #37 backend CI EOL finding 已最小修复并双平台 `31/31` PASS /
+当前 clean candidate 的完整 verification、freeze 与三审待重建
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -217,5 +217,14 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   451。当前限定整改只同步 `run-core-verification`、freeze validator 和 test fixture；
   Node 定向 `11/11 PASS`。历史 451 记录不改写，`91d5e16…` partial evidence 已封存，
   新完整 verification、freeze 与三审待重建。
+* 2026-08-02 HEAD `ad14800c161c096018f91fc8021feec9338a951b` 完成从零 Core
+  verification，freeze subject 为 `75d86031…`，CC AUDIT 与两个全新 Codex
+  auditor 均为全零 `GO`；PR #37 已 push 该精确 HEAD。GitHub run `30729941151`
+  的授权证据与 admin-web 通过，backend 在 TASK-036 v2 hash 门禁出现 1 个失败。
+  根因限定为 Markdown/CSV 的冻结 SHA 使用 LF，而 `.gitattributes` 错配 CRLF；
+  四个历史 JSON 的 CRLF SHA 正确。当前最小属性修复保留 JSON CRLF，仅令
+  Markdown/CSV 使用 LF，Windows 与断网 Linux fresh-clone 定向均为 `31/31 PASS`。
+  因 tracked 内容变化，`75d86031…` 三份 GO 已整体失效；新 clean HEAD 的完整
+  verification、freeze 与三审仍待从零执行。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。

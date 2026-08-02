@@ -1,6 +1,7 @@
 # TASK-MODEL-001：Model Profile、Secret Reference 与 Readiness
 
-状态：已实现 / 45568f… blocking causes 已整改 / 最终同 HEAD 证据与三审待重建
+状态：已实现 / `ad14800c…` Core verification 与 `75d86031…` 三审曾全零 GO /
+后续 EOL tracked 修复使 subject 失效 / 最终同 HEAD 证据与三审待重建
 
 类型：Model Governance / Security / Database / Admin API
 
@@ -183,5 +184,10 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   exception/DB 的不可泄漏证据，并证明 Snapshot/stage log/TuningPacket 在该
   connectivity 路径不可达；不新增 DLP、redaction manifest 或 raw KEY 管理能力。
   Core 完整验证与正式三方全零审计通过前保持 active。
+* 2026-08-02 HEAD `ad14800c…` 的 Core verification 与 freeze `75d86031…` 曾覆盖
+  本任务并取得三方全零 `GO`；PR #37 的授权证据与 admin-web CI 通过。后续
+  TASK-036 fixture EOL tracked 修复使该 subject 与三份报告整体失效；本任务代码、
+  Secret Reference、disabled/unbound 与 endpoint allowlist 边界未改变，仍须纳入
+  新 clean HEAD 的完整 verification、freeze 与三审。
 * Integration unit：`MILESTONE-MVP-002`
 * 独立审计触发依据：Secret、数据库、Admin API 和公网 provider readiness。

@@ -4,8 +4,8 @@ apps/api-server/src/test/resources/blind-evaluation-source/task-034-mvp-e2e-acce
 apps/api-server/src/test/resources/blind-evaluation-expected/*.json text eol=crlf
 apps/api-server/src/test/resources/blind-evaluation-expected/blind-inputs/*.json text eol=crlf
 apps/api-server/src/test/resources/task-036-d1-evidence/task-034-mvp-e2e-acceptance-v2/*.json text eol=crlf
-apps/api-server/src/test/resources/task-036-d1-evidence/task-034-mvp-e2e-acceptance-v2/*.md text eol=crlf
-apps/api-server/src/test/resources/task-036-d1-evidence/task-034-mvp-e2e-acceptance-v2/*.csv text eol=crlf -whitespace
+apps/api-server/src/test/resources/task-036-d1-evidence/task-034-mvp-e2e-acceptance-v2/*.md text eol=lf
+apps/api-server/src/test/resources/task-036-d1-evidence/task-034-mvp-e2e-acceptance-v2/*.csv text eol=lf -whitespace
 apps/api-server/src/test/resources/task-036-d1-evidence/task-034-mvp-e2e-acceptance-v2/sample-results/*.json text eol=crlf
 apps/api-server/src/test/resources/blind-evaluation-source/task-eval-002/track-b-inputs-v1/manifest.json -text -whitespace
 apps/api-server/src/test/resources/blind-evaluation-source/task-034-mvp-e2e-acceptance-v3/run-manifest.json -text -whitespace

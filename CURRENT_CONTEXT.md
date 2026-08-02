@@ -238,6 +238,26 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 - 当前 working-tree 增量仅把 D1 当前门禁同步为 452：verification log 名称、精确
   计数、freeze validator 与其 fixture 同步更新；freeze/core-scope Node 定向合计
   `11/11 PASS`，脚本中无残留当前 451 门禁。历史运行的 451 数字保持不变。
+- 上述增量随后形成 HEAD `ad14800c161c096018f91fc8021feec9338a951b`，完成从零
+  Core verification 并冻结为 subject
+  `75d86031f7b65c0047270d2933c0397331ae53c9cf1957dc856f93d859a8fb66`；
+  freeze manifest SHA 为
+  `905f48adb02a810618f57b53d52b56a828a7c15ffd8166e4711aa795c544b560`，
+  verification summary SHA 为
+  `8b7813ad959868642362c5cd54b536762c7a94475350911157c2cca547c1c479`。
+  CC AUDIT 与两个全新 Codex auditor 均为
+  `GO / P0=P1=P2=blocking=0`，PR #37 已更新并 push 精确受审 HEAD。
+- GitHub Actions run `30729941151` 的 Authorization evidence 与 admin-web 均通过，
+  backend 为 `904 tests / 1 failure / 3 skipped`。只读重建证明失败不是四个历史
+  CRLF JSON：它们在 Linux fresh clone 的 SHA-256 正确；实际根因是
+  `console-summary.md` 与 `occurrence-comparison.csv` 的冻结 SHA 绑定 LF，
+  `.gitattributes` 却将两者声明为 CRLF，fresh checkout 因而改变字节。
+- 当前已获用户明确授权完成最小修复：只把 TASK-036 v2 Markdown/CSV 改为
+  `text eol=lf`，四个 JSON 继续 `text eol=crlf`，不迁移历史 seal。Windows 与断网
+  Linux ephemeral-commit + fresh-clone 定向均为 `31/31 PASS`；Linux checkout 六个
+  SHA 全部等于现有冻结常量。当前 tracked 增量为该属性修复与本阶段项目记忆；
+  `75d86031…` 三份 GO 已因 tracked 内容变化整体失效；当前阶段一修复已形成 clean
+  candidate，尚未对该新 HEAD 执行 verification、freeze 或审计。
 
 ## 当前活跃任务
 
@@ -250,21 +270,22 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 ## 当前阻塞项
 
 1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…`、
-   `3bc24a84…` 及 `8d01dd9a…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
+   `3bc24a84…`、`8d01dd9a…` 及 `75d86031…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
    也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
    CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
    结果以 hash-bound outputs 和 Git 事实为真源，本文不复制运行中状态。
-3. PR #37 已存在但 CI 失败、merge 未完成；没有主线 merge 就不能声明 TASK-036
-   seam 已集成。PR body 授权区块必须在下一次 push 触发 CI 前按真实证据补齐。
+3. PR #37 已存在但 run `30729941151` backend CI 失败、merge 未完成；PR body
+   授权区块已补齐且该 check 已通过。没有新 subject 三审和全绿 CI 就不能 merge，
+   也不能声明 TASK-036 seam 已集成。
 4. 新 Track B admission holdout 尚未创建：固定 12 packet（9 eligible + 3
    controls），人工 ground truth 必须在模型访问前封印，正式运行只允许一次。
 
 ## 下一步
 
-1. 完成 D1 452 门禁同步的边界复核和阶段性 Memory Writeback，形成一个有意义的
-   新 clean candidate；历史 451 运行记录不得改写。
+1. 以当前 TASK-036 v2 Markdown/CSV LF 属性修复与本阶段 Memory Writeback 的 clean
+   candidate 为唯一新验证输入；JSON 历史 CRLF seal 和历史 451 运行记录不得改写。
 2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1/D2、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。

@@ -4,7 +4,7 @@
 NO_GO_MODEL_MISMATCH / Provider admission 未建立 /
 12 packet 模型未见 holdout 已确认、尚未构建 /
 Core 不含 standing grant / 45568f… blocking causes 与历史证据路径错配已整改 /
-跨平台 LF 字节确定性修复已完成 Windows + Linux 定向验证 /
+跨平台历史字节确定性修复已完成 Windows + Linux fresh-clone 定向验证 /
 最终同 HEAD 完整证据与三审待重建
 
 类型：Evaluation / Data Governance / Model Governance
@@ -170,9 +170,12 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   historical output hash 曾依赖 Windows CRLF 工作区字节。LF 候选 `76f5685…`
   又在完整验证的 `blind-unblind` 阶段证明：直接迁移为 LF 会破坏 immutable Track A
   freeze/DeepSeek seal 对三份 ground truth 的历史 SHA 绑定。当前修复因此不迁移
-  seal，而是以 `text eol=crlf` 保持 Git blob 不变并跨平台检出历史 CRLF bytes，同时让 Track A generator 跨平台显式写
-  CRLF；盲评内容、人工 decisions、CQCP actual 语义与 Provider 边界均不变。
-  Windows 与完全断网 Linux 定向均为 `31/31 PASS`，直接 unblind 恢复 27 项完成。
+  Track A seal：Track A generator 与其历史 JSON 继续显式 CRLF；TASK-036 v2 的四个
+  JSON 同样保留历史 CRLF，而冻结 SHA 本来就是 LF 的 Markdown/CSV 明确使用 LF。
+  盲评内容、人工 decisions、CQCP actual 语义与 Provider 边界均不变。HEAD
+  `ad14800c…` 的 GitHub run `30729941151` 暴露 Markdown/CSV 属性错配后，最小属性
+  修复再次取得 Windows 与断网 Linux fresh-clone `31/31 PASS`，直接 unblind 既有
+  27 项结论不变。
   该证据只关闭跨平台字节与历史 seal 兼容根因，不替代新 HEAD 的完整 verification、
   freeze 或三审。
 * Integration unit：`MILESTONE-MVP-002-CORE`。

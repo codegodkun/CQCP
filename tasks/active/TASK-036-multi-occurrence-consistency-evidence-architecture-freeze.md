@@ -1,8 +1,8 @@
 # TASK-036：多出处一致性证据架构冻结
 
 状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
-TASK-034 R7 PASS / 8d01dd9a… Audit Findings Remediated in Working Tree /
-Fresh Verification and Final Audit Pending
+`ad14800c…` R7/Core verification 与 `75d86031…` 三审曾全零 GO /
+PR #37 EOL finding 双平台 `31/31` PASS / Fresh Verification and Final Audit Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -211,8 +211,8 @@ Fresh Verification and Final Audit Pending
   v5 三个全新盲评 agent 27/27 `ZERO_CALL_REQUIRED`，seal 为
   `edcfa024dfe2cbf6c5b1fe6ca1427a91d61101dd8903f19f61c70294f1fe2970`。
   这不构成 Provider admission。
-* 遗留问题：当前 worktree 增量统一验证已通过，尚待新冻结和同一 hash 三审；
-  尚未进入主线。
+* 遗留问题：当前修复已形成 clean HEAD，尚待从零完成统一验证、新冻结、同一
+  hash 三审、CI 与 merge；尚未进入主线。
 * 2026-07-31 中途收敛：B1/B2/C1/C2/D1/D2 runtime seam 纳入先行 Core
   integration unit；Core 完整验证、正式三方全零审计、CI 和 merge 后才可声明
   `seamIntegratedIntoMainline=true`。该顺序不授权 Provider A0、A1/A2 或 A3。
@@ -233,5 +233,14 @@ Fresh Verification and Final Audit Pending
   `452/0/0/0`；verification/freeze 固定 451 的门禁因新增 ParserBacked evidence
   回归而滞后。当前仅同步计数与 validator fixture，Node 定向 `11/11 PASS`，不改变
   D1 生产语义。新的完整 verification、freeze 与三审仍待重建。
+* 2026-08-02 HEAD `ad14800c161c096018f91fc8021feec9338a951b` 已完成从零
+  Core verification，freeze subject 为 `75d86031…`，并取得 CC AUDIT 与两个全新
+  Codex auditor 全零 `GO`。PR #37 push 后，GitHub run `30729941151` 的 backend
+  暴露 TASK-036 v2 fixture checkout 字节错配：Markdown/CSV 的冻结 SHA 使用 LF，
+  `.gitattributes` 却指定 CRLF；四个 JSON 的历史 CRLF SHA 正确。当前最小修复仅将
+  Markdown/CSV 改为 LF，保留 JSON CRLF 和所有 hash 常量；Windows 与断网 Linux
+  ephemeral-commit + fresh-clone 同组回归均为 `31/31 PASS`，Linux 六个 SHA 全部
+  等于冻结常量。`75d86031…` 三审已因 tracked diff 变化整体失效。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
-  `TASK-028 / TASK-031 / TASK-032` 已解锁；未授权 commit、push、PR 或 merge。
+  `TASK-028 / TASK-031 / TASK-032` 已解锁；Git 动作仅按用户已给出的 Core 条件式
+  授权执行，merge 仍要求新 subject 三审全零、CI 全绿且 HEAD 不漂移。
