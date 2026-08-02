@@ -4,6 +4,7 @@ import java.util.Objects;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,7 +18,15 @@ public final class TaskResultQueryController {
     }
 
     @GetMapping("/{taskId}/result")
-    public ReviewResultSnapshot getResult(@PathVariable String taskId) {
-        return service.getResult(taskId);
+    public ReviewResultSnapshot getResult(
+            @PathVariable String taskId,
+            @RequestParam(required = false) String executionId) {
+        if (executionId == null) {
+            return service.getResult(taskId);
+        }
+        if (executionId.isBlank() || !executionId.equals(executionId.trim())) {
+            throw new TaskResultNotFoundException(taskId, executionId);
+        }
+        return service.getResult(taskId, executionId);
     }
 }

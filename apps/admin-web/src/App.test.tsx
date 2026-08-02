@@ -23,7 +23,13 @@ function renderApp(initialEntry = "/") {
     <ConfigProvider>
       <QueryClientProvider client={queryClient}>
         <MemoryRouter initialEntries={[initialEntry]}>
-          <App />
+          <App
+            initialManagementAccessToken={
+              initialEntry.startsWith("/review/results/")
+                ? "review-test-token"
+                : ""
+            }
+          />
         </MemoryRouter>
       </QueryClientProvider>
     </ConfigProvider>
@@ -394,13 +400,12 @@ describe("TASK-023 public result page", () => {
     renderApp("/?taskId=task-001");
 
     expect(await screen.findByText("甲方名称一致性")).toBeInTheDocument();
-    expect(screen.getByText("普通结果页最小展示")).toBeInTheDocument();
+    expect(screen.getByText("合同审核工作台")).toBeInTheDocument();
     expect(screen.getByText("任务 task-001")).toBeInTheDocument();
     expect(screen.getByText("P001")).toBeInTheDocument();
     expect(screen.getByText("乙方名称与合同证据不一致。")).toBeInTheDocument();
     expect(screen.getAllByText("甲方：测试建设有限公司")).toHaveLength(2);
     expect(screen.getByText("请人工核对相关条款或补充证据后再判断。")).toBeInTheDocument();
-    expect(screen.getByText("当前结果仅提供 block 级定位摘要。")).toBeInTheDocument();
     expect(screen.getByText("PASS 1")).toBeInTheDocument();
     expect(screen.getByText("ERROR 1")).toBeInTheDocument();
     expect(screen.getByText("WARNING 1")).toBeInTheDocument();
@@ -436,7 +441,7 @@ describe("TASK-023 public result page", () => {
 
     renderApp("/?taskId=missing-task");
 
-    expect(await screen.findByText("未找到对应任务，请确认 taskId 是否正确。")).toBeInTheDocument();
+    expect(await screen.findByText("未找到对应 task/execution。")).toBeInTheDocument();
   });
 
   it("shows not ready message for 409", async () => {
@@ -617,7 +622,18 @@ describe("TASK-023 public result page", () => {
       expect(screen.getByText(label)).toBeInTheDocument();
     }
     expect(screen.queryByLabelText("taskId")).not.toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledWith("/api/v1/tasks/task-formal/result");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/v1/tasks/task-formal/result?executionId=exec-formal"
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/review/tasks/task-formal/executions/exec-formal/document-preview",
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer review-test-token"
+        }
+      }
+    );
   });
 
   it("fails closed on formal result snapshot identity mismatch", async () => {

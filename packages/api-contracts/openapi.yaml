@@ -3,11 +3,56 @@ info:
   title: CQCP Minimal Review API Contract
   version: 0.1.0
   description: >-
-    TASK-014 冻结的最小公开 API 契约，只覆盖任务创建、执行状态查询和普通结果读取。
+    CQCP MVP API 契约，覆盖任务创建、execution 状态与清单、精确结果读取、
+    只读合同预览/下载以及受控 Model Profile 管理。
 servers:
   - url: /
 paths:
   /api/review/tasks:
+    get:
+      summary: 查询 execution 级审核任务清单
+      operationId: listReviewTaskExecutions
+      security:
+        - AdminBearer: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: statusGroup
+          in: query
+          schema:
+            type: string
+            enum: [PROCESSING, COMPLETED, FAILED]
+        - name: q
+          in: query
+          schema:
+            type: string
+            maxLength: 200
+      responses:
+        '200':
+          description: 稳定分页的 execution 列表。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskExecutionPage'
+        '400':
+          description: 查询参数无效。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
     post:
       summary: 创建审核任务
       description: 当前 MVP Demo 仅由受控管理台入口创建审核任务，并按服务端部署上下文记录 callerType=ADMIN。MVP 只接受 DOCX，不允许调用方指定 callerType、modelProfileCode 或任何执行版本字段。外部系统 caller 的可信身份接入不在当前 Feature 范围。
@@ -94,12 +139,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BusinessErrorResponse'
+  /api/review/tasks/{taskId}/executions/{executionId}/document-preview:
+    get:
+      summary: 读取 execution 对应的结构化合同预览
+      description: >-
+        仅在 execution.parserVersion 与当前 parser release 精确一致时按需重解析。
+        元素 identity 来自 parser；不按 evidence text 反向搜索。
+      operationId: getReviewDocumentPreview
+      security:
+        - AdminBearer: []
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+        - $ref: '#/components/parameters/ExecutionId'
+      responses:
+        '200':
+          description: 结构化合同预览。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentPreview'
+        '404':
+          description: task/execution/文档不存在或归属不匹配。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: parserVersion 或文档校验门禁不满足。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '503':
+          description: 文档存储暂不可用。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
+  /api/review/tasks/{taskId}/executions/{executionId}/document:
+    get:
+      summary: 下载 execution 对应的原始 DOCX
+      operationId: downloadReviewDocument
+      security:
+        - AdminBearer: []
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+        - $ref: '#/components/parameters/ExecutionId'
+      responses:
+        '200':
+          description: 通过归属、路径和 SHA-256 校验的原始 DOCX。
+          headers:
+            X-CQCP-Document-SHA256:
+              schema:
+                type: string
+                pattern: '^[a-f0-9]{64}$'
+          content:
+            application/vnd.openxmlformats-officedocument.wordprocessingml.document:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: task/execution/文档不存在或归属不匹配。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: 上传校验信息不可用或文件校验失败。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '503':
+          description: 文档存储暂不可用。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
   /api/v1/tasks/{taskId}/result:
     get:
       summary: 读取任务结果快照
       description: >-
-        返回当前 task 最新结果快照。当前真实实现直接返回 `ReviewResultSnapshot`，
-        不再返回旧的 `SNAPSHOT / PENDING / FAILED` 视图包装模型。
+        带 executionId 时精确返回该 execution 快照，不得回退到 latest；
+        不带 executionId 时保留 legacy latest 兼容行为。
         `notConcludedDetail` 与 `missingOptionalSlots[]` 在本契约中仅作为
         optional compatibility / diagnostic-only 字段预留，当前真实 DTO 可能尚未承载。
       operationId: getTaskResultSnapshot
@@ -109,6 +235,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: executionId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 正式结果 URL 必须传入的精确 execution identity。
       responses:
         '200':
           description: 任务结果快照。
@@ -119,11 +251,536 @@ paths:
         '404':
           description: task 不存在或尚无可读取结果。
           content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: 精确 execution 存在但结果尚未生成。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /api/admin/model-profiles:
+    get:
+      summary: 查询最新 Model Profile config version
+      operationId: listModelProfiles
+      security:
+        - AdminBearer: []
+      responses:
+        '200':
+          description: 不含 secretRef 或明文 KEY 的 Model Profile 列表。
+          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BusinessErrorResponse'
+                $ref: '#/components/schemas/ModelProfileListResponse'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
+        '403':
+          $ref: '#/components/responses/AdminForbidden'
+    post:
+      summary: 创建 disabled/unbound EVALUATION Model Profile
+      operationId: createModelProfile
+      security:
+        - AdminBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelProfileCreateRequest'
+      responses:
+        '201':
+          description: 创建新的 immutable config version。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProfileView'
+        '400':
+          description: 请求或 allowlist 校验失败。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
+        '403':
+          $ref: '#/components/responses/AdminForbidden'
+        '409':
+          description: profileCode 已存在。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+  /api/admin/model-profiles/{profileCode}:
+    put:
+      summary: 为已有 profile 创建新 config version
+      operationId: createModelProfileConfigVersion
+      security:
+        - AdminBearer: []
+      parameters:
+        - $ref: '#/components/parameters/ProfileCode'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelProfileUpdateRequest'
+      responses:
+        '200':
+          description: 新 config version；旧 immutable content 保留。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelProfileView'
+        '400':
+          description: 请求校验失败。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: profile 不存在。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: code-owned profile 不允许通过 Admin API 修改。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
+        '403':
+          $ref: '#/components/responses/AdminForbidden'
+  /api/admin/model-profiles/{profileCode}/connectivity-tests:
+    post:
+      summary: 使用已保存 profile 与 Secret Reference 执行连通测试
+      description: 请求体必须为空；不接收 endpoint、KEY 或 prompt。
+      operationId: testModelProfileConnectivity
+      security:
+        - AdminBearer: []
+      parameters:
+        - $ref: '#/components/parameters/ProfileCode'
+      responses:
+        '200':
+          description: 只返回稳定、脱敏的连通结果。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectivityView'
+        '400':
+          description: 请求体非空。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '404':
+          description: profile 不存在。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '409':
+          description: 该 provider 不支持连通测试。
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '401':
+          $ref: '#/components/responses/AdminUnauthorized'
+        '403':
+          $ref: '#/components/responses/AdminForbidden'
 components:
+  securitySchemes:
+    AdminBearer:
+      type: http
+      scheme: bearer
+      description: >-
+        部署侧管理访问 token；任务清单和合同原文允许 Admin/只读 token，
+        `/api/admin/**` 只允许 Admin token。凭据只允许 Authorization header，
+        不得放入 URL 或浏览器持久化。
+  responses:
+    AdminUnauthorized:
+      description: 缺少或无法识别的管理身份凭据。
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    AdminForbidden:
+      description: 已认证身份不具备 Admin 权限。
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+  parameters:
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+    ExecutionId:
+      name: executionId
+      in: path
+      required: true
+      schema:
+        type: string
+    ProfileCode:
+      name: profileCode
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: '^[A-Z][A-Z0-9_]{2,63}$'
   schemas:
+    ProblemDetail:
+      type: object
+      additionalProperties: true
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    TaskExecutionPage:
+      type: object
+      additionalProperties: false
+      required: [items, page, size, totalElements, totalPages]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskExecutionItem'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+    TaskExecutionItem:
+      type: object
+      additionalProperties: false
+      required:
+        - taskId
+        - executionId
+        - contractName
+        - status
+        - currentStage
+        - resultUrl
+        - createdAt
+        - updatedAt
+        - modelProfile
+      properties:
+        taskId:
+          type: string
+        executionId:
+          type: string
+        contractName:
+          type: string
+        status:
+          type: string
+        currentStage:
+          type: string
+        resultUrl:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        finishedAt:
+          type: [string, 'null']
+          format: date-time
+        modelProfile:
+          $ref: '#/components/schemas/TaskModelBinding'
+        resultStatistics:
+          oneOf:
+            - $ref: '#/components/schemas/ReviewSummary'
+            - type: 'null'
+    DocumentPreview:
+      type: object
+      additionalProperties: false
+      required:
+        - taskId
+        - executionId
+        - contractName
+        - originalFileName
+        - parserVersion
+        - sha256
+        - blocks
+      properties:
+        taskId:
+          type: string
+        executionId:
+          type: string
+        contractName:
+          type: string
+        originalFileName:
+          type: string
+        parserVersion:
+          type: string
+        sha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentPreviewBlock'
+    DocumentPreviewBlock:
+      type: object
+      additionalProperties: false
+      required: [blockId, type, text, sectionPath, cells]
+      properties:
+        blockId:
+          type: string
+        previewElementRef:
+          type: [string, 'null']
+        type:
+          type: string
+          enum: [HEADING, PARAGRAPH, TABLE_ROW, APPENDIX_TITLE, TOC_ITEM]
+        text:
+          type: string
+        sectionPath:
+          type: array
+          items:
+            type: string
+        tableId:
+          type: [string, 'null']
+        rowIndex:
+          type: [integer, 'null']
+        cells:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentPreviewCell'
+    DocumentPreviewCell:
+      type: object
+      additionalProperties: false
+      required: [previewElementRef, cellIndex, text]
+      properties:
+        previewElementRef:
+          type: string
+        cellIndex:
+          type: integer
+        text:
+          type: string
+    ModelProfileCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - profileCode
+        - displayName
+        - endpointAlias
+        - modelName
+        - secretRef
+        - timeoutSeconds
+        - retryCount
+      properties:
+        profileCode:
+          type: string
+          pattern: '^[A-Z][A-Z0-9_]{2,63}$'
+        displayName:
+          type: string
+          maxLength: 255
+        providerType:
+          type: string
+          const: PUBLIC_OPENAI_COMPATIBLE
+        usageScope:
+          type: string
+          const: EVALUATION
+        endpointAlias:
+          type: string
+          enum: [deepseek-official]
+        modelName:
+          type: string
+          enum: [deepseek-v4-pro, deepseek-v4-flash]
+        secretRef:
+          type: string
+          description: >-
+            provider-specific server-side reference，不是明文 KEY。
+          enum:
+            - env:CQCP_MODEL_DEEPSEEK_API_KEY
+            - file:/run/secrets/cqcp-model-deepseek-api-key
+        timeoutSeconds:
+          type: integer
+          minimum: 1
+          maximum: 120
+        retryCount:
+          type: integer
+          minimum: 0
+          maximum: 3
+    ModelProfileUpdateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - displayName
+        - endpointAlias
+        - modelName
+        - secretRef
+        - timeoutSeconds
+        - retryCount
+      properties:
+        displayName:
+          type: string
+          maxLength: 255
+        providerType:
+          type: string
+          const: PUBLIC_OPENAI_COMPATIBLE
+        usageScope:
+          type: string
+          const: EVALUATION
+        endpointAlias:
+          type: string
+          enum: [deepseek-official]
+        modelName:
+          type: string
+          enum: [deepseek-v4-pro, deepseek-v4-flash]
+        secretRef:
+          type: string
+          description: >-
+            provider-specific server-side reference，不是明文 KEY。
+          enum:
+            - env:CQCP_MODEL_DEEPSEEK_API_KEY
+            - file:/run/secrets/cqcp-model-deepseek-api-key
+        timeoutSeconds:
+          type: integer
+          minimum: 1
+          maximum: 120
+        retryCount:
+          type: integer
+          minimum: 0
+          maximum: 3
+    ModelProfileListResponse:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelProfileView'
+    ModelProfileView:
+      type: object
+      additionalProperties: false
+      required:
+        - profileCode
+        - configVersion
+        - displayName
+        - providerType
+        - endpointAlias
+        - modelName
+        - usageScope
+        - enabled
+        - defaultForNewTask
+        - secretConfigured
+        - readiness
+        - timeoutSeconds
+        - retryCount
+      properties:
+        profileCode:
+          type: string
+        configVersion:
+          type: string
+        displayName:
+          type: string
+        providerType:
+          type: string
+        endpointAlias:
+          type: string
+        modelName:
+          type: string
+        usageScope:
+          type: string
+        enabled:
+          type: boolean
+        defaultForNewTask:
+          type: boolean
+        secretConfigured:
+          type: boolean
+        readiness:
+          type: string
+          enum:
+            - READY
+            - SECRET_MISSING
+            - NOT_TESTED
+            - CONNECTIVITY_FAILED
+            - READY_FOR_EVALUATION_CONFIG
+        timeoutSeconds:
+          type: integer
+        retryCount:
+          type: integer
+        latestConnectivityTest:
+          oneOf:
+            - $ref: '#/components/schemas/ConnectivityView'
+            - type: 'null'
+    ConnectivityView:
+      type: object
+      additionalProperties: false
+      required:
+        - connectivityTestId
+        - status
+        - modelAvailable
+        - durationMs
+        - testedAt
+      properties:
+        connectivityTestId:
+          type: string
+        status:
+          type: string
+          enum:
+            - SUCCEEDED
+            - SECRET_MISSING
+            - AUTHENTICATION_FAILED
+            - RATE_LIMITED
+            - UPSTREAM_5XX
+            - TIMEOUT
+            - REDIRECT_REJECTED
+            - MODEL_NOT_FOUND
+            - MALFORMED_RESPONSE
+            - ENDPOINT_NOT_ALLOWED
+            - NETWORK_ERROR
+        httpStatusClass:
+          type: [string, 'null']
+        modelAvailable:
+          type: boolean
+        durationMs:
+          type: integer
+          format: int64
+        testedAt:
+          type: string
+          format: date-time
+    TaskModelBinding:
+      type: object
+      additionalProperties: false
+      required:
+        - profileCode
+        - displayName
+        - providerType
+        - modelName
+        - endpointAlias
+        - configVersion
+      properties:
+        profileCode:
+          type: string
+        displayName:
+          type: string
+        providerType:
+          type: string
+        modelName:
+          type: string
+        endpointAlias:
+          type: string
+        configVersion:
+          type: string
     CreateReviewTaskMetadata:
       type: object
       additionalProperties: false

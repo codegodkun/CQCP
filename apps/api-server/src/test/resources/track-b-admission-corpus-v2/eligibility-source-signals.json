@@ -1,0 +1,601 @@
+{
+  "schemaVersion": "task-eval-002-track-b-eligibility-source-signals-v1",
+  "source": "INDEPENDENT_PRE_ADMISSION_RUNTIME_SIGNALS",
+  "admissionFieldsIncluded": false,
+  "inputCount": 18,
+  "inputs": [
+    {
+      "sampleId": "TB-MED-001",
+      "packetId": "EP-f3b7b3371d6db8628871439ba5b089f4bf530d92ec105e2dc798afb088b028a5",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-002",
+      "packetId": "EP-22a99ca2f1e67bdb9e53eb1b752c17fd8c9292b33aed1b044a369b4928c142a9",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-003",
+      "packetId": "EP-848fd7aa4bf7890ad75ce619c033a8abe3d56ab15d20ea22d242fda6a1896b3c",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-004",
+      "packetId": "EP-b2954e8daaf6e33d1ee61165d3865a280b5a2293c2014d31f3c3d21c6b9d6a16",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-005",
+      "packetId": "EP-d54b0bea8195863932eb1b8b8a7ca1a0a2803c5c5ec2b72806237e1efc6f77bc",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-006",
+      "packetId": "EP-bed378fdc279139fed9a5b2d1998847700066893c149a5fe42a3c0539c0ae6bb",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-007",
+      "packetId": "EP-ddf81fc81bb5a3a3e8fe729c1d42159b6b740cfd247c6d9a24fa1f7e9d144e4c",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-MED-008",
+      "packetId": "EP-b8f799826b87134cc141879f97cd4d207c925ff6d485e58b4b24092528ae7748",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-001",
+      "packetId": "EP-3197a51e09ad1ebf88ee60ee83fc97f8c7b741a19d73d5f7e2bce3cf835fdc9c",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-002",
+      "packetId": "EP-af407c47f7559d22617ec7c1272f4d279705641ec55e3ad740e6241a3735e84e",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "TEXT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-003",
+      "packetId": "EP-4f1231212cad8ab5ebd4eb02af257337d097cedfede57144a1e4698742f2ff82",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-004",
+      "packetId": "EP-1626b9557d70242f800a0b59b2b6afe6e284e56f2bc8b25f81a6e361f3b6b00b",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-005",
+      "packetId": "EP-2e795dec7a6987c822f6d6aa368cecb2404e845b72544d3a3e791884119f6b3a",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-006",
+      "packetId": "EP-7c2c2daa4a0bc91d0517aec7344caafb57baf60682f363c7dc9689a94ef3a9e0",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CON-007",
+      "packetId": "EP-02e2e64c7198473e37b2a4ef414b518b9211a6537abf1a0409f4be2271e0fdef",
+      "confidenceLevel": "CONFLICTED",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "VALUE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CTL-HIGH-001",
+      "packetId": "EP-ed834db172fc497d3a5beb9fa8364adfaa24e090d079d603cba16c265a41a982",
+      "confidenceLevel": "HIGH",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "DETERMINISTIC_ONLY",
+      "modelAssistMode": "NONE",
+      "executionStrategy": "DETERMINISTIC",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "CNY_DECIMAL",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "NONE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    },
+    {
+      "sampleId": "TB-CTL-NONE-001",
+      "packetId": "EP-9d9256d9bdc91e617b9990a972bc9345d9d9c1d7a7990252bf317f666a81d611",
+      "confidenceLevel": "UNKNOWN",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": true,
+      "candidateSignals": []
+    },
+    {
+      "sampleId": "TB-CTL-BUDGET-001",
+      "packetId": "EP-917b00b1da68e65819d63094f4eb2d78361583fdb2146899037fc3ce4068a1fc",
+      "confidenceLevel": "MEDIUM",
+      "slotPolicy": {
+        "required": true,
+        "critical": true
+      },
+      "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+      "modelAssistMode": "AMBIGUITY_RESOLUTION",
+      "executionStrategy": "LLM_EXTRACT_THEN_RULE",
+      "bundleValid": true,
+      "budgetComplete": false,
+      "candidateSignals": [
+        {
+          "occurrenceId": "OCC-001",
+          "valueType": "PERCENTAGE_POINT",
+          "localContextRelation": "SAME_SENTENCE",
+          "conflictDimension": "NONE",
+          "roleLabelSignal": true,
+          "valueFormatSignal": true,
+          "strongExcluded": false
+        }
+      ]
+    }
+  ]
+}

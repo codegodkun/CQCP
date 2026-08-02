@@ -14,13 +14,21 @@ public final class TaskExecutionStateMachine {
     private final MinimalReviewEngine reviewEngine;
     private final ResultComposer resultComposer;
     private final ParserBackedReviewInputPreparer reviewInputPreparer;
+    private final RuleSetActivationGate ruleSetActivationGate;
+    private final ConsistencyRuntimeRelease consistencyRuntimeRelease;
     private final Clock clock;
 
     public TaskExecutionStateMachine(
             MinimalReviewEngine reviewEngine,
             ResultComposer resultComposer,
             Clock clock) {
-        this(reviewEngine, resultComposer, new ParserBackedReviewInputPreparer(new DocxWordParserSpike()), clock);
+        this(
+                reviewEngine,
+                resultComposer,
+                new ParserBackedReviewInputPreparer(new DocxWordParserSpike()),
+                new RuleSetActivationGate(),
+                ConsistencyRuntimeRelease.accepted(),
+                clock);
     }
 
     public TaskExecutionStateMachine(
@@ -28,9 +36,28 @@ public final class TaskExecutionStateMachine {
             ResultComposer resultComposer,
             ParserBackedReviewInputPreparer reviewInputPreparer,
             Clock clock) {
+        this(
+                reviewEngine,
+                resultComposer,
+                reviewInputPreparer,
+                new RuleSetActivationGate(),
+                ConsistencyRuntimeRelease.accepted(),
+                clock);
+    }
+
+    TaskExecutionStateMachine(
+            MinimalReviewEngine reviewEngine,
+            ResultComposer resultComposer,
+            ParserBackedReviewInputPreparer reviewInputPreparer,
+            RuleSetActivationGate ruleSetActivationGate,
+            ConsistencyRuntimeRelease consistencyRuntimeRelease,
+            Clock clock) {
         this.reviewEngine = Objects.requireNonNull(reviewEngine, "reviewEngine");
         this.resultComposer = Objects.requireNonNull(resultComposer, "resultComposer");
         this.reviewInputPreparer = Objects.requireNonNull(reviewInputPreparer, "reviewInputPreparer");
+        this.ruleSetActivationGate = Objects.requireNonNull(ruleSetActivationGate, "ruleSetActivationGate");
+        this.consistencyRuntimeRelease =
+                Objects.requireNonNull(consistencyRuntimeRelease, "consistencyRuntimeRelease");
         this.clock = Objects.requireNonNull(clock, "clock");
     }
 
@@ -172,7 +199,7 @@ public final class TaskExecutionStateMachine {
                 ExecutionStatus.PLANNING, "PLANNING",
                 ExecutionStatus.BUILDING_EVIDENCE, persistence,
                 executionStartedAt, Instant.now(clock), stageOwner,
-                () -> reviewInputPreparer.build(request, planned.value()),
+                () -> buildEvidenceForExecution(request, planned.value()),
                 input -> input.pointEvidences().values().stream()
                         .allMatch(e -> e.status() == EvidenceStatus.CONFIRMED)
                         ? "SUCCESS" : "PARTIAL_SUCCESS");
@@ -187,6 +214,9 @@ public final class TaskExecutionStateMachine {
             TaskExecutionPersistence persistence,
             Instant stageStartedAt,
             String stageOwner) {
+        validateReviewInputBinding(
+                runningExecution.versionReferences().ruleSetVersion(),
+                reviewInput);
         var result = reviewEngine.review(reviewInput);
         var completedAt = Instant.now(clock);
         persistence.appendCompletedStageLog(
@@ -200,6 +230,62 @@ public final class TaskExecutionStateMachine {
                 stageOwner,
                 ExecutionStatus.REVIEWING_RULES, "REVIEWING_RULES");
         return result;
+    }
+
+    private ReviewEngineInput buildEvidenceForExecution(
+            TaskExecutionRequest request,
+            EvidenceBuildPlan plan) {
+        var selection = selectRuntimeRuleSet(
+                request.execution().versionReferences().ruleSetVersion());
+        if (selection == null) {
+            return reviewInputPreparer.build(request, plan);
+        }
+        return reviewInputPreparer.build(request, plan, selection);
+    }
+
+    private void validateReviewInputBinding(
+            String executionRuleSetVersion,
+            ReviewEngineInput reviewInput) {
+        var selected = selectRuntimeRuleSet(executionRuleSetVersion);
+        var carried = reviewInput.runtimeRuleSetSnapshot();
+        if (selected == null) {
+            if (carried != null) {
+                throw new IllegalStateException(
+                        "Legacy execution must not carry a runtime rule-set snapshot");
+            }
+            return;
+        }
+        if (carried == null) {
+            throw new IllegalStateException(
+                    "Consistency execution requires a runtime rule-set snapshot");
+        }
+        if (!selected.equals(carried)) {
+            throw new IllegalStateException(
+                    "Execution rule-set version does not match runtime snapshot");
+        }
+    }
+
+    private RuntimeRuleSetSnapshot selectRuntimeRuleSet(String version) {
+        var gateResult = ruleSetActivationGate.request(
+                version,
+                consistencyRuntimeRelease.readyFor(version));
+        return switch (gateResult.status()) {
+            case RuleSetActivationGate.LEGACY_ALLOWED -> null;
+            case RuleSetActivationGate.READY -> {
+                if (gateResult.snapshot() == null) {
+                    throw new IllegalStateException(
+                            "Rule-set activation returned READY without snapshot");
+                }
+                yield gateResult.snapshot();
+            }
+            case RuleSetActivationGate.POLICY_NOT_READY,
+                    RuleSetActivationGate.POLICY_ASSET_INVALID,
+                    RuleSetActivationGate.UNKNOWN_RULE_SET_VERSION ->
+                    throw new IllegalStateException(
+                            "Rule-set activation rejected: " + gateResult.status());
+            default -> throw new IllegalStateException(
+                    "Unknown rule-set activation status: " + gateResult.status());
+        };
     }
 
     private <T> StageValue<T> runStage(
@@ -300,10 +386,36 @@ record TaskExecutionRequest(
     }
 }
 
-record TaskExecutionDocumentReference(Path docxPath, String sampleId) {
+record TaskExecutionDocumentReference(Path docxPath, String sampleId, byte[] documentSnapshot) {
+
+    TaskExecutionDocumentReference(Path docxPath, String sampleId) {
+        this(docxPath, sampleId, null);
+    }
+
+    static TaskExecutionDocumentReference forSnapshot(
+            String documentReference,
+            String sampleId,
+            byte[] documentSnapshot) {
+        Objects.requireNonNull(documentReference, "documentReference");
+        return new TaskExecutionDocumentReference(
+                Path.of(documentReference),
+                sampleId,
+                Objects.requireNonNull(documentSnapshot, "documentSnapshot"));
+    }
+
     TaskExecutionDocumentReference {
         Objects.requireNonNull(docxPath, "docxPath");
         Objects.requireNonNull(sampleId, "sampleId");
+        documentSnapshot = documentSnapshot == null ? null : documentSnapshot.clone();
+    }
+
+    @Override
+    public byte[] documentSnapshot() {
+        return documentSnapshot == null ? null : documentSnapshot.clone();
+    }
+
+    boolean hasDocumentSnapshot() {
+        return documentSnapshot != null;
     }
 }
 

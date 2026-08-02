@@ -1,0 +1,60 @@
+{
+  "assetId": "cqcp.ruleset.mvp.consistency-set.v20260729.1",
+  "assetType": "RULE_SET",
+  "version": "v20260729.1",
+  "status": "DRAFT",
+  "source": {
+    "type": "architecture-approved-policy",
+    "paths": [
+      "decisions/ADR-016-multi-occurrence-consistency-evidence-preservation.md",
+      "docs/ARCHITECTURE.md",
+      "tasks/active/TASK_SPEC-036-D1-versioned-ratio-scope-v20260729.1.md"
+    ],
+    "runtimeBinding": "NOT_BOUND",
+    "bindingNote": "D1 新 RuleSetVersion；仅显式冻结 v20260729.1 的 execution 可使用，普通 MVP_DEMO_MOCK binding 不变。"
+  },
+  "changeReason": "新增 document-local inactive payment branch exclusion 与 point-local ratio role probe；v20260715.1 保持不可变。",
+  "createdAt": "2026-07-29",
+  "moduleVersions": {
+    "reviewPointDefinitions": {
+      "assetId": "cqcp.review-points.mvp.consistency-set.v20260729.1",
+      "version": "v20260729.1",
+      "path": "../review-point-definitions/review-points-v20260729.1.json"
+    },
+    "patternLibrary": {
+      "assetId": "cqcp.pattern-library.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../pattern-libraries/pattern-library-v20260705.1.json"
+    },
+    "fieldLexicon": {
+      "assetId": "cqcp.field-lexicon.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../field-lexicons/field-lexicon-v20260705.1.json"
+    },
+    "promptTemplates": {
+      "assetId": "cqcp.prompts.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../prompts/prompts-v20260705.1.json"
+    },
+    "contractTypeProfiles": {
+      "assetId": "cqcp.contract-type-profile.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../contract-type-profiles/contract-type-profile-v20260705.1.json"
+    },
+    "evidenceSelectors": {
+      "assetId": "cqcp.evidence-selector.mvp.code-current.v20260705.1",
+      "version": "v20260705.1",
+      "path": "../evidence-selectors/evidence-selector-v20260705.1.json"
+    }
+  },
+  "runtimePolicy": {
+    "loaderEnabled": false,
+    "databasePersistence": false,
+    "productionEffect": "NONE",
+    "notes": [
+      "D1 asset 只由 code-owned release 对显式 v20260729.1 execution 激活。",
+      "普通 MVP_DEMO_MOCK / v20260705.1 binding 不变。",
+      "scope 与 probe 只消费 parser document block identity、order 与 text。"
+    ]
+  }
+}

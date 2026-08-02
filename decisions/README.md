@@ -13,3 +13,6 @@
 - [ADR-010 技术栈冻结](/C:/Users/1/Documents/CQCP/decisions/ADR-010-technology-stack-freeze.md)
 - [ADR-011 仓库结构冻结](/C:/Users/1/Documents/CQCP/decisions/ADR-011-repository-structure-freeze.md)
 - [ADR-012 领域模型冻结](/C:/Users/1/Documents/CQCP/decisions/ADR-012-domain-model-freeze.md)
+- [ADR-018 Model Profile Secret Reference 与 Provider Readiness](ADR-018-model-profile-secret-reference-and-provider-readiness.md)
+- [ADR-019 双轨盲态评测与模型激活边界](ADR-019-blind-evaluation-and-model-activation-boundary.md)
+- [ADR-020 审核工作台管理访问边界](ADR-020-review-workbench-management-access-boundary.md)

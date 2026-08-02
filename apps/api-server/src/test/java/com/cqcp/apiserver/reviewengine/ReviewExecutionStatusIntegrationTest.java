@@ -265,7 +265,7 @@ class ReviewExecutionStatusIntegrationTest {
         mockMvc.perform(get("/api/review/tasks/{tid}/executions/{eid}", taskId, execId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("FAILED"))
-                .andExpect(jsonPath("$.currentStage").value("QUEUED"))
+                .andExpect(jsonPath("$.currentStage").value("BUILDING_EVIDENCE"))
                 .andExpect(jsonPath("$.terminal").value(true))
                 .andExpect(jsonPath("$.snapshotAvailable").value(false))
                 .andExpect(jsonPath("$.resultUrl").isString())

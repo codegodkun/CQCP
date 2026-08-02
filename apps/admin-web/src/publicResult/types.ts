@@ -28,6 +28,11 @@ export interface SourceAnchorSummary {
   sourceExtractionMode: string;
   contextType: string;
   evidenceSummary: string;
+  sectionPath?: string[];
+  regionType?: string | null;
+  confidence?: string | null;
+  locationLevel?: "EXACT_TEXT_RANGE" | "BLOCK_LEVEL" | "PAGE_LEVEL" | "SECTION_LEVEL" | "UNAVAILABLE" | null;
+  previewElementRef?: string | null;
 }
 
 export interface ReviewSummary {
@@ -81,4 +86,31 @@ export interface ReviewResultSnapshot {
   structuredFieldsSnapshot: Record<string, string>;
   enabledReviewPointsSnapshot: ReviewPointSnapshot[];
   disabledReviewPointsSnapshot: ReviewPointSnapshot[];
+}
+
+export interface DocumentPreviewCell {
+  previewElementRef: string;
+  cellIndex: number;
+  text: string;
+}
+
+export interface DocumentPreviewBlock {
+  blockId: string;
+  previewElementRef: string | null;
+  type: "HEADING" | "PARAGRAPH" | "TABLE_ROW" | "APPENDIX_TITLE" | "TOC_ITEM";
+  text: string;
+  sectionPath: string[];
+  tableId: string | null;
+  rowIndex: number | null;
+  cells: DocumentPreviewCell[];
+}
+
+export interface DocumentPreview {
+  taskId: string;
+  executionId: string;
+  contractName: string;
+  originalFileName: string;
+  parserVersion: string;
+  sha256: string;
+  blocks: DocumentPreviewBlock[];
 }

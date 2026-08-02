@@ -2,13 +2,18 @@
 
 ## 审核策略
 
-审核模型通过 `Model Profile` 配置和绑定。默认可使用：
+审核模型通过 `Model Profile` 配置和绑定。当前已发布的普通任务链路只使用：
 
 ```text
-规则/正则 + Model Profile（本地 Gemma4 / 公网兼容 OpenAI API / mock fallback）+ 后端裁判
+规则/正则 + MVP_DEMO_MOCK binding + 后端裁判
 ```
 
-管理员可启用多个模型 profile，并通过默认模型、启用状态、密钥配置状态和 `usageScope` 控制新任务使用哪个审核模型。公网模型在业务允许的场景下可用于审核链路验证、演示、评测或内部审核任务；能否用于真实合同由业务方、管理员和部署环境承担配置责任。
+管理台可创建 PUBLIC `EVALUATION` 的 immutable config version、检查
+Secret Reference readiness 并执行受控 connectivity test，但 PUBLIC profile 必须保持
+disabled/unbound，普通 Task Creation、Demo、内部审核和真实合同均不能选择它。
+PUBLIC runtime 只有在独立 Provider gate、execution-scoped activation 和 shadow
+审计全部通过后，才允许由内部 activation-aware EVALUATION resolver 消费；这不会
+改变普通默认模型。
 
 公网模型和本地模型都不得直接决定生产 finding。模型输出只作为局部抽取、候选归属、证据选择或语义辅助，最终点级状态由后端裁判与结果合成模块决定。
 
@@ -305,8 +310,71 @@ Gemma 不可用或超时时，不得阻断所有审核点。若规则/候选本�
 - Gemma 不可用、超时、输出不完整或 primary/supplement 冲突：输出对应 `SYS-MODEL-*`，不得生成业务 finding。
 - 普通结果页不展示内部 `SYS-MODEL-*` 技术码，只展示业务化 `NOT_CONCLUDED` 原因。管理台任务详情和评测报告展示模型调用状态、超时/不可用原因和诊断摘要。
 - MVP 管理台不展示完整模型原始输出。模型运行记录只保存模型调用状态、`SYS-MODEL-*` 诊断码、schema 校验结果、redacted artifact 摘要、token 用量、耗时、模型版本、调用时间和必要的候选归属结论摘要。
-- MVP 不提供提示词模板编辑，不展示完整最终 prompt。模型配置只读展示当前模型版本和 endpoint 状态；可编辑模型配置、提示词模板和最终 prompt 预览延后到后续治理/技术视图。
+- MVP 不提供提示词模板编辑，不展示完整最终 prompt。ADR-018 允许管理台创建 PUBLIC
+  `EVALUATION` 的新 immutable Model Profile config version、查看 Secret Reference
+  readiness 并发起受控连通测试；仍不得编辑 prompt、读取/粘贴 raw KEY、输入任意
+  endpoint 或启用/绑定 PUBLIC execution。该基础能力不等于 Provider runtime。
 
+## TASK-EVAL-002 双轨盲态语义评测
+
+盲评使用三份已脱敏 DOCX、冻结的结构化输入和 9 个审核点定义。人工 ground truth 与
+CQCP actual 在模型执行前封存；模型输出统一称为“模型意见”，不得回写人工标准答案、
+fixture、规则或正式结果。
+
+- Track A 使用保留标题、段落和表格结构的全文盲态投影，只暴露 opaque location ID，
+  不包含 CQCP `blockId`、actual、expected 或人工结论。
+- Track B 必须使用与未来运行时同构的局部 EvidencePacket，只评估
+  role/candidate/anchor/abstention，不让模型给最终 Finding。为保持
+  runtime-isomorphic，Track B 保留真实 `SourceAnchor.blockId/previewElementRef`；
+  Track A 的 opaque location 规则不适用于 Track B。
+- Track A 表现不能替代 Track B 的 model-assist admission、TASK-034 candidate/anchor
+  门禁或 TASK-036 runtime seam。
+
+2026-07-28 的冻结运行中，三个无历史上下文 Codex blind-eval agent 各处理一份样本；
+解盲后 27/27 Codex 模型意见与人工 ground truth 一致，CQCP deterministic 对照为
+9/27。该数字只描述本次 Track A 对照，不证明模型运行可行性或根因；现有证据不足以在
+parser、候选抽取、CandidateResolver、SourceAnchor、后端裁判与模型消歧之间做唯一
+归因，因此根因保持 `UNRESOLVED`。
+
+2026-07-29 的 D1/v29 R7 工件为 27/27 candidate `MATCH`、27/27
+`PointStatus=PASS`、57 `MATCHED` + 6 human `EXCLUDED`、0 SYS/Finding。
+D2 已实现纯规则 eligibility、FamilyModelCallPlan 与 runtime-isomorphic
+EvidencePacket seam；R7 三份包共 27 packet、9 family plan、57 candidate
+occurrence。由于 27 点全部 deterministic HIGH，Track B Codex 意见 27/27 均为
+`DETERMINISTIC_HIGH_ZERO_CALL` abstention，结论固定为
+`NOT_ESTABLISHED_ZERO_ELIGIBLE_SAMPLE`：证明当前语料正确零调用，不证明
+Provider 能处理 eligible ambiguity。
+
+2026-07-29，三份样本已取得逐 input SHA-256 绑定的公网外发授权；DeepSeek
+Track A 随后只向官方 `api.deepseek.com` 发送对应盲态投影，并以
+`deepseek-v4-pro` 完成严格 schema 评测。最终三份 accepted opinion 均为
+`finish_reason=stop`，解盲后 27/27 与人工 ground truth 一致；该结果仍只属于
+Track A 模型意见，不能替代 Track B admission。授权 artifact 不存在或 hash
+不匹配时，runner 仍必须在任何网络访问前以
+`EXTERNAL_EGRESS_NOT_AUTHORIZED` fail closed。仓库外 KEY 或 `/models`
+连通成功不等于外发授权；DeepSeek EVALUATION 也不得冒充 Gemma profile。
+Track A freeze manifest 必须保持 authorization-neutral；实际授权通过独立、逐
+sample/input hash、endpoint、model、purpose 与有效期绑定的 overlay 提供。
+
+旧 18 packet Track B corpus 已按 runtime identity 形成 15 个 eligible input 与 3 个
+zero-call control。项目负责人先确认人工答案，模型执行后再解盲；结果为 Codex 15/15、
+DeepSeek 6/15、zero-call 3/3，因此结论固定为
+`NO_GO_MODEL_MISMATCH / providerAdmission=NOT_ESTABLISHED`。该 corpus 已解盲，后续
+只能作为回归证据，不能在同一答案集上调参后重新声明独立 admission。
+
+DeepSeek 评测固定 non-streaming JSON mode，prompt 明确要求 JSON；只接纳
+`finish_reason=stop` 且 strict schema valid 的 content。空内容、reasoning-only、
+额外字段、非法 enum 或其他 finish reason 均拒绝；不得保存或回显
+`reasoning_content`。Track B 局部职责不需要 thinking，请求显式
+`thinking={"type":"disabled"}`，模型不得生成或改变最终 Finding/verdict。
+
+新的独立 admission 使用模型未见的 12 packet holdout：9 个
+MEDIUM/CONFLICTED eligible 与 3 个 zero-call control。人工 ground truth 必须在模型
+访问前封印，正式运行只允许一次；任一 schema、anchor、control 或人工答案不匹配即
+停止，不在同一 holdout 上调参重试。该 holdout 在 Core 合并后执行。
+
+Provider A0、adapter、PUBLIC binding、`REVIEWING_MODEL` 与 shadow runtime 均不在
+本 Core integration unit；当前保持 disabled/unbound 与 NO-GO/BLOCKED。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

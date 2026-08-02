@@ -3,18 +3,35 @@ package com.cqcp.apiserver.reviewengine;
 import static com.cqcp.apiserver.reviewengine.ReviewTaskCreationModels.DocumentStorageException;
 import static com.cqcp.apiserver.reviewengine.ReviewTaskCreationModels.InvalidDocumentContentException;
 
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.nio.file.ExtendedOpenOption;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SeekableByteChannel;
 import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.SecureDirectoryStream;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Objects;
+import java.util.Set;
 import java.util.zip.ZipException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
@@ -31,22 +48,43 @@ import org.slf4j.LoggerFactory;
  * Performs minimal OPC (OOXML Package) validation to reject non-DOCX content
  * without invoking the business parser.
  *
- * <p><strong>TOCTOU</strong>: symlink checks and file operations are not atomic;
- * a race window exists.  Acceptable for Demo; production should use OS-level
- * {@code openat2(RESOLVE_NO_SYMLINKS)} or equivalent.
+ * <p>Reads use a directory-relative {@link SecureDirectoryStream} when the
+ * provider supports it. Windows uses a no-share-delete file handle plus
+ * before/after path fingerprints so a parent directory cannot be swapped and
+ * restored while the verified bytes are read.
  */
 class LocalReviewDocumentStore {
 
     private static final Logger log = LoggerFactory.getLogger(LocalReviewDocumentStore.class);
+    private static final int MAX_STORED_DOCUMENT_BYTES = 25 * 1024 * 1024;
+    private static final boolean WINDOWS =
+            System.getProperty("os.name").toLowerCase(java.util.Locale.ROOT).contains("win");
 
     private final Path realRoot;
+    private final StableRootIdentity rootIdentity;
+    private final WindowsFileIdentity windowsRootIdentity;
+    private final StableOpenObserver stableOpenObserver;
 
     LocalReviewDocumentStore(Path uploadRoot) {
+        this(uploadRoot, StableOpenObserver.NOOP);
+    }
+
+    LocalReviewDocumentStore(Path uploadRoot, StableOpenObserver stableOpenObserver) {
         Objects.requireNonNull(uploadRoot, "uploadRoot");
+        this.stableOpenObserver =
+                Objects.requireNonNull(stableOpenObserver, "stableOpenObserver");
         try {
             var abs = uploadRoot.toAbsolutePath().normalize();
             Files.createDirectories(abs);
             this.realRoot = abs.toRealPath();
+            var attributes = readSafeAttributes(realRoot);
+            if (!attributes.isDirectory()) {
+                throw new IOException("Upload root is not a directory");
+            }
+            this.rootIdentity = StableRootIdentity.of(attributes);
+            this.windowsRootIdentity = WINDOWS
+                    ? WindowsDirectoryGuard.captureIdentity(realRoot)
+                    : null;
         } catch (IOException e) {
             throw new DocumentStorageException("Cannot create upload root", e);
         }
@@ -124,22 +162,21 @@ class LocalReviewDocumentStore {
         return Files.exists(resolve(documentReference));
     }
 
-    /**
-     * Read a verified DOCX path for the given task + documentReference.
-     * Validates ownership, pattern, symlink safety, and root confinement.
-     *
-     * <p>This is a separate read path (not a reuse of save-time checks) because
-     * TOCTOU between save and read is acceptable for Demo; production should use
-     * OS-level atomic open.  Each path component is checked with NOFOLLOW_LINKS.
-     * The returned path is the real path of a regular file under the upload root.</p>
-     *
-     * @param taskId             loaded task identifier
-     * @param documentReference  stored reference, e.g. {@code "TASK_abc/32hexchars.docx"}
-     * @return resolved real path, or empty if validation fails
-     */
-    java.util.Optional<java.nio.file.Path> readDocument(String taskId, String documentReference) {
+    java.util.Optional<StoredDocumentSnapshot> readDocumentSnapshot(
+            String taskId,
+            String documentReference) {
         Objects.requireNonNull(taskId, "taskId");
         Objects.requireNonNull(documentReference, "documentReference");
+        if (hasLineBreak(taskId) || hasLineBreak(documentReference)) {
+            throw new SecurityException("Invalid document reference");
+        }
+        var taskPath = Path.of(taskId);
+        if (taskPath.isAbsolute()
+                || taskPath.getNameCount() != 1
+                || taskId.indexOf('/') >= 0
+                || taskId.indexOf('\\') >= 0) {
+            throw new SecurityException("Invalid document reference");
+        }
 
         // Pattern: ^{taskId}/[0-9a-f]{32}\.docx$
         var expectedPrefix = taskId + "/";
@@ -152,8 +189,7 @@ class LocalReviewDocumentStore {
         }
 
         try {
-            // Resolve to absolute path within root
-            var refPath = java.nio.file.Path.of(documentReference);
+            var refPath = Path.of(documentReference);
             if (refPath.isAbsolute()) {
                 throw new SecurityException("Invalid document reference");
             }
@@ -161,32 +197,199 @@ class LocalReviewDocumentStore {
             if (!resolved.startsWith(realRoot)) {
                 throw new SecurityException("Invalid document reference");
             }
-
-            // Walk all path components with NOFOLLOW_LINKS
-            var current = realRoot;
-            for (var seg : realRoot.relativize(resolved)) {
-                current = current.resolve(seg);
-                if (java.nio.file.Files.isSymbolicLink(current)) {
-                    throw new SecurityException("Invalid document reference");
-                }
+            var taskDirectory = realRoot.resolve(taskPath);
+            var filePath = taskDirectory.resolve(suffix);
+            var beforeRoot = readSafeAttributes(realRoot);
+            var beforeTask = readSafeAttributes(taskDirectory);
+            var beforeFile = readSafeAttributes(filePath);
+            if (!rootIdentity.matches(beforeRoot)) {
+                throw new SecurityException("Upload root identity changed");
             }
-
-            // Final file must be a regular file (not symlink, not directory)
-            if (!java.nio.file.Files.isRegularFile(current, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
-                return java.util.Optional.empty();
+            if (!beforeTask.isDirectory()) {
+                throw new SecurityException("Task path is not a directory");
             }
-
-            // Real path must still be under root
-            var realPath = current.toRealPath();
-            if (!realPath.startsWith(realRoot)) {
-                throw new SecurityException("Invalid document reference");
+            if (!beforeFile.isRegularFile()) {
+                throw new SecurityException("Document path is not a regular file");
             }
-
-            return java.util.Optional.of(realPath);
-        } catch (java.io.IOException e) {
+            var taskIdentity = StablePathIdentity.of(beforeTask);
+            var fileIdentity = StablePathIdentity.of(beforeFile);
+            if (WINDOWS) {
+                return java.util.Optional.of(readWindowsSnapshot(
+                        taskDirectory,
+                        filePath,
+                        taskIdentity,
+                        fileIdentity));
+            }
+            return java.util.Optional.of(readSecureSnapshot(
+                    taskPath,
+                    Path.of(suffix),
+                    taskDirectory,
+                    filePath,
+                    taskIdentity,
+                    fileIdentity));
+        } catch (IOException e) {
             return java.util.Optional.empty();
         } catch (SecurityException e) {
             throw e;
+        }
+    }
+
+    String sha256(String taskId, String documentReference) {
+        var snapshot = readDocumentSnapshot(taskId, documentReference)
+                .orElseThrow(() -> new DocumentStorageException("Document is unavailable", null));
+        try (var input = new java.io.ByteArrayInputStream(snapshot.content())) {
+            var digest = MessageDigest.getInstance("SHA-256");
+            var buffer = new byte[8192];
+            int read;
+            while ((read = input.read(buffer)) >= 0) {
+                if (read > 0) {
+                    digest.update(buffer, 0, read);
+                }
+            }
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (IOException | NoSuchAlgorithmException e) {
+            throw new DocumentStorageException("Cannot calculate document checksum", e);
+        }
+    }
+
+    private StoredDocumentSnapshot readSecureSnapshot(
+            Path taskPath,
+            Path fileName,
+            Path taskDirectory,
+            Path filePath,
+            StablePathIdentity taskIdentity,
+            StablePathIdentity fileIdentity) throws IOException {
+        try (DirectoryStream<Path> rootStream = Files.newDirectoryStream(realRoot)) {
+            if (!(rootStream instanceof SecureDirectoryStream<Path> secureRoot)) {
+                throw new SecurityException(
+                        "File system does not support secure relative document reads");
+            }
+            var openedRootAttributes = secureAttributes(secureRoot, Path.of("."));
+            if (!rootIdentity.matches(openedRootAttributes)) {
+                throw new SecurityException("Upload root identity changed");
+            }
+            var openedTaskAttributes = secureAttributes(secureRoot, taskPath);
+            if (!taskIdentity.matches(openedTaskAttributes)
+                    || !openedTaskAttributes.isDirectory()) {
+                throw new SecurityException("Task directory identity changed");
+            }
+            try (var secureTask = secureRoot.newDirectoryStream(
+                    taskPath,
+                    LinkOption.NOFOLLOW_LINKS)) {
+                var openedTaskHandleAttributes =
+                        secureAttributes(secureTask, Path.of("."));
+                if (!taskIdentity.matches(openedTaskHandleAttributes)
+                        || !openedTaskHandleAttributes.isDirectory()) {
+                    throw new SecurityException("Opened task directory identity changed");
+                }
+                var openedFileAttributes = secureAttributes(secureTask, fileName);
+                if (!fileIdentity.matches(openedFileAttributes)
+                        || !openedFileAttributes.isRegularFile()) {
+                    throw new SecurityException("Document identity changed");
+                }
+                stableOpenObserver.beforeFileOpen();
+                verifyCurrentPathIdentities(
+                        taskDirectory,
+                        filePath,
+                        taskIdentity,
+                        fileIdentity);
+                try (var channel = secureTask.newByteChannel(
+                        fileName,
+                        Set.of(
+                                StandardOpenOption.READ,
+                                LinkOption.NOFOLLOW_LINKS))) {
+                    stableOpenObserver.afterFileOpen();
+                    verifyCurrentPathIdentities(
+                            taskDirectory,
+                            filePath,
+                            taskIdentity,
+                            fileIdentity);
+                    return new StoredDocumentSnapshot(readBounded(channel));
+                }
+            }
+        }
+    }
+
+    private StoredDocumentSnapshot readWindowsSnapshot(
+            Path taskDirectory,
+            Path filePath,
+            StablePathIdentity taskIdentity,
+            StablePathIdentity fileIdentity) throws IOException {
+        try (var rootGuard = WindowsDirectoryGuard.open(realRoot);
+                var taskGuard = WindowsDirectoryGuard.open(taskDirectory)) {
+            if (!windowsRootIdentity.equals(rootGuard.identity())) {
+                throw new SecurityException("Upload root identity changed");
+            }
+            stableOpenObserver.beforeFileOpen();
+            verifyCurrentPathIdentities(
+                    taskDirectory,
+                    filePath,
+                    taskIdentity,
+                    fileIdentity);
+            try (var channel = FileChannel.open(
+                    filePath,
+                    StandardOpenOption.READ,
+                    LinkOption.NOFOLLOW_LINKS,
+                    ExtendedOpenOption.NOSHARE_DELETE)) {
+                stableOpenObserver.afterFileOpen();
+                verifyCurrentPathIdentities(
+                        taskDirectory,
+                        filePath,
+                        taskIdentity,
+                        fileIdentity);
+                return new StoredDocumentSnapshot(readBounded(channel));
+            }
+        }
+    }
+
+    private void verifyCurrentPathIdentities(
+            Path taskDirectory,
+            Path filePath,
+            StablePathIdentity taskIdentity,
+            StablePathIdentity fileIdentity) throws IOException {
+        var currentRoot = readSafeAttributes(realRoot);
+        var currentTask = readSafeAttributes(taskDirectory);
+        var currentFile = readSafeAttributes(filePath);
+        if (!rootIdentity.matches(currentRoot)
+                || !taskIdentity.matches(currentTask)
+                || !currentTask.isDirectory()
+                || !fileIdentity.matches(currentFile)
+                || !currentFile.isRegularFile()) {
+            throw new SecurityException("Document path identity changed");
+        }
+    }
+
+    private static BasicFileAttributes secureAttributes(
+            SecureDirectoryStream<Path> directory,
+            Path relativePath) throws IOException {
+        var view = directory.getFileAttributeView(
+                relativePath,
+                BasicFileAttributeView.class,
+                LinkOption.NOFOLLOW_LINKS);
+        if (view == null) {
+            throw new IOException("Basic file attributes unavailable");
+        }
+        var attributes = view.readAttributes();
+        if (attributes.isSymbolicLink() || attributes.isOther()) {
+            throw new SecurityException("Reparse path rejected");
+        }
+        return attributes;
+    }
+
+    private static BasicFileAttributes readSafeAttributes(Path path) throws IOException {
+        var attributes = Files.readAttributes(
+                path,
+                BasicFileAttributes.class,
+                LinkOption.NOFOLLOW_LINKS);
+        if (attributes.isSymbolicLink() || attributes.isOther()) {
+            throw new SecurityException("Reparse path rejected");
+        }
+        return attributes;
+    }
+
+    private static byte[] readBounded(SeekableByteChannel channel) throws IOException {
+        try (var input = Channels.newInputStream(channel)) {
+            return input.readNBytes(MAX_STORED_DOCUMENT_BYTES + 1);
         }
     }
 
@@ -282,5 +485,188 @@ class LocalReviewDocumentStore {
         var name = p.getFileName().toString();
         int dot = name.lastIndexOf('.');
         return (dot > 0) ? name.substring(0, dot) : name;
+    }
+
+    private static boolean hasLineBreak(String value) {
+        return value.indexOf('\r') >= 0 || value.indexOf('\n') >= 0;
+    }
+
+    record StoredDocumentSnapshot(byte[] content) {
+
+        StoredDocumentSnapshot {
+            content = content.clone();
+        }
+
+        @Override
+        public byte[] content() {
+            return content.clone();
+        }
+
+        long size() {
+            return content.length;
+        }
+
+        String sha256() {
+            try {
+                return HexFormat.of().formatHex(
+                        MessageDigest.getInstance("SHA-256").digest(content));
+            } catch (NoSuchAlgorithmException exception) {
+                throw new IllegalStateException("SHA-256 is unavailable", exception);
+            }
+        }
+
+        boolean matches(long expectedSize, String expectedSha256) {
+            return expectedSize >= 0
+                    && expectedSha256 != null
+                    && expectedSha256.matches("[a-f0-9]{64}")
+                    && size() == expectedSize
+                    && MessageDigest.isEqual(
+                            sha256().getBytes(java.nio.charset.StandardCharsets.US_ASCII),
+                            expectedSha256.getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+        }
+    }
+
+    private record StableRootIdentity(
+            Object fileKey,
+            java.nio.file.attribute.FileTime creationTime) {
+
+        static StableRootIdentity of(BasicFileAttributes attributes) {
+            return new StableRootIdentity(
+                    attributes.fileKey(),
+                    attributes.creationTime());
+        }
+
+        boolean matches(BasicFileAttributes attributes) {
+            if (!attributes.isDirectory()) return false;
+            if (fileKey != null && attributes.fileKey() != null) {
+                return fileKey.equals(attributes.fileKey());
+            }
+            return creationTime.equals(attributes.creationTime());
+        }
+    }
+
+    private record StablePathIdentity(
+            Object fileKey,
+            java.nio.file.attribute.FileTime creationTime,
+            java.nio.file.attribute.FileTime lastModifiedTime,
+            long size) {
+
+        static StablePathIdentity of(BasicFileAttributes attributes) {
+            return new StablePathIdentity(
+                    attributes.fileKey(),
+                    attributes.creationTime(),
+                    attributes.lastModifiedTime(),
+                    attributes.size());
+        }
+
+        boolean matches(BasicFileAttributes attributes) {
+            if (fileKey != null && attributes.fileKey() != null) {
+                return fileKey.equals(attributes.fileKey());
+            }
+            return creationTime.equals(attributes.creationTime())
+                    && lastModifiedTime.equals(attributes.lastModifiedTime())
+                    && size == attributes.size();
+        }
+    }
+
+    private record WindowsFileIdentity(long volumeSerialNumber, String fileId) {}
+
+    private static final class WindowsDirectoryGuard implements AutoCloseable {
+
+        private final WinNT.HANDLE handle;
+        private final WindowsFileIdentity identity;
+
+        private WindowsDirectoryGuard(
+                WinNT.HANDLE handle,
+                WindowsFileIdentity identity) {
+            this.handle = handle;
+            this.identity = identity;
+        }
+
+        static WindowsDirectoryGuard open(Path directory) throws IOException {
+            var handle = Kernel32.INSTANCE.CreateFile(
+                    directory.toString(),
+                    WinNT.FILE_READ_ATTRIBUTES,
+                    WinNT.FILE_SHARE_READ | WinNT.FILE_SHARE_WRITE,
+                    null,
+                    WinNT.OPEN_EXISTING,
+                    WinNT.FILE_FLAG_BACKUP_SEMANTICS
+                            | WinNT.FILE_FLAG_OPEN_REPARSE_POINT,
+                    null);
+            if (handle == null || WinBase.INVALID_HANDLE_VALUE.equals(handle)) {
+                throw new IOException(
+                        "Cannot bind Windows directory handle, error="
+                                + Native.getLastError());
+            }
+            try {
+                var tagInfo = new WinBase.FILE_ATTRIBUTE_TAG_INFO();
+                tagInfo.write();
+                if (!Kernel32.INSTANCE.GetFileInformationByHandleEx(
+                        handle,
+                        WinBase.FileAttributeTagInfo,
+                        tagInfo.getPointer(),
+                        new WinDef.DWORD(tagInfo.size()))) {
+                    throw new IOException(
+                            "Cannot read Windows directory attributes, error="
+                                    + Native.getLastError());
+                }
+                tagInfo.read();
+                if ((tagInfo.FileAttributes & WinNT.FILE_ATTRIBUTE_DIRECTORY) == 0
+                        || (tagInfo.FileAttributes
+                                & WinNT.FILE_ATTRIBUTE_REPARSE_POINT) != 0) {
+                    throw new SecurityException("Windows reparse directory rejected");
+                }
+                var fileIdInfo = new WinBase.FILE_ID_INFO();
+                fileIdInfo.write();
+                if (!Kernel32.INSTANCE.GetFileInformationByHandleEx(
+                        handle,
+                        WinBase.FileIdInfo,
+                        fileIdInfo.getPointer(),
+                        new WinDef.DWORD(fileIdInfo.size()))) {
+                    throw new IOException(
+                            "Cannot read Windows directory identity, error="
+                                    + Native.getLastError());
+                }
+                fileIdInfo.read();
+                var identifier = new byte[fileIdInfo.FileId.Identifier.length];
+                for (var index = 0; index < identifier.length; index++) {
+                    identifier[index] =
+                            fileIdInfo.FileId.Identifier[index].byteValue();
+                }
+                return new WindowsDirectoryGuard(
+                        handle,
+                        new WindowsFileIdentity(
+                                fileIdInfo.VolumeSerialNumber,
+                                HexFormat.of().formatHex(identifier)));
+            } catch (IOException | RuntimeException exception) {
+                Kernel32.INSTANCE.CloseHandle(handle);
+                throw exception;
+            }
+        }
+
+        static WindowsFileIdentity captureIdentity(Path directory)
+                throws IOException {
+            try (var guard = open(directory)) {
+                return guard.identity();
+            }
+        }
+
+        WindowsFileIdentity identity() {
+            return identity;
+        }
+
+        @Override
+        public void close() {
+            Kernel32.INSTANCE.CloseHandle(handle);
+        }
+    }
+
+    interface StableOpenObserver {
+
+        StableOpenObserver NOOP = new StableOpenObserver() {};
+
+        default void beforeFileOpen() throws IOException {}
+
+        default void afterFileOpen() throws IOException {}
     }
 }

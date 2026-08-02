@@ -3,7 +3,7 @@
   "info": {
     "title": "CQCP Minimal Review API Contract",
     "version": "0.1.0",
-    "description": "TASK-014 冻结的最小公开 API 契约，只覆盖任务创建、执行状态查询和普通结果读取。"
+    "description": "CQCP MVP API 契约，覆盖任务创建、execution 状态与清单、精确结果读取、 只读合同预览/下载以及受控 Model Profile 管理。"
   },
   "servers": [
     {
@@ -12,6 +12,81 @@
   ],
   "paths": {
     "/api/review/tasks": {
+      "get": {
+        "summary": "查询 execution 级审核任务清单",
+        "operationId": "listReviewTaskExecutions",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "statusGroup",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PROCESSING",
+                "COMPLETED",
+                "FAILED"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "稳定分页的 execution 列表。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskExecutionPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "查询参数无效。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          }
+        }
+      },
       "post": {
         "summary": "创建审核任务",
         "description": "当前 MVP Demo 仅由受控管理台入口创建审核任务，并按服务端部署上下文记录 callerType=ADMIN。MVP 只接受 DOCX，不允许调用方指定 callerType、modelProfileCode 或任何执行版本字段。外部系统 caller 的可信身份接入不在当前 Feature 范围。",
@@ -77,8 +152,8 @@
               }
             }
           },
-          "503": {
-            "description": "文档存储当前不可用。",
+          "429": {
+            "description": "队列或系统容量不足。",
             "content": {
               "application/json": {
                 "schema": {
@@ -87,8 +162,8 @@
               }
             }
           },
-          "429": {
-            "description": "队列或系统容量不足。",
+          "503": {
+            "description": "文档存储当前不可用。",
             "content": {
               "application/json": {
                 "schema": {
@@ -103,7 +178,7 @@
     "/api/review/tasks/{taskId}/executions/{executionId}": {
       "get": {
         "summary": "查询 execution 状态",
-        "description": "用于异步轮询状态。公开顶层状态只暴露有限集合，reviewModel 只返回执行绑定后的摘要。",
+        "description": "用于异步轮询状态。公开顶层状态只暴露有限集合， reviewModel 只返回执行绑定后的摘要。",
         "operationId": "getReviewExecutionStatus",
         "parameters": [
           {
@@ -147,11 +222,149 @@
         }
       }
     },
-    "/api/review/results/{taskId}": {
+    "/api/review/tasks/{taskId}/executions/{executionId}/document-preview": {
       "get": {
-        "summary": "读取普通结果视图",
-        "description": "不带 executionId 时读取最新未 superseded 的 terminal execution；若不存在 terminal execution，则返回处理中视图。",
-        "operationId": "getReviewResultView",
+        "summary": "读取 execution 对应的结构化合同预览",
+        "description": "仅在 execution.parserVersion 与当前 parser release 精确一致时按需重解析。 元素 identity 来自 parser；不按 evidence text 反向搜索。",
+        "operationId": "getReviewDocumentPreview",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TaskId"
+          },
+          {
+            "$ref": "#/components/parameters/ExecutionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "结构化合同预览。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentPreview"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          },
+          "404": {
+            "description": "task/execution/文档不存在或归属不匹配。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "parserVersion 或文档校验门禁不满足。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "文档存储暂不可用。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/review/tasks/{taskId}/executions/{executionId}/document": {
+      "get": {
+        "summary": "下载 execution 对应的原始 DOCX",
+        "operationId": "downloadReviewDocument",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/TaskId"
+          },
+          {
+            "$ref": "#/components/parameters/ExecutionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "通过归属、路径和 SHA-256 校验的原始 DOCX。",
+            "headers": {
+              "X-CQCP-Document-SHA256": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              }
+            },
+            "content": {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          },
+          "404": {
+            "description": "task/execution/文档不存在或归属不匹配。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "上传校验信息不可用或文件校验失败。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "文档存储暂不可用。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/{taskId}/result": {
+      "get": {
+        "summary": "读取任务结果快照",
+        "description": "带 executionId 时精确返回该 execution 快照，不得回退到 latest； 不带 executionId 时保留 legacy latest 兼容行为。 `notConcludedDetail` 与 `missingOptionalSlots[]` 在本契约中仅作为 optional compatibility / diagnostic-only 字段预留，当前真实 DTO 可能尚未承载。",
+        "operationId": "getTaskResultSnapshot",
         "parameters": [
           {
             "name": "taskId",
@@ -168,26 +381,261 @@
             "schema": {
               "type": "string"
             },
-            "description": "显式读取指定历史 execution。"
+            "description": "正式结果 URL 必须传入的精确 execution identity。"
           }
         ],
         "responses": {
           "200": {
-            "description": "普通结果页所需最小视图。",
+            "description": "任务结果快照。",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReviewResultViewResponse"
+                  "$ref": "#/components/schemas/ReviewResultSnapshot"
                 }
               }
             }
           },
           "404": {
-            "description": "task 或 execution 不存在。",
+            "description": "task 不存在或尚无可读取结果。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "精确 execution 存在但结果尚未生成。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/model-profiles": {
+      "get": {
+        "summary": "查询最新 Model Profile config version",
+        "operationId": "listModelProfiles",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "不含 secretRef 或明文 KEY 的 Model Profile 列表。",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BusinessErrorResponse"
+                  "$ref": "#/components/schemas/ModelProfileListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/AdminForbidden"
+          }
+        }
+      },
+      "post": {
+        "summary": "创建 disabled/unbound EVALUATION Model Profile",
+        "operationId": "createModelProfile",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelProfileCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "创建新的 immutable config version。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProfileView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求或 allowlist 校验失败。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/AdminForbidden"
+          },
+          "409": {
+            "description": "profileCode 已存在。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/model-profiles/{profileCode}": {
+      "put": {
+        "summary": "为已有 profile 创建新 config version",
+        "operationId": "createModelProfileConfigVersion",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProfileCode"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelProfileUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新 config version；旧 immutable content 保留。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelProfileView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求校验失败。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/AdminForbidden"
+          },
+          "404": {
+            "description": "profile 不存在。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "code-owned profile 不允许通过 Admin API 修改。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/model-profiles/{profileCode}/connectivity-tests": {
+      "post": {
+        "summary": "使用已保存 profile 与 Secret Reference 执行连通测试",
+        "description": "请求体必须为空；不接收 endpoint、KEY 或 prompt。",
+        "operationId": "testModelProfileConnectivity",
+        "security": [
+          {
+            "AdminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProfileCode"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "只返回稳定、脱敏的连通结果。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectivityView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求体非空。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AdminUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/AdminForbidden"
+          },
+          "404": {
+            "description": "profile 不存在。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "该 provider 不支持连通测试。",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -197,7 +645,588 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "AdminBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "部署侧管理访问 token；任务清单和合同原文允许 Admin/只读 token， `/api/admin/**` 只允许 Admin token。凭据只允许 Authorization header， 不得放入 URL 或浏览器持久化。"
+      }
+    },
+    "responses": {
+      "AdminUnauthorized": {
+        "description": "缺少或无法识别的管理身份凭据。",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      },
+      "AdminForbidden": {
+        "description": "已认证身份不具备 Admin 权限。",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProblemDetail"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "TaskId": {
+        "name": "taskId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ExecutionId": {
+        "name": "executionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ProfileCode": {
+        "name": "profileCode",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+        }
+      }
+    },
     "schemas": {
+      "ProblemDetail": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "TaskExecutionPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskExecutionItem"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "TaskExecutionItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "taskId",
+          "executionId",
+          "contractName",
+          "status",
+          "currentStage",
+          "resultUrl",
+          "createdAt",
+          "updatedAt",
+          "modelProfile"
+        ],
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "executionId": {
+            "type": "string"
+          },
+          "contractName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currentStage": {
+            "type": "string"
+          },
+          "resultUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "modelProfile": {
+            "$ref": "#/components/schemas/TaskModelBinding"
+          },
+          "resultStatistics": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ReviewSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "DocumentPreview": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "taskId",
+          "executionId",
+          "contractName",
+          "originalFileName",
+          "parserVersion",
+          "sha256",
+          "blocks"
+        ],
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "executionId": {
+            "type": "string"
+          },
+          "contractName": {
+            "type": "string"
+          },
+          "originalFileName": {
+            "type": "string"
+          },
+          "parserVersion": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentPreviewBlock"
+            }
+          }
+        }
+      },
+      "DocumentPreviewBlock": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "blockId",
+          "type",
+          "text",
+          "sectionPath",
+          "cells"
+        ],
+        "properties": {
+          "blockId": {
+            "type": "string"
+          },
+          "previewElementRef": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "HEADING",
+              "PARAGRAPH",
+              "TABLE_ROW",
+              "APPENDIX_TITLE",
+              "TOC_ITEM"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "sectionPath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tableId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "rowIndex": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentPreviewCell"
+            }
+          }
+        }
+      },
+      "DocumentPreviewCell": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "previewElementRef",
+          "cellIndex",
+          "text"
+        ],
+        "properties": {
+          "previewElementRef": {
+            "type": "string"
+          },
+          "cellIndex": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "ModelProfileCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profileCode",
+          "displayName",
+          "endpointAlias",
+          "modelName",
+          "secretRef",
+          "timeoutSeconds",
+          "retryCount"
+        ],
+        "properties": {
+          "profileCode": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+          },
+          "displayName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "providerType": {
+            "type": "string",
+            "const": "PUBLIC_OPENAI_COMPATIBLE"
+          },
+          "usageScope": {
+            "type": "string",
+            "const": "EVALUATION"
+          },
+          "endpointAlias": {
+            "type": "string",
+            "enum": [
+              "deepseek-official"
+            ]
+          },
+          "modelName": {
+            "type": "string",
+            "enum": [
+              "deepseek-v4-pro",
+              "deepseek-v4-flash"
+            ]
+          },
+          "secretRef": {
+            "type": "string",
+            "description": "provider-specific server-side reference，不是明文 KEY。",
+            "enum": [
+              "env:CQCP_MODEL_DEEPSEEK_API_KEY",
+              "file:/run/secrets/cqcp-model-deepseek-api-key"
+            ]
+          },
+          "timeoutSeconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 120
+          },
+          "retryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          }
+        }
+      },
+      "ModelProfileUpdateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "displayName",
+          "endpointAlias",
+          "modelName",
+          "secretRef",
+          "timeoutSeconds",
+          "retryCount"
+        ],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "providerType": {
+            "type": "string",
+            "const": "PUBLIC_OPENAI_COMPATIBLE"
+          },
+          "usageScope": {
+            "type": "string",
+            "const": "EVALUATION"
+          },
+          "endpointAlias": {
+            "type": "string",
+            "enum": [
+              "deepseek-official"
+            ]
+          },
+          "modelName": {
+            "type": "string",
+            "enum": [
+              "deepseek-v4-pro",
+              "deepseek-v4-flash"
+            ]
+          },
+          "secretRef": {
+            "type": "string",
+            "description": "provider-specific server-side reference，不是明文 KEY。",
+            "enum": [
+              "env:CQCP_MODEL_DEEPSEEK_API_KEY",
+              "file:/run/secrets/cqcp-model-deepseek-api-key"
+            ]
+          },
+          "timeoutSeconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 120
+          },
+          "retryCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          }
+        }
+      },
+      "ModelProfileListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModelProfileView"
+            }
+          }
+        }
+      },
+      "ModelProfileView": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profileCode",
+          "configVersion",
+          "displayName",
+          "providerType",
+          "endpointAlias",
+          "modelName",
+          "usageScope",
+          "enabled",
+          "defaultForNewTask",
+          "secretConfigured",
+          "readiness",
+          "timeoutSeconds",
+          "retryCount"
+        ],
+        "properties": {
+          "profileCode": {
+            "type": "string"
+          },
+          "configVersion": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "providerType": {
+            "type": "string"
+          },
+          "endpointAlias": {
+            "type": "string"
+          },
+          "modelName": {
+            "type": "string"
+          },
+          "usageScope": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "defaultForNewTask": {
+            "type": "boolean"
+          },
+          "secretConfigured": {
+            "type": "boolean"
+          },
+          "readiness": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "SECRET_MISSING",
+              "NOT_TESTED",
+              "CONNECTIVITY_FAILED",
+              "READY_FOR_EVALUATION_CONFIG"
+            ]
+          },
+          "timeoutSeconds": {
+            "type": "integer"
+          },
+          "retryCount": {
+            "type": "integer"
+          },
+          "latestConnectivityTest": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ConnectivityView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ConnectivityView": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "connectivityTestId",
+          "status",
+          "modelAvailable",
+          "durationMs",
+          "testedAt"
+        ],
+        "properties": {
+          "connectivityTestId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUCCEEDED",
+              "SECRET_MISSING",
+              "AUTHENTICATION_FAILED",
+              "RATE_LIMITED",
+              "UPSTREAM_5XX",
+              "TIMEOUT",
+              "REDIRECT_REJECTED",
+              "MODEL_NOT_FOUND",
+              "MALFORMED_RESPONSE",
+              "ENDPOINT_NOT_ALLOWED",
+              "NETWORK_ERROR"
+            ]
+          },
+          "httpStatusClass": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "modelAvailable": {
+            "type": "boolean"
+          },
+          "durationMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "testedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TaskModelBinding": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profileCode",
+          "displayName",
+          "providerType",
+          "modelName",
+          "endpointAlias",
+          "configVersion"
+        ],
+        "properties": {
+          "profileCode": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "providerType": {
+            "type": "string"
+          },
+          "modelName": {
+            "type": "string"
+          },
+          "endpointAlias": {
+            "type": "string"
+          },
+          "configVersion": {
+            "type": "string"
+          }
+        }
+      },
       "CreateReviewTaskMetadata": {
         "type": "object",
         "additionalProperties": false,
@@ -300,84 +1329,6 @@
           }
         }
       },
-      "ReviewResultViewResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "viewType",
-          "taskId",
-          "executionId",
-          "status",
-          "resultUrl",
-          "reviewModel"
-        ],
-        "properties": {
-          "viewType": {
-            "type": "string",
-            "enum": [
-              "SNAPSHOT",
-              "PENDING",
-              "FAILED"
-            ]
-          },
-          "taskId": {
-            "type": "string"
-          },
-          "executionId": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/PublicTaskStatus"
-          },
-          "resultUrl": {
-            "type": "string"
-          },
-          "reviewModel": {
-            "$ref": "#/components/schemas/ReviewModelSummary"
-          },
-          "snapshot": {
-            "$ref": "#/components/schemas/ReviewResultSnapshot"
-          },
-          "pendingState": {
-            "$ref": "#/components/schemas/PendingResultState"
-          },
-          "failureState": {
-            "$ref": "#/components/schemas/FailedResultState"
-          }
-        }
-      },
-      "PendingResultState": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "currentStage",
-          "businessMessage"
-        ],
-        "properties": {
-          "currentStage": {
-            "$ref": "#/components/schemas/ExecutionStage"
-          },
-          "businessMessage": {
-            "type": "string"
-          }
-        }
-      },
-      "FailedResultState": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "businessMessage",
-          "operatorActionRequired"
-        ],
-        "properties": {
-          "businessMessage": {
-            "type": "string"
-          },
-          "operatorActionRequired": {
-            "type": "boolean"
-          }
-        }
-      },
       "ReviewResultSnapshot": {
         "type": "object",
         "additionalProperties": false,
@@ -385,13 +1336,26 @@
           "taskId",
           "executionId",
           "status",
-          "contractType",
-          "structuredFields",
-          "reviewModel",
           "summary",
+          "reviewCompleteness",
           "pointResults",
-          "createdAt",
-          "completedAt"
+          "findings",
+          "diagnostics",
+          "sourceAnchors",
+          "structuredFieldsSnapshot",
+          "enabledReviewPointsSnapshot",
+          "disabledReviewPointsSnapshot",
+          "contractTypeProfileVersion",
+          "ruleSetVersion",
+          "reviewBudgetProfileVersion",
+          "modelProfileVersion",
+          "parserVersion",
+          "promptVersion",
+          "schemaVersion",
+          "patternLibraryVersion",
+          "fieldLexiconVersion",
+          "evidenceSelectorVersion",
+          "createdAt"
         ],
         "properties": {
           "taskId": {
@@ -400,24 +1364,20 @@
           "executionId": {
             "type": "string"
           },
+          "supersededByExecutionId": {
+            "type": "string"
+          },
+          "supersededReason": {
+            "$ref": "#/components/schemas/SupersededReason"
+          },
           "status": {
-            "type": "string",
-            "enum": [
-              "SUCCESS",
-              "PARTIAL_SUCCESS"
-            ]
-          },
-          "contractType": {
-            "$ref": "#/components/schemas/ContractType"
-          },
-          "structuredFields": {
-            "$ref": "#/components/schemas/StructuredFieldsInput"
-          },
-          "reviewModel": {
-            "$ref": "#/components/schemas/ReviewModelSummary"
+            "$ref": "#/components/schemas/SnapshotStatus"
           },
           "summary": {
             "$ref": "#/components/schemas/ReviewResultSummary"
+          },
+          "reviewCompleteness": {
+            "$ref": "#/components/schemas/ReviewCompleteness"
           },
           "pointResults": {
             "type": "array",
@@ -426,19 +1386,76 @@
               "$ref": "#/components/schemas/PointResult"
             }
           },
+          "findings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewFinding"
+            }
+          },
+          "diagnostics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PointDiagnostic"
+            }
+          },
+          "sourceAnchors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceAnchorSummary"
+            }
+          },
+          "structuredFieldsSnapshot": {
+            "type": "object",
+            "description": "当前真实实现中的结构化字段快照；值统一序列化为字符串。",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "enabledReviewPointsSnapshot": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewPointSnapshot"
+            }
+          },
+          "disabledReviewPointsSnapshot": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewPointSnapshot"
+            }
+          },
+          "contractTypeProfileVersion": {
+            "type": "string"
+          },
+          "ruleSetVersion": {
+            "type": "string"
+          },
+          "reviewBudgetProfileVersion": {
+            "type": "string"
+          },
+          "modelProfileVersion": {
+            "type": "string"
+          },
+          "parserVersion": {
+            "type": "string"
+          },
+          "promptVersion": {
+            "type": "string"
+          },
+          "schemaVersion": {
+            "type": "string"
+          },
+          "patternLibraryVersion": {
+            "type": "string"
+          },
+          "fieldLexiconVersion": {
+            "type": "string"
+          },
+          "evidenceSelectorVersion": {
+            "type": "string"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
-          },
-          "completedAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "supersededByExecutionId": {
-            "type": "string"
-          },
-          "supersededReason": {
-            "$ref": "#/components/schemas/SupersededReason"
           }
         }
       },
@@ -451,12 +1468,7 @@
           "errorCount",
           "warningCount",
           "notConcludedCount",
-          "skippedCount",
-          "disabledByConfigCount",
-          "reviewCoverageStatus",
-          "criticalSlotCoverageRate",
-          "evidenceCoverageRate",
-          "confidenceLevel"
+          "skippedCount"
         ],
         "properties": {
           "plannedPointCount": {
@@ -482,25 +1494,37 @@
           "skippedCount": {
             "type": "integer",
             "minimum": 0
+          }
+        }
+      },
+      "ReviewCompleteness": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewCoverageStatus",
+          "executablePointCount",
+          "concludedPointCount",
+          "notConcludedPointCount",
+          "concludedCoverageRate",
+          "confidenceLevel"
+        ],
+        "properties": {
+          "reviewCoverageStatus": {
+            "$ref": "#/components/schemas/ReviewCoverageStatus"
           },
-          "disabledByConfigCount": {
+          "executablePointCount": {
             "type": "integer",
             "minimum": 0
           },
-          "reviewCoverageStatus": {
-            "type": "string",
-            "enum": [
-              "COMPLETE",
-              "PARTIAL",
-              "LOW_CONFIDENCE"
-            ]
+          "concludedPointCount": {
+            "type": "integer",
+            "minimum": 0
           },
-          "criticalSlotCoverageRate": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100
+          "notConcludedPointCount": {
+            "type": "integer",
+            "minimum": 0
           },
-          "evidenceCoverageRate": {
+          "concludedCoverageRate": {
             "type": "number",
             "minimum": 0,
             "maximum": 100
@@ -515,202 +1539,259 @@
         "additionalProperties": false,
         "required": [
           "reviewPointCode",
-          "reviewPointDisplayCode",
-          "reviewPointName",
-          "reviewPointCategory",
-          "status",
-          "businessMessage"
+          "pointStatus",
+          "businessMessage",
+          "sourceAnchors"
         ],
         "properties": {
           "reviewPointCode": {
-            "type": "string",
-            "description": "内部唯一 reviewPointCode。"
-          },
-          "reviewPointDisplayCode": {
-            "type": "string",
-            "description": "快照中保存的展示编码。"
-          },
-          "reviewPointName": {
             "type": "string"
           },
-          "reviewPointCategory": {
-            "type": "string"
-          },
-          "status": {
+          "pointStatus": {
             "$ref": "#/components/schemas/PointStatus"
           },
           "businessMessage": {
             "type": "string"
           },
+          "findingSeverity": {
+            "$ref": "#/components/schemas/FindingSeverity"
+          },
+          "sourceAnchors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SourceAnchorSummary"
+            }
+          },
           "notConcludedReason": {
             "$ref": "#/components/schemas/NotConcludedReason"
+          },
+          "notConcludedDetail": {
+            "$ref": "#/components/schemas/NotConcludedDetail",
+            "description": "optional / diagnostic-only compatibility field。当前真实 DTO 可能尚未承载； 仅在后续兼容演进时返回，用于补充 NOT_CONCLUDED 的更细粒度诊断语义。"
           },
           "skippedReason": {
             "type": "string"
           },
-          "manualReviewHint": {
-            "type": "string"
-          },
-          "evidences": {
+          "missingOptionalSlots": {
             "type": "array",
+            "description": "optional compatibility field。当前真实 DTO 可能尚未承载； 用于表达 optional evidence slot 的缺口，不改变既有 PointStatus 或 notConcludedReason 的稳定语义。",
             "items": {
-              "$ref": "#/components/schemas/Evidence"
+              "$ref": "#/components/schemas/MissingOptionalSlot"
             }
           }
         }
       },
-      "Evidence": {
+      "ReviewFinding": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "evidenceId",
-          "role",
-          "summary",
-          "selectedCandidates",
+          "reviewPointCode",
+          "severity",
+          "businessMessage",
           "sourceAnchors"
         ],
         "properties": {
-          "evidenceId": {
+          "reviewPointCode": {
             "type": "string"
           },
-          "role": {
-            "type": "string",
-            "description": "该证据在当前审核点内承担的候选角色。"
+          "severity": {
+            "$ref": "#/components/schemas/FindingSeverity"
           },
-          "summary": {
+          "businessMessage": {
             "type": "string"
-          },
-          "selectedCandidates": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "$ref": "#/components/schemas/Candidate"
-            }
           },
           "sourceAnchors": {
             "type": "array",
-            "minItems": 1,
             "items": {
-              "$ref": "#/components/schemas/SourceAnchor"
+              "$ref": "#/components/schemas/SourceAnchorSummary"
             }
           }
         }
       },
-      "Candidate": {
+      "PointDiagnostic": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "candidateId",
-          "role",
-          "value",
-          "confidenceLevel"
+          "reviewPointCode",
+          "pointStatus",
+          "diagnosticCode",
+          "businessReason",
+          "evidenceBlockIds",
+          "evidenceSummary",
+          "containsSensitivePayload"
         ],
         "properties": {
-          "candidateId": {
+          "reviewPointCode": {
             "type": "string"
           },
-          "role": {
+          "pointStatus": {
             "type": "string"
           },
-          "value": {
+          "diagnosticCode": {
             "type": "string"
           },
-          "normalizedValue": {
+          "businessReason": {
             "type": "string"
           },
-          "confidenceLevel": {
-            "$ref": "#/components/schemas/ConfidenceLevel"
-          }
-        }
-      },
-      "SourceAnchor": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "anchorId",
-          "locationLevel",
-          "sourceOrigin",
-          "sourceExtractionMode",
-          "contextType"
-        ],
-        "properties": {
-          "anchorId": {
-            "type": "string"
-          },
-          "locationLevel": {
-            "type": "string",
-            "enum": [
-              "EXACT_TEXT_RANGE",
-              "BLOCK",
-              "SECTION",
-              "TABLE_ROW",
-              "TABLE_CELL",
-              "PAGE",
-              "UNAVAILABLE"
-            ]
-          },
-          "sectionPath": {
+          "evidenceBlockIds": {
             "type": "array",
             "items": {
               "type": "string"
             }
           },
+          "evidenceSummary": {
+            "type": "string"
+          },
+          "containsSensitivePayload": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SourceAnchorSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "blockId",
+          "sourceOrigin",
+          "sourceExtractionMode",
+          "contextType",
+          "evidenceSummary"
+        ],
+        "properties": {
           "blockId": {
-            "type": "string"
-          },
-          "tableId": {
-            "type": "string"
-          },
-          "rowIndex": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "cellIndex": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "previewPage": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "quotedText": {
             "type": "string"
           },
           "sourceOrigin": {
             "type": "string",
-            "enum": [
-              "NATIVE_WORD",
-              "LIBREOFFICE_CONVERSION",
-              "PREVIEW_ONLY"
-            ]
+            "description": "当前最小稳定字段；值集合以后端实际实现为准。"
           },
           "sourceExtractionMode": {
             "type": "string",
-            "enum": [
-              "STRUCTURED",
-              "TEXT_FALLBACK",
-              "PREVIEW"
-            ]
+            "description": "当前最小稳定字段；值集合以后端实际实现为准。"
           },
           "contextType": {
             "type": "string",
+            "description": "当前最小稳定字段；值集合以后端实际实现为准。"
+          },
+          "evidenceSummary": {
+            "type": "string"
+          },
+          "relatedBlockIds": {
+            "type": "array",
+            "description": "optional compatibility field。ADR-015 后续正式化预留字段，当前可能缺失。",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sectionPath": {
+            "type": "array",
+            "description": "optional compatibility field。当前真实结构可能缺失。",
+            "items": {
+              "type": "string"
+            }
+          },
+          "locationLevel": {
+            "type": "string",
+            "description": "optional compatibility field / stabilization field。当前真实结构可能缺失。",
             "enum": [
-              "NORMAL",
-              "EXAMPLE",
-              "EXPLANATION",
-              "HISTORY",
-              "HEADER_FOOTER",
-              "DELETED",
-              "VOIDED",
-              "TOC"
+              "EXACT_TEXT_RANGE",
+              "BLOCK_LEVEL",
+              "PAGE_LEVEL",
+              "SECTION_LEVEL",
+              "UNAVAILABLE"
             ]
+          },
+          "regionType": {
+            "type": "string",
+            "description": "optional compatibility field。当前真实结构可能缺失。"
+          },
+          "previewPage": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "optional compatibility field。当前真实结构可能缺失。"
+          },
+          "previewElementRef": {
+            "type": "string",
+            "description": "optional compatibility field。当前真实结构可能缺失。"
+          },
+          "confidence": {
+            "type": "string",
+            "description": "optional compatibility field。当前真实结构可能缺失。"
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "optional compatibility field。当前真实结构可能缺失。"
+          }
+        }
+      },
+      "MissingOptionalSlot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slotName",
+          "cause"
+        ],
+        "properties": {
+          "slotName": {
+            "type": "string"
+          },
+          "cause": {
+            "type": "string",
+            "description": "compatibility field。当前用于承载 optional slot 缺口原因，不改变点级状态语义。"
+          },
+          "contributingCauses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "businessMessage": {
+            "type": "string",
+            "description": "optional compatibility field。用于结果页或诊断展示的业务化提示。"
+          }
+        }
+      },
+      "ReviewPointSnapshot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "reviewPointCode",
+          "displayCode",
+          "displayName",
+          "reviewPointFamily",
+          "contractType",
+          "defaultSeverity",
+          "displayOrder"
+        ],
+        "properties": {
+          "reviewPointCode": {
+            "type": "string"
+          },
+          "displayCode": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "reviewPointFamily": {
+            "type": "string"
+          },
+          "contractType": {
+            "type": "string"
+          },
+          "defaultSeverity": {
+            "$ref": "#/components/schemas/FindingSeverity"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "minimum": 0
           }
         }
       },
       "DefinitionTermIndexEntry": {
         "type": "object",
         "additionalProperties": false,
-        "description": "已冻结的 DefinitionTermIndex 最小接口表示。本版不挂到公开 path，仅作为未来内部诊断/调优接口复用的 schema 基线。",
+        "description": "已冻结的 DefinitionTermIndex 最小接口表示。本版不挂到公开 path， 仅作为未来内部诊断/调优接口复用的 schema 基线。",
         "required": [
           "definitionId",
           "term",
@@ -736,7 +1817,7 @@
             "type": "string"
           },
           "sourceAnchor": {
-            "$ref": "#/components/schemas/SourceAnchor"
+            "$ref": "#/components/schemas/SourceAnchorSummary"
           },
           "applicableScope": {
             "type": "string",
@@ -1135,12 +2216,45 @@
           "INTERNAL_RULE_ERROR"
         ]
       },
+      "NotConcludedDetail": {
+        "type": "string",
+        "description": "optional / diagnostic-only compatibility enum。当前真实 DTO 可能尚未承载； 不改变既有 notConcludedReason 的稳定语义，只用于补充诊断细节。",
+        "enum": [
+          "INDEX_MISSING",
+          "ROLE_CONFLICT",
+          "PARSE_LOW_CONFIDENCE",
+          "BUDGET_TRUNCATED"
+        ]
+      },
+      "SnapshotStatus": {
+        "type": "string",
+        "enum": [
+          "SUCCESS",
+          "PARTIAL_SUCCESS"
+        ]
+      },
+      "ReviewCoverageStatus": {
+        "type": "string",
+        "enum": [
+          "FULL_REVIEWED",
+          "PARTIAL_REVIEWED",
+          "LOW_CONFIDENCE_REVIEW"
+        ]
+      },
       "ConfidenceLevel": {
         "type": "string",
         "enum": [
           "HIGH",
           "MEDIUM",
           "LOW"
+        ]
+      },
+      "FindingSeverity": {
+        "type": "string",
+        "nullable": true,
+        "enum": [
+          "WARNING",
+          "ERROR"
         ]
       },
       "ProviderType": {

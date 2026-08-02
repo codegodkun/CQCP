@@ -1,8 +1,9 @@
-# 合同质量控制中台 V2 架构设计 v0.11
+# 合同质量控制中台 V2 架构设计 v0.12
 
-日期：2026-07-24
+日期：2026-07-31
 
-状态：Draft for implementation planning review - architecture hardening, ADR-016 and ADR-017 incorporated
+状态：Draft for implementation planning review - architecture hardening,
+ADR-016 至 ADR-020 incorporated
 
 ## 1. 背景
 
@@ -53,7 +54,7 @@ V2 的产品定位是：
 - 工程合同、材料供货合同、费用合同、杂项合同的粗分类。
 - 规则/正则/Gemma 混合路由。
 - 本地 A30/Gemma 生产辅助。
-- 公网模型用于离线质量优化，不直接决定生产 finding。
+- 公网模型首期只允许处理已明确授权、通过脱敏与最小化检查的 `EVALUATION` 输入；默认关闭，不进入普通 Demo 或真实生产合同主链路，也不直接决定生产 finding。
 - 异步任务、单 worker 顺序处理、结果 URL、最终结果快照。
 - 普通结果页左侧合同原文、右侧审核点，点击右侧审核点定位左侧证据。
 
@@ -1351,6 +1352,39 @@ PatternEvaluation 正则评测结果
 Quality Copilot / 质量优化助手
 ```
 
+公网 OpenAI-compatible Model Profile 必须遵守 ADR-018：
+
+- 配置内容以 immutable `configVersion` 发布，生命周期切换事务化。
+- API/数据库只保存 server-side `secretRef`，浏览器、URL、日志、Snapshot 和审计摘要不得出现明文 Secret。
+- 首版 `deepseek-official` 只允许
+  `env:CQCP_MODEL_DEEPSEEK_API_KEY` 或
+  `file:/run/secrets/cqcp-model-deepseek-api-key`；不得借用数据库密码、其他环境变量
+  或无关 Secret 文件。
+- `endpointAlias` 只能引用服务端 HTTPS allowlist，不接受任意 URL，不跟随 redirect；
+  `deepseek-official` 固定为 `https://api.deepseek.com`，全部 DNS answer 校验后由
+  request-scoped resolver 固定到实际连接，禁止二次 DNS 解析/rebinding。
+- IPv6 endpoint address 只接纳 `2000::/3` global unicast，并 fail closed 拒绝
+  IETF special、documentation、NAT64/IPv4 translation 与 6to4 等转换范围。
+- IPv4 endpoint address 按 IANA special-purpose registry 精确拒绝特殊/文档范围，
+  不得因过宽掩码误拒相邻普通公网地址。
+- `/api/admin/**` 由后端 Bearer 鉴权保护；身份凭据仅由部署环境注入并通过
+  `Authorization` header 使用，缺失/未知返回 `401`，已认证但非 Admin 返回 `403`。
+- provider-specific readiness 必须区分 Secret、连通、配置和 execution 发布；连通成功不等于 profile 已绑定。
+- 首期 PUBLIC profile 仅允许 `usageScope=EVALUATION`、disabled/unbound；普通 `MVP_DEMO_MOCK` 不变。
+
+双轨盲态评测与激活顺序遵守 ADR-019：
+
+- Track A 使用结构保真的全文盲态投影，只形成全文语义“模型意见”。
+- Track B 使用未来运行时同构的局部 EvidencePacket，只评估 role/candidate/anchor/abstention。
+- Track A location 必须 opaque；Track B 为保持 runtime-isomorphic 可保留受控局部
+  SourceAnchor identity（`blockId/previewElementRef`），但不得包含 expected、
+  人工 ground truth、最终 verdict/Finding 或全文 fallback。
+- 两轨分开计分；Track A 不得替代 Track B admission 证据。
+- 全部 packet 都要求 deterministic zero-call 的语料只能证明 abstention 正确性，
+  不能建立 eligible-ambiguity Provider admission。
+- 未获得与输入 hash 绑定的外发授权时，公网 runner 必须在网络调用前 fail closed。
+- PUBLIC runtime 只能按 `disabled adapter -> EVALUATION shadow -> shadow 审计 -> guarded assist` 激活，最终裁判始终在后端。
+
 职责：
 
 - 失败样本归因。
@@ -1496,6 +1530,16 @@ Single Review Worker
 - 右侧：审核点结果卡片。
 - 点击右侧审核点或证据，左侧滚动并高亮对应原文位置。
 
+MVP-002 只读工作台契约：
+
+- 正式结果 identity 是 `taskId + executionId`；带 `executionId` 的查询不得回退到同 task 的 latest snapshot。
+- 左侧预览按当前 parser 输出的标题、段落和表格渲染，元素 identity 必须来自 parser，不得根据 evidence text 或 candidate value 反向搜索。
+- 点级 `sourceAnchors[]` 是定位真源：优先 `previewElementRef`，否则 `primaryBlockId/blockId`；`BLOCK_LEVEL` 明示降级，`UNAVAILABLE` 不提供伪跳转。
+- 文档 preview 仅可在 execution `parserVersion` 与当前 parser release 精确相同时按需重解析；版本不一致 fail closed，不建设历史 parser 兼容层。
+- 原始 DOCX 下载必须校验 task/execution 归属、存储根目录、普通文件、
+  reparse/symlink 和上传 SHA-256；preview、hash 与下载消费同一份已验证不可变字节
+  快照。文件打开必须绑定 root/task identity，不能退化为校验后重新按路径打开。
+
 处理中：
 
 - 只显示简单状态页。
@@ -1613,6 +1657,26 @@ UNAVAILABLE
 - `ModelCallIntent`、模型重试 attempt、backoff、最终 artifact 复用或失败原因。
 - 人工反馈入口；若一期提供该入口，至少支持对核心审核点标记误报并记录反馈来源。
 
+任务列表每行表示一个 execution，排序与分页必须稳定，合同名、状态、当前 stage、Model Profile 与结果统计全部来自同一 execution。状态组固定为：
+
+```text
+PROCESSING = 全部非终态
+COMPLETED  = SUCCESS / PARTIAL_SUCCESS
+FAILED     = FAILED / CANCELLED
+```
+
+任务清单、parser-backed 合同预览和原始 DOCX 下载属于内部工作台敏感读取，必须按
+ADR-020 由后端验证部署侧管理 Bearer token。Admin 与只读管理 token 均可读取；未认证
+请求在进入 service/repository 前返回 `401`。Token 不进入 URL、响应、日志或浏览器
+持久化。普通结果摘要仍遵循既有兼容契约；不能用可猜测或已泄露的
+`taskId + executionId` 代替合同读取授权。
+Filter 必须按与 Spring MVC 一致的 canonical application path 移除 matrix parameter
+后判断保护范围；所有 `;...` 路径变体仍须先通过同一 Bearer 门禁。Spring MVC 对
+GET handler 的自动 HEAD 映射也属于同一敏感读取边界；匿名 GET/HEAD 均必须在进入
+controller/service 前被拒绝。
+
+Model Profile 管理首期不提供 raw KEY 写入/读取。页面只显示 immutable config version、provider/model/endpoint alias、`secretConfigured`、readiness 和最近一次 connectivity test；PUBLIC profile 只允许创建 disabled/unbound `EVALUATION` 配置。
+
 管理台可以展示中间诊断和部分 point result；普通结果 URL 不展示半成品审核结果。
 
 权限一期可以简单，但不能假安全：
@@ -1620,6 +1684,8 @@ UNAVAILABLE
 - 普通结果 URL 不暴露 prompt、raw output、endpoint、stack trace、admin logs。
 - 管理台至少登录保护。
 - Admin API 必须后端保护。
+- execution 任务清单、合同 preview 和原始 DOCX 必须后端认证；外围网络或前端隐藏
+  不能替代。
 - 规则/prompt/pattern 发布需要管理员确认。
 
 ## 16. 数据与版本
@@ -2181,7 +2247,7 @@ NOT_CONCLUDED 表示系统没有足够依据，不表示合同无风险
 - 审核策略：规则/正则/Gemma 混合路由，后端最终裁判。
 - 证据策略：全局索引 + ReviewPointFamily 共享 EvidenceBundle + 单点 EvidencePacket overlay，受 token budget 约束。
 - 候选策略：CandidateIndex 高召回，CandidateResolver 保守高置信归属，EvidenceSlot Preflight 决定执行/降级/Gemma 辅助。
-- 模型策略：本地 A30/Gemma 用于生产辅助，公网模型用于质量优化助手。
+- 模型策略：本地 A30/Gemma 用于生产辅助；公网模型默认关闭，仅用于明确授权的脱敏 `EVALUATION` 和质量优化助手，并受 ADR-018/019 激活门禁约束。
 - 结果页：左侧合同原文，右侧审核点，右侧点击定位左侧证据。
 - 架构原则：优先稳定开源库，避免自研底层文档解析，避免过度复杂平台化。
 

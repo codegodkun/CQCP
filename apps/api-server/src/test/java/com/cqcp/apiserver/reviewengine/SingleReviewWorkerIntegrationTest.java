@@ -8,7 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -317,8 +319,27 @@ class SingleReviewWorkerIntegrationTest {
         // but DocxWordParserSpike.parse throws (not a valid OPC package)
         var fullPath = uploadRoot().resolve(docRef);
         writeFile(fullPath, new byte[0]);
-        insertTaskExec(tId, eId, "v20260705.1", "{}", docRef);
+        insertTaskExec(tId, eId, "v20260705.1", "{}", docRef, new byte[0]);
         boolean c = worker.runOnce(); assertThat(c).isTrue();
+        assertAc13(eId, eId);
+    }
+
+    @Test
+    void ac13_documentHashMismatch_failsClosed() {
+        var tId = "b13-" + uuid8(); var eId = "b13-" + uuid8();
+        var docRef = tId + "/" + uuid32() + ".docx";
+        var fullPath = uploadRoot().resolve(docRef);
+        writeFile(fullPath, MINI_DOCX);
+        insertTaskExec(
+                tId,
+                eId,
+                "v20260705.1",
+                "{}",
+                docRef,
+                "tampered-metadata".getBytes(StandardCharsets.UTF_8));
+
+        assertThat(worker.runOnce()).isTrue();
+
         assertAc13(eId, eId);
     }
 
@@ -406,12 +427,21 @@ class SingleReviewWorkerIntegrationTest {
         catch (java.io.IOException e) { throw new RuntimeException(e); }
     }
     private void insertTaskExec(String tId, String eId, String ruleSet, String sfJson, String docRef) {
+        insertTaskExec(tId, eId, ruleSet, sfJson, docRef, MINI_DOCX);
+    }
+    private void insertTaskExec(
+            String tId,
+            String eId,
+            String ruleSet,
+            String sfJson,
+            String docRef,
+            byte[] integrityBytes) {
         var sf = sfJson == null ? "'{}'::jsonb" : "'" + sfJson.replace("'","''") + "'::jsonb";
         jdbcTemplate.update("INSERT INTO task (task_id, caller_type, source_type, contract_name, " +
                 "contract_type_code, result_url, structured_fields_snapshot, contract_metadata) " +
                 "VALUES (?,'TEST','TEST',?,'ENGINEERING',?," + sf +
-                ",('{\"documentReference\":\"' || ? || '\"}')::jsonb)",
-                tId, tId, "/r/"+tId, docRef);
+                ",jsonb_build_object('documentReference', ?, 'sizeBytes', ?, 'sha256', ?))",
+                tId, tId, "/r/"+tId, docRef, integrityBytes.length, sha256(integrityBytes));
         jdbcTemplate.update("INSERT INTO execution (execution_id, task_id, status, current_stage, " +
                 "contract_type_profile_version, rule_set_version, review_budget_profile_version, " +
                 "model_profile_code, model_config_version, parser_version, prompt_version, " +
@@ -425,6 +455,15 @@ class SingleReviewWorkerIntegrationTest {
                 eId, tId, ruleSet);
         createdTaskIds.add(tId);
         createdExecutionIds.add(eId);
+    }
+
+    private static String sha256(byte[] bytes) {
+        try {
+            return HexFormat.of().formatHex(
+                    MessageDigest.getInstance("SHA-256").digest(bytes));
+        } catch (java.security.NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("SHA-256 is unavailable", exception);
+        }
     }
     private void assertAc13(String eId, String executionId) {
         // FAILED

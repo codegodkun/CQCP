@@ -1,0 +1,30 @@
+services:
+  postgres:
+    networks:
+      - model_isolated
+
+  api-server:
+    build:
+      context: ${CQCP_API_ACCEPTANCE_CONTEXT}
+      dockerfile: Dockerfile
+    ports: !reset []
+    networks:
+      - model_isolated
+
+  admin-web:
+    networks:
+      - model_isolated
+      - browser_ingress
+    volumes:
+      - ${CQCP_ACCEPTANCE_NGINX_TEMPLATE}:/etc/nginx/templates/default.conf.template:ro
+
+networks:
+  model_isolated:
+    name: cqcp_mvp002_acceptance_model_isolated
+    internal: true
+  browser_ingress:
+    name: cqcp_mvp002_acceptance_browser_ingress
+
+volumes:
+  cqcp_postgres_data:
+    name: cqcp_mvp002_acceptance_postgres_data

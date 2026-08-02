@@ -1,0 +1,606 @@
+{
+  "schemaVersion" : "task-eval-002-track-b-runtime-packet-set-v1",
+  "track" : "TRACK_B_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+  "sampleId" : "CQCP-MVP-DOCX-002",
+  "source" : "same-run ReviewEngineInput.pointEvidences",
+  "packetCount" : 9,
+  "modelCallsAllowed" : false,
+  "packets" : [ {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-7c7f091071fe52b6aea2ded9b5c1e85ff92fa5a97f1c5e74d03c2cfc3215458a",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PARTY_FIELDS",
+    "reviewPointCode" : "PARTY_A_NAME_CONSISTENCY",
+    "candidateRole" : "PARTY_A",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "达利安造船厂",
+      "evidenceText" : "甲 方 ： | 达利安造船厂",
+      "sourceAnchor" : {
+        "blockId" : "block-2",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-1/row:0/cell:1",
+        "sectionPath" : [ ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "达利安造船厂",
+      "evidenceText" : "甲方（全称）： 达利安造船厂",
+      "sourceAnchor" : {
+        "blockId" : "block-22",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-003",
+      "candidateValue" : "达利安造船厂",
+      "evidenceText" : "甲方：达利安造船厂 （公章） 地址： 四方城市西青区张家窝镇 法定代表人或授权代表： 马超 电话： 开户银行： A银行股份有限公司四方城分行营业部 账号： | 乙方：天下会装饰工程有限公司 （公章）地址：四方城市和平区南营门街道南京路235号河川4048号 法定代表人或授权代表： 雄霸 电话： 1999999999 开户银行：中国工商银行股份有限公司四方城西广开支行 账号：030207030ABDCDFG2",
+      "sourceAnchor" : {
+        "blockId" : "block-72",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-2/row:0/cell:0",
+        "sectionPath" : [ "第一部分 协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-004",
+      "candidateValue" : "达利安造船厂",
+      "evidenceText" : "甲方（全称）： 达利安造船厂",
+      "sourceAnchor" : {
+        "blockId" : "block-197",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件1：阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-005",
+      "candidateValue" : "达利安造船厂",
+      "evidenceText" : "甲方: 达利安造船厂 乙方: 天下会装饰工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-212",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件1：阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "party_a",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 273,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-0fbb282aae942b2f59f6196b8309697ed29a019b320fa5debdd86f6212234d3c",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PARTY_FIELDS",
+    "reviewPointCode" : "PARTY_B_NAME_CONSISTENCY",
+    "candidateRole" : "PARTY_B",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "天下会装饰工程有限公司",
+      "evidenceText" : "乙 方 ： | 天下会装饰工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-3",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-1/row:1/cell:1",
+        "sectionPath" : [ ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "天下会装饰工程有限公司",
+      "evidenceText" : "乙方（全称）： 天下会装饰工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-23",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-003",
+      "candidateValue" : "天下会装饰工程有限公司",
+      "evidenceText" : "甲方：达利安造船厂 （公章） 地址： 四方城市西青区张家窝镇 法定代表人或授权代表： 马超 电话： 开户银行： A银行股份有限公司四方城分行营业部 账号： | 乙方：天下会装饰工程有限公司 （公章）地址：四方城市和平区南营门街道南京路235号河川4048号 法定代表人或授权代表： 雄霸 电话： 1999999999 开户银行：中国工商银行股份有限公司四方城西广开支行 账号：030207030ABDCDFG2",
+      "sourceAnchor" : {
+        "blockId" : "block-72",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-2/row:0/cell:1",
+        "sectionPath" : [ "第一部分 协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-004",
+      "candidateValue" : "天下会装饰工程有限公司",
+      "evidenceText" : "乙方（全称）： 天下会装饰工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-198",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件1：阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-005",
+      "candidateValue" : "天下会装饰工程有限公司",
+      "evidenceText" : "甲方: 达利安造船厂 乙方: 天下会装饰工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-212",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件1：阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "party_b",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 288,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-f1b3c85cdec004459eb506d22f6bd704f08e450c6a2eeacdd1e8eb4c0abf8dd5",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "AMOUNT_TAX",
+    "reviewPointCode" : "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+    "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "884800",
+      "evidenceText" : "材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分 】，（小写）：￥：【101,791.15】 元。",
+      "sourceAnchor" : {
+        "blockId" : "block-38",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "contract_total_amount",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 145,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-72d3cb66e64af361f27ddc9940abae79b6bcf40b535519f72dde78a9c7f2d069",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "AMOUNT_TAX",
+    "reviewPointCode" : "TAX_AMOUNT_FORMULA_CONSISTENCY",
+    "candidateRole" : "TAX_AMOUNT",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "101791.15",
+      "evidenceText" : "材料/设备含税总价（大写）：【捌拾捌万肆仟捌佰元整】，（小写）：￥：【 884800】元；其中不含税总价（大写）：【 柒拾捌万叁仟零捌元捌角伍分 】，（小写）：￥：【783,008.85】 元；税金（大写）：【壹拾万壹仟柒佰玖拾壹元壹角伍分 】，（小写）：￥：【101,791.15】 元。",
+      "sourceAnchor" : {
+        "blockId" : "block-38",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "tax_amount",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 145,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-0eb0b9df03e512a20b29252728be5e6b3f98bb167a01cbaabcbe829df059e913",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "PREPAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "0",
+      "evidenceText" : "预付款：无预付款；",
+      "sourceAnchor" : {
+        "blockId" : "block-141",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第二部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "prepayment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 9,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-4d101d337d3e66f13f541abb43214570b4435990c61351a9fdfcadd5d14d5bab",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "80",
+      "evidenceText" : "供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、交货验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至乙方到货总价的80%，乙方开具完成产值额100%的发票；",
+      "sourceAnchor" : {
+        "blockId" : "block-143",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第二部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "progress_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 108,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-5c8963ca80a3fdd5277d6fdb31b2e3e3040f7aa4f31dcfccd37b0bed8035afec",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "95",
+      "evidenceText" : "安装完工款：完工并验收合格后，乙方须提供齐全的付款资料（付款资料包括：乙方的付款申请、相应金额的发票、完工验收合格的三方验收单、自平台打印的接收单），甲方在收到齐全的付款资料之后45个工作日内支付至该批安装完工款（按含安装费的综合单价计算）的95%，乙方开具完成产值额100%的发票；",
+      "sourceAnchor" : {
+        "blockId" : "block-145",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第二部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "completion_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 142,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-b9469153e7ed8c4b4166f3480887dc787f98ce4f3a15d7da2a95b73b85bfc927",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "95",
+      "evidenceText" : "结算款：结算完成后，付款文件齐全支付至结算总价的95%。",
+      "sourceAnchor" : {
+        "blockId" : "block-146",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第二部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "settlement_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 28,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-c141dd5c1ec09ad8b39bf76939c9dae1641f39afea5c8dff300f9b92221bb09c",
+    "taskId" : "task-034-CQCP-MVP-DOCX-002",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-002",
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "candidateRole" : "WARRANTY_RETENTION_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "5",
+      "evidenceText" : "单项目合同签署完毕，乙方应向甲方提交保证金额为单项目采购合同金额的的 5% 的《质量保函》，质量保函有效期 3 年（按集中交付之日起一个月后开始计算）。质量保函应为不可撤销的、见索即付的独立保函，乙方未提交《质量保函》的，甲方有权延期支付结算款直至乙方提供《质量保函》。如因乙方不履行质保义务或履行不符合约定的，因此而发生的费用及对甲方造成的损失，乙方同意甲方有权从质量保函获得索赔或从乙方与甲方/甲方任何一个参股或控股公司签订合同或订单的合同款项或货款中扣除。质量保函应为不可撤销的、见索即付的独立保函。如保修期届满前，质量保函担保人的赔偿金额已达到最高保函金额，则乙方应额外向甲方提供保证金额为上述最高保函金额的《质量保函》，担保期限和保函类型等其他要求按本条款约定执行，以此类推。且保修期届满前若出现质量保函金额不足以覆盖对甲方造成的损失，甲方有权随时要求乙方赔偿，且甲方要求赔偿不免除乙方按照本条款约定继续提供质量保函的责任。",
+      "sourceAnchor" : {
+        "blockId" : "block-147",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第二部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "warranty_retention_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 417,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  } ],
+  "familyPlans" : [ {
+    "family" : "PARTY_FIELDS",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-002:PARTY_FIELDS:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "PARTY_A",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "PARTY_B",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  }, {
+    "family" : "AMOUNT_TAX",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-002:AMOUNT_TAX:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "TAX_AMOUNT",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  }, {
+    "family" : "PAYMENT_TERMS",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-002:PAYMENT_TERMS:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "PREPAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "WARRANTY_RETENTION_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  } ]
+}

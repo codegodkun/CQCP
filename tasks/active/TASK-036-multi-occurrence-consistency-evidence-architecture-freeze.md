@@ -1,6 +1,9 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / TASK_SPEC-036-A Implemented / Codex ACCEPT_IMPLEMENTATION / Independent Implementation Audit GO / EXACT COMMIT AUTHORIZED / B-C NOT AUTHORIZED
+状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
+`979ddbd…` Core verification PASS / `3e4e8d00…` Code-Architecture P1 NO_GO /
+D2 Required-Block Identity Targeted `22/22` PASS /
+Fresh Verification and Final Audit Pending
 
 类型：A 类主链路架构治理父任务
 
@@ -146,7 +149,10 @@
 
 ## Next Task Handoff
 
-`TASK_SPEC-036-A` 已实现并经 Codex Review Intake 接纳，独立只读实现审计最终 `GO`；最终定向 XML 为第一组 47/47、第二组 25/25。用户已授权精确提交本轮 7 个实现文件和 5 个治理文档；该提交不授权 B/C、正式 E2E、push 或 merge。
+当前 A/B/C1/C2/D1/D2 已按冻结局部规格在 `codex/task-mvp-002` worktree
+实现，R7 已补足 execution-scoped exact query 证明并重建 Track B v5，统一验证已通过。
+下一步只做 `MILESTONE-MVP-002` 新冻结和三审；不扩大到 Provider、
+`REVIEWING_MODEL`、commit、push、PR 或 merge。
 
 ## 独立审计与 Codex Review Intake
 
@@ -175,13 +181,85 @@
 ## 待确认
 
 * 已确认：用户接受 `ADR-016`，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`。
-* 待后续 B 批次单独冻结新 RuleSetVersion 标识与 carrier activation；A 不改变当前规则集输出。
-* occurrence scope policy 的最终字段名与 RuleSetVersion 承载位置。
+* 已确认：B1/B2/C1/C2 已在当前 `codex/task-mvp-002` worktree 集成；
+  `v20260715.1` execution 可进入 consistency-set runtime，普通
+  `MVP_DEMO_MOCK / v20260705.1` binding 不变。
+* 已确认：2026-07-29 C1/C2 相关 10 个测试类联合复跑 413/413 通过。
+* 历史事实：TASK-034 R6 为 `FAIL`；C1 full scan 的
+  payment-method-neutral 冻结语义使 inactive payment template 候选与 active
+  branch 候选发生 role conflict。
+* 已确认：D1 用新 `v20260729.1` 与
+  `consistency-scope-v20260729.1` 解决 active/inactive branch attribution；
+  没有原地修改 v15，R7 正式工件为 `PASS`。
+* 已确认：D2 eligibility/family-plan/runtime-isomorphic EvidencePacket seam
+  已实现；当前 R7 27 点全部 deterministic HIGH，Track B 为 27/27 zero-call
+  abstention，Provider admission 仍未建立。
 
 ## 完成记录
 
 * 完成日期：未完成。
 * 变更文件：本任务包、已接受的 ADR-016、`docs/ARCHITECTURE.md` v0.10 与项目记忆文档。
 * 测试结果：架构冻结两轮独立只读审计及最终 delta 核对 `GO`；TASK_SPEC-036-A 第一组 47/47、第二组 25/25，独立实现审计最终 `GO`。
-* 遗留问题：B/C 的 RuleSetVersion / scope policy / readiness 仍未冻结。
-* 备注：用户已授权精确提交 A 的 7 个实现文件和 5 个治理文档；最终 commit hash 以 Git 历史为准。不得据此宣称生产 57/57、多 anchor 已激活或正式 E2E 通过，不得自动进入 B/C、push 或 merge。
+* MVP-002 worktree 增量：B1 versioned policy、B2 loader/gate、C1 inactive runtime
+  core 和 C2 execution activation 已集成；定向联合回归 413/413。
+* D1/R7 增量：D1 30/30；独立审计安全整改后曾与既有回归合并为 444/444，
+  MVP-002 Core 首轮 SourceAnchor provenance P1 整改增加 3 条，随后全路径
+  fallback provenance P1 整改再增加 4 条防御性回归，后续 TABLE_ROW capture
+  span P1 整改增加 1 条，当前完整门禁为 452/452；R7 为 27/27
+  candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
+  70 production semantic ledger、0 SYS/Finding。
+* D2/Track B 增量：seam 22/22；3 份包、27 packet、9 plan、57 occurrence，
+  v5 三个全新盲评 agent 27/27 `ZERO_CALL_REQUIRED`，seal 为
+  `edcfa024dfe2cbf6c5b1fe6ca1427a91d61101dd8903f19f61c70294f1fe2970`。
+  这不构成 Provider admission。
+* 遗留问题：当前 required-block identity 修复仍是 tracked working-tree，尚待形成
+  clean HEAD 并从零完成统一验证、新冻结、同一
+  hash 三审、CI 与 merge；尚未进入主线。
+* 2026-07-31 中途收敛：B1/B2/C1/C2/D1/D2 runtime seam 纳入先行 Core
+  integration unit；Core 完整验证、正式三方全零审计、CI 和 merge 后才可声明
+  `seamIntegratedIntoMainline=true`。该顺序不授权 Provider A0、A1/A2 或 A3。
+* 2026-07-31 `ea19a52a…` 三审发现 consistency occurrence 未携带 parser
+  `contextType`，使点级 SourceAnchor 与 Runtime EvidencePacket 输出 `null`。
+  限定整改为 occurrence 级 provenance 贯通与非空 enum 校验；不修改
+  CandidateResolver、EvidenceSlot、裁判或 Finding。旧 freeze 已失效，必须从
+  新 HEAD 重跑 R7 和三审。
+* 2026-08-02 `8d01dd9a…` 首名代码/架构审计发现 TABLE_ROW pattern/v29 未将
+  capture value span 映射到 parser-issued cell，以及内部 `TABLE_CELL` location
+  泄漏到公共 SourceAnchor。主 Codex 已完成限定整改：ordinary pattern 采用 group
+  span，v29 采用可逆 normalized-to-source projection，“无预付款”采用精确 token
+  span；内部 occurrence 仍保留 `TABLE_CELL`，公共 SourceAnchor 按 ADR-015 统一
+  输出 `BLOCK_LEVEL`。红测 `32/4 failures`，绿测 `32/32`，扩大定向 `200/200`；
+  不改变 CandidateResolver、EvidenceSlot、deterministic verdict 或 Finding。
+  `8d01dd9a…` 已失效，新 R7、完整 verification、freeze 与三审待重建。
+* 2026-08-02 `91d5e16…` 的 D1 11 个 suites 已全部通过，实际计数为
+  `452/0/0/0`；verification/freeze 固定 451 的门禁因新增 ParserBacked evidence
+  回归而滞后。当前仅同步计数与 validator fixture，Node 定向 `11/11 PASS`，不改变
+  D1 生产语义。新的完整 verification、freeze 与三审仍待重建。
+* 2026-08-02 HEAD `ad14800c161c096018f91fc8021feec9338a951b` 已完成从零
+  Core verification，freeze subject 为 `75d86031…`，并取得 CC AUDIT 与两个全新
+  Codex auditor 全零 `GO`。PR #37 push 后，GitHub run `30729941151` 的 backend
+  暴露 TASK-036 v2 fixture checkout 字节错配：Markdown/CSV 的冻结 SHA 使用 LF，
+  `.gitattributes` 却指定 CRLF；四个 JSON 的历史 CRLF SHA 正确。当前最小修复仅将
+  Markdown/CSV 改为 LF，保留 JSON CRLF 和所有 hash 常量；Windows 与断网 Linux
+  ephemeral-commit + fresh-clone 同组回归均为 `31/31 PASS`，Linux 六个 SHA 全部
+  等于冻结常量。`75d86031…` 三审已因 tracked diff 变化整体失效。
+* 2026-08-02 HEAD `c21a68d844a90dddc01b511e1b76403a5ed1c39b` 的完整 Core
+  verification 全部通过并冻结为 `72b934c271e15bbb4e5e76f24a7413015eb949f0bcb77b432177ea85ef63f84b`。
+  第一名全新代码/架构 Codex auditor 返回 `NO_GO（P2=1 / blocking=1）`：同一 role
+  跨 shard 的 required blocks 未先聚合，预算不足时可部分 requested 又 uncovered。
+  CC `deepseek-v4-flash` 审计因 `$8` budget exhausted 未产生报告，第二名 Codex
+  auditor 未启动；该轮不能用于收口。用户批准后，主 Codex 已完成限定红绿整改：
+  先按 role 聚合并去重 required blocks、以最高 priority 原子预算，集合互斥；红测
+  `1/1 FAIL`，绿测 D2 `21/21`、D2 + Track B contract `22/22`、Node `11/11`。
+  尚未执行新的完整 verification、freeze 或三审。
+* 2026-08-02 HEAD `979ddbd3f9c903ee6cce40cf578676b084096f91` 的完整 Core
+  verification 通过并冻结为 `3e4e8d00cb477ae79fdefac7449fb623ad123a16f8be096f9c07f559ff99587f`。
+  CC 与测试/安全 Codex auditor 全零 `GO`，代码/架构 Codex auditor 返回
+  `NO_GO（P1=1 / blocking=1）`：runtime packet admission 丢失 evaluator 的精确
+  `requiredBlockIds`，转回 role request 时扩大为全部 candidates。主 Codex 已按用户
+  批准完成 mixed-candidate round-trip 限定红绿修复；D2 `22/22`、与历史 Track B
+  contract 联合 `23/23`，历史 corpus 字节与人工 hash 均未修改。新完整 verification、
+  freeze 与三审仍待重建，`3e4e8d00…` 不得复用。
+* 备注：不得据此宣称 Production Ready、Provider admitted 或
+  `TASK-028 / TASK-031 / TASK-032` 已解锁；Git 动作仅按用户已给出的 Core 条件式
+  授权执行，merge 仍要求新 subject 三审全零、CI 全绿且 HEAD 不漂移。

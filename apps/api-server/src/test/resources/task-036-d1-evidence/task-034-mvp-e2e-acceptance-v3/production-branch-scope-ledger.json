@@ -1,0 +1,708 @@
+{
+  "schemaVersion" : "task034-production-branch-scope-ledger-v1",
+  "ruleSetVersion" : "v20260729.1",
+  "scopeVersion" : "consistency-scope-v20260729.1",
+  "humanGroundTruthExcludedCount" : 6,
+  "productionEntryCount" : 70,
+  "entries" : [ {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-169",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-170",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-169",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-170",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-169",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-170",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-169",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-170",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-169",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-170",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-132",
+    "blockTextSha256" : "f440c633c3502df55703923fe415df8de4195744e9d2b465024e1b2ba313193f",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-134",
+    "blockTextSha256" : "3767f598d01f4b5ff1280b13da63b9ada9f889b71a367be5e5cada52868264f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-135",
+    "blockTextSha256" : "c583bee132d3ab684612539fec0c4d1825b53de81ac7e7e53bedb0ef66a6bf02",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-136",
+    "blockTextSha256" : "882f3b5df749347efcb2d22267eba43446ef948906736c556d022475cbdd6d4c",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-137",
+    "blockTextSha256" : "b166d13451cee583475dc648d6c6e96e2678170aea8a31bd52dbdaaf25553c07",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-138",
+    "blockTextSha256" : "a6e7627e0f6e86ac4f16d42c838bf3967005172a9dd4cca03ddc604b679c0be9",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-132",
+    "blockTextSha256" : "f440c633c3502df55703923fe415df8de4195744e9d2b465024e1b2ba313193f",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-134",
+    "blockTextSha256" : "3767f598d01f4b5ff1280b13da63b9ada9f889b71a367be5e5cada52868264f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-135",
+    "blockTextSha256" : "c583bee132d3ab684612539fec0c4d1825b53de81ac7e7e53bedb0ef66a6bf02",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-136",
+    "blockTextSha256" : "882f3b5df749347efcb2d22267eba43446ef948906736c556d022475cbdd6d4c",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-137",
+    "blockTextSha256" : "b166d13451cee583475dc648d6c6e96e2678170aea8a31bd52dbdaaf25553c07",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-138",
+    "blockTextSha256" : "a6e7627e0f6e86ac4f16d42c838bf3967005172a9dd4cca03ddc604b679c0be9",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-132",
+    "blockTextSha256" : "f440c633c3502df55703923fe415df8de4195744e9d2b465024e1b2ba313193f",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-134",
+    "blockTextSha256" : "3767f598d01f4b5ff1280b13da63b9ada9f889b71a367be5e5cada52868264f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-135",
+    "blockTextSha256" : "c583bee132d3ab684612539fec0c4d1825b53de81ac7e7e53bedb0ef66a6bf02",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-136",
+    "blockTextSha256" : "882f3b5df749347efcb2d22267eba43446ef948906736c556d022475cbdd6d4c",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-137",
+    "blockTextSha256" : "b166d13451cee583475dc648d6c6e96e2678170aea8a31bd52dbdaaf25553c07",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-138",
+    "blockTextSha256" : "a6e7627e0f6e86ac4f16d42c838bf3967005172a9dd4cca03ddc604b679c0be9",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-132",
+    "blockTextSha256" : "f440c633c3502df55703923fe415df8de4195744e9d2b465024e1b2ba313193f",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-134",
+    "blockTextSha256" : "3767f598d01f4b5ff1280b13da63b9ada9f889b71a367be5e5cada52868264f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-135",
+    "blockTextSha256" : "c583bee132d3ab684612539fec0c4d1825b53de81ac7e7e53bedb0ef66a6bf02",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-136",
+    "blockTextSha256" : "882f3b5df749347efcb2d22267eba43446ef948906736c556d022475cbdd6d4c",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-137",
+    "blockTextSha256" : "b166d13451cee583475dc648d6c6e96e2678170aea8a31bd52dbdaaf25553c07",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-138",
+    "blockTextSha256" : "a6e7627e0f6e86ac4f16d42c838bf3967005172a9dd4cca03ddc604b679c0be9",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-132",
+    "blockTextSha256" : "f440c633c3502df55703923fe415df8de4195744e9d2b465024e1b2ba313193f",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-134",
+    "blockTextSha256" : "3767f598d01f4b5ff1280b13da63b9ada9f889b71a367be5e5cada52868264f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-135",
+    "blockTextSha256" : "c583bee132d3ab684612539fec0c4d1825b53de81ac7e7e53bedb0ef66a6bf02",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-136",
+    "blockTextSha256" : "882f3b5df749347efcb2d22267eba43446ef948906736c556d022475cbdd6d4c",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-137",
+    "blockTextSha256" : "b166d13451cee583475dc648d6c6e96e2678170aea8a31bd52dbdaaf25553c07",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-138",
+    "blockTextSha256" : "a6e7627e0f6e86ac4f16d42c838bf3967005172a9dd4cca03ddc604b679c0be9",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-165",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-166",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-165",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-166",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-165",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-166",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-165",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-166",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-165",
+    "blockTextSha256" : "98d3d3019316d5a3cd3fc8caff12cefa062559c4d06d551f3e5804f054e7d4b5",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-166",
+    "blockTextSha256" : "451e80db51fbf56da0e24801b9820e17bb861f324c094cd75412437cdfde3a31",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-167",
+    "blockTextSha256" : "71b20422cebc291e5b35f4a0aed4008c473b713be47afb7472c79909c053e5ed",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "blockId" : "block-168",
+    "blockTextSha256" : "b8e7dde5bac9edb84dbc5bfe5add6d518699f408be849ff6890fbb3a89f2c4f8",
+    "status" : "EXCLUDED",
+    "reason" : "SEMANTIC_EXCLUDED",
+    "classifierId" : "INACTIVE_PAYMENT_BRANCH",
+    "scopeVersion" : "consistency-scope-v20260729.1",
+    "ruleSetVersion" : "v20260729.1"
+  } ]
+}

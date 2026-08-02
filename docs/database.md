@@ -54,6 +54,28 @@ binding 的 budget/model reference 使用外键；同一 `purpose + deployment_s
 
 `content_digest` 对 ADR-017 固定顺序的 19 个字符串，以专用默认 Jackson `JsonMapper` 生成 UTF-8 compact JSON array 后计算 SHA-256 lowercase hex；lifecycle/audit timestamp 和 JSONB 不参与。Java resolver 必须重算，数据库 CHECK 只验证 hex 形状。
 
+## Flyway V3 Model Profile Secret Reference 基线
+
+`V3__model_profile_secret_reference.sql` 在不改写 V2 历史 config content 的前提下新增：
+
+- `model_profile_config_version.secret_ref`：只保存
+  `env:CQCP_MODEL_DEEPSEEK_API_KEY` 或
+  `file:/run/secrets/cqcp-model-deepseek-api-key`，不保存 raw secret；数据库 CHECK
+  与应用 allowlist 双重拒绝其他环境变量和无关文件。
+- `model_profile_connectivity_test`：只保存稳定结果类别、耗时、测试时间与
+  `configVersion` 引用，不保存第三方响应体、Authorization header、prompt、raw
+  response 或 stack trace。
+
+Model Profile content 变化必须插入新的 `config_version` row；同一 `profile_code` 的
+旧版本保留。`enabled / is_default_for_new_task / readiness_status` 属于 lifecycle，
+切换时在同一事务内锁定 profile scope、撤销旧 lifecycle，再激活目标版本。PUBLIC
+profile 首批只允许 `usage_scope=EVALUATION` 且写入时强制 disabled/default=false；
+不得创建 execution binding。
+
+`secret_ref` 不是 secret 值，也不是浏览器可写的凭据通道。应用只对外返回派生的
+`secretConfigured`，数据库、Snapshot、stage log、TuningPacket 和审计摘要不得复制
+解析后的 secret。Secret 轮换由部署环境替换引用目标完成，CQCP 不保留旧值或读取接口。
+
 ## 关键数据对象
 
 ### ReviewResultSnapshot
@@ -300,7 +322,10 @@ MVP 首批结构化字段采用通用字段必填和按付款方式条件必填�
 
 ### Audit Log
 
-MVP 管理台暂不做平台内登录、账号体系和权限矩阵；访问控制由部署环境、内网、VPN、反向代理或外围系统承担。MVP 配置变更仍应记录配置版本、变更时间和操作者占位信息；操作者可暂记为 `SYSTEM`、`ADMIN_PLACEHOLDER` 或环境账号。
+MVP 管理台暂不做账号体系、登录页和细粒度权限矩阵；所有 `/api/admin/**` 仍必须
+由后端 Bearer 鉴权保护，token 由部署环境注入且不进入数据库。MVP 配置变更仍应记录
+配置版本、变更时间和操作者占位信息；操作者可暂记为 `SYSTEM`、
+`ADMIN_PLACEHOLDER` 或环境账号。
 
 完整登录、角色权限、审批、敏感诊断导出和审计矩阵延后到 Pilot / Production Readiness 设计。
 

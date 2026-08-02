@@ -1,0 +1,645 @@
+{
+  "schemaVersion" : "task-eval-002-track-b-runtime-packet-set-v1",
+  "track" : "TRACK_B_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+  "sampleId" : "CQCP-MVP-DOCX-001",
+  "source" : "same-run ReviewEngineInput.pointEvidences",
+  "packetCount" : 9,
+  "modelCallsAllowed" : false,
+  "packets" : [ {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-666af29f3fb6d3654345a40d34dfa0fc9da54e6282d4dca037d6889d339047f6",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PARTY_FIELDS",
+    "reviewPointCode" : "PARTY_A_NAME_CONSISTENCY",
+    "candidateRole" : "PARTY_A",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "奔腾公司",
+      "evidenceText" : "发包方（甲方）： | 奔腾公司",
+      "sourceAnchor" : {
+        "blockId" : "block-4",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-1/row:0/cell:1",
+        "sectionPath" : [ ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "奔腾公司",
+      "evidenceText" : "发包方(以下简称甲方)： 奔腾公司",
+      "sourceAnchor" : {
+        "blockId" : "block-10",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-003",
+      "candidateValue" : "奔腾公司",
+      "evidenceText" : "甲方： 奔腾公司 （公章） 地址： 法定代表人或授权代表： 电话： 开户银行： 账号： 采购经办人： 成本经办人： 工程经办人： | 乙方： 前水公司 （公章）地址： 法定代表人或授权代表： 电话： 开户银行： 账号：",
+      "sourceAnchor" : {
+        "blockId" : "block-76",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-2/row:0/cell:0",
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-004",
+      "candidateValue" : "奔腾公司",
+      "evidenceText" : "| 甲方： 奔腾公司 (盖章) 法定代表人： 日期： 年 月 日",
+      "sourceAnchor" : {
+        "blockId" : "block-85",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-3/row:6/cell:1",
+        "sectionPath" : [ "第二部分 签约通知书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-005",
+      "candidateValue" : "奔腾公司",
+      "evidenceText" : "甲方（全称）： 奔腾公司",
+      "sourceAnchor" : {
+        "blockId" : "block-235",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-006",
+      "candidateValue" : "奔腾公司",
+      "evidenceText" : "甲方: 奔腾公司 乙方: 前水公司",
+      "sourceAnchor" : {
+        "blockId" : "block-244",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "party_a",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 202,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-8026fe3d3810f7b99e67cc9d91b5038d434f7fa284897e33688ee684f1345969",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PARTY_FIELDS",
+    "reviewPointCode" : "PARTY_B_NAME_CONSISTENCY",
+    "candidateRole" : "PARTY_B",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "前水公司",
+      "evidenceText" : "承包方（乙方）： | 前水公司",
+      "sourceAnchor" : {
+        "blockId" : "block-5",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-1/row:1/cell:1",
+        "sectionPath" : [ ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "前水公司",
+      "evidenceText" : "承包方(以下简称乙方)： 前水公司",
+      "sourceAnchor" : {
+        "blockId" : "block-11",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-003",
+      "candidateValue" : "前水公司",
+      "evidenceText" : "甲方： 奔腾公司 （公章） 地址： 法定代表人或授权代表： 电话： 开户银行： 账号： 采购经办人： 成本经办人： 工程经办人： | 乙方： 前水公司 （公章）地址： 法定代表人或授权代表： 电话： 开户银行： 账号：",
+      "sourceAnchor" : {
+        "blockId" : "block-76",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-2/row:0/cell:1",
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-004",
+      "candidateValue" : "前水公司",
+      "evidenceText" : "尊敬的前水公司：",
+      "sourceAnchor" : {
+        "blockId" : "block-80",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-3/row:1/cell:0",
+        "sectionPath" : [ "第二部分 签约通知书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-005",
+      "candidateValue" : "前水公司",
+      "evidenceText" : "乙方（全称）： 前水公司",
+      "sourceAnchor" : {
+        "blockId" : "block-236",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-006",
+      "candidateValue" : "前水公司",
+      "evidenceText" : "甲方: 奔腾公司 乙方: 前水公司",
+      "sourceAnchor" : {
+        "blockId" : "block-244",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "party_b",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 178,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-a33eb92458cf4dfbba464c7ff64de937480062d64d09841078e24da85fda1672",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "AMOUNT_TAX",
+    "reviewPointCode" : "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+    "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "8848",
+      "evidenceText" : "合同固定总价：¥ 8848 元，大写：人民币 捌仟捌佰肆拾捌元整 元；其中不含增值税合同价款：¥ 7,830.09 元，大写：人民币 柒仟捌佰叁拾元零玖分 元；增值税税款¥ 1,017.91 元，大写：人民币 壹仟零壹拾柒元玖角壹分 元。",
+      "sourceAnchor" : {
+        "blockId" : "block-35",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "8848",
+      "evidenceText" : "三标段 | 8848",
+      "sourceAnchor" : {
+        "blockId" : "block-83",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-3/row:4/cell:1",
+        "sectionPath" : [ "第二部分 签约通知书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "contract_total_amount",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 129,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-3fb5da7da29fb24cc4a4d48259809fa03546927bc1dc1ae7a9eeba30789d14fc",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "AMOUNT_TAX",
+    "reviewPointCode" : "TAX_AMOUNT_FORMULA_CONSISTENCY",
+    "candidateRole" : "TAX_AMOUNT",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "1017.91",
+      "evidenceText" : "合同固定总价：¥ 8848 元，大写：人民币 捌仟捌佰肆拾捌元整 元；其中不含增值税合同价款：¥ 7,830.09 元，大写：人民币 柒仟捌佰叁拾元零玖分 元；增值税税款¥ 1,017.91 元，大写：人民币 壹仟零壹拾柒元玖角壹分 元。",
+      "sourceAnchor" : {
+        "blockId" : "block-35",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "tax_amount",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 119,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-59bf3bae9eabc8ce8b43c7048f85862437178674aa55b99a7bea24b6f555d58f",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "PREPAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "0",
+      "evidenceText" : "本工程无预付款。",
+      "sourceAnchor" : {
+        "blockId" : "block-163",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "prepayment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 8,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-753148e224fe9000d78fee819c35e491cfdeecaa38f472398dfa25e8998fbdf9",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "70",
+      "evidenceText" : "A模式：按月形象进度付款，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；",
+      "sourceAnchor" : {
+        "blockId" : "block-166",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "progress_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 102,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-2557809b50aae40564a1f87e1d9dd2a8c73af4fd9a63a491e6684362121f676f",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "80",
+      "evidenceText" : "竣工款：竣工验收完成工后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付至已完工程量的80%；",
+      "sourceAnchor" : {
+        "blockId" : "block-171",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "completion_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 80,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-161b540479ce9e1fe3b11c7bc391def84c07c9c488028f147131c8fa54a54abd",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "97",
+      "evidenceText" : "结算款：乙方向甲方提交齐全完整的结算书并经甲方确认，工程结算完毕且整体工程交付使用后，甲方完成结算审核，乙方向甲方提交付款申请及结算金额100%的增值税专用发票等请款资料，甲方在收到上述请款资料后三个月内支付至结算金额的97%；",
+      "sourceAnchor" : {
+        "blockId" : "block-172",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "settlement_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 114,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-daf1aa868b0cd151e689171d941e030891dedba7b62dc991e77d2465970625c8",
+    "taskId" : "task-034-CQCP-MVP-DOCX-001",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-001",
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "candidateRole" : "WARRANTY_RETENTION_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "3",
+      "evidenceText" : "质保金：工程质保金为工程结算总价的3%，保修期以工程总体竣工验收，完善整改意见并正式移交甲方，甲方开始办理集中客户入住之日起计算（分批集中入住的，按每批入住时间，分批计算。质保金按同比例支付）。",
+      "sourceAnchor" : {
+        "blockId" : "block-173",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "warranty_retention_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 97,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  } ],
+  "familyPlans" : [ {
+    "family" : "PARTY_FIELDS",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-001:PARTY_FIELDS:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "PARTY_A",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "PARTY_B",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  }, {
+    "family" : "AMOUNT_TAX",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-001:AMOUNT_TAX:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "TAX_AMOUNT",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  }, {
+    "family" : "PAYMENT_TERMS",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-001:PAYMENT_TERMS:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "PREPAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "WARRANTY_RETENTION_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  } ]
+}

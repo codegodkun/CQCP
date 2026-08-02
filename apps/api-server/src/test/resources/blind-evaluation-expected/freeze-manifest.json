@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : "task-eval-002-freeze-v1",
+  "generator" : "com.cqcp.apiserver.evaluation.BlindEvaluationProjectionGenerator",
+  "reviewPointDefinitionSha256" : "899314c9e42a5449a875dff2bb01bf4c892b2759c0a6c468e8f9b04050ec7dd6",
+  "sampleCount" : 3,
+  "samples" : [ {
+    "sampleId" : "CQCP-MVP-DOCX-001",
+    "sourceDocumentSha256" : "29e50bbb74e234fd4508c2765f1a74a57ab9043667234a7bf30e04f29f2ef2f5",
+    "blindInputPath" : "outputs/task-eval-002/blind-inputs/CQCP-MVP-DOCX-001.track-a.blind.json",
+    "blindInputSha256" : "c39e24934577222308d38dc5610a8a192c2ac9873d7a216ddbdc5ed1949dd84f",
+    "groundTruthPackageSha256" : "55a1f2681527162b7317e589ddaea017b50a4de3c3bf11bc0f804c8e8578c9d4",
+    "cqcpActualPackageSha256" : "a13fceb19f810d8842abb8480019d1555cd5c336e0b20e0aa923d2cef810e061"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-002",
+    "sourceDocumentSha256" : "0ba02f11cd7c51ded7626a271c698fa8c0e3fa50197b2a31b6cbed9d714ea074",
+    "blindInputPath" : "outputs/task-eval-002/blind-inputs/CQCP-MVP-DOCX-002.track-a.blind.json",
+    "blindInputSha256" : "df7319c757493517d19958f98780fc097fc278fbbcab1bb45966541cd1031b29",
+    "groundTruthPackageSha256" : "946bb29e128624fc1b184fa4d7d373c5ffb7cdc3a9e00656ef523ac3d7dfd13c",
+    "cqcpActualPackageSha256" : "6687fabec3e529b77d32c99bb0537ac02b04534e2998c3173025a5f176f68353"
+  }, {
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "sourceDocumentSha256" : "48bb0fc63a0182baff5d7bd3e38f3a4409f68e7c371e5d24c02970c6362bf7b3",
+    "blindInputPath" : "outputs/task-eval-002/blind-inputs/CQCP-MVP-DOCX-003.track-a.blind.json",
+    "blindInputSha256" : "d891f6badfced42b463d39eab2b83128bb618bb56225aa761060d6fa8608b4f7",
+    "groundTruthPackageSha256" : "5246ae4f4067bcf2e179674a653463a2ed4c8b3ad278387c82cb269dd5b7ff20",
+    "cqcpActualPackageSha256" : "05b7d05dff41cad370a21c859917a4acb0787b059087f35e936ab6ec5d564e44"
+  } ],
+  "externalEgressAuthorized" : false,
+  "externalEgressGate" : "No authorization artifact is present; DeepSeek runner must fail before network access."
+}

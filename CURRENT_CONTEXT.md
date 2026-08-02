@@ -1,154 +1,332 @@
 # CURRENT_CONTEXT.md
 
-更新日期：2026-07-28
+更新时间：2026-08-02
 
 ## 当前阶段
 
-CQCP 当前处于 MVP 主链路接通、合同审核用户闭环 Demo PR #35 CI 修复收口与
-parser-backed evidence 后续治理并行阶段。`FEATURE-MVP-001` 的 F3 实现、原始
-console 补证、状态真源补正与 v9 双重独立审计已完成；CC AUDIT 与两个 Codex
-subagent 均为 `GO`，`P0=0 / P1=0 / P2=0 / blocking findings=0`。父 TASK 与
-F3 已迁移到 `tasks/done/`；F3 commit `332d365` 的三项 CI 全部通过，PR #35
-已合并，merge commit 为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
-`FEATURE-MVP-001` 已完成，不再存在本 Feature 的开发或集成门禁。
-长期架构依据仍以 `docs/ARCHITECTURE.md` 为准；当前任务状态、门禁和下一步以本文
-与对应 task 文件的最新记录为准。
+当前处于 `MILESTONE-MVP-002-CORE` 收口阶段，唯一基线为
+`origin/master@1035739b751386176e47c6871738a62bff86de02`。
 
-当前任务推进采用 Task Level + Feature/Milestone 收口规则：`L0 探索`默认不进入主线，`L1 小文档`批量处理，`L2 Feature`默认一个父 TASK、一个 Feature PR，`L3 高风险治理`按可回滚风险边界独立审计。TASK_SPEC 保持细粒度执行和 Review Intake，但不自动等于 commit/push/PR/merge；普通 push 不因传输动作重复完整审计；人工 ground truth、expected/fixture、核心审核链路、生产激活、数据库/API/CI/安全等强门禁继续有效。详细规则见 `AGENTS.md`、`docs/DEVELOPMENT.md`、`docs/VERIFY.md` 与 `docs/context-management.md`。
+先行 Core integration unit 包含：
 
-已完成的主线能力摘要：
+- M1：execution 任务清单、精确结果查询、parser-backed preview、原始 DOCX 下载和
+  左右审核工作台；
+- M2：immutable Model Profile config、server-side Secret Reference、endpoint
+  allowlist、readiness/connectivity 与管理页；
+- M3 已完成部分：Track A Codex/DeepSeek 盲评、Track B runtime-isomorphic seam、
+  R7 zero-call 与旧 18 packet run-v3 `NO_GO_MODEL_MISMATCH` 证据；
+- TASK-034 v29/R7 与 TASK-036 B1/B2/C1/C2/D1/D2 seam。
 
-- 结果快照与结果合同、最小执行状态机、`GET /api/v1/tasks/{taskId}/result`、持久化结果查询适配。
-- `TASK-023` 公开结果页最小实现与 `TASK-024` 管理台诊断详情最小实现。
-- `TASK-025` parser-backed 主链路最小接入与 fixture 级验收收口，已归档。
-- `TASK-026` 最小 `CandidateResolver` / confidence gating / evidence admission 闸门，已归档。
-- `TASK-027` ADR-015 边界内的最小 `EvidenceSlot / SourceAnchor` 主实现，已归档；该范围不是完整 `EvidenceBundle` 平台化。
-- `TASK-GOV-003` 五类问题整改与角色执行门禁，已归档。
-- `TASK-GOV-004` PR 化多 Agent 开发治理与第一阶段 required checks，已归档。
-- `TASK-DEBT-001` 已完成父任务归档前审计、文档同步和归档授权流程，归档文件：`tasks/done/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`。
-- `TASK-030` Review assets 版本化治理 A/B/C 已完成、独立审计条件已满足、Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`，已归档；归档文件：`tasks/done/TASK-030-review-assets-versioning-governance.md`。归档不启用 runtime loader，不声明生产 runtime 绑定，不授权 `TASK-028` / `TASK-031` / `TASK-032` 或 `TASK-033`。
-- `TASK-033` MVP 端到端样本验收规格冻结已完成并归档，归档文件：`tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`。PR #24 已合并规格冻结建档，merge commit 为 `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`；PR #25 已合并 post-merge 状态写回，merge commit 为 `a60fc9f`。Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_POST_MERGE_SYNC_SATISFIED`。2026-07-09 用户确认独立只读审计已对 `TASK-033` 归档迁移与 Memory Writeback 给出 `GO`，并授权提交前收口、精确 stage、commit 与 push。归档不运行完整验收，不修改代码、测试、fixture、expected JSON、workflow、ADR 或 PRD，不归档 `TASK-EVAL-001`，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
-- `TASK-DATA-001` 已完成并归档到 `tasks/done/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`。PR #28 merge commit 为 `23c66aaed34326f242f9fb395d784518421f1575`，PR #29 post-merge merge commit 为 `2b30bf303642d10156eec5844ee09718adb595b3`，PR #30 归档 merge commit 为 `01e59f54284bbab5409f0d7fd392acfd96d7ff83`；独立归档前审计最终结论为 `GO`，Codex Decision 为 `GO_TO_ARCHIVE / INDEPENDENT PRE_ARCHIVE AUDIT SATISFIED / FULL MVP E2E NOT VERIFIED`。归档不代表完整 MVP E2E 已通过，不归档 `TASK-EVAL-001`，不补足 DoD #12，不进入 `TASK-028` / `TASK-031` / `TASK-032`。
+Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assist A3 均不
+进入 Core source diff。PUBLIC profile 保持 `EVALUATION / disabled / unbound`，
+普通 Demo 继续使用 `MVP_DEMO_MOCK`；模型不得直接改变 Finding/verdict。
+
+## 已确认事实
+
+- Windows document read/download directory junction、Secret root junction 和单一
+  Secret sentinel 定向证据已补齐；最新定向组合为 34/34 通过。
+- 单一 sentinel 测试扫描 HTTP body/header、异常、日志和数据库，并证明
+  execution/Snapshot/stage/TuningPacket writer 在 connectivity 边界不可达。
+- backend/CI 测试不再隐式依赖 `outputs/**`：盲评 source、Track B corpus、人工
+  anchor workbook 与 D1 oracle 已迁入 `apps/api-server/src/test/resources/`。
+  Node evidence validator 明确消费外部派生证据，并由 formal verification/freeze
+  逐文件绑定 hash；`outputs/**` 不进入 Core source diff。
+- Core-only 脚本 allowlist、Provider-free import closure、验证入口与冻结入口已建立；
+  它们不执行模型公网调用，也不导入 Provider contract、standing grant 或 CC send
+  lease。
+- 旧 Track B run-v3 解盲结果为 Codex 15/15、DeepSeek 6/15、controls 3/3，
+  `providerAdmission=NOT_ESTABLISHED`。同一已解盲 corpus 不得再次作为独立 admission。
+- Core 冻结 `45568f205597d7532a1e1efa1d9cc496d160bb1a8d27f3a7dcd78f310e2ad1bc`
+  已失效并封存为
+  `outputs/task-mvp-002/core-audit/freeze-rejected-45568f20/`。两名全新 Codex
+  审计员均返回 `NO_GO`：代码/架构侧为 `P1=2 / P2=1`，测试/安全侧为
+  `P1=4`。已确认根因为 DOCX 安全快照后按路径重开、R7 未绑定当前 HEAD、
+  Browser 关键断言缺少原始事件/DOM 证据、零模型外呼为脚本常量、Core
+  ARCHITECTURE 混入 Provider attempt contract，以及 TASK 状态叙事冲突。
+- 上述 NO_GO 使 `fa869af3b79f0e417a9a3de5f5630dcbe4fd5885` 上的 Compose/browser、
+  formal verification 与 freeze 全部只能作为失效历史证据，不得用于最终收口。
+- `45568f…` 的六类 blocking causes 已完成原子整改：Worker 只消费已校验的
+  DOCX byte snapshot；R7 绑定当前 HEAD/tree/source closure；browser 证据改为
+  原始 filechooser/network/DOM/console/dialog 事实；模型外呼计数来自 Compose
+  transport；Core 架构与 Provider contract 分离；父 TASK 状态叙事已收敛。
+- 正式验证随后暴露旧 Track B v2 dispatch 与 current-HEAD R7 共用 live 路径。
+  历史 packet manifest 与 R7 manifest 现以原始 SHA-256 fixture 封存，verify-only
+  override 必须成对提供且仍须匹配 dispatch hash；当前 R7 不回退。定向 contract
+  `7/7` 与历史链 direct verify 已通过。
+- Core 冻结 `ea19a52ad1bfdb0a9ae25d4082b8af03a3fcbbbe7a6f5bcbbdced9a9e85f9db5`
+  （HEAD `006bfa8c9901506137695d314ce9afa61ee39507`）已完成三方从零审计并判定
+  `NO_GO`，现封存为
+  `outputs/task-mvp-002/core-audit/freeze-invalidated-ea19a52a/`。两个 Codex
+  auditor 分别发现 occurrence `contextType` 丢失、Core/Provider 范围证明可
+  false-negative、Compose provenance 错绑旧 outputs override、四轮 Gradle
+  原始 JUnit 未独立冻结；CC AUDIT 发现 D1/D2 计数文档滞后和本文件叙事滞后。
+- 上述六项 finding 均绑定同一 `ea19a52a…`，旧三份审计结论及其 verification
+  不得用于后续 GO。单批最小源码整改已经完成，定向 D1/D2 为
+  `444/444`、`20/20`，Core 范围负向 Node tests 为 `11/11`；整改没有启动
+  Provider A0/A1/A2，没有执行模型公网调用，也没有改变 Finding/verdict。
+- 送审就绪性 CC 复核随后确认：当前 Formal R7 已绑定候选 HEAD 并通过，但
+  `core-node-test` 因 Track B fixture 混用 live packet 与历史 manifest 而
+  `203/208`、5 项失败，故未生成 verification summary 或 canonical freeze。
+  主 Codex 已从原封存工作区恢复与历史 manifest SHA 精确匹配的三份 packet，
+  将 packet + manifest 作为同一 test-resource directory 供 `makeFixture` 消费，
+  将三份 packet 纳入 Core subject 闭包，并令 dispatch 与 opinion seal 的
+  verify-only historical override 都从 manifest 同目录读取 packet bytes、同时
+  保持 canonical artifact path identity；Track B contract 与 Core scope 定向回归
+  合计 `15/15 PASS`。该结论只证明最小 fixture/dispatch/seal 同源修复，新的完整
+  verification、freeze 与三方从零审计仍待执行。
+- 同源修复后的候选 HEAD `33890cb80178134371f8589a8aa117332f7c6a12` 已完成
+  一轮完整 verification 和 freeze；CC AUDIT 与代码/架构 Codex auditor 曾给出
+  `GO`，但测试/安全 Codex auditor 给出 `NO_GO（P1=2 / P2=1 / blocking=3）`，
+  因此该轮三份结论已全部失效。三个根因为：浏览器汇总 JSON 未由不可变原始事件
+  与服务端 access log 独立重建；resolved Compose config 保存验收 token；Admin 与
+  readonly token 配成相同值时先命中 Admin 分支。
+- 上述三项已完成最小整改和定向验证：相同 token 在 Filter 构造期 fail closed，并
+  覆盖相同、缺失、单角色和轮换场景；resolved Compose config 使用字段级确定性
+  脱敏并保留 Secret Reference；旧自报式 browser capture 入口已移除，Compose
+  每轮生成独立短期随机 token，由隔离 Chrome 直接通过 CDP 捕获 native
+  filechooser、network、console/dialog、native download 与 DOM 事件，验证器同时
+  解析绑定 Chrome Nginx access log。Node 负向回归 `13/13`、鉴权定向 Gradle
+  `4/4` 通过；首次真实重建在修正旧固定 token 请求后通过，绑定 primary
+  `TASK_7e642342e98b4af4b3b4574a15047bcf / EXEC_ef28692a49214cc09b2645916448044a`、
+  browser upload `TASK_b4e3ddce26c94d9aa5c1d27481993799 /
+  EXEC_69a4fd5a55b9401a8761c035accaf0f4`、malicious
+  `TASK_9acaccfbdce54b849c7a2273bead0b27 / EXEC_f1aad66e69bc4e2d99f6d90d82431e52`；
+  CDP event stream SHA 为
+  `08918f1b77dcaa65812e08004dc119eb5a3d8bedcc4fc88fb0a474ac362d4f39`，
+  Chrome access log SHA 为
+  `32b50aba526a48c4c00430d180cd64e4de4e1f9c8018558f1d9c9b6608af6bcd`。
+  这些只是整改定向证据；完整 verification、新 freeze 与三方从零审计仍未开始。
+- 候选 HEAD `0cdf7ccc79c43ae5da5c53df15d1fdafc894c549` 随后完成从零完整
+  verification：两轮 backend 各 `54 suites / 895 tests`，D1=`444`、D2=`20`，
+  admin-web=`70`、Core Node=`215`，bootJar/OpenAPI/Track A/Track B/Compose +
+  direct Chrome CDP 全部通过；canonical freeze subjectIdentity 为
+  `81e47f117a5cc4e452321acf3e33349612d7e00c8010651fd69ae325daaf518a`。
+- `81e47f…` 三方审计结果为：CC AUDIT `GO`、测试/安全 Codex auditor `GO`、
+  代码/架构 Codex auditor `NO_GO（P1=1 / blocking=1）`，因此三份结论已整体
+  失效。阻断根因是 `candidateForPartyValue` 用归一化 `candidateValue` 反向搜索
+  `tableCells[].text` 并构造 `cellIndex/previewElementRef`，违反 ADR-016 与
+  ARCHITECTURE 的 parser-issued SourceAnchor provenance 门禁。该轮 freeze、
+  verification、browser runtime 和审计观察已分别封存到
+  `outputs/task-mvp-002/core-audit/*-invalidated-81e47f/`。
+- 主 Codex 已完成该 P1 的限定原子修复：party candidate 现在从同一次 line matcher
+  捕获中按 parser join 分隔符与既有字段边界裁出实际值 span，并仅由
+  `TableCellSpan.startOffset/endOffset` 映射 cell identity；不再读取
+  `tableCells[].text` 或反向搜索 `candidateValue`。label/value 分处相邻 cell 时由
+  parser-issued structural span 定位 value cell；span 不可映射时在一致性裁判前
+  `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR` fail closed。新增结构化 cell
+  split、重复值/错误 cell 和不可映射 fail-closed 三项回归；定向 `3/3`、完整
+  `ParserBackedReviewInputPreparerEvidenceTest 29/29` 与原始 Formal R7 均通过，
+  Formal R7 新 seal SHA-256 为
+  `9cfb8ea3eeb895b752779567f996c38ae90d2baf5b1461db229e8e123d4acb86`。新的完整
+  verification、freeze 与三方从零审计仍待执行。
+- 上述 party 修复进入候选 HEAD
+  `e044768fe7ac3aba6a0d4a0d2633261f4f141272` 后，完整 verification 全部通过：
+  D1=`447`、D2=`20`、两轮 backend 各 `898`、admin-web=`70`、Core Node=`215`，
+  Compose/PostgreSQL、direct Chrome、R7、OpenAPI、Track A/B 与 bootJar 均通过；
+  freeze subjectIdentity 为
+  `5bcfe410c6366313ff220552ba4f5845dceefb92ac20a9335aa4aa83523b293b`。
+  CC AUDIT 与测试/安全 Codex auditor 给出 `GO`，代码/架构 Codex auditor 给出
+  `NO_GO（P1=1 / blocking=1）`，故该轮三份结论整体失效。阻断根因是 legacy 与
+  `v20260715.1` 可达的 whole-text fallback 在拼接全文提取数值后丢失原 matcher
+  block/span，再由 `findBlock` 按 label + candidate value containment 选择首块并
+  提升为 fully-attributed anchor。该轮 freeze、verification、R7、browser 与三份
+  审计报告已封存到 `outputs/task-mvp-002/core-audit/*-invalidated-5bcfe410/` 及
+  `outputs/task-mvp-002/browser-evidence-invalidated-5bcfe410/`。
+- 主 Codex 已完成该 finding 的最小红绿整改：先用 4 条 regression 复现错误首块、
+  重复数字、split-table value span、重叠 TABLE_CELL fail-closed 和错误 anchor
+  进入业务 PASS；红测为 `33 tests / 3 failures`，修复后
+  `ParserBackedReviewInputPreparerEvidenceTest=33/33`。fallback 现在逐 block 扫描，
+  通过 offset-preserving projection 将同一次 matcher 的 value group 映回原文 span；
+  TABLE_CELL 只有唯一 parser-issued cell span 命中才保留可靠 attribution，否则在
+  v15 preflight 前 `SYS_EVIDENCE_BUNDLE_INVALID / NOT_CONCLUDED`。D1 新硬门禁已同步
+  为 `451/451`；尚未执行新的完整 verification、R7、freeze 或三方审计。
+- 整改提交 `067db30e62227ad331c1d6372c82b589a95737e6` 首次启动完整 verification
+  时，Core boundary 在任何 R7/Compose/browser 之前因新当月
+  `changelog/2026-08.md` 未进入精确 allowlist 而 fail closed；隔离数据库已在
+  `finally` 删除，partial console 封存为
+  `verification-failed-067db30-core-boundary/`。整改只把该单一当月文件加入
+  `CORE_EXACT_PATHS`，并增加“2026-08 允许、2026-09 拒绝”的负向边界断言；不放宽
+  `changelog/` 目录，不改变业务或 Provider 边界。
+- 候选 HEAD `fc32b55d36870203a3d5d21543cb453b01b78d74` 随后完成一次完整
+  Core verification 并冻结为 subjectIdentity
+  `c156b4a741df1e24a4bf3bc9c52d31237cf9d6597f19d3344f7d393961d7cf80`。
+  第一份全新代码/架构 Codex auditor 返回 `NO_GO（P1=1 / blocking=1）`，因此
+  该轮依硬停止条件终止，未向 CC 发送新审计、未启动第二名 Codex auditor，也未
+  push/PR/CI。finding 证明两个 TABLE_CELL fail-closed 用例的测试 parser 使用
+  `ScopeCoverageReport.unverified()`，其中重叠 cell 用例被 scope 前置门禁代偿；
+  verified-scope 下真实结果为 `SYS_ROLE_CONFLICT / EVIDENCE_AMBIGUOUS`。
+- 主 Codex 已以提交 `d00dcca0e8dab8760fe5851cd894758e6f99eb46` 完成该 finding 的
+  限定原子修复：测试 fixture 明确提供 verified scope 并断言候选确实携带
+  `TABLE_CELL + blockAttribution=false + 无 cell identity`；collector 仅把这种
+  不可靠 TABLE_CELL identity 映射为
+  `SYS_EVIDENCE_BUNDLE_INVALID / INTERNAL_RULE_ERROR`，普通 BLOCK_LEVEL
+  attribution mismatch 继续保持既有 role-conflict 语义。红测为 `2 tests / 1
+  failure`，修复后定向 `2/2`、完整 preparer `33/33`、collector `91/91`。新的完整
+  verification、freeze 与三方从零审计尚未开始。
+- 后续 HEAD `847bb2c7a76aef2236ff7c4ca8b7ea2d0b1ed7ec` 已完成 Core verification，
+  freeze subject 为 `3bc24a842a331ca9b86f491c26904ac1d84f108ecc69bbba8a33042ab510ec5b`，
+  CC AUDIT 与两个全新 Codex auditor 均为全零 `GO`。PR #37 随后创建，但
+  `Authorization evidence check` 因 PR body 缺少必填区块失败，backend Linux CI
+  因 Track A 与 TASK-036 v2 的 Windows CRLF hash 固化出现 2 个失败；admin-web CI
+  通过。该 PR 当前未 merge。
+- 候选提交 `76f56856c07e8c35a08144131ead9a68f4bc5356` 曾把相关工件统一为 LF。
+  从零完整 verification 在产品、D1=`451/451`、D2=`20/20`、两轮 backend
+  各 `902/902`、admin-web=`70/70`、Core Node=`215/215`、bootJar、R7、
+  blind freeze 和 DeepSeek seal 通过后，于 `blind-unblind` fail closed：当前三份
+  LF human ground truth 与 immutable Track A freeze/DeepSeek seal 绑定的历史 CRLF
+  SHA 不一致；失败日志为
+  `outputs/task-mvp-002/core-audit/verification/blind-unblind.log`，SHA-256
+  `04ee667b7c39444fe4218d43ce613191c9604dc73e129530d548ca8271e11376`。
+  未生成 verification summary，Compose/browser、freeze 和审计均未启动。
+- 本批次限定修复保留历史 seal，不做 identity migration：hash-sensitive
+  fixture/expected 使用 `text eol=crlf` 保持 Git blob 不变并跨平台检出历史 CRLF bytes，Track A writer 在所有平台
+  显式写 CRLF，manifest 与 TASK-036 v2 恢复历史 SHA。Windows 定向 `31/31`、
+  仓库只读且 `--network none --offline` 的 Linux Java 21 / Gradle 8.10.2 定向
+  `31/31` 均通过；直接 `unblind` 恢复为
+  `TRACK_A_CODEX_AND_DEEPSEEK_COMPLETE_TRACK_B_ZERO_ELIGIBLE_SAMPLE`、`27` 项。
+  该结果只关闭当前字节身份冲突；新的完整 verification 仍须从零执行。
+  `3bc24a84…` 及其三份旧 GO 已整体失效，不得组合用于后续收口。
+- HEAD `22e44fc45decb9cb2cec41848dfcf393f2c49378` 随后完成从零 Core verification，
+  并冻结为 subject `8d01dd9ad49a1c440bf0aa4ec2eee4a09600653c721dd570f2f66be86cf2b092`；
+  manifest SHA 为 `f69d114a821c781f9d479f77f1093885938ada9e6b62baecdd264044849cc670`，
+  full diff SHA 为 `8d1d598d2fdff4ccc264131dde74821a7a787d43f2154f44be6be1b02902c6a9`，
+  verification SHA 为 `f5748d2f53e7d6c7a26fd5dca77d6aa155600e922f2c7fce3407baee31584b47`。
+  第一份全新代码/架构 Codex auditor 返回
+  `NO_GO（P1=1 / P2=1 / blocking=2）`，故依硬停止条件未启动第二名 Codex auditor、
+  未发送 CC AUDIT，也未进入 push/PR/CI/merge。P1 证明普通 pattern 与 v29 比例在
+  TABLE_ROW 中丢失捕获值原始 span，导致常见表格证据降为不可靠 row anchor；P2
+  证明内部 `TABLE_CELL` 曾泄漏到公共 `SourceAnchor.locationLevel`。审计建议新增
+  公共 `TABLE_CELL` enum 与 ADR-015/ARCHITECTURE 冲突，未被采纳；正确边界为内部
+  occurrence 保留 `TABLE_CELL`，公共 anchor 归一为 `BLOCK_LEVEL`。
+- 主 Codex 已完成上述两项 finding 的限定红绿修复，并以提交
+  `97b55a0b13facbb30397ee79c3f0b1d7b0d31d67` 形成候选：
+  ordinary pattern 使用 capture group span；v29 使用可逆 NFKC/空白 projection 将
+  capture span 映回 parser 原始 cell；“无预付款”使用精确 token span；无法可靠映射
+  时继续 fail closed。红测为 `32 tests / 4 failures`，修复后同组 `32/32`；扩大定向
+  回归为 `6 suites / 200 tests / 0 failures`；OpenAPI verifier 为
+  `PASS（8 paths / 48 schemas）`，admin-web workbench Vitest 为 `2/2`，build 通过，
+  最后清理后的 v29 class 复跑通过。未修改 CandidateResolver、EvidenceSlot、最终
+  Finding/verdict、Provider 或模型网络边界，也未执行任何模型调用。
+- 已否决 subject 的 canonical `freeze/`、`verification/` 与 browser evidence 已原样
+  封存到 `freeze-invalidated-8d01dd9a/`、`verification-invalidated-8d01dd9a/` 与
+  `browser-evidence-invalidated-8d01dd9a/`。当前尚未创建新 verification 或 freeze。
+- `97b55a0…` 的首次 Core verification 启动因 sandbox 无法创建 canonical evidence
+  目录而在任何验证命令前停止；同一未变 HEAD 经获准在 sandbox 外重启后，Core
+  scope `7/7` 与 Provider-free boundary 通过，但 Formal R7 fail closed：57 条纳入
+  occurrence 中 `39 MATCHED / 18 NOT_OBSERVABLE`，18 条恰为全部人工
+  `TABLE_CELL`。根因不是生产 anchor identity 丢失，而是 test-only harness
+  `resolveElement()` 在解析 `previewElementRef` 前按公共 `BLOCK_LEVEL` 短路，未遵循
+  “preview ref 优先、否则 blockId”的已接受契约。失败 verification 与 R7 已分别
+  封存为 `verification-failed-97b55a0-formal-r7/`、
+  `r7-failed-97b55a0-public-anchor-harness/`；未生成 summary、freeze 或审计。
+- 主 Codex 已在 `Task034MvpE2EAcceptanceHarnessTest` 建立最小反馈环：新增真实公共
+  `BLOCK_LEVEL + table/.../cell/...` 红测为 `1/1 FAIL`，调整 test-only resolver 为
+  preview ref 优先后 `1/1 PASS`，完整 harness 为 `19/19 PASS`；synthetic cell
+  anchor 也改用公共 `BLOCK_LEVEL`。当前只有该 test-only 文件和本阶段项目记忆为
+  working-tree 增量；为避免把 dirty worktree 伪绑定到 `97b55a0…`，尚未执行新的
+  Formal R7 或完整 verification。
+- 上述 test-only 修复以提交 `91d5e161aa0eba03317a883e1ef93238931a3b44`
+  形成 clean candidate。新 Formal R7 已恢复 `57 MATCHED + 6 EXCLUDED` 并完成
+  seal/verify，seal SHA 为
+  `bf199763f5f6ef2dbbc97b4869ce2b1f099fe5b69d35e8c6661b1ad2358e6100`；
+  完整 verification 随后在 D1 精确计数门禁停止。11 个 D1 suites 实际为
+  `452 tests / 0 failures / 0 errors / 0 skipped`，而 verification/freeze 脚本仍固定
+  451；新增项为本轮 P1 ParserBacked evidence 回归，属于门禁计数滞后，不是产品
+  测试失败。partial verification 与本轮 R7 已分别封存为
+  `verification-failed-91d5e16-d1-count/`、`r7-superseded-91d5e16-d1-count/`，未运行
+  D2、backend 全量、Compose/browser，也未创建 freeze 或审计。
+- 当前 working-tree 增量仅把 D1 当前门禁同步为 452：verification log 名称、精确
+  计数、freeze validator 与其 fixture 同步更新；freeze/core-scope Node 定向合计
+  `11/11 PASS`，脚本中无残留当前 451 门禁。历史运行的 451 数字保持不变。
+- 上述增量随后形成 HEAD `ad14800c161c096018f91fc8021feec9338a951b`，完成从零
+  Core verification 并冻结为 subject
+  `75d86031f7b65c0047270d2933c0397331ae53c9cf1957dc856f93d859a8fb66`；
+  freeze manifest SHA 为
+  `905f48adb02a810618f57b53d52b56a828a7c15ffd8166e4711aa795c544b560`，
+  verification summary SHA 为
+  `8b7813ad959868642362c5cd54b536762c7a94475350911157c2cca547c1c479`。
+  CC AUDIT 与两个全新 Codex auditor 均为
+  `GO / P0=P1=P2=blocking=0`，PR #37 已更新并 push 精确受审 HEAD。
+- GitHub Actions run `30729941151` 的 Authorization evidence 与 admin-web 均通过，
+  backend 为 `904 tests / 1 failure / 3 skipped`。只读重建证明失败不是四个历史
+  CRLF JSON：它们在 Linux fresh clone 的 SHA-256 正确；实际根因是
+  `console-summary.md` 与 `occurrence-comparison.csv` 的冻结 SHA 绑定 LF，
+  `.gitattributes` 却将两者声明为 CRLF，fresh checkout 因而改变字节。
+- 当前已获用户明确授权完成最小修复：只把 TASK-036 v2 Markdown/CSV 改为
+  `text eol=lf`，四个 JSON 继续 `text eol=crlf`，不迁移历史 seal。Windows 与断网
+  Linux ephemeral-commit + fresh-clone 定向均为 `31/31 PASS`；Linux checkout 六个
+  SHA 全部等于现有冻结常量。当前 tracked 增量为该属性修复与本阶段项目记忆；
+  `75d86031…` 三份 GO 已因 tracked 内容变化整体失效；当前阶段一修复已形成 clean
+  candidate，尚未对该新 HEAD 执行 verification、freeze 或审计。
+- 上述属性修复与阶段记忆形成 HEAD
+  `c21a68d844a90dddc01b511e1b76403a5ed1c39b`；完整 Core verification 全部通过，
+  freeze subject 为
+  `72b934c271e15bbb4e5e76f24a7413015eb949f0bcb77b432177ea85ef63f84b`。
+  第一名全新代码/架构 Codex auditor 返回
+  `NO_GO（P2=1 / blocking=1）`：`FamilyModelCallPlanner` 对同一 role 的跨-shard
+  request 逐条预算，可使该 role 同时 requested/uncovered 并保留部分 evidence。
+  CC `deepseek-v4-flash` 审计因 `$8` budget exhausted 未产出报告，第二名 Codex
+  auditor 未启动；`72b934c2…` 及其 verification/freeze 不得用于最终收口。
+- 用户已批准该 D2 finding 的最小修复。主 Codex 先以同 role、双 shard、第二 block
+  超预算用例复现 `1/1 FAIL`，再把 planner 改为先按 role 聚合/去重 required blocks、
+  使用 role 最高 priority 排序后整体装入硬预算，并增加 requested/uncovered 不相交
+  不变量。绿测为 D2 `21/21`，D2 + 历史 Track B runtime contract 联合 `22/22`，
+  freeze/Core scope Node `11/11`；当前只是 tracked working-tree 定向证据，尚未形成
+  新 clean HEAD，也未运行完整 verification、freeze 或三审。
+- 上述原子预算修复和 D1 计数叙事修正随后形成 HEAD
+  `979ddbd3f9c903ee6cce40cf578676b084096f91`，完整 Core verification 通过并冻结为
+  subject `3e4e8d00cb477ae79fdefac7449fb623ad123a16f8be096f9c07f559ff99587f`，
+  verification SHA 为
+  `68154e589b91e6c32a9e6fe4979f7b82ebc2cf5e1618ad550a9e645ffe2a500f`。
+  重试后的 CC AUDIT 与测试/安全 Codex auditor 为全零 `GO`，代码/架构 Codex
+  auditor 为 `NO_GO（P1=1 / blocking=1）`：evaluator 选出的精确
+  `requiredBlockIds` 未写入 `RuntimeEvidencePacket.ModelAssistAdmission`，packet
+  转回 role request 时被扩大为全部 candidates，可把 `localRelation=NONE` 的 block
+  送入 family budget。依硬停止条件，`3e4e8d00…` 已拒绝，canonical verification、
+  freeze、R7 与 browser 证据均迁入对应 `*-rejected-3e4e8d00/` 封存目录。
+- 用户批准最小 D2 seam 修复后，真实 packet JSON round-trip → role request → family
+  plan 回归精确复现 `block-c` 被错误加入。当前 admission 持久化 evaluator 的精确
+  block 集合并校验非空/去重/allowed 一致性，role request 只消费该集合；旧 Track B
+  corpus 字节和人工 hash 不变，只在测试内以内存迁移方式用独立 eligibility source
+  signals 补齐新字段。定向绿测为 D2 `22/22`、D2 + 历史 Track B runtime contract
+  `23/23`、freeze validator Node `4/4`。当前仍是 tracked working-tree 修复，尚未形成
+  新 clean HEAD，也未执行新的完整 verification、freeze 或三审。
 
 ## 当前活跃任务
 
-- `TASK-MVP-001` / `FEATURE-MVP-001` 已完成 A~F/F1/F2、真实 Demo 与 v9 双重审计，
-  完成态 commit `1dbef9c` 已 push，PR #35 已创建。PR 的 authorization/admin-web
-  checks 通过，但 backend CI 在 313 项中有 3 项 Linux fixture 构造失败。
-  `TASK_SPEC-MVP-001-F3` 已定界并验证：测试消费与应用相同的
-  `cqcp.review.upload-root`，不再硬编码 `/data/cqcp/uploads`；host 定向 11/11、
-  backend 全量 313/313、Linux container 定向 11/11。
-  v6 代码审计因缺少原始 green console 与父 TASK 旧叙事判定 NO-GO，现已重新执行
-  并固化 host/Linux 原始 stdout/stderr，且已标明 v5 记录失效。v7 又发现本文首段、
-  父 TASK Handoff 与 F3 摘要时间三项状态/元数据问题，现已补正；v8 两个
-  subagent 均因本节“下一步”仍列出已完成 F3 测试而 NO-GO，该过期步骤也已删除。
-  v9 的代码审计、测试/安全审计和 CC AUDIT 均为 GO，P0/P1/P2 与 blocking
-  findings 全为 0；父 TASK 与 F3 已归档。F3 commit `332d365` 已 push，PR #35
-  新一轮 authorization、backend、admin-web 三项 CI 全部通过并合并，merge
-  commit 为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`。
-  该修复不改变 TASK-034 正式 FAIL、57/57、Production Ready 或 `v20260715.1`
-  边界。
-- `TASK-034` 已完成 Phase 0 与 Phase 1，父任务保持 active，正式 MVP E2E 最终判定为 `FAIL`。3 份真实 DOCX 均完成同 run parser → review → snapshot → 同 task 查询；27 个 `PointStatus` 全为 `PASS`，但 candidate comparison 仅 9 `MATCH`、18 `MISMATCH`；63 条 occurrence 保持 57 纳入 / 6 排除，其中 57 条纳入全部 `NOT_OBSERVABLE`，6 条排除全部 `EXCLUDED`。三份结果均无 Finding、无 `SYS-*`。证据目录：`outputs/task-034-mvp-e2e-acceptance/`。
-- `TASK_SPEC-034-A` test-only E2E harness 已实现并经 Codex Review Intake 与独立只读复核接纳，文件：`tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`；实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，manifest 序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`。harness 13/13、既有四类定向回归 27/27；未修改生产链路或人工 ground truth。
-- `TASK-035` 的 `mvp-e2e-candidate-comparison-v2` 与 `TASK_SPEC-035-A` 已接纳并随 PR #32 合并；实现提交为 `52d73b3`，定向证据为 harness `15/15`、四类回归 `27/27`。正式 MVP E2E 未重跑，父任务仍 active。
-- `TASK-036` 的 A 未激活 carrier foundation 已随 PR #32 合并；B1/B2/C1 已在远端分支 `codex/task-036-consistency-set-runtime@3adcab4` 形成可重建提交但未进入主线，C2 未实现。主线普通任务仍走 legacy single anchor。
-- `TASK-EVAL-001` 仍为 active，文件：`tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`。2026-07-04 已执行 rebaseline：不再按原父任务 DoD 伪装为 12/12 全通过，不恢复旧条件归档口径；DoD #12 固定为未通过、未补足，A/B 历史 commit / push 授权记录无法完整核实并作为治理债务保留。
-- 2026-07-09 用户确认 `TASK-EVAL-001` 独立只读审计已完成；Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`。DoD #12 固定未通过、不可补足；`TASK-GOV-005` 不补足 DoD #12。该审计结论针对 `TASK-EVAL-001` 当时的 parser-backed expected / anchor；此后 `TASK-DATA-001` 已形成 63 条独立人工 ground truth并完成转换，`TASK-034` 已执行正式 MVP E2E 但判定 `FAIL`。`TASK-028` / `TASK-031` / `TASK-032` 继续 `NO-GO`。
-- `TASK-GOV-005` 已拆出并定界为 active 治理债务任务，文件：`tasks/active/TASK-GOV-005-historical-commit-authorization-evidence-debt.md`。处理决定为 `BOUNDARY RECORDED / NO RECOVERY PATH / NO IMPLEMENTATION AUTHORIZATION`；2026-07-04 独立只读审计结论为 `GO`。该任务仅记录 `TASK-EVAL-001-A/B` 历史授权链不可完整核实问题，不追溯否定已 merge / push 内容，但阻止其作为后续绕过 commit / push 明确授权门禁的先例；任务仍长期保留 active，不表示已归档。
-- `TASK-GOV-006` 已通过 PR #18 合并完成云端 PR 触发验证，文件：`tasks/active/TASK-GOV-006-submit-authorization-evidence-gate.md`。PR #18 head commit 为 `432a63a25b0352e5ba9768f68f32c95a266474e4`，merge commit 为 `d3d5d1b507d233b5ff9a20350fad7b0c05a36cf9`；PR 触发的 CI 已通过，包含 `Authorization evidence check`、`Backend Gradle tests`、`Admin web lint, tests, and build`。`Authorization evidence check` 已在 PR #18 中成功运行，但它不是 required status check，也不证明用户授权、测试、独立审计或 Memory Writeback 已真实发生；本任务不配置 branch protection、repository ruleset 或 required status checks，不发布 `CQCP Code Review` / `CQCP Spec & Docs Review` Check Run 或 Commit Status。
-- `TASK-GOV-007` 已通过 PR #33 合并，merge commit 为 `1f62320f20ec29c52f49c0ed33c4244bb1be669e`；独立只读审计 12 项全部通过、状态增量复核 `GO`，三项 CI 全部通过。该任务不修改业务代码、workflow、检查脚本或 TASK-036 门禁。
-- `TASK-037 / ADR-017` 已通过 PR #34 合并，merge commit 为
-  `401fd05b7a6c23014adb4f5511533467016c37ba`；ADR-017、V2 seed、binding
-  resolver、`MVP_DEMO_MOCK` 与三类 budget profile 已进入主线，C2 未激活。
-
-## Git 集成基线
-
-GitHub 是 PR、checks 与 merge 状态的事实源。`FEATURE-MVP-001` 从 PR #34 /
-merge commit `401fd05b7a6c23014adb4f5511533467016c37ba` 建立，最终 head
-`332d365e75b00102e8ce6a54df716024c7b9288c` 的 authorization、backend 与
-admin-web 三项 CI 全部成功；PR #35 已合并，merge commit 为
-`ca2798cd4db400f1fe512e2a13c0d40624929b7d`。PR #32 /
-merge commit `97ef08f1cae88e8a702069eb0e07c2035b3b063f` 的 TASK-036-A carrier 仍未激活；
-本 Feature 不证明 57/57 occurrence coverage，也不解除 TASK-028 / TASK-031 / TASK-032。
+- `tasks/active/TASK-MVP-002-review-workbench.md`
+- `tasks/active/TASK-MODEL-001-model-profile-secret-readiness.md`
+- `tasks/active/TASK-EVAL-002-blind-semantic-evaluation.md`
+- `tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`
+- `tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`
 
 ## 当前阻塞项
 
-- `DEBT-001-03` parser provenance / `SourceAnchor` 仍是 unresolved and unauthorized debt，未获实现授权。
-- `TASK_SPEC-035-A` 与 TASK-036-A 已随 PR #32 合并；TASK-036 B1/B2/C1 仅存在于远端工作分支 `codex/task-036-consistency-set-runtime@3adcab4`，未进入主线，C2 未实现。正式重跑继续被阻塞；不得提前改写 v1 的 9 `MATCH` / 18 `MISMATCH` 与 57/57 `NOT_OBSERVABLE` 证据。
-- `TASK-EVAL-001` DoD #12 未通过、未补足；该缺口不追溯否定已 push 内容或独立审计结论，但不得成为后续绕过授权门禁的先例。
-- `TASK-EVAL-001` 当前不得归档；旧 `GO TO ARCHIVE WITH CONDITIONS` 口径已回滚，当前有效判断为 `REBASELINED / Active / 不归档 / KEEP ACTIVE / 不进入 TASK-028`。
-- `TASK-EVAL-001` 独立只读审计已完成；Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`，后续不再围绕该父任务反复补写归档文档。
-- 2026-07-04 rebaseline 结论：`TASK-EVAL-001` 不再按原父任务 DoD 归档；DoD #1 至 #11 仅保留为既有独立确认摘要，DoD #12 固定为未通过、未补足；后续如要重新申请归档，必须先经过独立 agent 只读审计和 Codex 单独 Review Intake。
-- `TASK-028` Readiness Gate 结论为 `NO-GO`：`TASK-EVAL-001` 收口结果虽已稳定为 blocked，但不是可进入 `TASK-028` 的完成态；本轮只读 Review Intake 不授权实现、不冻结或派发 `TASK_SPEC`。
-- `TASK-GOV-005` 为历史授权证据治理债务，不是业务修复任务；不得用该任务替代 `TASK-EVAL-001` 的父任务归档前独立只读审计，也不得用该任务补足 `TASK-EVAL-001` DoD #12。
-- `TASK-GOV-004` 已完成第一阶段 CI required checks；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks。repository ruleset 不在当前任务范围内。
-- `TASK-GOV-006` 的 `Authorization evidence check` 只检查 PR body 文本字段是否存在且非占位，不证明授权、测试、独立审计或 Memory Writeback 已真实发生；如后续要纳入 required status checks，必须另行定界并取得用户授权。
-- `TASK-033` 不解除 `TASK-EVAL-001` / `TASK-028` 门禁，不补足 `TASK-EVAL-001` DoD #12；不得把 AI/parser 输出当作人工 anchor 标准答案。
-- v3 强门禁不自动泛化到 L1 小文档；L0/L1/L2/L3 的审计与写回口径以本次治理规则为准，现有任务显式强门禁不追溯解除。
-
-## 禁止进入项
-
-- 不进入 `TASK_SPEC-036-A` 允许文件和未激活 carrier 边界之外的 parser provenance / `SourceAnchor` 实现。
-- 不进入真实 DOCX `TABLE_CELL` coverage 激活或 TASK-036 B/C 批次实现；已授权的 `TASK-037 / ADR-017` 仅负责独立冻结并实现 execution binding 与 version/model source，不等于激活 TASK-036-C2。
-- 不进入 `TASK-028` / `TASK-031` / `TASK-032`。
-- 不重新运行 TASK-034 正式 MVP E2E，直到 `TASK-035` 接纳、`TASK-036 / ADR-016` 全部自身门禁完成且 Codex 获得单独正式重跑授权；当前仅第一项已满足。
-- `TASK_SPEC-036-A` 已随 PR #32 合并；不得以当前远端 TASK-036 B1/B2/C1 分支状态替代主线事实。A 未修改 EvidenceSlot、结果快照合同、现有 preparer、OpenAPI、数据库、parser、fixture、expected JSON、Docker、workflow、已接受 ADR 或 PRD。
-- 不配置 branch protection、required checks 或 ruleset。
-- 不用 `CURRENT_CONTEXT.md` 证明任务完成；完成依据必须来自真实代码、测试、原始 console 输出、commit、PR、独立审计报告或对应 task 文件。
-
-## 待确认事项
-
-- 已确认：`TASK-EVAL-001` 独立只读审计已完成；Codex Review Intake Decision 为 `NO-GO TO ARCHIVE / KEEP ACTIVE`。后续实际推进方向合并为 `TASK-DATA-001` / MVP E2E 人工 anchor 准备，不再围绕 `TASK-EVAL-001` 反复写文档。
-- 已确认：`TASK-GOV-005` 独立 agent 只读审计结论为 `GO`，无阻塞问题；非阻塞措辞问题已回写修正。
-- 已确认：建立提交前授权证据模板 / GitHub Actions PR body 文本检查 / PR 模板等机制化治理任务，当前由 `TASK-GOV-006` 承接；PR #18 已合并并完成云端 PR 触发验证，`Authorization evidence check` 已成功运行，但该 check 不是 required status check，也不证明真实授权事实。
-- 已确认：`TASK-033` 已归档为 MVP 端到端样本验收规格冻结任务；提交前独立只读复核已完成，Decision 为 `GO`，无 blocking findings；归档前独立只读审计结论 `NEEDS_POST_MERGE_SYNC` 已通过 PR #25 post-merge 状态写回清理；Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_POST_MERGE_SYNC_SATISFIED`。2026-07-09 用户确认独立只读审计已对归档迁移与 Memory Writeback 给出 `GO`，并授权精确 stage、commit 与 push。
-- 已确认：`TASK-DATA-001` 选定的 `CQCP-MVP-DOCX-001` / `002` / `003` 可用于项目验证，脱敏合规，data owner / 确认人为 `ZK`；三份合同 63 条逐出处明细已提升为 `ACCEPTED_HUMAN_GROUND_TRUTH`；转换实现已通过 PR #28 合并；独立归档前审计最终 `GO`，Codex 归档 Decision 为 `GO_TO_ARCHIVE`。
-- 已确认：`TASK-034` 的 18 个 candidate mismatch 是验收 raw 表示形态错位；PRD 生产规范明确百分比以 `70` 表示 `70%`，税额公式 actual candidate 为 `taxAmount` 标量。`TASK-035` 只冻结 test-only typed projection，不改变生产语义。
-- 已确认：现有 `pointResults[].sourceAnchors[]`、Java snapshot、持久化 JSON 和 query DTO 使用列表结构，可在不新增 endpoint 或数据库 migration 的前提下承载一点评多 anchors；若实现发现事实不同必须停止并拆兼容任务。
-- 已确认：`TASK_SPEC-036-A` 已随 PR #32 合并；B1/B2/C1 的远端分支状态不等于主线集成，C2 和正式 E2E 仍需各自门禁。
-- 已确认：`TASK_SPEC-035-A` 编码前计划、实现、Codex Review Intake、独立只读实现审计和精确提交均已完成；提交为 `52d73b3`。
-- 已确认：`TASK-GOV-007` 已通过 PR #33 合并，merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`；独立审计、状态增量复核与 CI 均通过。
-- 待确认：是否在后续独立任务中把 `Authorization evidence check` 配置为 required status check。
-- 待确认：Gemma 4 26B A4B / 31B、Qwen3 30B-A3B / 32B 的具体权重、量化格式、license、A30 24GB 可运行性和 CQCP 样本评测方案。
-- 已确认：用户授权在 `TASK-GOV-007` 合并后独立创建并实施 `TASK-037 / ADR-017`，收口 execution binding、model / budget profile 与 parser/schema 版本源；该授权不改变 TASK-030 已归档边界，也不激活 TASK-036-C2。
+1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…`、
+   `3bc24a84…`、`8d01dd9a…`、`75d86031…`、`72b934c2…` 及 `3e4e8d00…`
+   对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
+   也不得单独复用。
+2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
+   四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
+   CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
+   结果以 hash-bound outputs 和 Git 事实为真源，本文不复制运行中状态。
+3. PR #37 已存在但 run `30729941151` backend CI 失败、merge 未完成；PR body
+   授权区块已补齐且该 check 已通过。没有新 subject 三审和全绿 CI 就不能 merge，
+   也不能声明 TASK-036 seam 已集成。
+4. 新 Track B admission holdout 尚未创建：固定 12 packet（9 eligible + 3
+   controls），人工 ground truth 必须在模型访问前封印，正式运行只允许一次。
 
 ## 下一步
 
-1. `FEATURE-MVP-001` 已完成；不再追加本 Feature 开发动作。
-2. `TASK-028` / `TASK-031` / `TASK-032` 继续禁止抢跑；TASK-034 v1 正式失败
-   证据保持不变。后续任务须按各自父 TASK 与门禁另行授权。
+1. 完成当前 D2 required-block identity 修复的 diff/格式自检，并在既有授权下形成新的 clean
+   candidate；JSON 历史 CRLF seal、历史 451/20 运行记录不得改写。
+2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1=`452`、D2=`22`、admin-web、Core Node、
+   OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
+   验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
+3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex
+   独立审计；旧审计会话和结论不复用。
+4. 三审全零 GO 后补齐 PR #37 授权区块、push 精确受审 HEAD 并等待 CI；满足既有
+   授权条件后 merge。
+5. Core merge 后建立并执行一次新的 Track B holdout；失败即停止并重新收敛。
 
-## 参考路径
-
-- `tasks/MVP_TASK_MAP.md`
-- `tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`
-- `tasks/done/TASK_SPEC-MVP-001-F3-linux-upload-root-test-portability.md`
-- `tasks/done/TASK-DEBT-001-review-engine-verified-defects-and-coverage-gap.md`
-- `tasks/active/TASK-EVAL-001-evidence-overlap-evaluation.md`
-- `tasks/done/TASK-GOV-003-five-class-remediation-and-role-gates.md`
-- `tasks/done/TASK-GOV-004-pr-based-multi-agent-governance.md`
-- `tasks/active/TASK-GOV-005-historical-commit-authorization-evidence-debt.md`
-- `tasks/active/TASK-GOV-006-submit-authorization-evidence-gate.md`
-- `tasks/active/TASK-GOV-007-task-level-and-git-closure-governance.md`
-- `tasks/active/TASK-037-execution-binding-release-and-profile-seed.md`
-- `tasks/active/TASK_SPEC-037-A-execution-binding-release-runtime-source.md`
-- `decisions/ADR-017-execution-binding-release-and-demo-profile-readiness.md`
-- `tasks/done/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`
-- `tasks/done/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`
-- `tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`
-- `tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`
-- `tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`
-- `tasks/active/TASK-035-mvp-e2e-candidate-comparison-contract-rebaseline.md`
-- `tasks/active/TASK_SPEC-035-A-test-only-candidate-comparison-v2.md`
-- `tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`
-- `tasks/active/TASK_SPEC-036-A-same-value-occurrence-provenance.md`
-- `decisions/ADR-016-multi-occurrence-consistency-evidence-preservation.md`
-- `outputs/task-034-mvp-e2e-acceptance/entrypoint-audit.md`
-- `tasks/done/TASK-030-review-assets-versioning-governance.md`
-- `tasks/done/TASK_SPEC-030-A-review-assets-static-source-manifest.md`
-- `tasks/done/TASK_SPEC-030-B-review-assets-schema-manifest-validation.md`
-- `tasks/done/TASK_SPEC-030-C-review-assets-version-governance-docs.md`
-- `decisions/ADR-014-minimal-candidate-resolver-confidence-gating.md`
-- `decisions/ADR-015-evidence-slot-source-anchor-governance.md`
-- `docs/governance/CQCP-五类问题整改计划-v3-角色分工与执行门禁补强版.md`
-- `changelog/2026-07.md`
+不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

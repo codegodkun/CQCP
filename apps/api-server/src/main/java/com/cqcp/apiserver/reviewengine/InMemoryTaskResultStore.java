@@ -16,6 +16,7 @@ public final class InMemoryTaskResultStore implements TaskExecutionPersistence, 
 
     private final Map<String, TaskExecutionRecord> executionsById = new ConcurrentHashMap<>();
     private final Map<String, ReviewResultSnapshot> latestSnapshotsByTaskId = new ConcurrentHashMap<>();
+    private final Map<String, ReviewResultSnapshot> snapshotsByExecutionId = new ConcurrentHashMap<>();
     private final Set<String> knownTaskIds = ConcurrentHashMap.newKeySet();
 
     @Override
@@ -31,6 +32,7 @@ public final class InMemoryTaskResultStore implements TaskExecutionPersistence, 
 
     @Override
     public void saveSnapshot(ReviewResultSnapshot snapshot) {
+        snapshotsByExecutionId.put(snapshot.executionId(), snapshot);
         latestSnapshotsByTaskId.compute(snapshot.taskId(), (taskId, existing) -> {
             if (existing == null || snapshot.createdAt().isAfter(existing.createdAt())) {
                 return snapshot;
@@ -46,8 +48,26 @@ public final class InMemoryTaskResultStore implements TaskExecutionPersistence, 
     }
 
     @Override
+    public boolean hasExecution(String taskId, String executionId) {
+        var execution = executionsById.get(executionId);
+        if (execution != null && taskId.equals(execution.taskId())) {
+            return true;
+        }
+        var snapshot = snapshotsByExecutionId.get(executionId);
+        return snapshot != null && taskId.equals(snapshot.taskId());
+    }
+
+    @Override
     public Optional<ReviewResultSnapshot> findLatestSnapshot(String taskId) {
         return Optional.ofNullable(latestSnapshotsByTaskId.get(taskId));
+    }
+
+    @Override
+    public Optional<ReviewResultSnapshot> findSnapshot(String taskId, String executionId) {
+        var snapshot = snapshotsByExecutionId.get(executionId);
+        return snapshot != null && taskId.equals(snapshot.taskId())
+                ? Optional.of(snapshot)
+                : Optional.empty();
     }
 
     TaskExecutionRecord findExecution(String executionId) {

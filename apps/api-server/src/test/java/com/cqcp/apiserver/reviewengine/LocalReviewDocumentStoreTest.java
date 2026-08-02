@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,28 @@ class LocalReviewDocumentStoreTest {
         assertThat(saved).exists().isRegularFile();
         assertThat(readAllBytes(saved)).isEqualTo(docx);
         assertThat(tempDir.resolve("t/u.tmp")).doesNotExist();
+    }
+
+    @Test
+    void computesStableSha256ForVerifiedTaskDocument() {
+        var docx = validDocx();
+        var ref = "taskid/0123456789abcdef0123456789abcdef.docx";
+        store.save(ref, new ByteArrayInputStream(docx));
+
+        assertThat(store.sha256("taskid", ref))
+                .isEqualTo(sha256(docx));
+    }
+
+    @Test
+    void rejectsCrLfInReadIdentityAndReference() {
+        assertThatThrownBy(() -> store.readDocumentSnapshot(
+                "task\r\nid",
+                "taskid/0123456789abcdef0123456789abcdef.docx"))
+                .isInstanceOf(SecurityException.class);
+        assertThatThrownBy(() -> store.readDocumentSnapshot(
+                "taskid",
+                "taskid/0123456789abcdef0123456789abcdef.docx\r\n"))
+                .isInstanceOf(SecurityException.class);
     }
 
     @Test
@@ -120,6 +143,46 @@ class LocalReviewDocumentStoreTest {
         assertThat(realDir.resolve("u.tmp")).doesNotExist();
         // Temp file also cleaned
         assertThat(symDir.resolve("u.tmp")).doesNotExist();
+    }
+
+    @Test
+    void windowsJunctionInReadPath_rejected() throws Exception {
+        assumeTrue(
+                System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("win"),
+                "Windows junction coverage only");
+
+        var realDir = tempDir.resolve("junction-target");
+        Files.createDirectories(realDir);
+        var fileName = "0123456789abcdef0123456789abcdef.docx";
+        Files.write(realDir.resolve(fileName), validDocx());
+
+        var junction = tempDir.resolve("junction-task");
+        var process = new ProcessBuilder(
+                "cmd.exe",
+                "/d",
+                "/c",
+                "mklink",
+                "/J",
+                junction.toString(),
+                realDir.toString())
+                .redirectErrorStream(true)
+                .start();
+        var output = new String(
+                process.getInputStream().readAllBytes(),
+                java.nio.charset.Charset.defaultCharset());
+        var exitCode = process.waitFor();
+        assertThat(exitCode)
+                .as("mklink /J must create the test reparse point: %s", output)
+                .isZero();
+
+        try {
+            assertThatThrownBy(() -> store.readDocumentSnapshot(
+                    "junction-task",
+                    "junction-task/" + fileName))
+                    .isInstanceOf(SecurityException.class);
+        } finally {
+            Files.deleteIfExists(junction);
+        }
     }
 
     // ==================== DOCX validation ====================
@@ -210,5 +273,14 @@ class LocalReviewDocumentStoreTest {
 
     private static byte[] readAllBytes(Path p) {
         try { return Files.readAllBytes(p); } catch (Exception e) { throw new RuntimeException(e); }
+    }
+
+    private static String sha256(byte[] bytes) {
+        try {
+            return java.util.HexFormat.of().formatHex(
+                    java.security.MessageDigest.getInstance("SHA-256").digest(bytes));
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

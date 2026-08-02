@@ -14,6 +14,9 @@ spring:
       max-request-size: 26MB
 
 cqcp:
+  admin-api:
+    admin-token: ${CQCP_ADMIN_API_TOKEN:}
+    readonly-token: ${CQCP_ADMIN_READONLY_TOKEN:}
   review:
     upload-root: ${CQCP_UPLOAD_ROOT:./data/uploads}
     max-upload-bytes: ${CQCP_MAX_UPLOAD_BYTES:26214400}
@@ -21,6 +24,12 @@ cqcp:
       enabled: ${CQCP_REVIEW_WORKER_ENABLED:true}
       poll-delay-ms: ${CQCP_REVIEW_WORKER_POLL_DELAY_MS:1000}
       lease-duration-seconds: ${CQCP_REVIEW_WORKER_LEASE_DURATION_SECONDS:3600}
+  model-gateway:
+    secret-file-root: ${CQCP_MODEL_SECRET_FILE_ROOT:/run/secrets}
+    secret-refs:
+      deepseek-official: ${CQCP_DEEPSEEK_SECRET_REF:env:CQCP_MODEL_DEEPSEEK_API_KEY}
+    endpoints:
+      deepseek-official: https://api.deepseek.com
 
 management:
   endpoints:

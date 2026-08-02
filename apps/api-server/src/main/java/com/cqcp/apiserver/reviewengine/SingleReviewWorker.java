@@ -85,13 +85,15 @@ public class SingleReviewWorker {
             }
             var state = loadResult.orElseThrow();
 
-            if (!"v20260705.1".equals(state.execution().versionReferences().ruleSetVersion())) {
+            var documentSnapshot = documentStore.readDocumentSnapshot(
+                    state.task().taskId(),
+                    state.documentReference());
+            if (documentSnapshot.isEmpty()) {
                 failNonTerminal(executionId, state.execution());
                 return;
             }
-
-            var docRef = documentStore.readDocument(state.task().taskId(), state.documentReference());
-            if (docRef.isEmpty()) {
+            var snapshot = documentSnapshot.orElseThrow();
+            if (!snapshot.matches(state.documentSizeBytes(), state.documentSha256())) {
                 failNonTerminal(executionId, state.execution());
                 return;
             }
@@ -101,7 +103,10 @@ public class SingleReviewWorker {
 
             var taskRecord = new ReviewTaskRecord(
                     state.task().taskId(), state.task().contractName(), state.task().structuredFieldsSnapshot());
-            var docxRef = new TaskExecutionDocumentReference(docRef.orElseThrow(), state.task().taskId());
+            var docxRef = TaskExecutionDocumentReference.forSnapshot(
+                    state.documentReference(),
+                    state.task().taskId(),
+                    snapshot.content());
             var request = TaskExecutionRequest.forDocument(
                     taskRecord, state.execution(), docxRef, enabledPoints, disabledPoints);
 

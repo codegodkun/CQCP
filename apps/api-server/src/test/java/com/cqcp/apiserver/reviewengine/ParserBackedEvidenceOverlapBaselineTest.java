@@ -56,8 +56,14 @@ class ParserBackedEvidenceOverlapBaselineTest {
                     sourceAnchors(evidence));
             results.add(result);
 
-            assertThat(result.expectedRecall()).isEqualByComparingTo("1.0000");
-            assertThat(result.actualPrecision()).isEqualByComparingTo("1.0000");
+            var assertionContext = "%s expectedAnchors=%s actualAnchors=%s"
+                    .formatted(fixtureCase.sampleId(), expectedAnchors, sourceAnchors(evidence));
+            assertThat(result.expectedRecall())
+                    .as(assertionContext)
+                    .isEqualByComparingTo("1.0000");
+            assertThat(result.actualPrecision())
+                    .as(assertionContext)
+                    .isEqualByComparingTo("1.0000");
             assertThat(result.requiredHit()).isEqualTo(1);
             assertThat(result.attributionFailureReason()).isNull();
         }

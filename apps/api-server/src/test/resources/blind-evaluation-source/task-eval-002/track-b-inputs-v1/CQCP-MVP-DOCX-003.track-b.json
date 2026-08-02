@@ -1,0 +1,645 @@
+{
+  "schemaVersion" : "task-eval-002-track-b-runtime-packet-set-v1",
+  "track" : "TRACK_B_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+  "sampleId" : "CQCP-MVP-DOCX-003",
+  "source" : "same-run ReviewEngineInput.pointEvidences",
+  "packetCount" : 9,
+  "modelCallsAllowed" : false,
+  "packets" : [ {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-b36dfc7a8c897b13754311850a73a09193683c77bb0a2cfddb5505b0da603982",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PARTY_FIELDS",
+    "reviewPointCode" : "PARTY_A_NAME_CONSISTENCY",
+    "candidateRole" : "PARTY_A",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "星辰建设集团",
+      "evidenceText" : "发包方（甲方）： | 星辰建设集团",
+      "sourceAnchor" : {
+        "blockId" : "block-3",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-1/row:0/cell:1",
+        "sectionPath" : [ ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "星辰建设集团",
+      "evidenceText" : "发包方(以下简称甲方)： 星辰建设集团",
+      "sourceAnchor" : {
+        "blockId" : "block-9",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-003",
+      "candidateValue" : "星辰建设集团",
+      "evidenceText" : "甲方： 星辰建设集团 （公章） 地址： 法定代表人或授权代表： 电话： 开户银行： 账号： 采购经办人： 成本经办人： 工程经办人： | 乙方： 远航建筑工程有限公司 （公章）地址： 法定代表人或授权代表： 电话： 开户银行： 账号：",
+      "sourceAnchor" : {
+        "blockId" : "block-74",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-2/row:0/cell:0",
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-004",
+      "candidateValue" : "星辰建设集团",
+      "evidenceText" : "| 甲方： 星辰建设集团 (盖章) 法定代表人： 日期： 年 月 日",
+      "sourceAnchor" : {
+        "blockId" : "block-83",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-3/row:6/cell:1",
+        "sectionPath" : [ "第二部分 签约通知书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-005",
+      "candidateValue" : "星辰建设集团",
+      "evidenceText" : "甲方（全称）： 星辰建设集团",
+      "sourceAnchor" : {
+        "blockId" : "block-233",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-006",
+      "candidateValue" : "星辰建设集团",
+      "evidenceText" : "甲方: 星辰建设集团 乙方: 远航建筑工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-242",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "party_a",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 226,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-3f4d34fc4ac5bae3b9928e83dd94a0c043f78ff38b3a6a30850c13c50744f2f0",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PARTY_FIELDS",
+    "reviewPointCode" : "PARTY_B_NAME_CONSISTENCY",
+    "candidateRole" : "PARTY_B",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "远航建筑工程有限公司",
+      "evidenceText" : "承包方（乙方）： | 远航建筑工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-4",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-1/row:1/cell:1",
+        "sectionPath" : [ ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "远航建筑工程有限公司",
+      "evidenceText" : "承包方(以下简称乙方)： 远航建筑工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-10",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-003",
+      "candidateValue" : "远航建筑工程有限公司",
+      "evidenceText" : "甲方： 星辰建设集团 （公章） 地址： 法定代表人或授权代表： 电话： 开户银行： 账号： 采购经办人： 成本经办人： 工程经办人： | 乙方： 远航建筑工程有限公司 （公章）地址： 法定代表人或授权代表： 电话： 开户银行： 账号：",
+      "sourceAnchor" : {
+        "blockId" : "block-74",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-2/row:0/cell:1",
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-004",
+      "candidateValue" : "远航建筑工程有限公司",
+      "evidenceText" : "尊敬的远航建筑工程有限公司：",
+      "sourceAnchor" : {
+        "blockId" : "block-78",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-3/row:1/cell:0",
+        "sectionPath" : [ "第二部分 签约通知书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-005",
+      "candidateValue" : "远航建筑工程有限公司",
+      "evidenceText" : "乙方（全称）： 远航建筑工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-234",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-006",
+      "candidateValue" : "远航建筑工程有限公司",
+      "evidenceText" : "甲方: 星辰建设集团 乙方: 远航建筑工程有限公司",
+      "sourceAnchor" : {
+        "blockId" : "block-242",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "附件2: 阳光合作协议" ],
+        "regionType" : "APPENDIX",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "party_b",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 218,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-1caab9f538eda14f6663ca4cbbb3da5926020bc62c4b255aa832b168165e74c0",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "AMOUNT_TAX",
+    "reviewPointCode" : "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+    "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "12800",
+      "evidenceText" : "合同固定总价：¥ 12800 元，大写：人民币 壹万贰仟捌佰元整 元；其中不含增值税合同价款：¥ 11,327.43 元，大写：人民币 壹万壹仟叁佰贰拾柒元肆角叁分 元；增值税税款¥ 1,472.57 元，大写：人民币 壹仟肆佰柒拾贰元伍角柒分 元。合同固定总价为图纸范围总价包干，是指编号为 BH-123 的招标图纸内容（包括招标文件中相应说明）总价包干。包含但不限于如下内容：完成本工程所需要的措施费、规费、人工费、材料费、机械费、水电费、材料运输费、材料损耗、样板费、养护费及其他费用（运杂费、质检费、安装费、检验与试验费、缺陷修复费）、管理费、税金等全部费用和要求获得的利润以及应由乙方承担的义务、责任和风险以及为完成本项目资金的筹集和使用所发生的一切费用。除合同允许的情况外，合同总价在合同有效期内不予变更。",
+      "sourceAnchor" : {
+        "blockId" : "block-34",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    }, {
+      "occurrenceId" : "OCC-002",
+      "candidateValue" : "12800",
+      "evidenceText" : "二标段 | 12800",
+      "sourceAnchor" : {
+        "blockId" : "block-81",
+        "locationLevel" : "TABLE_CELL",
+        "previewElementRef" : "table:table-3/row:4/cell:1",
+        "sectionPath" : [ "第二部分 签约通知书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "contract_total_amount",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 370,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-35878e7b19821fc00d9b18340532f21accf45abe19c1003c39de047b4f13d629",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "AMOUNT_TAX",
+    "reviewPointCode" : "TAX_AMOUNT_FORMULA_CONSISTENCY",
+    "candidateRole" : "TAX_AMOUNT",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "1472.57",
+      "evidenceText" : "合同固定总价：¥ 12800 元，大写：人民币 壹万贰仟捌佰元整 元；其中不含增值税合同价款：¥ 11,327.43 元，大写：人民币 壹万壹仟叁佰贰拾柒元肆角叁分 元；增值税税款¥ 1,472.57 元，大写：人民币 壹仟肆佰柒拾贰元伍角柒分 元。合同固定总价为图纸范围总价包干，是指编号为 BH-123 的招标图纸内容（包括招标文件中相应说明）总价包干。包含但不限于如下内容：完成本工程所需要的措施费、规费、人工费、材料费、机械费、水电费、材料运输费、材料损耗、样板费、养护费及其他费用（运杂费、质检费、安装费、检验与试验费、缺陷修复费）、管理费、税金等全部费用和要求获得的利润以及应由乙方承担的义务、责任和风险以及为完成本项目资金的筹集和使用所发生的一切费用。除合同允许的情况外，合同总价在合同有效期内不予变更。",
+      "sourceAnchor" : {
+        "blockId" : "block-34",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第一部分 合同协议书" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "tax_amount",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 359,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-f3426134ae52ad7ea7a1da93f826c5d1ee9017424701dc18800ba9e32461b2b6",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "PREPAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "PREPAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "0",
+      "evidenceText" : "本工程无预付款。",
+      "sourceAnchor" : {
+        "blockId" : "block-161",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "prepayment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 8,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-67b0574b057c3403492ad2ba9ea12b3361cb7799d6f542c46bee3e37e1599d50",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "70",
+      "evidenceText" : "A模式：按月形象进度付款，经甲方和工程监理单位初验合格后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付上月完成合格形象进度产值的70%；",
+      "sourceAnchor" : {
+        "blockId" : "block-164",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "progress_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 102,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-7581621cf63aaa5127f99fccacbe6f357724768988b895c4610991c74c7dd174",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "COMPLETION_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "80",
+      "evidenceText" : "竣工款：竣工验收完成工后，乙方向甲方提交付款申请及产值100%金额的增值税专用发票等请款资料，甲方在收到上述请款资料后的60个工作日内支付至已完工程量的80%；",
+      "sourceAnchor" : {
+        "blockId" : "block-169",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "completion_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 80,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-ab5cfeeb07c89df4bf251fbdcca735d3706f8dfd9b9055b57cd53ec05985e3ce",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+    "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "97",
+      "evidenceText" : "结算款：乙方向甲方提交齐全完整的结算书并经甲方确认，工程结算完毕且整体工程交付使用后，甲方完成结算审核，乙方向甲方提交付款申请及结算金额100%的增值税专用发票等请款资料，甲方在收到上述请款资料后三个月内支付至结算金额的97%；",
+      "sourceAnchor" : {
+        "blockId" : "block-170",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "settlement_payment_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 114,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  }, {
+    "schemaVersion" : "task036-runtime-evidence-packet-v1",
+    "packetId" : "EP-232297d411ac10a0a62e5720d336687b054b614372cf3735b6675211a49d40a7",
+    "taskId" : "task-034-CQCP-MVP-DOCX-003",
+    "executionId" : "execution-034-CQCP-MVP-DOCX-003",
+    "sampleId" : "CQCP-MVP-DOCX-003",
+    "ruleSetVersion" : "v20260729.1",
+    "family" : "PAYMENT_TERMS",
+    "reviewPointCode" : "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+    "candidateRole" : "WARRANTY_RETENTION_RATIO",
+    "candidateOccurrences" : [ {
+      "occurrenceId" : "OCC-001",
+      "candidateValue" : "3",
+      "evidenceText" : "质保金：工程质保金为工程结算总价的3%，保修期以工程总体竣工验收，完善整改意见并正式移交甲方，甲方开始办理集中客户入住之日起计算（分批集中入住的，按每批入住时间，分批计算。质保金按同比例支付）。",
+      "sourceAnchor" : {
+        "blockId" : "block-171",
+        "locationLevel" : "BLOCK_LEVEL",
+        "previewElementRef" : null,
+        "sectionPath" : [ "第三部分 合同条款" ],
+        "regionType" : "BODY",
+        "contextType" : null,
+        "reliable" : true
+      }
+    } ],
+    "coverageSignals" : [ {
+      "slotKey" : "warranty_retention_ratio",
+      "required" : true,
+      "critical" : true,
+      "coverageStatus" : "SATISFIED",
+      "diagnosticCode" : null,
+      "reliableAnchor" : true
+    } ],
+    "budget" : {
+      "maxEvidenceChars" : 16000,
+      "usedEvidenceChars" : 97,
+      "complete" : true,
+      "truncated" : false
+    },
+    "admission" : {
+      "modelCallAllowed" : false,
+      "status" : "ZERO_CALL_REQUIRED",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    },
+    "requiredOutput" : {
+      "contract" : "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+      "fields" : [ "suggestedRole", "selectedOccurrenceIds", "selectedAnchorBlockIds", "abstain", "abstentionReason" ],
+      "instruction" : "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+    }
+  } ],
+  "familyPlans" : [ {
+    "family" : "PARTY_FIELDS",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-003:PARTY_FIELDS:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "PARTY_A",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "PARTY_B",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  }, {
+    "family" : "AMOUNT_TAX",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-003:AMOUNT_TAX:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "CONTRACT_TOTAL_AMOUNT",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "TAX_AMOUNT",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  }, {
+    "family" : "PAYMENT_TERMS",
+    "sourceShardIds" : [ "CQCP-MVP-DOCX-003:PAYMENT_TERMS:shard-1" ],
+    "requestedRoles" : [ ],
+    "selectedBlockIds" : [ ],
+    "uncoveredRoles" : [ ],
+    "ineligibleRoles" : [ {
+      "candidateRole" : "PREPAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "PROGRESS_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "COMPLETION_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "SETTLEMENT_PAYMENT_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    }, {
+      "candidateRole" : "WARRANTY_RETENTION_RATIO",
+      "reasonCodes" : [ "DETERMINISTIC_HIGH_ZERO_CALL" ]
+    } ],
+    "priorityReason" : "ZERO_ELIGIBLE_ROLES",
+    "modelCallAllowed" : false,
+    "maxEvidenceChars" : 32000,
+    "usedEvidenceChars" : 0
+  } ]
+}

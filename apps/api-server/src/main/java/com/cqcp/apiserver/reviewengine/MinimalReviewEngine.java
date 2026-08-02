@@ -1,6 +1,7 @@
 package com.cqcp.apiserver.reviewengine;
 
 import com.cqcp.apiserver.tuning.PointDiagnostic;
+import com.cqcp.apiserver.wordparser.WordParserSpikeDocument;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class MinimalReviewEngine {
         var pointResults = new ArrayList<PointReviewResult>();
         var diagnostics = new ArrayList<PointDiagnostic>();
 
+        // Validate runtime snapshot if present
+        if (input.runtimeRuleSetSnapshot() != null) {
+            validateConsistencySnapshot(input.runtimeRuleSetSnapshot());
+        }
+
         for (ReviewPointCode reviewPointCode : ReviewPointCode.values()) {
             pointResults.add(reviewPoint(input, reviewPointCode, diagnostics));
         }
@@ -53,6 +59,29 @@ public class MinimalReviewEngine {
                 List.copyOf(diagnostics));
     }
 
+    private void validateConsistencySnapshot(RuntimeRuleSetSnapshot snapshot) {
+        if (!"v20260715.1".equals(snapshot.version())
+                && !"v20260729.1".equals(snapshot.version())) {
+            throw new IllegalStateException(
+                    "Unsupported consistency snapshot version: " + snapshot.version());
+        }
+        if (snapshot.policyMap().size() != 9) {
+            throw new IllegalStateException(
+                    "Consistency snapshot must cover all 9 review points");
+        }
+        for (ReviewPointCode code : ReviewPointCode.values()) {
+            var policy = snapshot.policyMap().get(code);
+            if (policy == null) {
+                throw new IllegalStateException(
+                        "Missing consistency policy for: " + code);
+            }
+            if (!"CONSISTENCY_SET".equals(policy.cardinalityMode())) {
+                throw new IllegalStateException(
+                        "Non-CONSISTENCY_SET policy for: " + code);
+            }
+        }
+    }
+
     private PointReviewResult reviewPoint(
             ReviewEngineInput input,
             ReviewPointCode reviewPointCode,
@@ -75,6 +104,12 @@ public class MinimalReviewEngine {
         var preflight = preflight(reviewPointCode, evidence);
         if (!preflight.canConclude()) {
             return notConcludedFromPreflight(reviewPointCode, preflight, evidence, diagnostics);
+        }
+
+        // Consistency multi-value conflict: distinct canonical values > 1 → ERROR
+        // Only activated when runtimeRuleSetSnapshot is present
+        if (input.runtimeRuleSetSnapshot() != null && hasConsistencyMultiValueConflict(evidence)) {
+            return consistencyMultiValueError(reviewPointCode, evidence);
         }
 
         return switch (reviewPointCode) {
@@ -128,6 +163,43 @@ public class MinimalReviewEngine {
                     "质保款比例一致。",
                     "质保款比例与合同证据不一致。");
         };
+    }
+
+    /**
+     * Check if evidence has multiple distinct canonical values via occurrences,
+     * not via evidence.candidateValue (which is a first-occurrence projection).
+     */
+    private boolean hasConsistencyMultiValueConflict(PointEvidence evidence) {
+        if (evidence == null || evidence.occurrences().isEmpty()) {
+            return false;
+        }
+        if (evidence.status() != EvidenceStatus.CONFIRMED) {
+            return false;
+        }
+        var distinctValues = evidence.occurrences().stream()
+                .map(PointEvidenceOccurrence::candidateValue)
+                .filter(v -> v != null && !v.isBlank())
+                .distinct()
+                .toList();
+        return distinctValues.size() > 1;
+    }
+
+    private PointReviewResult consistencyMultiValueError(
+            ReviewPointCode reviewPointCode,
+            PointEvidence evidence) {
+        var summary = "一致性扫描发现 " + evidence.occurrences().size()
+                + " 处 occurrence，存在多个不同值。";
+        return new PointReviewResult(
+                reviewPointCode,
+                PointStatus.ERROR,
+                summary,
+                FindingSeverity.ERROR,
+                anchorsFor(evidence),
+                null,
+                null,
+                PointCoverageStatus.COMPLETE,
+                null,
+                List.of());
     }
 
     private PointPreflight preflight(ReviewPointCode reviewPointCode, PointEvidence evidence) {
@@ -266,6 +338,16 @@ public class MinimalReviewEngine {
             ReviewEngineInput input,
             ReviewPointCode reviewPointCode,
             PointEvidence evidence) {
+        // Evidence tax consistency check: only when runtimeRuleSetSnapshot present
+        if (input.runtimeRuleSetSnapshot() != null
+                && evidence.candidateValue() != null && !evidence.candidateValue().isBlank()) {
+            var evidenceTax = new BigDecimal(evidence.candidateValue());
+            var structuredTax = input.structuredFields().getDecimal("taxAmount");
+            if (!amountsClose(evidenceTax, structuredTax)) {
+                return error(reviewPointCode, "税额证据值与结构化字段不一致。", evidence);
+            }
+        }
+
         var total = input.structuredFields().getDecimal("contractTotalAmount");
         var excluded = input.structuredFields().getDecimal("taxExcludedAmount");
         var tax = input.structuredFields().getDecimal("taxAmount");
@@ -384,12 +466,12 @@ public class MinimalReviewEngine {
                         occurrence.blockId(),
                         evidence.sourceOrigin(),
                         evidence.sourceExtractionMode(),
-                        evidence.contextType(),
+                        occurrence.contextType(),
                         occurrence.evidenceSummary(),
                         occurrence.sectionPath(),
                         occurrence.regionType(),
                         occurrence.confidence(),
-                        occurrence.locationLevel(),
+                        publicSourceAnchorLocationLevel(occurrence.locationLevel()),
                         occurrence.previewElementRef()));
             }
             return List.copyOf(anchors.values());
@@ -406,8 +488,14 @@ public class MinimalReviewEngine {
                 evidence.sectionPath(),
                 evidence.regionType(),
                 evidence.confidence(),
-                evidence.locationLevel(),
+                publicSourceAnchorLocationLevel(evidence.locationLevel()),
                 evidence.previewElementRef()));
+    }
+
+    private static String publicSourceAnchorLocationLevel(String internalLocationLevel) {
+        return "TABLE_CELL".equals(internalLocationLevel)
+                ? "BLOCK_LEVEL"
+                : internalLocationLevel;
     }
 
     private ReviewSummary summarize(List<PointReviewResult> pointResults) {
@@ -700,7 +788,17 @@ record ReviewEngineInput(
         String executionId,
         String sampleId,
         StructuredFieldSet structuredFields,
-        Map<ReviewPointCode, PointEvidence> pointEvidences) {
+        Map<ReviewPointCode, PointEvidence> pointEvidences,
+        RuntimeRuleSetSnapshot runtimeRuleSetSnapshot) {
+
+    ReviewEngineInput(
+            String taskId,
+            String executionId,
+            String sampleId,
+            StructuredFieldSet structuredFields,
+            Map<ReviewPointCode, PointEvidence> pointEvidences) {
+        this(taskId, executionId, sampleId, structuredFields, pointEvidences, null);
+    }
 
     ReviewEngineInput {
         pointEvidences = Map.copyOf(pointEvidences);
@@ -710,7 +808,7 @@ record ReviewEngineInput(
         var updated = new EnumMap<ReviewPointCode, PointEvidence>(ReviewPointCode.class);
         updated.putAll(pointEvidences);
         updated.put(reviewPointCode, evidence);
-        return new ReviewEngineInput(taskId, executionId, sampleId, structuredFields, updated);
+        return new ReviewEngineInput(taskId, executionId, sampleId, structuredFields, updated, runtimeRuleSetSnapshot);
     }
 }
 
@@ -830,6 +928,7 @@ record PointEvidenceOccurrence(
         String evidenceSummary,
         List<String> sectionPath,
         String regionType,
+        String contextType,
         String confidence,
         String locationLevel,
         String previewElementRef) {
@@ -843,6 +942,7 @@ record PointEvidenceOccurrence(
                 candidate.blockText(),
                 candidate.sectionPath(),
                 candidate.regionType(),
+                candidate.contextType(),
                 EvidenceConfidenceLevel.HIGH.name(),
                 blockId == null || blockId.isBlank() ? null : "BLOCK_LEVEL",
                 candidate.previewElementRef());
@@ -850,6 +950,8 @@ record PointEvidenceOccurrence(
 
     PointEvidenceOccurrence {
         sectionPath = sectionPath == null ? List.of() : List.copyOf(sectionPath);
+        Objects.requireNonNull(contextType, "contextType");
+        WordParserSpikeDocument.ContextType.valueOf(contextType);
     }
 }
 
