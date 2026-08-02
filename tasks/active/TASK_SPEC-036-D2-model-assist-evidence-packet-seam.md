@@ -1,7 +1,7 @@
 # TASK_SPEC-036-D2：Model Assist Eligibility、Family Plan 与 EvidencePacket seam
 
-状态：IMPLEMENTED / TRACK B ZERO-CALL PASS / CROSS-SHARD ROLE ATOMICITY
-REMEDIATION TARGETED PASS / FRESH CORE VERIFICATION AND AUDIT PENDING
+状态：IMPLEMENTED / TRACK B ZERO-CALL PASS / REQUIRED-BLOCK IDENTITY
+REMEDIATION TARGETED `22/22` PASS / FRESH CORE VERIFICATION AND AUDIT PENDING
 
 父任务：`TASK-036`
 
@@ -102,7 +102,7 @@ PR 或 merge。
 * 已实现纯规则 `ModelAssistEligibilityEvaluator`、跨 shard/role/block 去重且硬预算
   的 `FamilyModelCallPlan`，以及 byte-stable、禁止 expected/human/verdict/Finding/
   全文 fallback 的 `RuntimeEvidencePacket`。
-* `ModelAssistRuntimeSeamTest` 精确 `21/0/0/0`。R7 same-run
+* `ModelAssistRuntimeSeamTest` 精确 `22/0/0/0`。R7 same-run
   `ReviewEngineInput.pointEvidences` 生成 3 个 sample package、27 个 packet、
   9 个 family plan、57 个 candidate occurrence；所有 anchor reliable。
 * 当前 v29 三样本 27 点均为 deterministic HIGH，故 27/27
@@ -118,3 +118,10 @@ PR 或 merge。
   role 最高 priority 排序并整体装入预算，同时增加 requested/uncovered 不相交
   不变量。绿测为 D2 `21/21`，D2 + 历史 Track B contract 联合 `22/22`，
   freeze/Core scope Node `11/11`；新的完整 Core verification、freeze 与三审尚未开始。
+* 2026-08-02 Core subject `3e4e8d00…` 的代码/架构审计发现 evaluator 选出的
+  `requiredBlockIds` 在写入 runtime packet admission 时丢失，packet 转回 role
+  request 又从全部 candidates 重建，因而会把非局部可比 block 扩大进预算。限定修复
+  仅在 admission 保留精确 block 集合并让 role request 原样消费；mixed-candidate JSON
+  round-trip 红测实际得到额外 `block-c`，绿测 D2 `22/22`、与历史 Track B contract
+  联合 `23/23`。历史 corpus 与人工确认 hash 未修改，仅在 contract test 中用独立
+  source signals 做内存迁移；新的完整 Core verification、freeze 与三审尚未开始。

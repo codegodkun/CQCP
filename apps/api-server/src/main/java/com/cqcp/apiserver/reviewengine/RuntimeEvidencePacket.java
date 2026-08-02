@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HexFormat;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -104,15 +105,27 @@ record RuntimeEvidencePacket(
     record ModelAssistAdmission(
             boolean modelCallAllowed,
             String status,
-            List<ModelAssistEligibilityEvaluator.EligibilityReason> reasonCodes) {
+            List<ModelAssistEligibilityEvaluator.EligibilityReason> reasonCodes,
+            List<String> requiredBlockIds) {
         ModelAssistAdmission {
             status = requireText(status, "status");
             reasonCodes = List.copyOf(reasonCodes);
+            requiredBlockIds = List.copyOf(requiredBlockIds);
             if (reasonCodes.isEmpty()) {
                 throw new IllegalArgumentException("admission reasonCodes must not be empty");
             }
             if (modelCallAllowed != "ELIGIBLE".equals(status)) {
                 throw new IllegalArgumentException("admission status mismatch");
+            }
+            if (requiredBlockIds.stream()
+                    .anyMatch(blockId -> blockId == null || blockId.isBlank())) {
+                throw new IllegalArgumentException("admission requiredBlockIds must not contain blanks");
+            }
+            if (new LinkedHashSet<>(requiredBlockIds).size() != requiredBlockIds.size()) {
+                throw new IllegalArgumentException("admission requiredBlockIds must be distinct");
+            }
+            if (modelCallAllowed != !requiredBlockIds.isEmpty()) {
+                throw new IllegalArgumentException("admission blocks must match modelCallAllowed");
             }
         }
     }
@@ -193,7 +206,8 @@ final class RuntimeEvidencePacketBuilder {
         var admission = new RuntimeEvidencePacket.ModelAssistAdmission(
                 decision.eligible(),
                 decision.eligible() ? "ELIGIBLE" : "ZERO_CALL_REQUIRED",
-                decision.reasonCodes());
+                decision.reasonCodes(),
+                decision.requiredBlockIds());
         var budget = new RuntimeEvidencePacket.PacketBudget(
                 maxEvidenceChars,
                 usedEvidenceChars,
@@ -258,12 +272,7 @@ final class RuntimeEvidencePacketBuilder {
         var decision = new ModelAssistEligibilityEvaluator.EligibilityDecision(
                 packet.admission().modelCallAllowed(),
                 packet.admission().reasonCodes(),
-                packet.admission().modelCallAllowed()
-                        ? candidates.stream()
-                                .map(ModelAssistEligibilityEvaluator.ModelAssistCandidate::blockId)
-                                .distinct()
-                                .toList()
-                        : List.of());
+                packet.admission().requiredBlockIds());
         return new FamilyModelCallPlanner.RoleRequest(
                 sourceShardId,
                 packet.family(),

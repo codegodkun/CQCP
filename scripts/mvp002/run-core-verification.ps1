@@ -321,11 +321,11 @@ try {
     $d2JUnitEvidence = Save-BackendTestEvidence `
         -RunName "d2-seam" `
         -Counts $d2SeamCounts
-    if ($d2SeamCounts.tests -ne 21 `
+    if ($d2SeamCounts.tests -ne 22 `
             -or $d2SeamCounts.failures -ne 0 `
             -or $d2SeamCounts.errors -ne 0 `
             -or $d2SeamCounts.skipped -ne 0) {
-        throw "D2 seam gate must be exactly 21/0/0/0."
+        throw "D2 seam gate must be exactly 22/0/0/0."
     }
 
     Invoke-Logged "review-assets-node-test" $repo {

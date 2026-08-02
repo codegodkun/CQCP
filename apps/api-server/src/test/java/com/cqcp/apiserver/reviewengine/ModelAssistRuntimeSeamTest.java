@@ -307,6 +307,37 @@ class ModelAssistRuntimeSeamTest {
     }
 
     @Test
+    void packetRoundTripPreservesOnlyComparableConflictBlocksForFamilyBudget() throws Exception {
+        RuntimeEvidencePacket packet = packetBuilder.build(
+                identity(),
+                conflictedEvidenceWithUnrelatedOccurrence(),
+                new RuntimeEvidencePacketBuilder.AssistPolicy(
+                        ResolverPolicy.GEMMA_IF_AMBIGUOUS,
+                        ModelAssistMode.AMBIGUITY_RESOLUTION,
+                        ExecutionStrategy.LLM_EXTRACT_THEN_RULE),
+                4096);
+        var mapper = new ObjectMapper().findAndRegisterModules();
+        RuntimeEvidencePacket restored = mapper.readValue(
+                mapper.writeValueAsBytes(packet), RuntimeEvidencePacket.class);
+
+        assertThat(restored.admission().requiredBlockIds())
+                .containsExactly("block-a", "block-b");
+        var request = packetBuilder.toRoleRequest("shard-1", restored, 100);
+        String comparableEvidence = "进度款70%进度款75%";
+        int comparableBudget = comparableEvidence.codePointCount(0, comparableEvidence.length());
+        FamilyModelCallPlan plan = new FamilyModelCallPlanner().plan(
+                restored.family(), List.of(request), comparableBudget);
+
+        assertThat(request.eligibilityDecision().requiredBlockIds())
+                .containsExactly("block-a", "block-b");
+        assertThat(plan.modelCallAllowed()).isTrue();
+        assertThat(plan.requestedRoles()).containsExactly("PROGRESS_PAYMENT_RATIO");
+        assertThat(plan.uncoveredRoles()).isEmpty();
+        assertThat(plan.selectedBlockIds()).containsExactly("block-a", "block-b");
+        assertThat(plan.usedEvidenceChars()).isEqualTo(comparableBudget);
+    }
+
+    @Test
     void familyPlanDeduplicatesBlocksAcrossShards() {
         var eligible = new ModelAssistEligibilityEvaluator.EligibilityDecision(
                 true, List.of(EligibilityReason.ELIGIBLE_MEDIUM_AMBIGUITY), List.of("shared"));
@@ -487,6 +518,64 @@ class ModelAssistRuntimeSeamTest {
                                 "BODY",
                                 "NORMAL",
                                 "HIGH",
+                                "BLOCK_LEVEL",
+                                null)));
+    }
+
+    private static PointEvidence conflictedEvidenceWithUnrelatedOccurrence() {
+        return new PointEvidence(
+                ReviewPointCode.PROGRESS_PAYMENT_RATIO_CONSISTENCY,
+                "PROGRESS_PAYMENT_RATIO",
+                "70",
+                EvidenceStatus.AMBIGUOUS,
+                "NATIVE_WORD",
+                "STRUCTURED",
+                "NORMAL",
+                "block-a",
+                EvidenceConfidenceLevel.CONFLICTED.name(),
+                "进度款比例存在局部冲突",
+                null,
+                null,
+                List.of(new EvidenceSlotCoverage(
+                        "progressPaymentRatio",
+                        true,
+                        true,
+                        EvidenceSlotCoverageStatus.AMBIGUOUS,
+                        null,
+                        true)),
+                List.of("付款条款"),
+                "BODY",
+                "BLOCK_LEVEL",
+                null,
+                List.of(
+                        new PointEvidenceOccurrence(
+                                "70",
+                                "block-a",
+                                "进度款70%",
+                                List.of("付款条款"),
+                                "BODY",
+                                "NORMAL",
+                                "CONFLICTED",
+                                "BLOCK_LEVEL",
+                                null),
+                        new PointEvidenceOccurrence(
+                                "75",
+                                "block-b",
+                                "进度款75%",
+                                List.of("付款条款"),
+                                "BODY",
+                                "NORMAL",
+                                "CONFLICTED",
+                                "BLOCK_LEVEL",
+                                null),
+                        new PointEvidenceOccurrence(
+                                "80",
+                                "block-c",
+                                "另见附件",
+                                List.of("付款条款"),
+                                "BODY",
+                                "NORMAL",
+                                "CONFLICTED",
                                 "BLOCK_LEVEL",
                                 null)));
     }

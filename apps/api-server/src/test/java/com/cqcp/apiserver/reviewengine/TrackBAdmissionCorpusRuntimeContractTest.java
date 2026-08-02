@@ -12,6 +12,7 @@ import com.cqcp.apiserver.reviewengine.ModelAssistEligibilityEvaluator.RoleConte
 import com.cqcp.apiserver.reviewengine.ModelAssistEligibilityEvaluator.SlotPolicy;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -71,11 +72,18 @@ class TrackBAdmissionCorpusRuntimeContractTest {
         var recomputedDecisions =
                 new ArrayList<ModelAssistEligibilityEvaluator.EligibilityDecision>();
         for (JsonNode packetNode : corpus.path("packets")) {
+            JsonNode source = sourceBySampleId.remove(packetNode.path("sampleId").asText());
+            assertThat(source).as(packetNode.path("sampleId").asText()).isNotNull();
+            assertThat(packetNode.path("admission").has("requiredBlockIds")).isFalse();
+            var migrationDecision = evaluator.evaluate(runtimeContext(packetNode, source));
+            ObjectNode migratedPacketNode = packetNode.deepCopy();
+            ((ObjectNode) migratedPacketNode.path("admission"))
+                    .set(
+                            "requiredBlockIds",
+                            mapper.valueToTree(migrationDecision.requiredBlockIds()));
             RuntimeEvidencePacket packet =
-                    mapper.treeToValue(packetNode, RuntimeEvidencePacket.class);
+                    mapper.treeToValue(migratedPacketNode, RuntimeEvidencePacket.class);
             packets.add(packet);
-            JsonNode source = sourceBySampleId.remove(packet.sampleId());
-            assertThat(source).as(packet.sampleId()).isNotNull();
             assertThat(source.path("packetId").asText()).isEqualTo(packet.packetId());
             assertThat(packet.schemaVersion())
                     .isEqualTo("task036-runtime-evidence-packet-v1");
@@ -194,18 +202,58 @@ class TrackBAdmissionCorpusRuntimeContractTest {
     }
 
     private RoleContext runtimeContext(RuntimeEvidencePacket packet, JsonNode source) {
+        return runtimeContext(
+                packet.reviewPointCode(),
+                packet.family(),
+                packet.candidateRole(),
+                packet.candidateOccurrences(),
+                packet.coverageSignals(),
+                packet.budget(),
+                source);
+    }
+
+    private RoleContext runtimeContext(JsonNode packetNode, JsonNode source) throws Exception {
+        var candidates = new ArrayList<RuntimeEvidencePacket.PacketCandidateOccurrence>();
+        for (JsonNode candidate : packetNode.path("candidateOccurrences")) {
+            candidates.add(mapper.treeToValue(
+                    candidate, RuntimeEvidencePacket.PacketCandidateOccurrence.class));
+        }
+        var coverage = new ArrayList<RuntimeEvidencePacket.PacketCoverageSignal>();
+        for (JsonNode signal : packetNode.path("coverageSignals")) {
+            coverage.add(mapper.treeToValue(
+                    signal, RuntimeEvidencePacket.PacketCoverageSignal.class));
+        }
+        return runtimeContext(
+                ReviewPointCode.valueOf(packetNode.path("reviewPointCode").asText()),
+                packetNode.path("family").asText(),
+                packetNode.path("candidateRole").asText(),
+                candidates,
+                coverage,
+                mapper.treeToValue(
+                        packetNode.path("budget"), RuntimeEvidencePacket.PacketBudget.class),
+                source);
+    }
+
+    private RoleContext runtimeContext(
+            ReviewPointCode reviewPointCode,
+            String family,
+            String candidateRole,
+            List<RuntimeEvidencePacket.PacketCandidateOccurrence> packetCandidates,
+            List<RuntimeEvidencePacket.PacketCoverageSignal> coverageSignals,
+            RuntimeEvidencePacket.PacketBudget budget,
+            JsonNode source) {
         var signalByOccurrenceId = new LinkedHashMap<String, JsonNode>();
         for (JsonNode candidateSignal : source.path("candidateSignals")) {
             assertThat(signalByOccurrenceId.put(
                             candidateSignal.path("occurrenceId").asText(), candidateSignal))
                     .isNull();
         }
-        List<ModelAssistCandidate> candidates = packet.candidateOccurrences().stream()
+        List<ModelAssistCandidate> candidates = packetCandidates.stream()
                 .map(candidate -> {
                     JsonNode signal = signalByOccurrenceId.remove(candidate.occurrenceId());
                     assertThat(signal).as(candidate.occurrenceId()).isNotNull();
                     assertThat(signal.path("valueType").asText())
-                            .isEqualTo(valueType(packet.reviewPointCode()));
+                            .isEqualTo(valueType(reviewPointCode));
                     return new ModelAssistCandidate(
                             candidate.candidateValue(),
                             signal.path("valueType").asText(),
@@ -226,23 +274,23 @@ class TrackBAdmissionCorpusRuntimeContractTest {
                 .toList();
         assertThat(signalByOccurrenceId).isEmpty();
         JsonNode slotPolicy = source.path("slotPolicy");
-        assertThat(packet.coverageSignals().stream().anyMatch(
+        assertThat(coverageSignals.stream().anyMatch(
                         RuntimeEvidencePacket.PacketCoverageSignal::required))
                 .isEqualTo(slotPolicy.path("required").asBoolean());
-        assertThat(packet.coverageSignals().stream().anyMatch(
+        assertThat(coverageSignals.stream().anyMatch(
                         RuntimeEvidencePacket.PacketCoverageSignal::critical))
                 .isEqualTo(slotPolicy.path("critical").asBoolean());
-        boolean packetBundleValid = !packet.coverageSignals().isEmpty()
-                && packet.candidateOccurrences().stream()
+        boolean packetBundleValid = !coverageSignals.isEmpty()
+                && packetCandidates.stream()
                         .allMatch(candidate -> candidate.sourceAnchor().reliable());
         assertThat(packetBundleValid)
                 .isEqualTo(source.path("bundleValid").asBoolean());
-        assertThat(packet.budget().complete())
+        assertThat(budget.complete())
                 .isEqualTo(source.path("budgetComplete").asBoolean());
         return new RoleContext(
-                packet.reviewPointCode(),
-                packet.family(),
-                packet.candidateRole(),
+                reviewPointCode,
+                family,
+                candidateRole,
                 EvidenceConfidenceLevel.valueOf(source.path("confidenceLevel").asText()),
                 candidates,
                 new SlotPolicy(

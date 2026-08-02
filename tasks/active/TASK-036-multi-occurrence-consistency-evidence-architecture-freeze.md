@@ -1,8 +1,8 @@
 # TASK-036：多出处一致性证据架构冻结
 
 状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
-`c21a68d…` Core verification PASS / `72b934c2…` Code-Architecture NO_GO /
-D2 Cross-Shard Role Atomicity Targeted `21/21` PASS /
+`979ddbd…` Core verification PASS / `3e4e8d00…` Code-Architecture P1 NO_GO /
+D2 Required-Block Identity Targeted `22/22` PASS /
 Fresh Verification and Final Audit Pending
 
 类型：A 类主链路架构治理父任务
@@ -208,11 +208,12 @@ Fresh Verification and Final Audit Pending
   span P1 整改增加 1 条，当前完整门禁为 452/452；R7 为 27/27
   candidate `MATCH`、27/27 `PASS`、57 `MATCHED` + 6 human `EXCLUDED`、
   70 production semantic ledger、0 SYS/Finding。
-* D2/Track B 增量：seam 21/21；3 份包、27 packet、9 plan、57 occurrence，
+* D2/Track B 增量：seam 22/22；3 份包、27 packet、9 plan、57 occurrence，
   v5 三个全新盲评 agent 27/27 `ZERO_CALL_REQUIRED`，seal 为
   `edcfa024dfe2cbf6c5b1fe6ca1427a91d61101dd8903f19f61c70294f1fe2970`。
   这不构成 Provider admission。
-* 遗留问题：当前修复已形成 clean HEAD，尚待从零完成统一验证、新冻结、同一
+* 遗留问题：当前 required-block identity 修复仍是 tracked working-tree，尚待形成
+  clean HEAD 并从零完成统一验证、新冻结、同一
   hash 三审、CI 与 merge；尚未进入主线。
 * 2026-07-31 中途收敛：B1/B2/C1/C2/D1/D2 runtime seam 纳入先行 Core
   integration unit；Core 完整验证、正式三方全零审计、CI 和 merge 后才可声明
@@ -251,6 +252,14 @@ Fresh Verification and Final Audit Pending
   先按 role 聚合并去重 required blocks、以最高 priority 原子预算，集合互斥；红测
   `1/1 FAIL`，绿测 D2 `21/21`、D2 + Track B contract `22/22`、Node `11/11`。
   尚未执行新的完整 verification、freeze 或三审。
+* 2026-08-02 HEAD `979ddbd3f9c903ee6cce40cf578676b084096f91` 的完整 Core
+  verification 通过并冻结为 `3e4e8d00cb477ae79fdefac7449fb623ad123a16f8be096f9c07f559ff99587f`。
+  CC 与测试/安全 Codex auditor 全零 `GO`，代码/架构 Codex auditor 返回
+  `NO_GO（P1=1 / blocking=1）`：runtime packet admission 丢失 evaluator 的精确
+  `requiredBlockIds`，转回 role request 时扩大为全部 candidates。主 Codex 已按用户
+  批准完成 mixed-candidate round-trip 限定红绿修复；D2 `22/22`、与历史 Track B
+  contract 联合 `23/23`，历史 corpus 字节与人工 hash 均未修改。新完整 verification、
+  freeze 与三审仍待重建，`3e4e8d00…` 不得复用。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
   `TASK-028 / TASK-031 / TASK-032` 已解锁；Git 动作仅按用户已给出的 Core 条件式
   授权执行，merge 仍要求新 subject 三审全零、CI 全绿且 HEAD 不漂移。

@@ -273,6 +273,24 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   不变量。绿测为 D2 `21/21`，D2 + 历史 Track B runtime contract 联合 `22/22`，
   freeze/Core scope Node `11/11`；当前只是 tracked working-tree 定向证据，尚未形成
   新 clean HEAD，也未运行完整 verification、freeze 或三审。
+- 上述原子预算修复和 D1 计数叙事修正随后形成 HEAD
+  `979ddbd3f9c903ee6cce40cf578676b084096f91`，完整 Core verification 通过并冻结为
+  subject `3e4e8d00cb477ae79fdefac7449fb623ad123a16f8be096f9c07f559ff99587f`，
+  verification SHA 为
+  `68154e589b91e6c32a9e6fe4979f7b82ebc2cf5e1618ad550a9e645ffe2a500f`。
+  重试后的 CC AUDIT 与测试/安全 Codex auditor 为全零 `GO`，代码/架构 Codex
+  auditor 为 `NO_GO（P1=1 / blocking=1）`：evaluator 选出的精确
+  `requiredBlockIds` 未写入 `RuntimeEvidencePacket.ModelAssistAdmission`，packet
+  转回 role request 时被扩大为全部 candidates，可把 `localRelation=NONE` 的 block
+  送入 family budget。依硬停止条件，`3e4e8d00…` 已拒绝，canonical verification、
+  freeze、R7 与 browser 证据均迁入对应 `*-rejected-3e4e8d00/` 封存目录。
+- 用户批准最小 D2 seam 修复后，真实 packet JSON round-trip → role request → family
+  plan 回归精确复现 `block-c` 被错误加入。当前 admission 持久化 evaluator 的精确
+  block 集合并校验非空/去重/allowed 一致性，role request 只消费该集合；旧 Track B
+  corpus 字节和人工 hash 不变，只在测试内以内存迁移方式用独立 eligibility source
+  signals 补齐新字段。定向绿测为 D2 `22/22`、D2 + 历史 Track B runtime contract
+  `23/23`、freeze validator Node `4/4`。当前仍是 tracked working-tree 修复，尚未形成
+  新 clean HEAD，也未执行新的完整 verification、freeze 或三审。
 
 ## 当前活跃任务
 
@@ -285,7 +303,8 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 ## 当前阻塞项
 
 1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…`、
-   `3bc24a84…`、`8d01dd9a…`、`75d86031…` 及 `72b934c2…` 对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
+   `3bc24a84…`、`8d01dd9a…`、`75d86031…`、`72b934c2…` 及 `3e4e8d00…`
+   对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
    也不得单独复用。
 2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
    四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
@@ -299,9 +318,9 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
 
 ## 下一步
 
-1. 完成当前 D2 原子预算修复的 diff/格式自检，并在既有授权下形成新的 clean
+1. 完成当前 D2 required-block identity 修复的 diff/格式自检，并在既有授权下形成新的 clean
    candidate；JSON 历史 CRLF seal、历史 451/20 运行记录不得改写。
-2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1=`452`、D2=`21`、admin-web、Core Node、
+2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1=`452`、D2=`22`、admin-web、Core Node、
    OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
    验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
 3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex

@@ -237,7 +237,7 @@ export function validateVerificationSummary(
 
   const expectedJUnitRuns = new Map([
     ["d1-combined", 452],
-    ["d2-seam", 21],
+    ["d2-seam", 22],
     ["backend-first", null],
     ["backend-repeat", null],
   ]);
