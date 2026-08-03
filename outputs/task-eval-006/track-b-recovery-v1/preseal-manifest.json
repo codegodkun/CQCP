@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-preseal-manifest-v1",
+  "status": "AWAITING_HUMAN_REVIEW",
+  "generatedAt": "2026-08-03T09:37:54.991Z",
+  "diagnosticSealPath": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/diagnostic-seal.json",
+  "diagnosticSealSha256": "fedc4e21801f1e5c38f5fc97c0da6db16546fb775ee060991f54e5f41d9404ff",
+  "selectedPromptPath": "scripts/blind-evaluation/track-b-provider-recovery-prompt-v3.txt",
+  "selectedPromptSha256": "5cb29a5ddc9644e15afba8afc67079d805ff41ae4472cf93997a1d89ac302601",
+  "selectedProjectionSchema": "task-eval-006-model-facing-evidence-packet-v3",
+  "selectedOpinionSchema": "track-b-role-candidate-anchor-abstention-v3",
+  "sourceSignalsPath": "apps/api-server/src/test/resources/track-b-recovery-v1/source-signals.json",
+  "sourceSignalsSha256": "47cf4a048bd427d1ad9b3e713b58372521d6e7f93d223d442a137a919696436f",
+  "proposedDecisionsPath": "apps/api-server/src/test/resources/track-b-recovery-v1/proposed-decisions.json",
+  "proposedDecisionsSha256": "2cb18d7550a058166b86777c9f847130752b73d955335288c5cfed66b510bc66",
+  "priorCorpusPaths": [
+    "apps/api-server/src/test/resources/track-b-admission-corpus-v2/corpus.json",
+    "outputs/task-eval-002/track-b-holdout-v1/corpus.json",
+    "outputs/task-eval-003/track-b-successor-v1/corpus.json",
+    "outputs/task-eval-004/track-b-final-v1/corpus.json",
+    "outputs/task-eval-005/track-b-fifth-v1/corpus.json"
+  ],
+  "priorCorpusSha256s": [
+    "cda175943b89f72cbdef3cdfc2fb3dbeff206504d122b75a67ab37b9b5b67efd",
+    "15d1f845d65c5018363bba324d0527f36ff07ddf0703f188f1d557711a9e2b24",
+    "a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3",
+    "ed216d435b82af250c39e0ba927f75ceaa233f70ae9aa516fa4adad42aa3ca95",
+    "17343dd34820c847676ed681a8a4e6ee9f669c60cf3c0257aa2363ba4bba8f5e"
+  ],
+  "diagnosticInputPaths": [
+    "outputs/task-eval-005/schema-diagnostic-v1/baseline/diagnostic-input.json",
+    "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/model-input.json"
+  ],
+  "diagnosticInputSha256s": [
+    "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+    "809c244e8526b7935caa7777e2c5fb13c9403450ddf0a9049e63645d78289fee"
+  ],
+  "disjointness": {
+    "comparedPriorCorpusCount": 5,
+    "diagnosticInputCount": 2,
+    "identityOverlapCount": 0,
+    "candidateValueOverlapCount": 0,
+    "evidenceTextOverlapCount": 0
+  },
+  "corpusPath": "outputs/task-eval-006/track-b-recovery-v1/corpus.json",
+  "corpusSha256": "3a988a9ab09008645dd812b47c1ad3f4c6a9aac699a590a66bd6a17cf1010554",
+  "humanReviewDraftPath": "outputs/task-eval-006/track-b-recovery-v1/human-review-draft.json",
+  "humanReviewDraftSha256": "8edd0ea4a78378af578cab1104b5d10d822b73e9077d4a325e8014195f03bb6d",
+  "humanReviewDocumentPath": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth-review.md",
+  "humanReviewDocumentSha256": "7ff431ccd2ad9528e856ee5075a47a733c710950905648bbc9daf55eccc4d752",
+  "packetCount": 12,
+  "eligiblePacketCount": 9,
+  "zeroCallControlCount": 3,
+  "modelInputCreated": false,
+  "evaluatorAccessAllowed": false,
+  "admissionNetworkCallAllowed": false,
+  "providerAdmissionEstablished": false,
+  "providerA0A1A2Allowed": false
+}

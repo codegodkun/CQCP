@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "task-eval-005-track-b-fifth-provider-call-set-v2",
+  "status": "FROZEN_AFTER_HUMAN_GROUND_TRUTH_SEAL",
+  "requestBuilderVersion": "track-b-single-packet-provider-request-builder-v2",
+  "model": "deepseek-v4-pro",
+  "promptSha256": "6a29b74fc890c3492e1658c08144a875325dbf11acd9012883d80e1e9d0f1bcc",
+  "masterModelInputSha256": "e1516fb0d395b075b0649be0a5ef7e17334171598f01d832a25109de8601045b",
+  "maxOutputTokens": 1500,
+  "callCount": 9,
+  "eligiblePacketCount": 9,
+  "calls": [
+    {
+      "callId": "TB5-MC-9f0968c9428bc1f9490fd6115dce292ffe5624ea4cf833e452bcd6ed8f1f97b2",
+      "sampleId": "TB5-MED-001",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "family": "PARTY_FIELDS",
+      "requestedRole": "PARTY_A",
+      "packetId": "EP-84165b6480d8ea36e838c4b1233892d36755410741cc27c2b40a5ebb419cd6d2",
+      "modelInputSha256": "9f0968c9428bc1f9490fd6115dce292ffe5624ea4cf833e452bcd6ed8f1f97b2",
+      "outboundRequestSha256": "ae6edf093f991f9af3b5ad246b9ccf6d0f36412bc2355929c5dd1c826fc32a70"
+    },
+    {
+      "callId": "TB5-MC-62e00a3a1a05e600d52bb43dbf71564c522f09e56a02b1095c47b6712c4585f9",
+      "sampleId": "TB5-MED-002",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "family": "PARTY_FIELDS",
+      "requestedRole": "PARTY_B",
+      "packetId": "EP-5831f3912116f499540c351af939c4a7aebc0579cd59a70f82c24138382bfbad",
+      "modelInputSha256": "62e00a3a1a05e600d52bb43dbf71564c522f09e56a02b1095c47b6712c4585f9",
+      "outboundRequestSha256": "0ce35006ecda2a66404efc0d909544378673a6e1258a4ba215915e73fa9bf439"
+    },
+    {
+      "callId": "TB5-MC-36e85577e7803cc9e532dfc63f7ce68c5ca994a5588920138554d23781ca0211",
+      "sampleId": "TB5-MED-003",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "family": "AMOUNT_TAX",
+      "requestedRole": "CONTRACT_TOTAL_AMOUNT",
+      "packetId": "EP-10f7d720318a92b4755111b9ba91e780e42f1232889dd5c21e8aad4357dc4723",
+      "modelInputSha256": "36e85577e7803cc9e532dfc63f7ce68c5ca994a5588920138554d23781ca0211",
+      "outboundRequestSha256": "35e4e70c46b49d5c394f6410e0fd019c832ab9f5fd0042d0c7948e0d7e272fc4"
+    },
+    {
+      "callId": "TB5-MC-7bf0914119d17ea08574b8e977c684b86841e1f30f237feca0ef7cac4f724c60",
+      "sampleId": "TB5-MED-004",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "PREPAYMENT_RATIO",
+      "packetId": "EP-e43b8433e4485af3f1a6eef4b7c1f743c465adeef98d5034705df9330ceec239",
+      "modelInputSha256": "7bf0914119d17ea08574b8e977c684b86841e1f30f237feca0ef7cac4f724c60",
+      "outboundRequestSha256": "8eccb35ddd557f613c2979891160d77303b6aed34efbfb1d388d6de0f7827fbc"
+    },
+    {
+      "callId": "TB5-MC-a565641196a03b824eaf2d2eb4a4465423779991c76a0da38e7c18746f66bd61",
+      "sampleId": "TB5-MED-005",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "WARRANTY_RETENTION_RATIO",
+      "packetId": "EP-5d69a7916c3ea077e12b662b5904e2de77e9e9de467be8b23223558844fda5fd",
+      "modelInputSha256": "a565641196a03b824eaf2d2eb4a4465423779991c76a0da38e7c18746f66bd61",
+      "outboundRequestSha256": "801025265de769dfcccfc6e0bdc1be289dace85c31b61515b06ad695e7dd7f30"
+    },
+    {
+      "callId": "TB5-MC-05ea8806d8f849a956347fb339df71bd889f0dea02f1dc2e7de706611db3ffa3",
+      "sampleId": "TB5-CON-001",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "family": "PARTY_FIELDS",
+      "requestedRole": "PARTY_A",
+      "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+      "modelInputSha256": "05ea8806d8f849a956347fb339df71bd889f0dea02f1dc2e7de706611db3ffa3",
+      "outboundRequestSha256": "935385aa8d776026f1fcc2c7abd82204f4d48eb8f890f679cd9c7a8b6d4cb625"
+    },
+    {
+      "callId": "TB5-MC-0c9753016cc1b29248a855261e0bd84324df89c6ed252ad8907cb95c083de71f",
+      "sampleId": "TB5-CON-002",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "family": "AMOUNT_TAX",
+      "requestedRole": "TAX_AMOUNT",
+      "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+      "modelInputSha256": "0c9753016cc1b29248a855261e0bd84324df89c6ed252ad8907cb95c083de71f",
+      "outboundRequestSha256": "fd108c17760bc8f397815c0707f8e352bece5f24dd023c0ef4f2963f4c0e2aa7"
+    },
+    {
+      "callId": "TB5-MC-7610ca56b135c9bcfbfb52ddd44e3d8ec9671875df1dab1dc48a168449693222",
+      "sampleId": "TB5-CON-003",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "PROGRESS_PAYMENT_RATIO",
+      "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+      "modelInputSha256": "7610ca56b135c9bcfbfb52ddd44e3d8ec9671875df1dab1dc48a168449693222",
+      "outboundRequestSha256": "eade1a2d32c6c90215e72a6d78017fb8e4027f6f88f8fba66d78db6e7a2492e9"
+    },
+    {
+      "callId": "TB5-MC-405c05fe7d641e7caedcbaf66c8db51d0c2796af4f74b7ce3b5af55a29bea4eb",
+      "sampleId": "TB5-CON-004",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "SETTLEMENT_PAYMENT_RATIO",
+      "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+      "modelInputSha256": "405c05fe7d641e7caedcbaf66c8db51d0c2796af4f74b7ce3b5af55a29bea4eb",
+      "outboundRequestSha256": "b135250ea23a42ded8901975e90d4d9c120dba6c7ba5b66d7245d457ba3e78f9"
+    }
+  ],
+  "humanGroundTruthSealSha256": "85391e4573911f8e0147eb2ff2dda4908e79afe8029190d1c97fa2b73a96e4e3",
+  "standingGrantSha256": "f04c3ad0a6522b90f21d1efb32be12b0c883d03b2b286f9c2c8639ecd501239a"
+}

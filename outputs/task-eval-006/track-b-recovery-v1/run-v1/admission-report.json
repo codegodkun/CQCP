@@ -1,0 +1,254 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-admission-report-v1",
+  "status": "GO_9_OF_9_PLUS_3_ZERO_CALL",
+  "completedAt": "2026-08-03T10:12:48.538Z",
+  "purpose": "TRACK_B_EVALUATION",
+  "evaluatorPolicy": "CODEX_AND_DEEPSEEK_ALL_DIMENSIONS_100_PERCENT",
+  "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
+  "providerCallSetSha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3",
+  "dispatchSha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175",
+  "derivedReceiptSha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2",
+  "humanGroundTruthSha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315",
+  "codexOpinionSha256": "cccf0a4de81187079e09bcc0a422da72af72b4e6635c4a75053fa021ed6f126a",
+  "deepSeekExecutionClaimSha256": "600a821a25641b8d875e696d79191b986f77d39571a778c9670a5af9cde5929d",
+  "deepSeekOpinionSha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100",
+  "providerCallCount": 9,
+  "zeroCallControlCount": 3,
+  "automaticRetryPerformed": false,
+  "rawResponsePersisted": false,
+  "reasoningContentPersisted": false,
+  "codexMetrics": {
+    "schema": "9/9",
+    "reliableAnchor": "9/9",
+    "role": "9/9",
+    "candidate": "9/9",
+    "anchor": "9/9",
+    "abstention": "9/9"
+  },
+  "deepSeekMetrics": {
+    "schema": "9/9",
+    "reliableAnchor": "9/9",
+    "role": "9/9",
+    "candidate": "9/9",
+    "anchor": "9/9",
+    "abstention": "9/9"
+  },
+  "zeroCallControls": "3/3",
+  "codexResults": [
+    {
+      "caseId": "TB6-MED-001",
+      "packetId": "EP-8bc0ead85e0b2a0e930aba68448fc1c0fbf589ec29727b013f316df787e9bad6",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-002",
+      "packetId": "EP-ec38279e30374c954f83ba210378f131afb7eda1a088b5b6558386f84236829a",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-003",
+      "packetId": "EP-30c729f876f03831a713f44ccff193cc657acfdeec48bb94100600537a2f6617",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-004",
+      "packetId": "EP-fd05eaaebdf34d96005d1a1c14f26ae2d173545e34450a48a2ebc6d108aea243",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-005",
+      "packetId": "EP-ef6e602b815b1ee427fb3024ca1676970d274ac5aae9c198173336c2be09a2a7",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-001",
+      "packetId": "EP-bb8a60c0e9b6baacf090f02dd90b0231bb4c6346f2759799fad29ddf6b32f29c",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-002",
+      "packetId": "EP-8a95c7861aa5edff14afcf91cf7d7c1bf35c1d3d4a419122f1d37dce3a4f8fa1",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-003",
+      "packetId": "EP-80517b20dd53dd86e69afafa55788f05c6c07d10c9072a857a697f4729190ac1",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-004",
+      "packetId": "EP-338b3fd03abe4f58d1dfb9a38e3f56cac71ba77396417f9fe64da9f47efee89b",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    }
+  ],
+  "deepSeekResults": [
+    {
+      "caseId": "TB6-MED-001",
+      "packetId": "EP-8bc0ead85e0b2a0e930aba68448fc1c0fbf589ec29727b013f316df787e9bad6",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-002",
+      "packetId": "EP-ec38279e30374c954f83ba210378f131afb7eda1a088b5b6558386f84236829a",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-003",
+      "packetId": "EP-30c729f876f03831a713f44ccff193cc657acfdeec48bb94100600537a2f6617",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-004",
+      "packetId": "EP-fd05eaaebdf34d96005d1a1c14f26ae2d173545e34450a48a2ebc6d108aea243",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-MED-005",
+      "packetId": "EP-ef6e602b815b1ee427fb3024ca1676970d274ac5aae9c198173336c2be09a2a7",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-001",
+      "packetId": "EP-bb8a60c0e9b6baacf090f02dd90b0231bb4c6346f2759799fad29ddf6b32f29c",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-002",
+      "packetId": "EP-8a95c7861aa5edff14afcf91cf7d7c1bf35c1d3d4a419122f1d37dce3a4f8fa1",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-003",
+      "packetId": "EP-80517b20dd53dd86e69afafa55788f05c6c07d10c9072a857a697f4729190ac1",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CON-004",
+      "packetId": "EP-338b3fd03abe4f58d1dfb9a38e3f56cac71ba77396417f9fe64da9f47efee89b",
+      "schemaMatched": true,
+      "reliableAnchorMatched": true,
+      "roleMatched": true,
+      "candidateMatched": true,
+      "anchorMatched": true,
+      "abstentionMatched": true
+    }
+  ],
+  "controlResults": [
+    {
+      "caseId": "TB6-CTL-HIGH-001",
+      "packetId": "EP-ea71919261bfccb64c0e90ec428c4ac33fdcb44a45fcfb397657bcf9f1285b14",
+      "zeroCallRequired": true,
+      "excludedFromProviderCallSet": true,
+      "excludedFromCodexOpinion": true,
+      "excludedFromDeepSeekOpinion": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CTL-INVALID-001",
+      "packetId": "EP-d0a3abf4188f8cf3eda476a2dd159f7641e00e1eca0c07f5eb88e45e0a71a3df",
+      "zeroCallRequired": true,
+      "excludedFromProviderCallSet": true,
+      "excludedFromCodexOpinion": true,
+      "excludedFromDeepSeekOpinion": true,
+      "abstentionMatched": true
+    },
+    {
+      "caseId": "TB6-CTL-NOANCHOR-001",
+      "packetId": "EP-7242020b6d991cfd5bc5e24b4d823436f79524bafee89a666ca818e26ad2f22b",
+      "zeroCallRequired": true,
+      "excludedFromProviderCallSet": true,
+      "excludedFromCodexOpinion": true,
+      "excludedFromDeepSeekOpinion": true,
+      "abstentionMatched": true
+    }
+  ],
+  "modelProducedFindingOrVerdict": false,
+  "providerAdmissionEstablished": true,
+  "verificationAndAuditAllowed": true,
+  "a0A1A2ImplementationAllowed": false
+}

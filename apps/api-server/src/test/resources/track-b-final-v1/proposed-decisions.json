@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "task-eval-004-track-b-final-proposed-decisions-v1",
+  "status": "CODEX_PROPOSAL_NOT_HUMAN_GROUND_TRUTH",
+  "draftedBy": "CODEX",
+  "humanGroundTruthEstablished": false,
+  "entryCount": 12,
+  "entries": [
+    {
+      "caseId": "TBF-MED-001",
+      "proposedRationale": "委托方（甲方）标签直接标识合同甲方，现场联系人不是合同主体。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-med-001-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-MED-002",
+      "proposedRationale": "承包方（乙方）是合同主体，结算中心只是收款信息。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-med-002-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-MED-003",
+      "proposedRationale": "签约含税价对应合同总金额，采购控制价不是签约金额。",
+      "proposedExpected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-med-003-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-MED-004",
+      "proposedRationale": "启动预付款13.5%对应目标角色，6.5%属于履约担保。",
+      "proposedExpected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-med-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-MED-005",
+      "proposedRationale": "质保金2.75%对应目标角色，8.25%是逾期责任上限。",
+      "proposedExpected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-med-005-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-CON-001",
+      "proposedRationale": "发包人（甲方）标签直接指向牧星能源装备有限公司。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-con-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-CON-002",
+      "proposedRationale": "税额标签直接对应66168，而非不含税金额或价税合计。",
+      "proposedExpected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-con-002-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-CON-003",
+      "proposedRationale": "月度计量款73.5%对应进度款；87.5%是验收累计比例，附件编号不参与。",
+      "proposedExpected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-con-003-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-CON-004",
+      "proposedRationale": "结算确认后累计支付91.25%对应结算支付比例，8.75%是保留余款。",
+      "proposedExpected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbf-con-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBF-CTL-HIGH-001",
+      "proposedRationale": "确定性 HIGH 必须零调用。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TBF-CTL-INVALID-001",
+      "proposedRationale": "TABLE_CELL identity 不合法，bundle 必须 fail closed。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TBF-CTL-NOANCHOR-001",
+      "proposedRationale": "TOC context 不构成可靠业务证据 anchor。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ]
+}

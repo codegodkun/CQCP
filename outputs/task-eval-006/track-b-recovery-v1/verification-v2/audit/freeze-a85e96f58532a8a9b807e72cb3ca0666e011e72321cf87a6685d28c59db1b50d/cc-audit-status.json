@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "cqcp.track-b-cc-audit-status.v1",
+  "subjectIdentity": "a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d",
+  "manifestSha256": "08a0bd235b5c0e1cd24d67ea25895f9b7984d424e0a427b9415417d8b5579513",
+  "headCommit": "d08484cc693aee643265f7ddecbf29c21e02b506",
+  "tree": "ac8c97a746abf45c75045ff8b0b0114c9e0c74d1",
+  "fullDiffSha256": "b1e3eefe4b10441f46f55f4238ef689d219205fadb5d2dfb56b2a1432ee6eee1",
+  "verdict": "NO_GO",
+  "p0": 0,
+  "p1": 0,
+  "p2": 1,
+  "blocking": 1,
+  "failureClassification": "GOVERNANCE_DOCUMENT_FRESHNESS",
+  "oldVerdictsReusable": false
+}

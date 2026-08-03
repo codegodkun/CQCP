@@ -1,0 +1,226 @@
+{
+  "schemaVersion": "task-eval-005-track-b-fifth-unblind-report-v2",
+  "status": "NO_GO_MODEL_MISMATCH",
+  "evaluatedAt": "2026-08-03T07:19:02.365Z",
+  "blindOpinionsVerifiedBeforeGroundTruthRead": true,
+  "sameHoldoutRetryAllowed": false,
+  "corpusSha256": "17343dd34820c847676ed681a8a4e6ee9f669c60cf3c0257aa2363ba4bba8f5e",
+  "humanGroundTruthSha256": "85391e4573911f8e0147eb2ff2dda4908e79afe8029190d1c97fa2b73a96e4e3",
+  "modelInputSha256": "e1516fb0d395b075b0649be0a5ef7e17334171598f01d832a25109de8601045b",
+  "dispatchSha256": "31e9d71842d31a6d512d78def3a798cd3dbc483b656cebe20bf25fc2acd3ae42",
+  "providerCallSetSha256": "365e17222248e180cb07492ad36d85d0825182dfb6b4d0c9ceb7ab3d0e9e3a04",
+  "codexOpinionSha256": "95ecd582e4579b8539c84db553fc61a609f8e83a117ccd6ec59efe928d9766fe",
+  "deepSeekOpinionSha256": "0e4f96fc65bcca8790ba6368e8bdf16f71ebdb92cecb7afe6b2b39170a5c1fc7",
+  "evaluation": {
+    "schemaVersion": "task-eval-005-track-b-fifth-admission-evaluation-v2",
+    "status": "NO_GO_MODEL_MISMATCH",
+    "providerAdmission": "NOT_ESTABLISHED",
+    "track": "TRACK_B_FIFTH_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+    "corpusSha256": "17343dd34820c847676ed681a8a4e6ee9f669c60cf3c0257aa2363ba4bba8f5e",
+    "threshold": {
+      "schemaPercent": 100,
+      "reliableAnchorPercent": 100,
+      "rolePercent": 100,
+      "candidatePercent": 100,
+      "anchorPercent": 100,
+      "abstentionPercent": 100,
+      "deterministicHighOverrideAllowed": false,
+      "modelMayProduceFindingOrVerdict": false
+    },
+    "counts": {
+      "totalPacketCount": 12,
+      "eligiblePacketCount": 9,
+      "zeroCallControlCount": 3
+    },
+    "groundTruthCompatible": true,
+    "groundTruthCompatibility": [
+      {
+        "packetId": "EP-84165b6480d8ea36e838c4b1233892d36755410741cc27c2b40a5ebb419cd6d2",
+        "sampleId": "TB5-MED-001",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-5831f3912116f499540c351af939c4a7aebc0579cd59a70f82c24138382bfbad",
+        "sampleId": "TB5-MED-002",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-10f7d720318a92b4755111b9ba91e780e42f1232889dd5c21e8aad4357dc4723",
+        "sampleId": "TB5-MED-003",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-e43b8433e4485af3f1a6eef4b7c1f743c465adeef98d5034705df9330ceec239",
+        "sampleId": "TB5-MED-004",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-5d69a7916c3ea077e12b662b5904e2de77e9e9de467be8b23223558844fda5fd",
+        "sampleId": "TB5-MED-005",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+        "sampleId": "TB5-CON-001",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+        "sampleId": "TB5-CON-002",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+        "sampleId": "TB5-CON-003",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      },
+      {
+        "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+        "sampleId": "TB5-CON-004",
+        "compatible": true,
+        "anchorsReliable": true,
+        "anchorsWithinAdmission": true,
+        "abstentionRepresentable": true
+      }
+    ],
+    "controlsPassed": true,
+    "controls": [
+      {
+        "packetId": "EP-9219f6a7a9ba1844be227b844ad60cae589b9e7208d140cfe11e36eec16cde5d",
+        "sampleId": "TB5-CTL-HIGH-001",
+        "reason": "DETERMINISTIC_HIGH_ZERO_CALL",
+        "modelCallAllowed": false,
+        "humanDecisionMatchesZeroCall": true
+      },
+      {
+        "packetId": "EP-882d93f9711a7e27f7a808065181deb3ffe5f071127da7e14921039fbd94454e",
+        "sampleId": "TB5-CTL-INVALID-001",
+        "reason": "BUNDLE_INVALID",
+        "modelCallAllowed": false,
+        "humanDecisionMatchesZeroCall": true
+      },
+      {
+        "packetId": "EP-3be226f9ac2a6552218e3ac5cdbc1ddc378422cb673d67edfed249d5efa1d36e",
+        "sampleId": "TB5-CTL-NOANCHOR-001",
+        "reason": "RELIABLE_ANCHOR_MISSING",
+        "modelCallAllowed": false,
+        "humanDecisionMatchesZeroCall": true
+      }
+    ],
+    "evaluatorGatesPassed": false,
+    "evaluators": [
+      {
+        "evaluator": "CODEX",
+        "opinionCount": 9,
+        "correctCounts": {
+          "schema": 9,
+          "reliableAnchor": 9,
+          "role": 9,
+          "candidate": 9,
+          "anchor": 9,
+          "abstention": 9
+        },
+        "percentages": {
+          "schemaPercent": 100,
+          "reliableAnchorPercent": 100,
+          "rolePercent": 100,
+          "candidatePercent": 100,
+          "anchorPercent": 100,
+          "abstentionPercent": 100
+        },
+        "mismatchCount": 0,
+        "mismatches": [],
+        "allDimensions100Percent": true
+      },
+      {
+        "evaluator": "DEEPSEEK_V4_PRO",
+        "opinionCount": 9,
+        "correctCounts": {
+          "schema": 9,
+          "reliableAnchor": 9,
+          "role": 5,
+          "candidate": 5,
+          "anchor": 5,
+          "abstention": 5
+        },
+        "percentages": {
+          "schemaPercent": 100,
+          "reliableAnchorPercent": 100,
+          "rolePercent": 55.55555555555556,
+          "candidatePercent": 55.55555555555556,
+          "anchorPercent": 55.55555555555556,
+          "abstentionPercent": 55.55555555555556
+        },
+        "mismatchCount": 4,
+        "mismatches": [
+          {
+            "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+            "sampleId": "TB5-CON-001",
+            "failedDimensions": [
+              "role",
+              "candidate",
+              "anchor",
+              "abstention"
+            ]
+          },
+          {
+            "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+            "sampleId": "TB5-CON-002",
+            "failedDimensions": [
+              "role",
+              "candidate",
+              "anchor",
+              "abstention"
+            ]
+          },
+          {
+            "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+            "sampleId": "TB5-CON-003",
+            "failedDimensions": [
+              "role",
+              "candidate",
+              "anchor",
+              "abstention"
+            ]
+          },
+          {
+            "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+            "sampleId": "TB5-CON-004",
+            "failedDimensions": [
+              "role",
+              "candidate",
+              "anchor",
+              "abstention"
+            ]
+          }
+        ],
+        "allDimensions100Percent": false
+      }
+    ],
+    "allGatesPassed": false
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-admission-seal-v1",
+  "status": "SEALED_GO_TRACK_B_RECOVERY_ADMISSION",
+  "sealedAt": "2026-08-03T10:12:48.538Z",
+  "reportPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-report.json",
+  "reportSha256": "395c0d3871d4f4aed637ad61174381c248bb42bf03fd0839c85778f12a6f71f5",
+  "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
+  "providerCallSetSha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3",
+  "dispatchSha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175",
+  "derivedReceiptSha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2",
+  "humanGroundTruthSha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315",
+  "codexOpinionSha256": "cccf0a4de81187079e09bcc0a422da72af72b4e6635c4a75053fa021ed6f126a",
+  "deepSeekExecutionClaimSha256": "600a821a25641b8d875e696d79191b986f77d39571a778c9670a5af9cde5929d",
+  "deepSeekOpinionSha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100",
+  "sameAdmissionRetryAllowed": false,
+  "seventhCorpusAllowed": false,
+  "providerAdmissionEstablished": true,
+  "verificationAndAuditAllowed": true,
+  "a0A1A2ImplementationAllowed": false
+}

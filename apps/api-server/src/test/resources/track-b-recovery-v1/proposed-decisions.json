@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-proposed-decisions-v1",
+  "status": "CODEX_PROPOSAL_NOT_HUMAN_GROUND_TRUTH",
+  "draftedBy": "CODEX",
+  "humanGroundTruthEstablished": false,
+  "entryCount": 12,
+  "entries": [
+    {
+      "caseId": "TB6-MED-001",
+      "proposedRationale": "当前生效条款直接约定合同甲方；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-001-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-002",
+      "proposedRationale": "当前生效条款直接约定合同乙方；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-002-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-003",
+      "proposedRationale": "当前生效条款直接约定合同含税总金额；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-003-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-004",
+      "proposedRationale": "当前生效条款直接约定预付款比例；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-005",
+      "proposedRationale": "当前生效条款直接约定质保金比例；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-005-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-001",
+      "proposedRationale": "当前生效条款直接约定合同甲方；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-002",
+      "proposedRationale": "当前生效条款直接约定合同税额；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-002-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-003",
+      "proposedRationale": "当前生效条款直接约定进度款比例；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-003-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-004",
+      "proposedRationale": "当前生效条款直接约定结算款比例；过往示例或流程附件不属于当前目标 role。",
+      "proposedExpected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CTL-HIGH-001",
+      "proposedRationale": "确定性 HIGH 必须保持 zero-call。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TB6-CTL-INVALID-001",
+      "proposedRationale": "不可靠 TABLE_CELL identity 必须 fail closed。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TB6-CTL-NOANCHOR-001",
+      "proposedRationale": "无可靠 anchor 必须保持 zero-call。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ]
+}

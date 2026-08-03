@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "cqcp.track-b-three-party-audit-status.v1",
+  "subjectIdentity": "47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3",
+  "manifestSha256": "e83c7be5648c9724b441cf0b77d65906f022791c9f58bec75e95e38ca513517b",
+  "headCommit": "b3716385113528df5024316ed233fc11fd146a15",
+  "tree": "e05c5853d1bce38ff603e3a7b18902b348ceafce",
+  "fullDiffSha256": "f981b02dba29d362b51c56a83c6642485a4cd9a4e2aea19b081235a29d7ecab2",
+  "overallStatus": "NO_GO",
+  "p0": 1,
+  "p1": 0,
+  "p2": 0,
+  "blocking": 1,
+  "ccAudit": "GO_INVALIDATED_BY_PACKAGE_ISOLATION_P0",
+  "codexCodeArchitectureAudit": "INTERRUPTED_NO_VERDICT",
+  "codexTestSecurityAudit": "NO_GO",
+  "failureClassification": "CC_AUDIT_PACKAGE_CONTENT_ISOLATION",
+  "providerAdmissionEstablished": false,
+  "a0A1A2ImplementationAllowed": false,
+  "oldVerdictsReusable": false
+}

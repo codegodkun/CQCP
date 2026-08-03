@@ -1,0 +1,1042 @@
+{
+  "schemaVersion": "task-eval-005-track-b-schema-diagnostic-input-v1",
+  "track": "TRACK_B_SCHEMA_STABILITY_DIAGNOSTIC_ONLY",
+  "purpose": "PROVIDER_VALIDATION",
+  "dataClass": "SYNTHETIC_CORPUS",
+  "formalAdmissionAffected": false,
+  "groundTruthIncluded": false,
+  "findingOrVerdictIncluded": false,
+  "packetCount": 12,
+  "packets": [
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-ab9b6fefc0268a93c7474edae64290ec3381053f6ea4e3c9b1422a2faa3dfc45",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-001",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-001-001",
+          "candidateValue": "诊断代号-001-001-PARTY_A",
+          "evidenceText": "合成 schema 诊断样本 001，候选 001：角色 PARTY_A 的候选代号为「诊断代号-001-001-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-001-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-001-002",
+          "candidateValue": "诊断代号-001-002-PARTY_A",
+          "evidenceText": "合成 schema 诊断样本 001，候选 002：角色 PARTY_A 的候选代号为「诊断代号-001-002-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-001-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_a",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 132,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbsd-001-block-001",
+          "tbsd-001-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-a6ceb1384a05014df21aec7bd3c989e03fc63ff8d1b9024c46ee8a1e15d43184",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-002",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-002-001",
+          "candidateValue": "诊断代号-002-001-PARTY_B",
+          "evidenceText": "合成 schema 诊断样本 002，候选 001：角色 PARTY_B 的候选代号为「诊断代号-002-001-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-002-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-002-002",
+          "candidateValue": "诊断代号-002-002-PARTY_B",
+          "evidenceText": "合成 schema 诊断样本 002，候选 002：角色 PARTY_B 的候选代号为「诊断代号-002-002-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-002-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 132,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbsd-002-block-001",
+          "tbsd-002-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-493e2e05bf34889d970294b3b54826c9e99c1852f0b3cc0ce2465c9239ab9bee",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-003",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-003-001",
+          "candidateValue": "诊断代号-003-001-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 003，候选 001：角色 CONTRACT_TOTAL_AMOUNT 的候选代号为「诊断代号-003-001-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-003-block-001",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_003/row:1/cell:2",
+            "sectionPath": [
+              "合成诊断-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-003-002",
+          "candidateValue": "诊断代号-003-002-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 003，候选 002：角色 CONTRACT_TOTAL_AMOUNT 的候选代号为「诊断代号-003-002-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-003-block-002",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_003/row:2/cell:2",
+            "sectionPath": [
+              "合成诊断-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "contract_total_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 188,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbsd-003-block-001",
+          "tbsd-003-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-e0b0213cf6e1a9e9159f0b2c883883112dea4c9a220c4c86e795aae787a8640c",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-004",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-004-001",
+          "candidateValue": "诊断代号-004-001-PREPAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 004，候选 001：角色 PREPAYMENT_RATIO 的候选代号为「诊断代号-004-001-PREPAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-004-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-004-002",
+          "candidateValue": "诊断代号-004-002-PREPAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 004，候选 002：角色 PREPAYMENT_RATIO 的候选代号为「诊断代号-004-002-PREPAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-004-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "prepayment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 168,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbsd-004-block-001",
+          "tbsd-004-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-30eac23736c082f26903c2c949291ee09f840fcc315fa0a9f09f6b4796b67b4d",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-005",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-005-001",
+          "candidateValue": "诊断代号-005-001-WARRANTY_RETENTION_RATIO",
+          "evidenceText": "合成 schema 诊断样本 005，候选 001：角色 WARRANTY_RETENTION_RATIO 的候选代号为「诊断代号-005-001-WARRANTY_RETENTION_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-005-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-005"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-005-002",
+          "candidateValue": "诊断代号-005-002-WARRANTY_RETENTION_RATIO",
+          "evidenceText": "合成 schema 诊断样本 005，候选 002：角色 WARRANTY_RETENTION_RATIO 的候选代号为「诊断代号-005-002-WARRANTY_RETENTION_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-005-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-005"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "warranty_retention_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 200,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbsd-005-block-001",
+          "tbsd-005-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-4f030a9c082cf1f6d21ea10e3f75877daef3dc6dd554de221e5e31494b97363f",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-006",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-006-001",
+          "candidateValue": "诊断代号-006-001-PARTY_A",
+          "evidenceText": "合成 schema 诊断样本 006，候选 001：角色 PARTY_A 的候选代号为「诊断代号-006-001-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-006-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-006"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-006-002",
+          "candidateValue": "诊断代号-006-002-PARTY_A",
+          "evidenceText": "合成 schema 诊断样本 006，候选 002：角色 PARTY_A 的候选代号为「诊断代号-006-002-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-006-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-006"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_a",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 132,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbsd-006-block-001",
+          "tbsd-006-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-71a146e4781686d10072e5250b0eaddea42070bdec318a6a929f1c893ef33ae7",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-007",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "candidateRole": "TAX_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-007-001",
+          "candidateValue": "诊断代号-007-001-TAX_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 007，候选 001：角色 TAX_AMOUNT 的候选代号为「诊断代号-007-001-TAX_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-007-block-001",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_007/row:1/cell:2",
+            "sectionPath": [
+              "合成诊断-007"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-007-002",
+          "candidateValue": "诊断代号-007-002-TAX_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 007，候选 002：角色 TAX_AMOUNT 的候选代号为「诊断代号-007-002-TAX_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-007-block-002",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_007/row:2/cell:2",
+            "sectionPath": [
+              "合成诊断-007"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-007-003",
+          "candidateValue": "诊断代号-007-003-TAX_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 007，候选 003：角色 TAX_AMOUNT 的候选代号为「诊断代号-007-003-TAX_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-007-block-003",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_007/row:3/cell:2",
+            "sectionPath": [
+              "合成诊断-007"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "tax_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 216,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbsd-007-block-001",
+          "tbsd-007-block-002",
+          "tbsd-007-block-003"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-2f8026decc7160c641a961491758fa8daeeb6d77a5c9e54a27408d8f61c0ed6b",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-008",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-008-001",
+          "candidateValue": "诊断代号-008-001-PROGRESS_PAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 008，候选 001：角色 PROGRESS_PAYMENT_RATIO 的候选代号为「诊断代号-008-001-PROGRESS_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-008-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-008"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-008-002",
+          "candidateValue": "诊断代号-008-002-PROGRESS_PAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 008，候选 002：角色 PROGRESS_PAYMENT_RATIO 的候选代号为「诊断代号-008-002-PROGRESS_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-008-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-008"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-008-003",
+          "candidateValue": "诊断代号-008-003-PROGRESS_PAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 008，候选 003：角色 PROGRESS_PAYMENT_RATIO 的候选代号为「诊断代号-008-003-PROGRESS_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-008-block-003",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-008"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "progress_payment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 288,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbsd-008-block-001",
+          "tbsd-008-block-002",
+          "tbsd-008-block-003"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-3f07ef281dd205977f2bff3d4a6c928c24151cbe587df390017fed05e850bc51",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-009",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-009-001",
+          "candidateValue": "诊断代号-009-001-SETTLEMENT_PAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 009，候选 001：角色 SETTLEMENT_PAYMENT_RATIO 的候选代号为「诊断代号-009-001-SETTLEMENT_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-009-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-009"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-009-002",
+          "candidateValue": "诊断代号-009-002-SETTLEMENT_PAYMENT_RATIO",
+          "evidenceText": "合成 schema 诊断样本 009，候选 002：角色 SETTLEMENT_PAYMENT_RATIO 的候选代号为「诊断代号-009-002-SETTLEMENT_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-009-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-009"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "settlement_payment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 200,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbsd-009-block-001",
+          "tbsd-009-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-b4f06a86d4080b3a6cfee5923319afd2ddcbb8e0aafb58f562c4c3cc5eb120f6",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-010",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-010-001",
+          "candidateValue": "诊断代号-010-001-PARTY_A",
+          "evidenceText": "合成 schema 诊断样本 010，候选 001：角色 PARTY_A 的候选代号为「诊断代号-010-001-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-010-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-010"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-010-002",
+          "candidateValue": "诊断代号-010-002-PARTY_A",
+          "evidenceText": "合成 schema 诊断样本 010，候选 002：角色 PARTY_A 的候选代号为「诊断代号-010-002-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-010-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-010"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_a",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 132,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbsd-010-block-001",
+          "tbsd-010-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-3be87c858cc4811afb576b0717cbb2905a7ab9372f177c0d37b3a8fa327ebc5f",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-011",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-011-001",
+          "candidateValue": "诊断代号-011-001-PARTY_B",
+          "evidenceText": "合成 schema 诊断样本 011，候选 001：角色 PARTY_B 的候选代号为「诊断代号-011-001-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-011-block-001",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-011"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-011-002",
+          "candidateValue": "诊断代号-011-002-PARTY_B",
+          "evidenceText": "合成 schema 诊断样本 011，候选 002：角色 PARTY_B 的候选代号为「诊断代号-011-002-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-011-block-002",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合成诊断-011"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 132,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbsd-011-block-001",
+          "tbsd-011-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-345d83fdc69776561cf445a87e089f6c2813add799f56b75bcbf2b824b9d5c6f",
+      "taskId": "task-eval-005-schema-diagnostic",
+      "executionId": "execution-track-b-schema-diagnostic-v1",
+      "sampleId": "TBSD-012",
+      "ruleSetVersion": "v20260803.schema-diagnostic.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "DG-OCC-012-001",
+          "candidateValue": "诊断代号-012-001-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 012，候选 001：角色 CONTRACT_TOTAL_AMOUNT 的候选代号为「诊断代号-012-001-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-012-block-001",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_012/row:1/cell:2",
+            "sectionPath": [
+              "合成诊断-012"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "DG-OCC-012-002",
+          "candidateValue": "诊断代号-012-002-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "合成 schema 诊断样本 012，候选 002：角色 CONTRACT_TOTAL_AMOUNT 的候选代号为「诊断代号-012-002-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tbsd-012-block-002",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbsd_012/row:2/cell:2",
+            "sectionPath": [
+              "合成诊断-012"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "contract_total_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_SCHEMA_DIAGNOSTIC_SYNTHETIC",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 188,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbsd-012-block-001",
+          "tbsd-012-block-002"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    }
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "schemaVersion": "task-eval-005-track-b-fifth-human-review-draft-v1",
+  "status": "PENDING_HUMAN_CONFIRMATION_NOT_GROUND_TRUTH",
+  "draftedBy": "CODEX",
+  "humanGroundTruthEstablished": false,
+  "corpusPath": "outputs/task-eval-005/track-b-fifth-v1/corpus.json",
+  "corpusSha256": "17343dd34820c847676ed681a8a4e6ee9f669c60cf3c0257aa2363ba4bba8f5e",
+  "proposedDecisionsPath": "apps/api-server/src/test/resources/track-b-fifth-v1/proposed-decisions.json",
+  "proposedDecisionsSha256": "a5dd576ecf7c4e6c19d41da3d5dde51985f9fe018db981f0446d0c774aa1d914",
+  "confirmationInstruction": "人工逐项确认 proposedExpected；确认前不得作为 ground truth，不得提供给任何盲评模型。",
+  "entries": [
+    {
+      "caseId": "TB5-MED-001",
+      "packetId": "EP-84165b6480d8ea36e838c4b1233892d36755410741cc27c2b40a5ebb419cd6d2",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "“本合同合同甲方”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-med-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-MED-002",
+      "packetId": "EP-5831f3912116f499540c351af939c4a7aebc0579cd59a70f82c24138382bfbad",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "“本合同合同乙方”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-med-002-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-MED-003",
+      "packetId": "EP-10f7d720318a92b4755111b9ba91e780e42f1232889dd5c21e8aad4357dc4723",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "“本合同合同含税总金额”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-med-003-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-MED-004",
+      "packetId": "EP-e43b8433e4485af3f1a6eef4b7c1f743c465adeef98d5034705df9330ceec239",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "“本合同预付款比例”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-med-004-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-MED-005",
+      "packetId": "EP-5d69a7916c3ea077e12b662b5904e2de77e9e9de467be8b23223558844fda5fd",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "“本合同质保金比例”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-med-005-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-CON-001",
+      "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "“本合同合同甲方”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-con-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-CON-002",
+      "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "“本合同合同税额”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-con-002-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-CON-003",
+      "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "“本合同进度款比例”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-con-003-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-CON-004",
+      "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "“本合同结算款比例”直接标识目标 role；附属参考记录不属于该 role。",
+      "proposedExpected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb5-con-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB5-CTL-HIGH-001",
+      "packetId": "EP-9219f6a7a9ba1844be227b844ad60cae589b9e7208d140cfe11e36eec16cde5d",
+      "confidenceClass": "HIGH",
+      "humanDecision": null,
+      "proposedRationale": "确定性 HIGH 必须保持 zero-call。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TB5-CTL-INVALID-001",
+      "packetId": "EP-882d93f9711a7e27f7a808065181deb3ffe5f071127da7e14921039fbd94454e",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "不可靠 TABLE_CELL identity 必须 fail closed。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TB5-CTL-NOANCHOR-001",
+      "packetId": "EP-3be226f9ac2a6552218e3ac5cdbc1ddc378422cb673d67edfed249d5efa1d36e",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "无可靠 anchor 必须保持 zero-call。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ]
+}

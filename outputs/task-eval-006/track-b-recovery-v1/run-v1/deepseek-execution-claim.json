@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-execution-claim-v1",
+  "status": "CLAIMED_ONE_TIME_FORMAL_ADMISSION",
+  "claimedAt": "2026-08-03T10:10:06.064Z",
+  "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
+  "providerCallSetSha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3",
+  "dispatchSha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175",
+  "derivedReceiptSha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2",
+  "humanGroundTruthSealSha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315",
+  "model": "deepseek-v4-pro",
+  "providerCallCount": 9,
+  "zeroCallControlCount": 3,
+  "formalAdmissionAffected": true,
+  "automaticRetryAllowedAfterHttpStart": false,
+  "pinnedAddressSetSha256": "7debef4763880193e11cbae93f69bbd7806085ba040978b9e5752f57adfd21d2"
+}

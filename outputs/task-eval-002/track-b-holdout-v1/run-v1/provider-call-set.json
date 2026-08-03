@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-provider-call-set-v1",
+  "status": "FROZEN_AFTER_HUMAN_GROUND_TRUTH_SEAL",
+  "requestBuilderVersion": "track-b-holdout-provider-request-builder-v1",
+  "model": "deepseek-v4-pro",
+  "promptSha256": "8a06b5177e7df8ca6097aaa752e2b089a0aa28e4f313ef158438627427aafe10",
+  "masterModelInputSha256": "bd402b4019f5a8cddcd6c433a4d9981d8e39300df8ad488e09a6ccd92fdb3dcc",
+  "maxOutputTokens": 1500,
+  "callCount": 9,
+  "eligiblePacketCount": 9,
+  "calls": [
+    {
+      "callId": "TBH-MC-8f0f71f749adf8c32ed5b8a9c71d216a0c182e2aff1beca59f8b9ae729c3e9d9",
+      "sampleId": "TBH-MED-001",
+      "taskId": "task-eval-002-track-b-holdout-medium",
+      "executionId": "execution-track-b-holdout-medium-v1",
+      "family": "PARTY_FIELDS",
+      "requestedRole": "PARTY_A",
+      "packetId": "EP-8404074ec1edb454d1acd1c8bdfa948e66c8d65a07a50d1eb7eb96d7b599a5f8",
+      "modelInputSha256": "8f0f71f749adf8c32ed5b8a9c71d216a0c182e2aff1beca59f8b9ae729c3e9d9",
+      "outboundRequestSha256": "5dd361ec4c7303d824736e4e4d005d6483089ebbf035941dd330bd05068e2cb0"
+    },
+    {
+      "callId": "TBH-MC-70c1a2779406984068cef60362dde620207ea02c2b37395a661f97eef00cc8cc",
+      "sampleId": "TBH-MED-002",
+      "taskId": "task-eval-002-track-b-holdout-medium",
+      "executionId": "execution-track-b-holdout-medium-v1",
+      "family": "PARTY_FIELDS",
+      "requestedRole": "PARTY_B",
+      "packetId": "EP-f0a897b30c36ce8c495bd07a6af18cd399a90a507384a344932ec081d1048146",
+      "modelInputSha256": "70c1a2779406984068cef60362dde620207ea02c2b37395a661f97eef00cc8cc",
+      "outboundRequestSha256": "0941bba9648e5e3749210cf37bf9718b1bb5b23e97dd0fcf46ce6ae979bc2b5d"
+    },
+    {
+      "callId": "TBH-MC-da7a2522a0d5c16e207ecaae2b0dcb2ed10a1e11d5e3738b3b6f27eaa85bfbc1",
+      "sampleId": "TBH-MED-003",
+      "taskId": "task-eval-002-track-b-holdout-medium",
+      "executionId": "execution-track-b-holdout-medium-v1",
+      "family": "AMOUNT_TAX",
+      "requestedRole": "CONTRACT_TOTAL_AMOUNT",
+      "packetId": "EP-52f8eb6cba6bfcfb8eebfd9f61b7f89eca2590ab569b9f60e884b74d93de7359",
+      "modelInputSha256": "da7a2522a0d5c16e207ecaae2b0dcb2ed10a1e11d5e3738b3b6f27eaa85bfbc1",
+      "outboundRequestSha256": "23fa3403c022a3f46e57c94fea1d69b52016a4cad8a5c8416d7a02f1d88e3bd9"
+    },
+    {
+      "callId": "TBH-MC-6ebd7ff0679f054070aaca81c967035d14ec09d65cf59ccdbbc2b0508314416e",
+      "sampleId": "TBH-MED-004",
+      "taskId": "task-eval-002-track-b-holdout-medium",
+      "executionId": "execution-track-b-holdout-medium-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "PREPAYMENT_RATIO",
+      "packetId": "EP-c0c435f0b8ea94ecb1c56a257880c2d3f13094e8edab48314317e835b9ecebff",
+      "modelInputSha256": "6ebd7ff0679f054070aaca81c967035d14ec09d65cf59ccdbbc2b0508314416e",
+      "outboundRequestSha256": "045f2306e40e7c28b1fdc8eab3852d7df3582731c131f3a82400331efad36185"
+    },
+    {
+      "callId": "TBH-MC-40986b769abeea9020825f32ff3043750bb396f7bd2401e19845221d773de74c",
+      "sampleId": "TBH-MED-005",
+      "taskId": "task-eval-002-track-b-holdout-medium",
+      "executionId": "execution-track-b-holdout-medium-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "WARRANTY_RETENTION_RATIO",
+      "packetId": "EP-20997e8a0183552ea72fbe6228d899130472621ab42254c713ba529d5c5f129a",
+      "modelInputSha256": "40986b769abeea9020825f32ff3043750bb396f7bd2401e19845221d773de74c",
+      "outboundRequestSha256": "affacdd246c7f20ed4a14d145cde58f648f0104721ceca931fe342e65ccd183b"
+    },
+    {
+      "callId": "TBH-MC-ab81541985e22a4b7a5a672c1f06ef1924b46b3764179a922f4d5ec9260ca1e9",
+      "sampleId": "TBH-CON-001",
+      "taskId": "task-eval-002-track-b-holdout-conflicted",
+      "executionId": "execution-track-b-holdout-conflicted-v1",
+      "family": "PARTY_FIELDS",
+      "requestedRole": "PARTY_A",
+      "packetId": "EP-331c1bd8f3f5cdcaf4d16d2c6a5f28d70e1218ae7a547774cf2c244a15473709",
+      "modelInputSha256": "ab81541985e22a4b7a5a672c1f06ef1924b46b3764179a922f4d5ec9260ca1e9",
+      "outboundRequestSha256": "efc0633336e3053a0aac884f2d72c0a1347a443c0c3b0b9af96b5c9fb01a8fc1"
+    },
+    {
+      "callId": "TBH-MC-abaed68e066203e5a42f4583a446502035a158ca7fc8ff57b5ea8d6e89f3e5ba",
+      "sampleId": "TBH-CON-002",
+      "taskId": "task-eval-002-track-b-holdout-conflicted",
+      "executionId": "execution-track-b-holdout-conflicted-v1",
+      "family": "AMOUNT_TAX",
+      "requestedRole": "TAX_AMOUNT",
+      "packetId": "EP-c004c54cc4dfbedfb537d1848796e28067f1af1d247b37bd6cbc9d8f2e323104",
+      "modelInputSha256": "abaed68e066203e5a42f4583a446502035a158ca7fc8ff57b5ea8d6e89f3e5ba",
+      "outboundRequestSha256": "d13608eeaa333f0b67a0c33e8c9380eb4bef45b0f399a020dc459f1b74a565dc"
+    },
+    {
+      "callId": "TBH-MC-38b684d13b0f325e1967ec9dea668cd32e46bb938621e7d28e00c82b183563a7",
+      "sampleId": "TBH-CON-003",
+      "taskId": "task-eval-002-track-b-holdout-conflicted",
+      "executionId": "execution-track-b-holdout-conflicted-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "PROGRESS_PAYMENT_RATIO",
+      "packetId": "EP-eac27ad158d244ba1c4c0fa4c6ce19b338a0dc59237f12517faba083a04982d0",
+      "modelInputSha256": "38b684d13b0f325e1967ec9dea668cd32e46bb938621e7d28e00c82b183563a7",
+      "outboundRequestSha256": "727ad6422285c5a9b5f8e7f6c0847906795dc6f7234793b6894e9f2d5f987133"
+    },
+    {
+      "callId": "TBH-MC-2274deafa5b4996c7781bf63715a61823a57e102c7f07e14b206c65f5c7b492a",
+      "sampleId": "TBH-CON-004",
+      "taskId": "task-eval-002-track-b-holdout-conflicted",
+      "executionId": "execution-track-b-holdout-conflicted-v1",
+      "family": "PAYMENT_TERMS",
+      "requestedRole": "SETTLEMENT_PAYMENT_RATIO",
+      "packetId": "EP-40150ed3fca0a8f7312e731fceba5559447cc4d1f33ac8aa5e6827316acf5323",
+      "modelInputSha256": "2274deafa5b4996c7781bf63715a61823a57e102c7f07e14b206c65f5c7b492a",
+      "outboundRequestSha256": "6aea62698190fc6677d44d4a2d3c016f01880fcf51d6fec6a71a1272c06dbdfe"
+    }
+  ],
+  "humanGroundTruthSealSha256": "11fbcc06458e5c24c9c3080f1b126c9b9c1358ad90b2532096b0ab5b90f3601b",
+  "standingGrantSha256": "f04c3ad0a6522b90f21d1efb32be12b0c883d03b2b286f9c2c8639ecd501239a"
+}

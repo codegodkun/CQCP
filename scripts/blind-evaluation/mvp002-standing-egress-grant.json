@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "mvp002-standing-egress-grant-v1",
+  "status": "ACTIVE_UNTIL_MILESTONE_COMPLETION_OR_USER_REVOCATION",
+  "milestoneId": "MILESTONE-MVP-002",
+  "approvalSource": "CODEX_THREAD_USER_CONFIRMATION",
+  "approvedByRole": "PROJECT_OWNER",
+  "revoked": false,
+  "scope": {
+    "allowedPurposes": [
+      "TRACK_A_EVALUATION",
+      "TRACK_B_EVALUATION",
+      "CONNECTIVITY_TEST",
+      "EVALUATION_SHADOW",
+      "PROVIDER_VALIDATION",
+      "READ_ONLY_INDEPENDENT_AUDIT"
+    ],
+    "allowedDataClasses": [
+      "USER_CONFIRMED_DEIDENTIFIED_EVALUATION",
+      "SYNTHETIC_CORPUS",
+      "FROZEN_AUDIT_MATERIAL"
+    ],
+    "forbiddenDataClasses": [
+      "UNREDACTED_PRODUCTION_CONTRACT",
+      "HUMAN_GROUND_TRUTH",
+      "CQCP_ACTUAL_OR_EXPECTED",
+      "FINAL_FINDING_OR_VERDICT",
+      "SECRET_OR_RAW_KEY",
+      "RAW_PROVIDER_RESPONSE",
+      "REASONING_CONTENT"
+    ],
+    "deidentificationResponsibility": "USER_CONFIRMS_INPUT_SCOPE",
+    "programmaticRedactionPlatformRequired": false
+  },
+  "provider": {
+    "endpointOrigin": "https://api.deepseek.com:443",
+    "allowedModels": [
+      "deepseek-v4-pro",
+      "deepseek-v4-flash"
+    ],
+    "redirectAllowed": false,
+    "proxyAllowed": false,
+    "privateAddressAllowed": false,
+    "ccAuditModel": "deepseek-v4-flash"
+  },
+  "transport": {
+    "strictJsonRequired": true,
+    "nonStreamingRequired": true,
+    "reasoningPersistenceAllowed": false,
+    "rawResponsePersistenceAllowed": false,
+    "unknownSideEffectAutomaticRetryAllowed": false
+  },
+  "eligibility": {
+    "zeroCallClasses": [
+      "DETERMINISTIC_HIGH",
+      "INVALID_BUNDLE",
+      "NO_RELIABLE_ANCHOR",
+      "NO_ELIGIBLE_CANDIDATE",
+      "BUDGET_INCOMPLETE"
+    ],
+    "modelMayChangeFindingOrVerdict": false
+  },
+  "secret": {
+    "source": "PREVIOUSLY_DESIGNATED_DESKTOP_SECRET_REFERENCE",
+    "processMemoryOnly": true,
+    "repositoryPersistenceAllowed": false,
+    "artifactPersistenceAllowed": false,
+    "logPersistenceAllowed": false
+  },
+  "derivedReceipt": {
+    "requiredPerExecution": true,
+    "perRunChatConfirmationRequired": false,
+    "requiredBindings": [
+      "actualInputSha256",
+      "dispatchSha256",
+      "providerCallSetSha256",
+      "outboundRequestSha256s",
+      "endpointOrigin",
+      "model",
+      "callCount",
+      "inputCount",
+      "createdAt"
+    ]
+  }
+}

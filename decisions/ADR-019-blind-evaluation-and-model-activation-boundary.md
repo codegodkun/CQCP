@@ -1,8 +1,9 @@
 # ADR-019：双轨盲态评测与模型激活边界
 
 状态：Accepted / Track A Codex + DeepSeek 与 Track B seam 已实施 /
-旧 eligible corpus 已解盲为 NO_GO / 新 holdout 未开始 /
-Provider admission 未建立 / Core 独立审计待完成
+旧 eligible corpus 已解盲为 NO_GO / Core 已合并 /
+四次独立 12-packet admission 均终态失败 / TASK-EVAL-005 第五套
+`SEALED_NO_GO_MODEL_MISMATCH` / Provider admission 未建立 / ADR-026 有限恢复 ACTIVE
 
 日期：2026-07-28
 
@@ -17,7 +18,8 @@ Provider admission 未建立 / Core 独立审计待完成
 * 是否影响数据库：评测本身否；本 Core integration unit 不新增 Provider runtime
   migration。
 * 是否改变审核语义：本 ADR 不改变；只定义未来激活门禁。
-* 是否允许公网外发：仅在样本逐项取得明确授权后。
+* 是否允许公网外发：仅在 `ADR-022` standing grant 有效且本次实际输入、dispatch、
+  provider call set 与 outbound request hashes 已自动派生绑定后。
 
 ## 决策
 
@@ -105,7 +107,8 @@ UNRESOLVED
 * 不保存或回显 `reasoning_content`、完整 prompt 或 raw response。
 * 空内容、schema invalid、额外字段、非 stop、timeout 和 upstream error 全部 fail closed。
 
-未存在与样本 hash 绑定的外发授权 artifact 时，runner 必须在网络调用前返回：
+未存在有效 standing grant 与本次 hash-bound 派生 receipt 时，runner 必须在网络调用
+前返回：
 
 ```text
 EXTERNAL_EGRESS_NOT_AUTHORIZED
@@ -116,7 +119,8 @@ EXTERNAL_EGRESS_NOT_AUTHORIZED
 PUBLIC provider 进入 runtime 前必须全部满足：
 
 1. ADR-018/019 已接受并通过实现审计。
-2. 外发授权明确覆盖实际输入 hash。
+2. `ADR-022` standing grant 有效，且派生 receipt 明确覆盖实际输入 hash、dispatch、
+   provider call set、每个 outbound request、模型、调用数和时间。
 3. TASK-034 candidate/anchor gate 有可接受复跑证据。
 4. TASK-036 的 `ModelAssistEligibilityEvaluator`、`FamilyModelCallPlan`、EvidencePacket 与可靠 anchor seam 已进入主线并通过自身门禁。
 5. Profile 仅 `purpose/deploymentScope=EVALUATION`，disabled/unbound 初始发布。
@@ -202,10 +206,14 @@ guarded assist 仍遵守：
 ## 待确认
 
 * 三份脱敏样本的公网外发授权：已确认并逐 input SHA-256 封存。
-* 新的独立 Track B holdout 已确认采用 12 个最小 packet，其中 9 个为
-  MEDIUM/CONFLICTED eligible，3 个为 zero-call control。人工答案必须在模型访问前
-  封印；严格 schema、可靠 anchor、HIGH 零覆盖、无 Finding 以及
-  role/candidate/abstention 与人工答案均须 100% 匹配。Core 合并前不执行。
+* 首个独立 12-packet holdout 已先完成人工封印，但 DeepSeek 在第 2 个 eligible call
+  schema invalid 并终态 BLOCKED；claim 已消费、未解盲、不得重试。项目负责人已通过
+  ADR-023 授权一个 identity/text/value 全新且同样为 9 eligible + 3 controls 的
+  successor；严格 schema、可靠 anchor、HIGH 零覆盖、无 Finding 以及
+  role/candidate/abstention 与人工答案仍须 100% 匹配。
+* 项目负责人已授予 `MILESTONE-MVP-002` standing egress grant；该授权已由
+  `ADR-022` 与机器门禁记录，不替代上述人工答案确认。新 holdout 固定为 9 个
+  runtime-isomorphic 单 packet 调用，不沿用旧 run-v3 的 6 个 family 分组调用。
 
 ## 接受记录
 
@@ -222,4 +230,42 @@ guarded assist 仍遵守：
   DeepSeek 6/15、zero-call control 3/3，结论为
   `NO_GO_MODEL_MISMATCH / providerAdmission=NOT_ESTABLISHED`。该已解盲语料只作
   回归证据，不得再次用于独立 admission。
-* 最终 L3 冻结包仍须通过 CC AUDIT 与两个全新 Codex 独立审计；审计不通过则本实现不得收口。
+* 2026-08-02：Core subject `90c4ae9a…` 三方全零 GO 并随 PR #37 合并为
+  `115be530…`。新 12-packet holdout 已绑定 challenge
+  `TBH2-fac56106204c4b93a11befc577369360`、corpus SHA `15d1f845…` 与 challenge
+  SHA `37a05c4b…`；当前 `modelInputCreated=false / networkCallAllowed=false`，等待
+  项目负责人逐项人工确认。
+* 2026-08-02：standing grant 已按项目负责人既有确认写入 `ADR-022` 和精确机器门禁；
+  封印前离线契约固定为 `9 calls / 9 eligible inputs / 3 excluded controls`。真实
+  ground-truth seal、model input、dispatch、派生 receipt 与网络调用均尚未产生。
+* 2026-08-02：上述 holdout 随后完成人工封印并正式执行；DeepSeek 第 2 个 call 因
+  `OPINION_SCHEMA_INVALID` fail closed，one-time claim 已消费且无 accepted opinion。
+  项目负责人明确授权 TASK-EVAL-003 successor，并要求正式 Codex auditors 固定使用
+  `gpt-5.6-sol / xhigh`；失败 holdout 只读保留且不得重试。
+* 终态 NO-GO 证据保存 subject 仍须通过 CC AUDIT 与两个全新 Codex 独立审计；审计
+  不通过则不得 push/PR/merge，也不得把终态保存描述为 Provider admission 成功。
+* 2026-08-03：ADR-024 最终独立 admission 已完成人工先封印和 9×1 dispatch；
+  DeepSeek 在第 8 个 call 返回 schema invalid，claim 已消费且无自动重试。该执行不
+  解盲、不重试，`providerAdmission=NOT_ESTABLISHED`，A0/A1/A2 继续阻塞。
+* 2026-08-03：项目负责人批准 ADR-025 / TASK-EVAL-005，允许在与前四套完全独立的
+  合成诊断集上有限诊断、版本化并冻结 prompt/schema，再创建一次第五套独立
+  admission。该范围不恢复 TASK-EVAL-004；正式门禁仍为 9×1、3 controls、全维
+  100%，失败后不建第六套且不启动 A0/A1/A2。
+* 2026-08-03：TASK-EVAL-005 第五套 9×1 全部通过 strict schema，但解盲后 DeepSeek
+  在 4 个 CONFLICTED packet 上不满足 role/candidate/anchor/abstention 门禁，终态
+  `SEALED_NO_GO_MODEL_MISMATCH / providerAdmission=NOT_ESTABLISHED`。该历史终态不可变，
+  Track B admission 门禁未解除，A0/A1/A2 不启动。
+* 2026-08-03：项目负责人澄清此前 BLOCKED 表述只是询问，并接受 ADR-026 的一次有限
+  会话投影恢复。当前为 `RECOVERY_ACTIVE / ADMISSION_NOT_ESTABLISHED`；只有新 admission
+  与三方全零 GO 后才可恢复 A0/A1/A2。
+* 2026-08-03：TASK-EVAL-006 recovery evaluation 六维 9/9 后，首次 R5 审计因 Codex
+  evaluator 时序证据不足和 Java seam 未直接覆盖 recovery-v1 返回 NO-GO。项目负责人
+  批准的有限修复以 human seal 之后的 execution claim、零文件 readiness、隔离四文件
+  allowlist 和 launch/completion receipt 重跑全新 Codex evaluator；DeepSeek 正式
+  claim/opinion 未重跑。R5 repair seal `927eb673…` 随后的 subject `e77a8635…` 被全新
+  代码/架构 auditor 以四项 blocking finding 拒绝，不能建立 Provider admission。
+* 2026-08-04：R6 将模型全维 9/9 与 Provider admission 分离：更正后的 seal
+  `70339354…` 只声明 `modelEvaluationPassed=true / providerAdmissionEstablished=false /
+  admissionDecisionPendingAudit=true`。Codex opinion 顶层 exact-field-set 与旧 seal 对
+  DeepSeek claim/opinion hash 的复用验证均 fail closed；完整 R6 verification 已通过，仍须
+  新 freeze、三份全新全零 GO 与 CI 内容一致性后才可恢复 A0/A1/A2。

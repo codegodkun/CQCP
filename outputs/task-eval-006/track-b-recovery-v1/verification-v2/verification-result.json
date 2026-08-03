@@ -1,0 +1,366 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-verification-result-v1",
+  "status": "PASS",
+  "completedAt": "2026-08-03T18:56:24.947Z",
+  "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
+  "providerAdmission": "PENDING_THREE_PARTY_AUDIT_AND_CI",
+  "networkCallPerformedByRepair": false,
+  "deepSeekNetworkCallRepeated": false,
+  "chronology": {
+    "humanGroundTruthConfirmedAt": "2026-08-03T10:01:58.500Z",
+    "codexExecutionClaimedAt": "2026-08-03T15:07:25.275Z",
+    "freshAgentReadyAt": "2026-08-03T15:08:26.528Z",
+    "launchReceiptRecordedAt": "2026-08-03T15:10:21.240Z",
+    "codexEvaluationStartedAt": "2026-08-03T15:11:03.1150072Z",
+    "codexEvaluationCompletedAt": "2026-08-03T15:12:08.8699951Z",
+    "codexCompletionReceivedAt": "2026-08-03T15:13:24.771Z",
+    "admissionResealedAt": "2026-08-03T15:15:20.723Z",
+    "verificationCompletedAt": "2026-08-03T18:56:24.947Z"
+  },
+  "metrics": {
+    "node": "56/56",
+    "javaRecoveryRuntimeSeam": "1/1",
+    "codexAdmission": "9/9",
+    "deepSeekAdmission": "9/9",
+    "zeroCallControls": "3/3",
+    "secretLikeMatches": 0,
+    "forbiddenProviderPayloadMatches": 0,
+    "filesContainingCR": 0,
+    "gitDiffCheckExitCode": 0
+  },
+  "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/console-manifest.json",
+  "consoleManifestSha256": "234c156f24f86c8a456f91f058283415d3ed3244379787c8b49f940b406f38ae",
+  "evidence": [
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
+      "size": 6343,
+      "sha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/model-input.json",
+      "size": 20945,
+      "sha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/provider-call-set.json",
+      "size": 3923,
+      "sha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/dispatch.json",
+      "size": 2817,
+      "sha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/derived-egress-receipt.json",
+      "size": 2086,
+      "sha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-execution-claim.json",
+      "size": 898,
+      "sha256": "600a821a25641b8d875e696d79191b986f77d39571a778c9670a5af9cde5929d"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-opinion.json",
+      "size": 8752,
+      "sha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-report.json",
+      "size": 8511,
+      "sha256": "395c0d3871d4f4aed637ad61174381c248bb42bf03fd0839c85778f12a6f71f5"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json",
+      "size": 1286,
+      "sha256": "2d879b139715ca7646a95e035747891a14b38ab545302a899ef2ca6376651b04"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/readiness-instruction.txt",
+      "size": 338,
+      "sha256": "35fb33a6f3ab25ba72294786db0bebc347e67998f0e00fce2080de647b270c7f"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/readiness-response.json",
+      "size": 88,
+      "sha256": "23ed003e9641ec88b2696b9898c1fdb18387ca49f43030203cfc83afa8fef319"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/evaluation-instruction.txt",
+      "size": 1461,
+      "sha256": "16de5bc3200099df19756e2195a0a572cff137603cbf7c5dc9aef145c51140d3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/execution-claim.json",
+      "size": 1999,
+      "sha256": "0c0ea8381d0fd01d4ed5491d6020912c299337373f5eb193bd40ef8c1a90b4be"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/launch-receipt.json",
+      "size": 922,
+      "sha256": "aa7330fb99cd2e97f3a6ef69be809512bfb67ef7ab256145793cc53ae0d5e0f6"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/codex-opinion.json",
+      "size": 3082,
+      "sha256": "84215a87f469cd3c1b17222a8ba910de6543944ec775ba9f9b0367d3e50fb31e"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/completion-receipt.json",
+      "size": 853,
+      "sha256": "2b2edaf406aa8e8a7ad5f62737f5ff45860dff586a0008cf08e3a60ddb2f8779"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-report-v2.json",
+      "size": 10051,
+      "sha256": "efba63ffd51147548c000c55691152e487e3290511c974aa5e6b9aedb1fdff6d"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-seal-v2.json",
+      "size": 1990,
+      "sha256": "7033935450db9cee1eb56a735940cd45131e8678c55fdc49fb534e95d8c27b93"
+    },
+    {
+      "path": "apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TrackBProviderRecoveryRuntimeContractTest.java",
+      "size": 11062,
+      "sha256": "fa13c494d3ec6c128d5dfce69715c222f5d59fa7e433664b7ac54ead212b5ce9"
+    },
+    {
+      "path": "scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.mjs",
+      "size": 10762,
+      "sha256": "914636b24b47366888335c88340199729f6af8192e934ef738279cf472013f09"
+    },
+    {
+      "path": "scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.test.mjs",
+      "size": 6336,
+      "sha256": "faab51b3ee6c32fdd5aa704612435b4b6a90b3dad7dc28aad3d12cd47592fa04"
+    },
+    {
+      "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-codex-revalidation.mjs",
+      "size": 8557,
+      "sha256": "97d916cd562cf434a4327d6374a0a8d7bf192410f0c0576484a1eeed1b43cf71"
+    },
+    {
+      "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs",
+      "size": 8808,
+      "sha256": "109432cf3abc04f03a40a8d81a277a9ca0c4bbb7192c72d95ac6ebd2d204c52e"
+    },
+    {
+      "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.test.mjs",
+      "size": 3308,
+      "sha256": "db746de666956b2843526c01864cb1d0c0c891c51c6fee185d786d142deea11e"
+    },
+    {
+      "path": "scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1",
+      "size": 6916,
+      "sha256": "ab6e0615a7117887e3d7389c7fc3a6c3070361bc7806044aaee9a3f8d8e41757"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification/audit/freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json",
+      "size": 45307,
+      "sha256": "083855b60c16407649e439c3f5e61d48841408c7c7a284bdd8d6d79d0c797f9b"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/manifest.json",
+      "size": 53551,
+      "sha256": "a713467b0358fb4ec1d8bcc09a84a26e72e325a224a57e7c36c47330b6471cf3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/codex-code-architecture-audit-no-go.md",
+      "size": 2749,
+      "sha256": "a8960288c336c83098a54dfe0bcc05dae85e6532d3b538fe2dea3e543d32ba44"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/cc-audit-transport-incomplete.md",
+      "size": 820,
+      "sha256": "aacf6cd8c03c57262e310441e84e32ece95dc5382d161adfb56ff3befe2245fe"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/codex-test-security-audit-interrupted.md",
+      "size": 470,
+      "sha256": "6e1f790fda54864b160c112cb3c19c2fd760cb7121c586e9ed0f76f7357dbf7b"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/manifest.json",
+      "size": 55699,
+      "sha256": "5cd7820ea7fa87254e5f08f94aea434cf9d09bb5d60cc1b1f2f3074ca2a5630c"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/codex-code-architecture-audit-go.md",
+      "size": 817,
+      "sha256": "8f567cbe54802aa86759bd1004715843793903d769b099a9ef986b7729850aa4"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/codex-test-security-audit-go.md",
+      "size": 872,
+      "sha256": "2deb2c1f7017bb831ba71c4a9feaaf347052d536664c7027a79e14b5f501c62d"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/cc-audit-no-go.md",
+      "size": 1812,
+      "sha256": "e50426f5d705cfcebf24de875c036ca85f157c0438adcf608539cd8bc0ee5914"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/cc-audit-raw.console.log",
+      "size": 8714,
+      "sha256": "244ae3f8fa9061139060d09747b579f241e0bf0518d9e5f3e05ce4a9b0d77445"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/cc-audit-status.json",
+      "size": 390,
+      "sha256": "33ef2fae07365836f63af4fcca08dcec6da54dbb692a498f5b6bf1cda28ec3b1"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3/manifest.json",
+      "size": 58827,
+      "sha256": "e83c7be5648c9724b441cf0b77d65906f022791c9f58bec75e95e38ca513517b"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3/cc-audit-go.md",
+      "size": 2949,
+      "sha256": "99ddf12deeda673c13adc036c98c2125aaad61d03e3e070963ac687a365bae20"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3/codex-code-architecture-audit-interrupted.md",
+      "size": 718,
+      "sha256": "d651f4af796527da8e08d9f795ca4f536ba7f69015f2f3fc63ec7faf1af9fc41"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3/codex-test-security-audit-no-go.md",
+      "size": 3434,
+      "sha256": "280e383516b6cf98362154c3e75ad7cd59407c56178fb1cb16e0bf164345dcd6"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3/audit-round-status.json",
+      "size": 851,
+      "sha256": "35a8a82fe2f0d0ba8fddce1a686f18fce18d0709dd365da4492eca6c8b709a16"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/manifest.json",
+      "size": 61459,
+      "sha256": "08a0bd235b5c0e1cd24d67ea25895f9b7984d424e0a427b9415417d8b5579513"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/cc-audit-no-go.md",
+      "size": 2488,
+      "sha256": "0618fd3f81f4143c72c36e86fd44dde4ba7093e0964179753b446dc7932587e6"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/cc-audit-status.json",
+      "size": 600,
+      "sha256": "9aa052a8d7bdd992c18d40c946d3668728ba3060089a2fd478024faab789aa45"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/codex-code-architecture-audit-interrupted.md",
+      "size": 416,
+      "sha256": "487e86c6f8ebc91effe4640d2a635cbd5b0c20be6c200934fe381e0d9f25c492"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/codex-test-security-audit-interrupted.md",
+      "size": 412,
+      "sha256": "56735d5cb57b641913becc55b9ad5595cba474158015c0a69707aaa8eddf091f"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/manifest.json",
+      "size": 64100,
+      "sha256": "d791a0539e9b1bc16d9ab073a55c91e869faddae6aa699b5e9c181e363ee4b45"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/audit-round-status.json",
+      "size": 902,
+      "sha256": "6feb8f820c739cf6b727bd61f7ae8f045289720aba2628cccaa26460c648f8ab"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/cc-audit-go.md",
+      "size": 1463,
+      "sha256": "8a18e6dd58c535cb6d436635e6d745ca142b71a5c013813ac80a128c0e103d9c"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/codex-code-architecture-audit-no-go.md",
+      "size": 2339,
+      "sha256": "429597b1392b7f4d3589af4504ddfc26c7ef9ed1adf65eea04607659804ea9ba"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/codex-test-security-audit-interrupted.md",
+      "size": 456,
+      "sha256": "d706babfc8739944c36bef4114007bb21d95c6a470352468a67f3c270d90a7ea"
+    },
+    {
+      "path": "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md",
+      "size": 20707,
+      "sha256": "df589b40784c1200a54d533f65e0d01dad59e46dc66112f155af98916e1fd18b"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
+      "size": 72,
+      "sha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
+    }
+  ],
+  "previousFailedFreezePreserved": true,
+  "previousFailedFreezePath": "outputs/task-eval-006/track-b-recovery-v1/verification/audit/freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json",
+  "failedAuditRoundsPreserved": [
+    {
+      "subjectIdentity": "e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/manifest.json",
+      "codeArchitectureVerdict": "NO_GO",
+      "ccAuditStatus": "TRANSPORT_INCOMPLETE_NO_VERDICT",
+      "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT"
+    },
+    {
+      "subjectIdentity": "a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad/manifest.json",
+      "codeArchitectureVerdict": "GO",
+      "ccAuditVerdict": "NO_GO",
+      "ccAuditP0": 1,
+      "ccAuditP1": 0,
+      "ccAuditP2": 1,
+      "ccAuditBlocking": 2,
+      "testSecurityAuditVerdict": "GO",
+      "failureClassification": "AUDIT_PROJECTION_TRANSPORT"
+    },
+    {
+      "subjectIdentity": "47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-47d84299f9f5002cc80c5aa20481452cdf6f27f83699fce2793c836aaf4852d3/manifest.json",
+      "codeArchitectureAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "ccAuditVerdict": "GO_INVALIDATED_BY_PACKAGE_ISOLATION_P0",
+      "testSecurityAuditVerdict": "NO_GO",
+      "testSecurityAuditP0": 1,
+      "testSecurityAuditP1": 0,
+      "testSecurityAuditP2": 0,
+      "testSecurityAuditBlocking": 1,
+      "failureClassification": "CC_AUDIT_PACKAGE_CONTENT_ISOLATION"
+    },
+    {
+      "subjectIdentity": "a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/manifest.json",
+      "codeArchitectureAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "ccAuditVerdict": "NO_GO",
+      "ccAuditP0": 0,
+      "ccAuditP1": 0,
+      "ccAuditP2": 1,
+      "ccAuditBlocking": 1,
+      "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "failureClassification": "GOVERNANCE_DOCUMENT_FRESHNESS"
+    },
+    {
+      "subjectIdentity": "e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/manifest.json",
+      "codeArchitectureAuditVerdict": "NO_GO",
+      "codeArchitectureAuditP0": 0,
+      "codeArchitectureAuditP1": 0,
+      "codeArchitectureAuditP2": 1,
+      "codeArchitectureAuditBlocking": 1,
+      "ccAuditVerdict": "GO_INVALIDATED_BY_CODE_ARCHITECTURE_P2",
+      "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "failureClassification": "GOVERNANCE_TASK_STATE_CONTRADICTION"
+    }
+  ],
+  "publicProfileDisabledUnbound": true,
+  "modelProducedOrChangedFindingVerdict": false,
+  "a0A1A2ImplementationAllowed": false,
+  "productionReadyClaimed": false,
+  "task028Unlocked": false,
+  "task031Unlocked": false,
+  "task032Unlocked": false
+}

@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-console-manifest-v1",
+  "status": "PASS",
+  "completedAt": "2026-08-03T18:56:24.947Z",
+  "runs": [
+    {
+      "name": "node-phase-appropriate",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/node-tests-phase-appropriate.console.log",
+      "size": 4774,
+      "sha256": "47fafd4afc89ed31f1f5de12fabe0c41b8da3138eafeb7f3a83c035824a11c06",
+      "exitCode": 0
+    },
+    {
+      "name": "java-recovery-runtime",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.console.log",
+      "size": 1135,
+      "sha256": "787c709bdd189eea4aad319acb89f1dac35cd8a1ddb80920838791ee7d3fc5dd",
+      "exitCode": 0
+    },
+    {
+      "name": "java-recovery-junit",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.junit.xml",
+      "size": 543,
+      "sha256": "a192bfee7acccf385736ac2c7687d97d3e0c139992fb045c1725382ce8e24dad",
+      "exitCode": 0
+    },
+    {
+      "name": "admission-revalidation-seal",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/admission-revalidation-seal-verify.console.log",
+      "size": 492,
+      "sha256": "63b3b53fc773545c2e781cc331f9b30f3ecf35dc8b472fabf8a44b28643ca369",
+      "exitCode": 0
+    },
+    {
+      "name": "secret-provider-leak-scan",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/secret-and-provider-leak-scan.console.log",
+      "size": 105,
+      "sha256": "4952e184fe5f8af28da98a3f5ed63bebbf520ba17264fd80767dc9b5b85a9099",
+      "exitCode": 0
+    },
+    {
+      "name": "line-endings",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/line-endings.console.log",
+      "size": 36,
+      "sha256": "e1c0010d6a1eba1ea018c27dcafb1443501604c3bd076811fb00c2187d2ede7d",
+      "exitCode": 0
+    },
+    {
+      "name": "git-diff-check",
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/git-diff-check.console.log",
+      "size": 1141,
+      "sha256": "229066e210648a3fad3838b3f0f41d196f43be549c4279f612459e8effc17dc1",
+      "exitCode": 0
+    }
+  ],
+  "failedHarnessEvidence": [
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/node-tests-phase-appropriate.failed-preseal-harness.console.log",
+      "size": 5419,
+      "sha256": "dd2788cc53cb3eefca64ddbb8d743cc003bd636b6356084b06130cf89664a3bf",
+      "classification": "PHASE_INAPPROPRIATE_PRESEAL_TEST_INCLUDED",
+      "productCorrectnessFailure": false
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/admission-revalidation-seal-verify.failed-timestamp-harness.console.log",
+      "size": 952,
+      "sha256": "ac16b5d0b545084ddcc9f9641595e7117f1f0e639fe08dbc197d9d9aedf73f8c",
+      "classification": "POWERSHELL_LOCALIZED_TIMESTAMP_ARGUMENT",
+      "productCorrectnessFailure": false
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/secret-and-provider-leak-scan.failed-overbroad-pattern.console.log",
+      "size": 106,
+      "sha256": "81af0c159006cd72eb10952ca98515fd41db584dccec7c3bf41e5eade886d69e",
+      "classification": "OVERBROAD_DS_SYNTHETIC_IDENTIFIER_PATTERN",
+      "productCorrectnessFailure": false
+    }
+  ]
+}

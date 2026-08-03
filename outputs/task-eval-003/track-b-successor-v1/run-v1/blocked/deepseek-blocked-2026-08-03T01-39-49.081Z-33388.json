@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-deepseek-run-v1",
+  "status": "BLOCKED",
+  "code": "AUTHENTICATION_FAILED",
+  "failedCallId": "TBS-MC-f06002983772d1c785c629f6442a205de5462ea21890d98e7853270c6561a569",
+  "failedCallIndex": 0,
+  "completedCallCount": 0,
+  "evaluator": "deepseek-v4-pro",
+  "modelInputSha256": "654168c6b0a671f3f8d0e44222be51d6c97edd8cc5f67e2c41b1a1248032fe6e",
+  "dispatchSha256": "f9d6cd05340cbc82fbaada00462ac4570fb008a9c19dc0203b7155090ec94807",
+  "providerCallSetSha256": "79a3ab0b100dfddce64b506840abb2346e2b77aaf83abf07ea44ef9d53a9550a",
+  "derivedReceiptSha256": "1788387d85e8d21c365d4f16e4a5123dad78730b9d66d1b67e75c43643159138",
+  "networkAttempted": true,
+  "automaticRetryPerformed": false,
+  "startedAt": "2026-08-03T01:39:49.081Z",
+  "completedAt": "2026-08-03T01:40:14.437Z"
+}

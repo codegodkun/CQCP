@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-proposed-decisions-v1",
+  "status": "CODEX_PROPOSAL_NOT_HUMAN_GROUND_TRUTH",
+  "draftedBy": "CODEX",
+  "humanGroundTruthEstablished": false,
+  "entryCount": 12,
+  "entries": [
+    {
+      "caseId": "TBH-MED-001",
+      "proposedRationale": "甲方角色应归属明确标注的采购人公司，不取授权代表个人。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": ["OCC-002"],
+        "selectedAnchorBlockIds": ["tbh-med-001-b02"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-MED-002",
+      "proposedRationale": "乙方角色应取明确的承包人合同主体，不取收款账户名称。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": ["OCC-001"],
+        "selectedAnchorBlockIds": ["tbh-med-002-b01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-MED-003",
+      "proposedRationale": "合同总金额应取含税总价486320元，不取预算控制上限。",
+      "proposedExpected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": ["OCC-001"],
+        "selectedAnchorBlockIds": ["tbh-med-003-table-01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-MED-004",
+      "proposedRationale": "预付款比例是12%，履约保证金比例6%不属于该角色。",
+      "proposedExpected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": ["OCC-001"],
+        "selectedAnchorBlockIds": ["tbh-med-004-b01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-MED-005",
+      "proposedRationale": "质量保证金比例是4%，逾期违约金上限8%不是质保金。",
+      "proposedExpected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": ["OCC-001"],
+        "selectedAnchorBlockIds": ["tbh-med-005-b01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-CON-001",
+      "proposedRationale": "同句候选中，采购人（甲方）标签直接指向沧澜机电有限公司。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": ["OCC-002"],
+        "selectedAnchorBlockIds": ["tbh-con-001-b01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-CON-002",
+      "proposedRationale": "税额角色应选择明确标注的37800元，不取不含税价或价税合计。",
+      "proposedExpected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": ["OCC-002"],
+        "selectedAnchorBlockIds": ["tbh-con-002-table-01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-CON-003",
+      "proposedRationale": "进度款比例为72%，竣工累计支付88%属于另一角色，附件说明不参与局部比较。",
+      "proposedExpected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": ["OCC-001"],
+        "selectedAnchorBlockIds": ["tbh-con-003-b01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-CON-004",
+      "proposedRationale": "结算付款比例是累计支付至96%，4%属于质保金。",
+      "proposedExpected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": ["OCC-001"],
+        "selectedAnchorBlockIds": ["tbh-con-004-b01"],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBH-CTL-HIGH-001",
+      "proposedRationale": "deterministic HIGH 必须零调用，模型不得覆盖。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TBH-CTL-INVALID-001",
+      "proposedRationale": "TABLE_CELL identity 非法导致 bundle invalid，必须零调用。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TBH-CTL-NOANCHOR-001",
+      "proposedRationale": "候选只来自 TOC，不能形成可靠正文 anchor，必须零调用。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ]
+}

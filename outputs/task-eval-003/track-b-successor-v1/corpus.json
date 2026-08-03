@@ -1,0 +1,984 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-corpus-v1",
+  "status": "DRAFT_PENDING_HUMAN_GROUND_TRUTH_CONFIRMATION",
+  "generatedAt": "2026-08-02T15:54:17.437Z",
+  "source": "INDEPENDENT_DEIDENTIFIED_SYNTHETIC_RUNTIME_SIGNALS",
+  "sourceSignalsPath": "apps/api-server/src/test/resources/track-b-successor-v1/source-signals.json",
+  "sourceSignalsSha256": "84f04dbfe35b11a0945124a5546412abd3f98f9a95081691e2963c2b7c0a486d",
+  "containsProductionContractText": false,
+  "groundTruthIncluded": false,
+  "packetCount": 12,
+  "eligiblePacketCount": 9,
+  "mediumEligibleCount": 5,
+  "conflictedEligibleCount": 4,
+  "zeroCallControlCount": 3,
+  "packets": [
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-3cdefb27b04471d321ad206f60c2777181be04912f89408e369cd88aad465abc",
+      "taskId": "task-eval-003-track-b-successor-medium",
+      "executionId": "execution-track-b-successor-medium-v1",
+      "sampleId": "TBS-MED-001",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "邵宁",
+          "evidenceText": "甲方经办联系人：邵宁，负责资料传递。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "联络信息"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "晴川精密制造有限公司",
+          "evidenceText": "发包人（甲方）：晴川精密制造有限公司。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-001-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合同主体"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_a",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 37,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbs-med-001-b01",
+          "tbs-med-001-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-44b2ff1afc0afb5d0945a1791bd05eb58242aa7947987b2752598d022a08953c",
+      "taskId": "task-eval-003-track-b-successor-medium",
+      "executionId": "execution-track-b-successor-medium-v1",
+      "sampleId": "TBS-MED-002",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "峦境机电工程有限公司",
+          "evidenceText": "承揽人（乙方）：峦境机电工程有限公司。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-002-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合同主体"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "峦境资金结算部",
+          "evidenceText": "收款户名：峦境资金结算部。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-002-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "结算账户"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 32,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbs-med-002-b01",
+          "tbs-med-002-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-7aea36ff77362afb1bd77fcfcc4b6d6bb1445d59565d231ea9f55884591ce15c",
+      "taskId": "task-eval-003-track-b-successor-medium",
+      "executionId": "execution-track-b-successor-medium-v1",
+      "sampleId": "TBS-MED-003",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "538640",
+          "evidenceText": "合同含税总金额（元）538640",
+          "sourceAnchor": {
+            "blockId": "tbs-med-003-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbs_med_003/row:1/cell:2",
+            "sectionPath": [
+              "合同价款表"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "560000",
+          "evidenceText": "项目预算控制额（元）560000",
+          "sourceAnchor": {
+            "blockId": "tbs-med-003-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbs_med_003/row:2/cell:2",
+            "sectionPath": [
+              "合同价款表"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "contract_total_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 32,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbs-med-003-table-01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-572aaa4abf8837ec08861c36da48afd4bb39793e9543485087e02141fe4c7e47",
+      "taskId": "task-eval-003-track-b-successor-medium",
+      "executionId": "execution-track-b-successor-medium-v1",
+      "sampleId": "TBS-MED-004",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "14",
+          "evidenceText": "合同签署后支付合同价的14%作为预付款。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "付款条件"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "7",
+          "evidenceText": "履约担保比例为合同价的7%。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-004-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "履约担保"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "prepayment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 34,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbs-med-004-b01",
+          "tbs-med-004-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-47757b9d55c63c098b08bcd0bc249cbc886b138cae6e77f9e0df4790a2691593",
+      "taskId": "task-eval-003-track-b-successor-medium",
+      "executionId": "execution-track-b-successor-medium-v1",
+      "sampleId": "TBS-MED-005",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "2",
+          "evidenceText": "审定结算价的2%作为质量保证金。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-005-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "质量保证"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "9",
+          "evidenceText": "延期违约金累计上限为合同价的9%。",
+          "sourceAnchor": {
+            "blockId": "tbs-med-005-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "违约责任"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "warranty_retention_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 33,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tbs-med-005-b01",
+          "tbs-med-005-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-69680a99d97685f3402dd0bc0b5d21f4b79d120d8cb2690bea70a1455e11663c",
+      "taskId": "task-eval-003-track-b-successor-conflicted",
+      "executionId": "execution-track-b-successor-conflicted-v1",
+      "sampleId": "TBS-CON-001",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "栖岸监理咨询有限公司",
+          "evidenceText": "承包人（乙方）：青屿设备安装有限公司；监理协调单位：栖岸监理咨询有限公司。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合同主体"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "青屿设备安装有限公司",
+          "evidenceText": "承包人（乙方）：青屿设备安装有限公司；监理协调单位：栖岸监理咨询有限公司。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合同主体"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 74,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbs-con-001-b01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-817c93ed5adc46b221da8aa31b6d515696f96ca30a9da9e23f505e40c5fc0685",
+      "taskId": "task-eval-003-track-b-successor-conflicted",
+      "executionId": "execution-track-b-successor-conflicted-v1",
+      "sampleId": "TBS-CON-002",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "candidateRole": "TAX_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "468000",
+          "evidenceText": "不含税金额468000元，税额42120元，价税合计510120元。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbs_con_002/row:1/cell:1",
+            "sectionPath": [
+              "价税明细"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "42120",
+          "evidenceText": "不含税金额468000元，税额42120元，价税合计510120元。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbs_con_002/row:1/cell:2",
+            "sectionPath": [
+              "价税明细"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "candidateValue": "510120",
+          "evidenceText": "不含税金额468000元，税额42120元，价税合计510120元。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbs_con_002/row:1/cell:3",
+            "sectionPath": [
+              "价税明细"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "tax_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 102,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbs-con-002-table-01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-33a2e677325010e90c1be897f672c694246bbd8676a5fef61581702a2116fed8",
+      "taskId": "task-eval-003-track-b-successor-conflicted",
+      "executionId": "execution-track-b-successor-conflicted-v1",
+      "sampleId": "TBS-CON-003",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "74",
+          "evidenceText": "月度进度款按核定完成产值的74%支付。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-003-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "工程款支付"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "86",
+          "evidenceText": "完工验收后累计支付至合同价的86%。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-003-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "工程款支付"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "candidateValue": "101",
+          "evidenceText": "另附税务登记说明，不参与付款比例比较。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-003-b03",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "附件说明"
+            ],
+            "regionType": "APPENDIX",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "progress_payment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 56,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbs-con-003-b01",
+          "tbs-con-003-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-235e78754e072e666562eafb2c1ba4f74598b099520972d26275f45d1b8e4704",
+      "taskId": "task-eval-003-track-b-successor-conflicted",
+      "executionId": "execution-track-b-successor-conflicted-v1",
+      "sampleId": "TBS-CON-004",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "89",
+          "evidenceText": "结算审定后累计支付至结算价的89%，余款11%按保修约定处理。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "结算支付"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "11",
+          "evidenceText": "结算审定后累计支付至结算价的89%，余款11%按保修约定处理。",
+          "sourceAnchor": {
+            "blockId": "tbs-con-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "结算支付"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "settlement_payment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 62,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tbs-con-004-b01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-b5c24d5469dbd66dddc67c11c4321d92a21c2476d3f2e585802343abfb49f303",
+      "taskId": "task-eval-003-track-b-successor-control",
+      "executionId": "execution-track-b-successor-control-v1",
+      "sampleId": "TBS-CTL-HIGH-001",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "612340",
+          "evidenceText": "合同含税总价为612340元。",
+          "sourceAnchor": {
+            "blockId": "tbs-ctl-high-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "合同价款"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "contract_total_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "SATISFIED",
+          "diagnosticCode": null,
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 15,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": false,
+        "status": "ZERO_CALL_REQUIRED",
+        "reasonCodes": [
+          "DETERMINISTIC_HIGH_ZERO_CALL"
+        ],
+        "requiredBlockIds": []
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-d701ff3c85a8a25d904b43044f162cacd3773117816062bc489efbd5e23e6e83",
+      "taskId": "task-eval-003-track-b-successor-control",
+      "executionId": "execution-track-b-successor-control-v1",
+      "sampleId": "TBS-CTL-INVALID-001",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "17",
+          "evidenceText": "预付款比例17%",
+          "sourceAnchor": {
+            "blockId": "tbs-ctl-invalid-001-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tbs_ctl_invalid/row:x/cell:2",
+            "sectionPath": [
+              "付款表"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": false
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "prepayment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "MISSING",
+          "diagnosticCode": "SYS_INDEX_INCOMPLETE",
+          "reliableAnchor": false
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 8,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": false,
+        "status": "ZERO_CALL_REQUIRED",
+        "reasonCodes": [
+          "BUNDLE_INVALID"
+        ],
+        "requiredBlockIds": []
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-6895a2c73d28e86b7c6d0537cd7a3e685bb35bfb8514832a62459bb78186bade",
+      "taskId": "task-eval-003-track-b-successor-control",
+      "executionId": "execution-track-b-successor-control-v1",
+      "sampleId": "TBS-CTL-NOANCHOR-001",
+      "ruleSetVersion": "v20260802.successor.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "汀澜运维服务有限公司",
+          "evidenceText": "目录索引：汀澜运维服务有限公司。",
+          "sourceAnchor": {
+            "blockId": "tbs-ctl-noanchor-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "目录"
+            ],
+            "regionType": "BODY",
+            "contextType": "TOC",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "MISSING",
+          "diagnosticCode": "SYS_INDEX_INCOMPLETE",
+          "reliableAnchor": false
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 16,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": false,
+        "status": "ZERO_CALL_REQUIRED",
+        "reasonCodes": [
+          "RELIABLE_ANCHOR_MISSING"
+        ],
+        "requiredBlockIds": []
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    }
+  ]
+}

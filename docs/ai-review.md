@@ -368,13 +368,142 @@ DeepSeek 评测固定 non-streaming JSON mode，prompt 明确要求 JSON；只�
 `reasoning_content`。Track B 局部职责不需要 thinking，请求显式
 `thinking={"type":"disabled"}`，模型不得生成或改变最终 Finding/verdict。
 
-新的独立 admission 使用模型未见的 12 packet holdout：9 个
-MEDIUM/CONFLICTED eligible 与 3 个 zero-call control。人工 ground truth 必须在模型
-访问前封印，正式运行只允许一次；任一 schema、anchor、control 或人工答案不匹配即
-停止，不在同一 holdout 上调参重试。该 holdout 在 Core 合并后执行。
+首个模型未见 12-packet holdout 已先完成人工 ground truth 封印并正式执行。Codex
+opinion 已封存但未解盲；DeepSeek 第 2 个 eligible call 因 schema invalid fail closed，
+one-time claim 已消费且无 accepted opinion。该 holdout 永久不可重试，Provider
+admission 仍为 `NOT_ESTABLISHED`。
+
+项目负责人已通过 TASK-EVAL-003 / ADR-023 授权一个新的 successor admission：仍为
+9 个 MEDIUM/CONFLICTED eligible 与 3 个 zero-call control，但 identity、候选文本和值
+必须与旧 18-packet corpus 和失败 holdout 完全 disjoint。用户只负责人工答案、重大
+范围变化和最终 merge；其余 standing-grant 范围内执行由主 Codex 连续推进。正式
+Codex auditors 必须为全新 `fork_turns="none"`，显式使用
+`gpt-5.6-sol / reasoning_effort=xhigh`。
+
+successor pre-seal 已冻结：12 packets / 9 eligible / 3 controls，且与两套 prior
+corpus 的 identity、candidate values、evidence texts overlap 全部为 0。当前 challenge
+为 `TBS1-5bfbe8b667944e7182df3ec537d45725`；在项目负责人确认 12 条人工 decisions
+前，human seal、model input、dispatch、claim 与网络调用均不存在。
+
+该 holdout 不沿用旧 run-v3 的 family 分组：9 个 eligible packet 各形成一个与 runtime
+同构的单 packet request，固定为 `9 calls / 9 inputs / 3 excluded controls`。项目负责人
+已为 `MILESTONE-MVP-002` 授予 standing egress grant；机器门禁见 `ADR-022`。standing
+grant 不替代人工 ground truth 封印，每次真实执行仍须在网络前自动派生绑定 actual
+input、dispatch、provider call set、每个 outbound request、模型、调用数和时间的
+receipt。用户负责输入脱敏把关，本轮不建设程序化脱敏平台；人工 ground truth、CQCP
+actual/expected、最终 Finding/verdict、Secret/raw KEY 仍不得进入 payload。
 
 Provider A0、adapter、PUBLIC binding、`REVIEWING_MODEL` 与 shadow runtime 均不在
-本 Core integration unit；当前保持 disabled/unbound 与 NO-GO/BLOCKED。
+当前 successor integration unit；在 successor admission 与三方审计 GO 前继续保持
+disabled/unbound 与 `NOT_ESTABLISHED`。
+
+TASK-EVAL-003 的唯一正式 claim 随后因错误 Secret 候选在第一个 call 认证失败并终态
+BLOCKED。ADR-024 不允许重跑该 claim；它只批准 TASK-EVAL-004 的最后一个独立机会。
+新任务必须先以显式 `DEEPSEEK_OFFICIAL_EVAL` Secret Reference 完成 hash-bound
+connectivity gate：官方 `/models` 包含 `deepseek-v4-pro`，并由该 exact model 对全合成
+输入完成 thinking-disabled、non-streaming、strict JSON、`finish_reason=stop` 探针。
+connectivity evidence 不保存 KEY、Secret hash、raw request/response 或 reasoning，且
+明确 `formalAdmissionAffected=false`。gate 成功不能替代人工先封印、第四套 corpus
+独立性、9×1 Track B admission 或三方全零审计。
+
+TASK-EVAL-004 随后由项目负责人绑定 challenge/corpus/review SHA 确认 12 条人工
+decisions，并在任何 evaluator 前形成 human seal。9×1 dispatch 与全新 Codex blind
+opinion 均已封存；唯一 DeepSeek `deepseek-v4-pro` claim 在第 8 个单包 call 因
+`OPINION_SCHEMA_INVALID` fail closed，前 7 个 calls 完成且无自动重试。由于没有完整
+accepted DeepSeek opinion，执行不得解盲、不得重试或调 prompt，Provider admission
+保持 `NOT_ESTABLISHED`，A0/A1/A2 不启动。
+
+项目负责人随后批准 ADR-025 / TASK-EVAL-005，作为最后一次、有限的 schema 稳定性
+诊断与独立 admission。TASK-EVAL-004 仍不可重试、补跑或解盲。新任务先在与前四套
+corpus 完全 disjoint 的合成诊断集上运行旧版本 baseline，并最多测试两个版本化候选；
+单一候选只有在两个独立 12-call pass 上累计 24/24 strict accepted、全部失败分类为 0
+时才能冻结。诊断总上限 60 calls，只保存 request/config hash、accepted 与聚合拒绝
+类别，不保存 raw request/response/content/reasoning 或 Secret。
+
+TASK-EVAL-005 的单包 prompt/schema v2 在合成诊断上达到 24/24 strict accepted；第五套
+正式 9×1 DeepSeek 调用也达到 schema 9/9 accepted，证明 schema 稳定性门禁通过。但
+解盲后 DeepSeek 对 4 个 CONFLICTED packet 的 role/candidate/anchor/abstention 与人工
+答案不一致，四项均为 55.56%；Codex 同批意见全维 100%。因此 admission seal 为
+`SEALED_NO_GO_MODEL_MISMATCH`，Provider admission `NOT_ESTABLISHED`。该 claim 不得
+重试或改写，A0/A1/A2 继续禁止。
+
+稳定性 GO 后才生成第五套独立 12-packet corpus，并在任何 evaluator/model 访问前由
+项目负责人绑定实际 hash 确认 12 条人工答案。正式 admission 仍固定
+`deepseek-v4-pro`、9×1 calls、3 个 zero-call controls、全维 100%；失败即终止，不建
+第六套。该历史规则已完成并终态封存。
+
+项目负责人随后澄清此前 BLOCKED 表述只是询问，并接受 ADR-026 / TASK-EVAL-006 的
+一次有限 Provider 会话投影恢复。v3 model-facing projection 只保留 review point、
+requested role、候选 occurrence、证据、可靠 anchor、预算和输出契约；runtime routing、
+diagnostic、identity/admission label、人工 ground truth、actual/expected、Finding/verdict
+均不得进入模型输入。先以旧第五套 4 个 CONFLICTED packet 做 4-call non-admission
+diagnostic；只有 4/4 才创建第六套独立 12-packet corpus并等待新的人工先封印。正式
+admission 仍为 9×1、3 controls zero-call、全维 100%；失败不建第七套。A0/A1/A2 继续
+等待 admission、verification/freeze 和三方全零 GO。
+
+TASK-EVAL-006 实际恢复结果为：旧 4 个 CONFLICTED packet 的 non-admission diagnostic
+六维 4/4；第六套 disjoint corpus 在人工先封印后，由全新 Codex evaluator 与
+`deepseek-v4-pro` 分别完成 9 条 blind opinion。两者的 schema、可靠 anchor、role、
+candidate、anchor、abstention 均为 9/9，3 个 controls 全部 zero-call；admission seal
+`2d879b13…` 为历史模型评测派生结果。全维 9/9 只建立
+`modelEvaluationPassed=true`，不建立 EVALUATION shadow 运行资格；模型仍不得生成或改变
+Finding/verdict，PUBLIC profile 仍 disabled/unbound。完整 verification、immutable
+freeze、三方全零 GO 与 CI 内容一致性前，`providerAdmissionEstablished=false` 且不得启动
+A0/A1/A2。
+
+TASK-EVAL-006 首次 R5 freeze 后，独立审计指出原 Codex opinion 只有“未读人工答案”的
+自述，缺少 evaluator 启动/访问时序证据；同时旧 Java 测试只覆盖 holdout-v1。有限修复
+使用 human seal 之后预创建的 execution claim、全新 `fork_turns=none` evaluator 的
+零文件 readiness、隔离四文件 allowlist、launch/completion receipt 形成可重建时间链；
+DeepSeek 正式 claim/opinion 不重跑。新增 recovery-v1 Java test 通过真实
+`RuntimeEvidencePacketBuilder` 逐字核对 12 个 packet、identity、admission 与 anchor。
+该修复的 subject `e77a8635…` 又因 opinion 顶层字段、DeepSeek reuse、架构状态与任务地图
+四项 blocking finding 被拒绝。R6 使用 exact-field-set、旧 seal hash 复用校验，并将更正
+后的 seal 状态固定为
+`SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`；新三方全零 GO 与
+CI 内容一致性前仍不启动 A0/A1/A2。R6 完整 verification 已达到 Node `56/56`、Java
+runtime seam `1/1` 且 `5 executed`、verification builder `1/1`；该结果只放行新 freeze
+与三审。R6 subject `a9daf62f…` 的两个 Codex auditor 全零 GO，但 CC 因隔离包从 Windows
+worktree 复制出 9 个 CRLF/mixed bytes、且 evidence/hash-only exclusion/source context
+未显式分区而返回 `NO_GO / P0=1 / P2=1`，所以正式 admission 仍未建立。R7 只用仓库外
+一次性 builder 修本轮 audit projection：从 frozen Git blob 导出精确字节，三类集合
+完整、互斥、可复算；人工 ground truth 和 comparison report 内容继续禁止进入 CC 包。该 transport
+修复不重跑 DeepSeek、不改变 model evaluation 或最终 Finding/verdict 边界。
+R7 完整 verification 已通过：Node `56/56`、Java runtime seam `1/1` 且 `5 executed`、
+verification builder `1/1`、Secret/raw Provider、CR=0 与 diff 门禁全绿。唯一历史 CR hit
+为 R6 CC status 元数据，原 SHA 已在 NO_GO 摘要保留；raw CC report 未改写。首次 freeze
+前置校验因 verification 脚本工作区 CRLF/Git blob LF 不一致而在创建 subject 前停止；精确
+LF 属性修复并强制全量重跑后的 verification result `1805feb1…`、console manifest
+`8aba6687…`，仍只放行新 freeze 与三方重审。
+R7 subject `47d84299…` 的三审随后发现新的 package isolation P0：完整 full diff 绕过
+hash-only exclusion，将 ground truth/comparison text patch 放入 CC 包，因此 CC GO 失效。
+R8 限定修复移除 full content diff，仅发送 status/path/base+HEAD Git blob OID/size inventory；
+仓库外 fail-closed verifier 对 72 个包文件扫描 12 个禁止路径的 HEAD blob 与逐 path diff 表示，
+共 24 项均无命中。该 diagnostic 不构成审计 GO；正式 admission 仍等待新 verification、freeze、
+CC 与两个全新 Codex auditor 全零 GO及 CI 内容一致性。R8 正式 verification 已达到 Node
+`56/56`、Java `1/1` 且 `5 executed`、Secret/raw Provider/CR/diff/builder 全绿；result
+`3297f5c3…`、console `50288e22…`、evidence `42`，当前只放行 clean commit 和新 freeze。
+正式 R8 subject `a85e96f5…` / manifest `08a0bd23…` 为 325 changed paths、65 evidence；
+CC 包实际为 77 total files、sums `16097ea7…`，独立扫描 24 forbidden representations 为 0。
+CC 对隔离和产品证据无 finding，但因上述正式事实未在冻结前同步到任务/项目记忆，返回
+`NO_GO / P2=1 / blocking=1`；两个 Codex auditor 中断。本轮不能复用，admission 仍 pending。
+R9 只把 R8 manifest、CC NO_GO/status 与两份 interrupted evidence 原字节加入 verification，
+并同步 325 paths / 65 evidence / 77 files / sums `16097ea7…` 的正式事实。定向测试按
+`3 != 4` RED→GREEN；完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、
+result `c2cc2213…`、console `cd563436…`、evidence `47`。不改变评测结论、模型意见、
+Provider payload 或 runtime。
+R9 clean HEAD `140b9a3…` 的 subject `e566c8d2…` / manifest `d791a053…` 为 330 changed
+paths、70 evidence；安全 CC 包 82 files、sums `9a769043…`、forbidden-content leak 0。CC
+返回全零 GO，但代码/架构 auditor 因 TASK 实时门禁仍指向已失败 R6 而返回
+`NO_GO / P2=1 / blocking=1`，测试/安全 auditor 中断。整轮失效，正式 admission 仍 pending；
+该治理状态 finding 不改变模型评测 GO、PUBLIC disabled/unbound 或后端最终裁判边界。
+R10 只将 TASK 实时门禁从已失败 R6 改为等待修复后唯一新 immutable subject，并让 verifier
+原字节绑定 R9 manifest、round status 与三份审计状态；失败轮数 `4 != 5` RED 后 GREEN。
+完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、evidence `53`，最终 identity
+由 freeze manifest 外部绑定；新 freeze 与三方重审前，admission 仍 pending，A0/A1/A2 仍禁止。
+R10 subject `d73e15e5…` / manifest `845bf692…` 为 335 paths、75 evidence；安全 CC 包
+72 included + 3 excluded、5 context、87 files、sums `e507bd57…`、leak 0。CC 与两个全新
+Codex auditor 均全零 GO；正式 admission 仍等待 CI 内容一致性，在此之前 A0/A1/A2 不启动。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

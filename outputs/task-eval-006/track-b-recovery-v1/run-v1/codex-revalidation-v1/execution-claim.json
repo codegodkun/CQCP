@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "task-eval-006-fresh-codex-blind-revalidation-claim-v1",
+  "status": "CLAIMED_FRESH_BLIND_REVALIDATION",
+  "claimId": "TBCX-2c4178f21cb44c468ef2e7f05c63d2fd",
+  "claimedAt": "2026-08-03T15:07:25.275Z",
+  "humanGroundTruthConfirmedAt": "2026-08-03T10:01:58.500Z",
+  "humanGroundTruthSealSha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315",
+  "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
+  "providerCallSetSha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3",
+  "dispatchSha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175",
+  "readinessInstructionSha256": "35fb33a6f3ab25ba72294786db0bebc347e67998f0e00fce2080de647b270c7f",
+  "evaluationInstructionSha256": "16de5bc3200099df19756e2195a0a572cff137603cbf7c5dc9aef145c51140d3",
+  "isolatedDirectory": "C:/tmp/cqcp-track-b-recovery-blind-2c4178f21cb44c468ef2e7f05c63d2fd",
+  "allowlistedEvaluationInputs": [
+    {
+      "fileName": "model-input.json",
+      "size": 20945,
+      "sha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81"
+    },
+    {
+      "fileName": "prompt-v3.txt",
+      "size": 1939,
+      "sha256": "5cb29a5ddc9644e15afba8afc67079d805ff41ae4472cf93997a1d89ac302601"
+    }
+  ],
+  "allowlistedControlFiles": [
+    "execution-claim.json",
+    "launch-receipt.json"
+  ],
+  "excludedInputClasses": [
+    "HUMAN_GROUND_TRUTH_CONTENT",
+    "CQCP_ACTUAL_OR_EXPECTED",
+    "FINDING_OR_VERDICT",
+    "PRIOR_CODEX_OPINION",
+    "DEEPSEEK_OPINION",
+    "PROJECT_MEMORY_OR_CHAT_HISTORY"
+  ],
+  "evaluatorRequirements": {
+    "evaluator": "codex-subagent-gpt-5.6-sol-xhigh",
+    "model": "gpt-5.6-sol",
+    "reasoningEffort": "xhigh",
+    "forkTurns": "none",
+    "readinessBeforeFileAccess": true,
+    "allowedInputOnly": true,
+    "humanGroundTruthRead": false,
+    "findingOrVerdictProduced": false
+  },
+  "opinionCount": 9,
+  "networkCallAllowed": false,
+  "deepSeekRerunAllowed": false
+}

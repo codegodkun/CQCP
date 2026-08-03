@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   assertDeepSeekTlsEnvironment,
   createPinnedLookup,
+  getDeepSeekModelsJson,
   isForbiddenDeepSeekAddress,
   postDeepSeekJson,
   resolveAndValidateDeepSeekAddresses,
@@ -216,6 +217,43 @@ test("HTTPS transport pins address while retaining hostname and TLS SNI", async 
     ),
   );
   assert.deepEqual(selected, { address: "8.8.8.8", family: 4 });
+});
+
+test("models transport is a pinned GET without request body or redirects", async () => {
+  let observed;
+  let endedWith;
+  const requestFactory = (options, onResponse) => {
+    observed = options;
+    const request = new EventEmitter();
+    request.setTimeout = () => {};
+    request.destroy = (error) => request.emit("error", error);
+    request.end = (body) => {
+      endedWith = body;
+      const response = new EventEmitter();
+      response.statusCode = 200;
+      response.headers = { "content-type": "application/json" };
+      response.destroy = (error) => response.emit("error", error);
+      onResponse(response);
+      response.emit("data", Buffer.from('{"data":[]}'));
+      response.emit("end");
+    };
+    return request;
+  };
+  const response = await getDeepSeekModelsJson({
+    secret: "TEST_ONLY",
+    addresses: [{ address: "8.8.8.8", family: 4 }],
+    requestFactory,
+  });
+  assert.equal(response.status, 200);
+  assert.equal(observed.method, "GET");
+  assert.equal(observed.path, "/models");
+  assert.equal(observed.hostname, "api.deepseek.com");
+  assert.equal(observed.agent, false);
+  assert.equal(observed.rejectUnauthorized, true);
+  assert.equal(observed.headers.Accept, "application/json");
+  assert.equal("Content-Type" in observed.headers, false);
+  assert.equal("Content-Length" in observed.headers, false);
+  assert.equal(endedWith, undefined);
 });
 
 test("validated DNS answers are deduplicated and canonically sorted", async () => {

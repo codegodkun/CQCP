@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-verification-result-v1",
+  "status": "PASS",
+  "completedAt": "2026-08-03T10:39:59.078Z",
+  "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
+  "providerAdmission": "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE",
+  "networkCallPerformedByVerification": false,
+  "chronology": {
+    "humanGroundTruthConfirmedAt": "2026-08-03T10:01:58.500Z",
+    "dispatchCreatedAt": "2026-08-03T10:04:50.332Z",
+    "deepSeekClaimedAt": "2026-08-03T10:10:06.064Z",
+    "deepSeekCompletedAt": "2026-08-03T10:10:26.393Z",
+    "admissionSealedAt": "2026-08-03T10:12:48.538Z",
+    "verificationCompletedAt": "2026-08-03T10:39:59.078Z"
+  },
+  "metrics": {
+    "node": "70/70",
+    "javaRuntimeSeam": "1/1",
+    "codexAdmission": "9/9",
+    "deepSeekAdmission": "9/9",
+    "zeroCallControls": "3/3",
+    "actualSecretLeakFiles": 0,
+    "forbiddenProviderPayloadFiles": 0,
+    "filesContainingCR": 0,
+    "gitDiffCheckExitCode": 0
+  },
+  "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification/console-manifest.json",
+  "consoleManifestSha256": "de81671d8316fd36d2b769839acf1e24fe54161cdd18c28eb06aa1da37950999",
+  "evidence": [
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/corpus.json",
+      "size": 34986,
+      "sha256": "3a988a9ab09008645dd812b47c1ad3f4c6a9aac699a590a66bd6a17cf1010554"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation-challenge.json",
+      "size": 1979,
+      "sha256": "328f4349840330419b21fe874485447070ad065efff52c06459f8cd5550b90dc"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation.json",
+      "size": 6012,
+      "sha256": "814e81461ff0880eedd114992357f5730a48249f50a10d8eed4e4ce7b1fa7040"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
+      "size": 6343,
+      "sha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/model-input.json",
+      "size": 20945,
+      "sha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/provider-call-set.json",
+      "size": 3923,
+      "sha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/dispatch.json",
+      "size": 2817,
+      "sha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/derived-egress-receipt.json",
+      "size": 2086,
+      "sha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-opinion.json",
+      "size": 3325,
+      "sha256": "cccf0a4de81187079e09bcc0a422da72af72b4e6635c4a75053fa021ed6f126a"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-execution-claim.json",
+      "size": 898,
+      "sha256": "600a821a25641b8d875e696d79191b986f77d39571a778c9670a5af9cde5929d"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-opinion.json",
+      "size": 8752,
+      "sha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-report.json",
+      "size": 8511,
+      "sha256": "395c0d3871d4f4aed637ad61174381c248bb42bf03fd0839c85778f12a6f71f5"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json",
+      "size": 1286,
+      "sha256": "2d879b139715ca7646a95e035747891a14b38ab545302a899ef2ca6376651b04"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/diagnostic-seal.json",
+      "size": 1152,
+      "sha256": "fedc4e21801f1e5c38f5fc97c0da6db16546fb775ee060991f54e5f41d9404ff"
+    },
+    {
+      "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/unblind/admission-seal.json",
+      "size": 2559,
+      "sha256": "520d7b38c46b0fc69bf2afb2726f01cadb1991b3b386d481c70b145274d451be"
+    },
+    {
+      "path": "decisions/ADR-026-track-b-provider-conversation-recovery.md",
+      "size": 6670,
+      "sha256": "44f418f93ef32eeebb04d55a52872b8bec8225e4dd42d977ee2a6eef74b3639c"
+    },
+    {
+      "path": "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md",
+      "size": 10106,
+      "sha256": "ab97b58598132cd68b4f7a4d4d3792f05b4b1d1627aa49127aac8d4f7abbd429"
+    }
+  ],
+  "publicProfileDisabledUnbound": true,
+  "modelProducedOrChangedFindingVerdict": false,
+  "a0A1A2ImplementationAllowed": false,
+  "productionReadyClaimed": false,
+  "task028Unlocked": false,
+  "task031Unlocked": false,
+  "task032Unlocked": false
+}

@@ -16,3 +16,8 @@
 - [ADR-018 Model Profile Secret Reference 与 Provider Readiness](ADR-018-model-profile-secret-reference-and-provider-readiness.md)
 - [ADR-019 双轨盲态评测与模型激活边界](ADR-019-blind-evaluation-and-model-activation-boundary.md)
 - [ADR-020 审核工作台管理访问边界](ADR-020-review-workbench-management-access-boundary.md)
+- [ADR-022 MVP-002 持续公网外发授权与派生绑定](ADR-022-mvp002-standing-egress-grant-and-derived-receipt.md)
+- [ADR-023 Track B 后续独立准入评测边界](ADR-023-track-b-successor-independent-admission.md)
+- [ADR-024 Track B 连通门禁与最终独立准入评测](ADR-024-track-b-connectivity-gate-and-final-independent-admission.md)
+- [ADR-025 Track B schema 稳定性诊断与第五套独立 admission](ADR-025-track-b-schema-stability-diagnosis-and-fifth-admission.md)
+- [ADR-026 Track B Provider 会话投影有限恢复](ADR-026-track-b-provider-conversation-recovery.md)

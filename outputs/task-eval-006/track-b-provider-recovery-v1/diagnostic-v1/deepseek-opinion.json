@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "task-eval-006-provider-recovery-model-opinion-v3",
+  "status": "ACCEPTED_NON_ADMISSION_DIAGNOSTIC",
+  "purpose": "PROVIDER_VALIDATION",
+  "evaluator": "deepseek-v4-pro",
+  "modelInputSha256": "809c244e8526b7935caa7777e2c5fb13c9403450ddf0a9049e63645d78289fee",
+  "providerCallSetSha256": "892e6b4fd86f04de10a0b9561dba1246b163e02354e4794b1e6284043f16e3f9",
+  "dispatchSha256": "338d11686229ae06700ae3f136a5df6b65fa36c5435d16bc07e17350eb5a40c9",
+  "standingGrantSha256": "f04c3ad0a6522b90f21d1efb32be12b0c883d03b2b286f9c2c8639ecd501239a",
+  "derivedReceiptSha256": "6893767f68e6ba9966599af7241ae96340b91bb249198aceff7f0dd8fcd9306c",
+  "executionClaimSha256": "14715db0c3e27fdef114b80038ba64380bb533e9f3c72dfdf548333e2fc2a07c",
+  "pinnedAddressSetSha256": "7debef4763880193e11cbae93f69bbd7806085ba040978b9e5752f57adfd21d2",
+  "providerCallCount": 4,
+  "networkAttempted": true,
+  "automaticRetryPerformed": false,
+  "rawResponsePersisted": false,
+  "reasoningContentPersisted": false,
+  "providerReceipts": [
+    {
+      "callId": "TBR-MC-11612b26466f3282d90a2630e95e0194fc7a8ecdb38acc334c8394124a9904b9",
+      "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+      "modelInputSha256": "11612b26466f3282d90a2630e95e0194fc7a8ecdb38acc334c8394124a9904b9",
+      "outboundRequestSha256": "ec137084cb8548f23e0c75a1471494b75c7160b6ba8bdd2d14d7b46cff93f0f0",
+      "receiptStatus": "STRICT_SCHEMA_ACCEPTED",
+      "finishReason": "stop",
+      "completedAt": "2026-08-03T09:28:36.348Z"
+    },
+    {
+      "callId": "TBR-MC-d27a3458985217c2e94e2de31e3b179c38803d25f0c7aed33c9d487ab962932b",
+      "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+      "modelInputSha256": "d27a3458985217c2e94e2de31e3b179c38803d25f0c7aed33c9d487ab962932b",
+      "outboundRequestSha256": "52df101b7c2406e3e9078e6f52dcb58eb648bb9c81e1dc3dd6cde1d8557fd902",
+      "receiptStatus": "STRICT_SCHEMA_ACCEPTED",
+      "finishReason": "stop",
+      "completedAt": "2026-08-03T09:28:39.472Z"
+    },
+    {
+      "callId": "TBR-MC-d9561aeb8c07ca0d34243560144aaf1526be9914719e1b858b68e141e7293eee",
+      "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+      "modelInputSha256": "d9561aeb8c07ca0d34243560144aaf1526be9914719e1b858b68e141e7293eee",
+      "outboundRequestSha256": "64eb73e93d6c71f1464c4d145386e30395b9dbdecf82548b6ea8afb439d39f10",
+      "receiptStatus": "STRICT_SCHEMA_ACCEPTED",
+      "finishReason": "stop",
+      "completedAt": "2026-08-03T09:28:41.938Z"
+    },
+    {
+      "callId": "TBR-MC-fffd1efc83324a0778b5ba1ce5759c456cd5a6734fb7c6366f58ce123043aabe",
+      "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+      "modelInputSha256": "fffd1efc83324a0778b5ba1ce5759c456cd5a6734fb7c6366f58ce123043aabe",
+      "outboundRequestSha256": "6cd2cae60c1519552770110d593dc6da759b6f805a694baeb3470e0747e929a7",
+      "receiptStatus": "STRICT_SCHEMA_ACCEPTED",
+      "finishReason": "stop",
+      "completedAt": "2026-08-03T09:28:44.213Z"
+    }
+  ],
+  "startedAt": "2026-08-03T09:28:07.419Z",
+  "completedAt": "2026-08-03T09:28:44.213Z",
+  "opinions": [
+    {
+      "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+      "suggestedRole": "PARTY_A",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tb5-con-001-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+      "suggestedRole": "TAX_AMOUNT",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tb5-con-002-table-01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+      "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tb5-con-003-b02"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+      "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tb5-con-004-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    }
+  ]
+}

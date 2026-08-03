@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "task-eval-004-deepseek-connectivity-evidence-v1",
+  "status": "CONNECTIVITY_GATE_GO",
+  "taskId": "TASK-EVAL-004",
+  "milestoneId": "MILESTONE-MVP-002-TRACK-B-FINAL",
+  "createdAt": "2026-08-03T02:36:05.860Z",
+  "endpointOrigin": "https://api.deepseek.com:443",
+  "secretReferenceAlias": "DEEPSEEK_OFFICIAL_EVAL",
+  "secretConfigured": true,
+  "modelsProbe": {
+    "httpStatus": 200,
+    "contentTypeClass": "APPLICATION_JSON",
+    "availableModelIds": [
+      "deepseek-v4-flash",
+      "deepseek-v4-pro"
+    ],
+    "targetModelAvailable": true
+  },
+  "syntheticProbe": {
+    "requestConfigSha256": "b3ef64c1b0e7d247afbd427e61a32ed679bfc6fb17cedd248e30f2f4d3beed52",
+    "httpStatus": 200,
+    "contentTypeClass": "APPLICATION_JSON",
+    "requestedModel": "deepseek-v4-pro",
+    "responseModel": "deepseek-v4-pro",
+    "finishReason": "stop",
+    "strictJsonSchemaValid": true,
+    "sentinelMatched": true,
+    "thinkingDisabled": true,
+    "jsonMode": true,
+    "streaming": false
+  },
+  "transport": {
+    "endpointHost": "api.deepseek.com",
+    "pinnedAddressSetSha256": "7debef4763880193e11cbae93f69bbd7806085ba040978b9e5752f57adfd21d2",
+    "redirectsAllowed": false,
+    "systemProxyUsed": false,
+    "tlsVerificationRequired": true
+  },
+  "networkCallCount": 2,
+  "formalAdmissionAffected": false,
+  "rawKeyPersisted": false,
+  "rawRequestPersisted": false,
+  "rawResponsePersisted": false,
+  "reasoningContentPersisted": false
+}

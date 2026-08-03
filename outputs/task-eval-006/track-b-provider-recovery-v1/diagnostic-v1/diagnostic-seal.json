@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "task-eval-006-provider-recovery-diagnostic-seal-v1",
+  "status": "SEALED_GO_RECOVERY_DIAGNOSTIC",
+  "sealedAt": "2026-08-03T09:31:45.423Z",
+  "reportPath": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/diagnostic-report.json",
+  "reportSha256": "a1472689fd4cd9b86c4f944bd9802e5ab36fbbb124131e82201fb6574e196c81",
+  "modelInputSha256": "809c244e8526b7935caa7777e2c5fb13c9403450ddf0a9049e63645d78289fee",
+  "providerCallSetSha256": "892e6b4fd86f04de10a0b9561dba1246b163e02354e4794b1e6284043f16e3f9",
+  "dispatchSha256": "338d11686229ae06700ae3f136a5df6b65fa36c5435d16bc07e17350eb5a40c9",
+  "derivedReceiptSha256": "6893767f68e6ba9966599af7241ae96340b91bb249198aceff7f0dd8fcd9306c",
+  "executionClaimSha256": "14715db0c3e27fdef114b80038ba64380bb533e9f3c72dfdf548333e2fc2a07c",
+  "opinionSha256": "eef82a45710696199bdc342300d9a8d270e9a2f8fb8fff2089f79c56cd83fd34",
+  "humanGroundTruthSha256": "85391e4573911f8e0147eb2ff2dda4908e79afe8029190d1c97fa2b73a96e4e3",
+  "sameDiagnosticRetryAllowed": false,
+  "sixthCorpusCreationAllowed": true,
+  "providerAdmissionEstablished": false,
+  "providerA0A1A2Allowed": false
+}

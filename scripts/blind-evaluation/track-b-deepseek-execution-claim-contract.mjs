@@ -17,10 +17,34 @@ const CLAIM_FIELDS = new Set([
 export const TRACK_B_DEEPSEEK_RESOLVER_VERSION =
   "request-scoped-pinned-dns-v2";
 
+const HOLDOUT_CLAIM_SCHEMA =
+  "task-eval-002-track-b-deepseek-execution-claim-v2";
+const SUCCESSOR_CLAIM_SCHEMA =
+  "task-eval-003-track-b-successor-deepseek-execution-claim-v1";
+const FINAL_CLAIM_SCHEMA =
+  "task-eval-004-track-b-final-deepseek-execution-claim-v1";
+const FIFTH_CLAIM_SCHEMA =
+  "task-eval-005-track-b-fifth-deepseek-execution-claim-v2";
+
 export function buildTrackBDeepSeekExecutionClaim(values) {
-  return validateTrackBDeepSeekExecutionClaim({
-    schemaVersion:
-      "task-eval-002-track-b-deepseek-execution-claim-v2",
+  return buildTrackBExecutionClaim(values, HOLDOUT_CLAIM_SCHEMA);
+}
+
+export function buildTrackBSuccessorDeepSeekExecutionClaim(values) {
+  return buildTrackBExecutionClaim(values, SUCCESSOR_CLAIM_SCHEMA);
+}
+
+export function buildTrackBFinalDeepSeekExecutionClaim(values) {
+  return buildTrackBExecutionClaim(values, FINAL_CLAIM_SCHEMA);
+}
+
+export function buildTrackBFifthDeepSeekExecutionClaim(values) {
+  return buildTrackBExecutionClaim(values, FIFTH_CLAIM_SCHEMA);
+}
+
+function buildTrackBExecutionClaim(values, schemaVersion) {
+  return validateTrackBExecutionClaim({
+    schemaVersion,
     status: "ONE_TIME_EXECUTION_CLAIMED",
     dispatchSha256: values.dispatchSha256,
     modelInputSha256: values.modelInputSha256,
@@ -33,21 +57,61 @@ export function buildTrackBDeepSeekExecutionClaim(values) {
     resolverVersion: TRACK_B_DEEPSEEK_RESOLVER_VERSION,
     pinnedAddressSetSha256: values.pinnedAddressSetSha256,
     claimedAt: values.claimedAt
-  });
+  }, {}, schemaVersion);
 }
 
 export function validateTrackBDeepSeekExecutionClaim(
   value,
   expected = {}
 ) {
+  return validateTrackBExecutionClaim(
+    value,
+    expected,
+    HOLDOUT_CLAIM_SCHEMA
+  );
+}
+
+export function validateTrackBSuccessorDeepSeekExecutionClaim(
+  value,
+  expected = {}
+) {
+  return validateTrackBExecutionClaim(
+    value,
+    expected,
+    SUCCESSOR_CLAIM_SCHEMA
+  );
+}
+
+export function validateTrackBFinalDeepSeekExecutionClaim(
+  value,
+  expected = {}
+) {
+  return validateTrackBExecutionClaim(
+    value,
+    expected,
+    FINAL_CLAIM_SCHEMA
+  );
+}
+
+export function validateTrackBFifthDeepSeekExecutionClaim(
+  value,
+  expected = {}
+) {
+  return validateTrackBExecutionClaim(
+    value,
+    expected,
+    FIFTH_CLAIM_SCHEMA
+  );
+}
+
+function validateTrackBExecutionClaim(value, expected, schemaVersion) {
   if (
     value === null ||
     typeof value !== "object" ||
     Array.isArray(value) ||
     Object.keys(value).length !== CLAIM_FIELDS.size ||
     Object.keys(value).some((key) => !CLAIM_FIELDS.has(key)) ||
-    value.schemaVersion !==
-      "task-eval-002-track-b-deepseek-execution-claim-v2" ||
+    value.schemaVersion !== schemaVersion ||
     value.status !== "ONE_TIME_EXECUTION_CLAIMED" ||
     !isSha256(value.dispatchSha256) ||
     !isSha256(value.modelInputSha256) ||

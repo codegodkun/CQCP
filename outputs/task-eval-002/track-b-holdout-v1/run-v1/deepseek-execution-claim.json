@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "task-eval-002-track-b-deepseek-execution-claim-v2",
+  "status": "ONE_TIME_EXECUTION_CLAIMED",
+  "dispatchSha256": "8fe2a996c011f190bfbfada4446645a6d5e693b2c98d845dfd4e3995d211647b",
+  "modelInputSha256": "bd402b4019f5a8cddcd6c433a4d9981d8e39300df8ad488e09a6ccd92fdb3dcc",
+  "providerCallSetSha256": "8c63e3777fbc36a7f05821e9f3ccf2d81f64c1ccfdb9c4d2acd29d7467c8e5e6",
+  "providerCallCount": 9,
+  "egressAuthorizationSha256": "f04c3ad0a6522b90f21d1efb32be12b0c883d03b2b286f9c2c8639ecd501239a",
+  "egressChallengeSha256": "76d1b171cda3ca55d4d9b92e3a4d3d446e08034ed4ebb9d607e64347b887ffda",
+  "endpointHost": "api.deepseek.com",
+  "model": "deepseek-v4-pro",
+  "resolverVersion": "request-scoped-pinned-dns-v2",
+  "pinnedAddressSetSha256": "6847051dd4526685a4a680a35b994a5dbac916ea9c2a74eeefbafb3286408aa3",
+  "claimedAt": "2026-08-02T14:51:16.752Z"
+}

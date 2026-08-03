@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-codex-execution-receipt-v1",
+  "source": "CODEX_COLLABORATION_TOOL",
+  "forkTurns": "none",
+  "historicalContextIncluded": false,
+  "agentTask": "/root/track_b_successor_codex_blind_v1",
+  "agentId": "track_b_successor_codex_blind_v1",
+  "modelInputSha256": "654168c6b0a671f3f8d0e44222be51d6c97edd8cc5f67e2c41b1a1248032fe6e",
+  "dispatchSha256": "f9d6cd05340cbc82fbaada00462ac4570fb008a9c19dc0203b7155090ec94807",
+  "providerCallSetSha256": "79a3ab0b100dfddce64b506840abb2346e2b77aaf83abf07ea44ef9d53a9550a",
+  "rawAgentOutputPath": "outputs/task-eval-003/track-b-successor-v1/run-v1/codex-agent-raw.json",
+  "rawAgentOutputSha256": "b1a9c0450d2bc8a61614ba78510b554c9460989747d8d0b1a4c006b3ec92b572",
+  "startedAt": "2026-08-03T01:37:45.445Z",
+  "completedAt": "2026-08-03T01:43:02.596Z",
+  "transcriptCrossCheckRequired": true
+}

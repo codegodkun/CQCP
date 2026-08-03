@@ -1,0 +1,1 @@
+Readiness phase only. Do not read any filesystem file, repository, chat history, or project memory. Do not evaluate any packet. Use PowerShell 7 only to obtain the current UTC time, then reply with exactly one JSON object: {"status":"READY_NO_FILES_READ","readyAt":"<canonical ISO UTC>","filesRead":0}. Do not add Markdown or commentary.

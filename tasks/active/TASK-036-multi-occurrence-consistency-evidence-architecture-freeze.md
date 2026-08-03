@@ -1,9 +1,9 @@
 # TASK-036：多出处一致性证据架构冻结
 
-状态：Active / A-B-C2-D1-D2 Implemented in MVP-002 Worktree /
-`979ddbd…` Core verification PASS / `3e4e8d00…` Code-Architecture P1 NO_GO /
-D2 Required-Block Identity Targeted `22/22` PASS /
-Fresh Verification and Final Audit Pending
+状态：Active / A-B-C2-D1-D2 Merged /
+Final Core subject `90c4ae9a…` 三审全零 GO /
+PR #37 merged as `master@115be530…` / Provider 路径终态 BLOCKED /
+Milestone 仅待终态证据保存与收口，不存在成功路径 Final Audit
 
 类型：A 类主链路架构治理父任务
 
@@ -261,5 +261,10 @@ Fresh Verification and Final Audit Pending
   contract 联合 `23/23`，历史 corpus 字节与人工 hash 均未修改。新完整 verification、
   freeze 与三审仍待重建，`3e4e8d00…` 不得复用。
 * 备注：不得据此宣称 Production Ready、Provider admitted 或
-  `TASK-028 / TASK-031 / TASK-032` 已解锁；Git 动作仅按用户已给出的 Core 条件式
-  授权执行，merge 仍要求新 subject 三审全零、CI 全绿且 HEAD 不漂移。
+  `TASK-028 / TASK-031 / TASK-032` 已解锁；Core Git 集成已按条件式授权完成，
+  后续 Track B、Provider 与最终 Milestone 仍各自遵守独立 freeze/三审/CI 门禁。
+* 2026-08-02：required-block identity 修复最终形成 `fe1d61b…`；Core verification
+  冻结 subject `90c4ae9a…`，三方审计均为
+  `GO / P0=P1=P2=blocking=0`，GitHub run `30748527866` 全绿，PR #37 合并为
+  `115be530…`。D1/D2 seam 已进入主线，可作为新 Track B holdout 的 runtime
+  contract；旧 18-packet NO_GO 不因此变为 admitted，父任务仍等待 Milestone 最终审计。

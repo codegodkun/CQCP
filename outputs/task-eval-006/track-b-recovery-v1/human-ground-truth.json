@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-human-ground-truth-v1",
+  "status": "ACCEPTED_HUMAN_GROUND_TRUTH",
+  "confirmedBy": "项目负责人",
+  "confirmedAt": "2026-08-03T10:01:58.500Z",
+  "confirmationSource": "CODEX_THREAD_USER_CONFIRMATION",
+  "corpusPath": "outputs/task-eval-006/track-b-recovery-v1/corpus.json",
+  "corpusSha256": "3a988a9ab09008645dd812b47c1ad3f4c6a9aac699a590a66bd6a17cf1010554",
+  "humanReviewDraftPath": "outputs/task-eval-006/track-b-recovery-v1/human-review-draft.json",
+  "humanReviewDraftSha256": "8edd0ea4a78378af578cab1104b5d10d822b73e9077d4a325e8014195f03bb6d",
+  "humanReviewDocumentPath": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth-review.md",
+  "humanReviewDocumentSha256": "7ff431ccd2ad9528e856ee5075a47a733c710950905648bbc9daf55eccc4d752",
+  "presealManifestPath": "outputs/task-eval-006/track-b-recovery-v1/preseal-manifest.json",
+  "presealManifestSha256": "937d6500aef8dce7dc26cca35f62b69ba311aeb84a2eb508cc95c6910ed07fc2",
+  "challengePath": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation-challenge.json",
+  "challengeSha256": "328f4349840330419b21fe874485447070ad065efff52c06459f8cd5550b90dc",
+  "challengeNonce": "TB61-8e5e524790c9457a80d8e2fe2433b63d",
+  "confirmationPath": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation.json",
+  "confirmationSha256": "814e81461ff0880eedd114992357f5730a48249f50a10d8eed4e4ce7b1fa7040",
+  "decisionsSha256": "8ce4f992ba054650778f76635bb9b754c5890c205177738c592bb34a4d33374b",
+  "entryCount": 12,
+  "entries": [
+    {
+      "caseId": "TB6-MED-001",
+      "packetId": "EP-8bc0ead85e0b2a0e930aba68448fc1c0fbf589ec29727b013f316df787e9bad6",
+      "expected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-001-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-002",
+      "packetId": "EP-ec38279e30374c954f83ba210378f131afb7eda1a088b5b6558386f84236829a",
+      "expected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-002-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-003",
+      "packetId": "EP-30c729f876f03831a713f44ccff193cc657acfdeec48bb94100600537a2f6617",
+      "expected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-003-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-004",
+      "packetId": "EP-fd05eaaebdf34d96005d1a1c14f26ae2d173545e34450a48a2ebc6d108aea243",
+      "expected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-MED-005",
+      "packetId": "EP-ef6e602b815b1ee427fb3024ca1676970d274ac5aae9c198173336c2be09a2a7",
+      "expected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-med-005-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-001",
+      "packetId": "EP-bb8a60c0e9b6baacf090f02dd90b0231bb4c6346f2759799fad29ddf6b32f29c",
+      "expected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-002",
+      "packetId": "EP-8a95c7861aa5edff14afcf91cf7d7c1bf35c1d3d4a419122f1d37dce3a4f8fa1",
+      "expected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-002-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-003",
+      "packetId": "EP-80517b20dd53dd86e69afafa55788f05c6c07d10c9072a857a697f4729190ac1",
+      "expected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-003-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CON-004",
+      "packetId": "EP-338b3fd03abe4f58d1dfb9a38e3f56cac71ba77396417f9fe64da9f47efee89b",
+      "expected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tb6-con-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TB6-CTL-HIGH-001",
+      "packetId": "EP-ea71919261bfccb64c0e90ec428c4ac33fdcb44a45fcfb397657bcf9f1285b14",
+      "expected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TB6-CTL-INVALID-001",
+      "packetId": "EP-d0a3abf4188f8cf3eda476a2dd159f7641e00e1eca0c07f5eb88e45e0a71a3df",
+      "expected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TB6-CTL-NOANCHOR-001",
+      "packetId": "EP-7242020b6d991cfd5bc5e24b4d823436f79524bafee89a666ca818e26ad2f22b",
+      "expected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ],
+  "modelInputCreated": false,
+  "networkCallAllowedByThisSeal": false
+}

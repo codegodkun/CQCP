@@ -1385,6 +1385,16 @@ Quality Copilot / 质量优化助手
 - 未获得与输入 hash 绑定的外发授权时，公网 runner 必须在网络调用前 fail closed。
 - PUBLIC runtime 只能按 `disabled adapter -> EVALUATION shadow -> shadow 审计 -> guarded assist` 激活，最终裁判始终在后端。
 
+Track B prompt/schema 稳定性诊断遵守 ADR-025。历史已消费 claim 不得用新版本重试或
+补跑；诊断输入必须与正式 holdout 物理分离，只保存分类/计数/hash 等最小投影，不保存
+raw response、content 或 reasoning。评测 prompt/schema 的任何变化产生新版本和 byte
+hash，不覆盖历史版本；严格字段、enum、可靠 anchor、coverage 和全维 100% admission
+门禁不得降低。只有独立诊断版本通过预先冻结的有限稳定性门禁，才能生成新的独立
+holdout 并在人工 ground truth 先封印后执行。正式 admission 失败时不得以继续生成新
+corpus 的方式追逐通过。TASK-EVAL-005 失败后的默认边界原为不创建第六套；项目负责人
+随后以 ADR-026 明确批准的 model-facing projection v3 根因恢复是唯一例外，只允许该
+第六套且禁止第七套，不改写 TASK-EVAL-005 的历史终态或已消费 claim。
+
 职责：
 
 - 失败样本归因。
@@ -3312,3 +3322,24 @@ new blocks required -> second pass or NOT_CONCLUDED
 family primary artifact 只有在其 `inputBlockIds` 已包含当前点需要的 secondary anchors 时，才能供跨族审核点复用。仅覆盖 primary family blocks 的 artifact 不能被视为覆盖 secondary evidence；此时需要 supplement，或在预算不足时 `NOT_CONCLUDED`。
 
 这会牺牲一部分复用率，但换来稳定、可解释和可审计。一期只做同 task、同 execution 语义下的 artifact 复用，不做跨任务复用。
+
+### 22.13 Model-facing EvidencePacket 投影
+
+Runtime `EvidencePacket` 同时承载后端 admission/routing 诊断和模型所需语义。进入公网
+模型前必须派生最小 model-facing projection，不得把 `coverageStatus`、
+`diagnosticCode`、`reasonCodes`、`modelCallAllowed`、admission 状态、identity class
+或 `MEDIUM` / `CONFLICTED` / `SYS_ROLE_CONFLICT` 标签发送给模型。模型只接收已获资格
+packet 的 review point、requested role、候选 occurrence、证据、可靠 anchor、预算和
+输出契约。
+
+该投影不得包含人工 ground truth、CQCP actual/expected、Finding 或 verdict；不得改变
+RuntimeEvidencePacket、EvidenceSlot、CandidateResolver、SourceAnchor 或后端最终裁判。
+会话投影、prompt、schema、request builder 与 model version 必须一起版本化。具体有限
+恢复与准入边界见 ADR-026。
+
+Track B 全维 100% 只构成 `modelEvaluationPassed=true` 的候选准入事实，不等于 Provider
+admission 已建立。完整 verification、immutable freeze、CC AUDIT、两个全新 Codex
+auditor 与 CI 内容一致性全部通过前，`providerAdmissionEstablished` 必须保持 `false`，
+状态只能是 `PENDING_THREE_PARTY_AUDIT_AND_CI`，A0/A1/A2 不得启动。审计通过事实由后续
+Provider integration unit 组合冻结 subject 与三份报告判定，不回写或改写既有模型执行
+claim/opinion。

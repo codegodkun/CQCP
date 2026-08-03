@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-model-opinion-v1",
+  "status": "ACCEPTED",
+  "track": "TRACK_B_SUCCESSOR_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+  "evaluator": "codex-blind-subagent",
+  "forkTurns": "none",
+  "historicalContextIncluded": false,
+  "agentTask": "/root/track_b_successor_codex_blind_v1",
+  "agentId": "track_b_successor_codex_blind_v1",
+  "modelInputSha256": "654168c6b0a671f3f8d0e44222be51d6c97edd8cc5f67e2c41b1a1248032fe6e",
+  "dispatchSha256": "f9d6cd05340cbc82fbaada00462ac4570fb008a9c19dc0203b7155090ec94807",
+  "providerCallSetSha256": "79a3ab0b100dfddce64b506840abb2346e2b77aaf83abf07ea44ef9d53a9550a",
+  "executionReceiptPath": "outputs/task-eval-003/track-b-successor-v1/run-v1/codex-execution-receipt.json",
+  "executionReceiptSha256": "594f503f6619677c114d863d0a5d3780b420be45e264032ee895af230b4826d0",
+  "startedAt": "2026-08-03T01:37:45.445Z",
+  "completedAt": "2026-08-03T01:43:02.596Z",
+  "opinions": [
+    {
+      "packetId": "EP-3cdefb27b04471d321ad206f60c2777181be04912f89408e369cd88aad465abc",
+      "suggestedRole": "PARTY_A",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-med-001-b02"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-44b2ff1afc0afb5d0945a1791bd05eb58242aa7947987b2752598d022a08953c",
+      "suggestedRole": "PARTY_B",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-med-002-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-7aea36ff77362afb1bd77fcfcc4b6d6bb1445d59565d231ea9f55884591ce15c",
+      "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-med-003-table-01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-572aaa4abf8837ec08861c36da48afd4bb39793e9543485087e02141fe4c7e47",
+      "suggestedRole": "PREPAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-med-004-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-47757b9d55c63c098b08bcd0bc249cbc886b138cae6e77f9e0df4790a2691593",
+      "suggestedRole": "WARRANTY_RETENTION_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-med-005-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-69680a99d97685f3402dd0bc0b5d21f4b79d120d8cb2690bea70a1455e11663c",
+      "suggestedRole": "PARTY_B",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-con-001-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-817c93ed5adc46b221da8aa31b6d515696f96ca30a9da9e23f505e40c5fc0685",
+      "suggestedRole": "TAX_AMOUNT",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-con-002-table-01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-33a2e677325010e90c1be897f672c694246bbd8676a5fef61581702a2116fed8",
+      "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-con-003-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-235e78754e072e666562eafb2c1ba4f74598b099520972d26275f45d1b8e4704",
+      "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbs-con-004-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    }
+  ]
+}

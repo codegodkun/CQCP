@@ -1,13 +1,148 @@
 # CURRENT_CONTEXT.md
 
-更新时间：2026-08-02
+更新时间：2026-08-04
 
 ## 当前阶段
 
-当前处于 `MILESTONE-MVP-002-CORE` 收口阶段，唯一基线为
-`origin/master@1035739b751386176e47c6871738a62bff86de02`。
+> 2026-08-04 最新事实（替代本节后续较早的 R5 叙事）：TASK-EVAL-006 R5 repair 的
+> freeze subject `e77a8635…` 已被全新代码/架构 auditor 判定
+> `NO_GO / P1=1 / P2=3 / blocking=4`；测试/安全 auditor 依门禁中止，CC transport 未形成
+> 报告，该轮不能组合通过。四项 finding 为：Codex v4 opinion 顶层未 exact-field-set、
+> DeepSeek reuse 未从旧 seal 验证 claim/opinion hash、ARCHITECTURE/ADR/admission 状态冲突、
+> MVP task map 使用旧测试/seal 事实。失败 freeze、NO_GO 与中断记录已保留。
+> R6 限定修复现已落地：额外 `finding/verdict` 顶层字段 fail closed；旧 seal 与实际
+> DeepSeek claim/opinion hash 不一致 fail closed；ARCHITECTURE 明确 ADR-026 是第五套失败
+> 后唯一第六套例外且禁止第七套；更正后的 report/seal 为 `efba63ff… / 70339354…`，状态
+> `SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`，明确
+> `modelEvaluationPassed=true / providerAdmissionEstablished=false /
+> admissionDecisionPendingAudit=true`。DeepSeek claim/opinion `600a821a… / e863596a…` 未重跑、
+> 未改写。R6 完整 verification 已通过：Node `56/56`、verification builder `1/1`、
+> Java seam `1/1` 且 Gradle `5 executed`，更正后 seal verify 与 Secret/raw Provider/CR/diff
+> 门禁均通过。clean HEAD `dfc24de…` 的 subject `a9daf62f…` 随后三审：两个全新 Codex
+> auditor 均全零 GO，CC AUDIT 为 `NO_GO / P0=1 / P2=1 / blocking=2`。CC findings 仅指向
+> 隔离 projection 的 9 个 CRLF/Git-blob hash mismatch，以及 subject evidence、敏感
+> hash-only exclusion 与额外 source context 未显式分区；不是产品裁判或评测正确性
+> finding。该失败 freeze、原始 CC 报告和两份 Codex GO 已只读保留，不能组合通过。
+> R7 只修一次性 CC isolation projection 构建流程：从 frozen HEAD 的 Git blob 导出原字节，
+> 将每条 evidence 完整划分为 included 或 hash-only excluded，额外源码单列 context；
+> 定向 Node `2/2` 已通过；一次性 builder 已在旧失败 subject 上完成非审计 diagnostic：
+> `51 included + 3 hash-only excluded = 54 evidence`、`5 source context`，package sums
+> `ceab8aa2…`，全部可发送 bytes 与 Git blob 一致。R7 随后把唯一 CR hit 精确定位到
+> R6 `cc-audit-status.json`，保留原 CRLF SHA `bf1c4b5c…` 后仅按既有 eol 规则规范为 LF；
+> raw CC report `244ae3f8…` 未改写。完整 elevated verification 已通过：Node `56/56`、
+> Java seam `1/1` 且 `5 executed`、seal/Secret/CR=0/diff/builder 全绿。首次 R7 freeze 前置校验
+> 发现 verification 使用的脚本工作区字节为 CRLF、Git blob 为 LF，因此未创建 subject；现已用精确
+> `.gitattributes` 规则固定该脚本为 LF，并在相同语义下重跑全套门禁。最终 verification result
+> `1805feb1…`、console manifest `8aba6687…`、evidence `37`，并保留 R5/R6 两轮失败审计和本次
+> freeze-precondition 失败记录。随后生成的新 freeze subject `47d84299…`、manifest `e83c7be5…`
+> 自校验通过，但三审中测试/安全 Codex auditor 发现 `P0=1 / blocking=1`：仓库外 CC package
+> 把完整 diff 作为 `allowed-subject.diff` 发送，重新暴露了声明为 hash-only exclusion 的人工
+> ground truth/comparison 内容。CC 的全零 GO 因隔离失效而作废，代码/架构 auditor 已中断无 verdict。
+> 当前按硬门禁停止，不自动修复或重审；A0/A1/A2 仍禁止。
+> 项目负责人持续目标授权随后放行 R8 最小恢复：旧错误包定向 RED；仓库外一次性 builder 已删除
+> full content diff，改为 320 项 hash-only changed-path inventory，并由独立仓库外 verifier 扫描
+> 72 个包文件、12 个禁止路径的 HEAD blob/逐 path diff 共 24 种表示，`leakCount=0`。诊断包
+> sums `798c551c…`，builder/verifier `76dcd3fa… / a28d2e0e…`。正式 verification 现绑定 R7
+> 全部失败证据并全绿：Node `56/56`、Java `1/1` 且 `5 executed`，console `50288e22…`、
+> result `3297f5c3…`、evidence `42`。clean candidate、freeze 与三审待执行。
+> clean HEAD `d08484cc…` 随后生成正式 subject `a85e96f5…` / manifest `08a0bd23…`，实际
+> 325 changed paths、65 evidence。安全 CC 包为 62 included + 3 hash-only excluded、5 context、
+> 77 total files，sums `16097ea7…`；独立扫描 77 files / 24 forbidden representations 为 leak 0。
+> CC 确认隔离和产品证据均通过，但因项目记忆仍写 pre-freeze diagnostic 的 320/72/`798c…`/
+> `FREEZE_PENDING`，返回 `NO_GO / P2=1 / blocking=1`；两个 Codex auditor 立即中断无 verdict。
+> 本轮失效并保留，当前不自动重审；A0/A1/A2 仍禁止。
+> 持续目标的下一轮 R9 仅同步 R8 权威事实并把其 manifest、CC NO_GO/status 与两份中断记录
+> 机器绑定进 verification。定向测试以 failed round count `3 != 4` RED，加入四轮失败链断言后
+> GREEN。未改模型输入、意见、seal、Java seam、Provider 或产品 runtime；完整 verification、
+> 随后全绿：Node `56/56`、Java `1/1` 且 `5 executed`、console `cd563436…`、result
+> `c2cc2213…`、evidence `47`。clean HEAD `140b9a3…` 随后形成 subject `e566c8d2…` /
+> manifest `d791a053…`，330 changed paths、70 evidence；安全 CC 包 82 files、sums
+> `9a769043…`、forbidden-content leak 0。CC AUDIT 返回全零 GO，但全新代码/架构 auditor
+> 发现 TASK-EVAL-006 第 137 行仍把实时门禁指向已失败且不可复用的 R6，返回
+> `NO_GO / P2=1 / blocking=1`；测试/安全 auditor 随即中断。因此 R9 整轮失效，CC GO
+> 不得复用。该 finding 属于治理任务状态正确性，不是评测、Provider、runtime seam 或 Secret
+> 安全问题；当前按硬门禁停止，未 push/PR/CI，未启动 A0/A1/A2。
+> 持续目标下一轮 R10 只纠正该 R6 实时门禁，并把 R9 manifest、round status、CC invalidated
+> GO、代码/架构 NO_GO 与测试/安全中断原字节加入 verifier。定向测试先以失败轮数 `4 != 5`
+> RED，加入第五轮断言并禁止旧 R6 文本后 GREEN。完整 verification 为 Node `56/56`、Java
+> seam `1/1` 且 `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；evidence `53`、
+> runs `7`，最终 result/console identity 由随后 freeze manifest 外部绑定。未修改 corpus、seal、模型意见、
+> Java seam、Provider、PUBLIC binding 或产品 runtime；clean commit 与新 freeze 待执行。
+> clean HEAD `fa64271…` 随后形成 subject `d73e15e5…` / manifest `845bf692…`，335 changed
+> paths、75 evidence；安全 CC 包 72 included + 3 excluded、5 context、87 files、sums
+> `e507bd57…`、24 forbidden representations leak 0。CC 与两个全新 Codex auditor 均返回
+> `GO / P0=P1=P2=blocking=0`，绑定同一 subject。当前只剩 CI 内容一致性门禁；在 CI 全绿前
+> `providerAdmissionEstablished=false`，A0/A1/A2 尚未启动。
 
-先行 Core integration unit 包含：
+`MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
+`AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
+显式仓库外 Secret 证明官方 endpoint、`deepseek-v4-flash` 与
+`deepseek-v4-pro` strict JSON 通路可用。项目负责人已批准 ADR-024 与
+`TASK-EVAL-004 / MILESTONE-MVP-002-TRACK-B-FINAL`。正式 connectivity gate 已 GO：evidence SHA
+`22d38b1183dc9fd53e5212fbb2b9dd2077234967cea503c8b4e624c50b80d1ac`，
+模型清单包含 flash/pro，exact pro strict JSON probe 为 200/stop/sentinel matched，
+实际 KEY 泄漏文件数 0。第四套 corpus 已完成人工先封印并启动唯一正式 admission；
+DeepSeek 在第 8 个单包 call 因 `OPINION_SCHEMA_INVALID` fail closed，claim 已消费且
+不得重试。未形成完整 DeepSeek opinion、未解盲，Provider admission 固定为
+`NOT_ESTABLISHED`，A0/A1/A2 继续阻塞。项目负责人现已批准 ADR-025 与
+`TASK-EVAL-005 / MILESTONE-MVP-002-TRACK-B-SCHEMA-STABILITY`：只允许先以全新
+合成输入执行有限 schema 诊断，按证据版本化并冻结 prompt/schema；稳定性 GO 后才
+创建第五套独立 12-packet corpus 并等待新的人工 ground truth。TASK-EVAL-004 不重试、
+不补跑；TASK-EVAL-005 再失败即终止且不创建第六套。D1/D2 现已完成：旧 prompt
+baseline 12/12；单包专用 prompt/schema v2 的 qualification + confirmation 为 24/24，
+stability freeze SHA `44468d84327f001f50bcbf1f38d2e63d30b750227d7c00b3cde0f1bca1e16bd5`。
+第五套 preseal 已冻结：corpus SHA `17343dd34820c847676ed681a8a4e6ee9f669c60cf3c0257aa2363ba4bba8f5e`，
+相对前四套及诊断集 identity/value/text overlap 全为 0；challenge
+`TB51-5deddd744f6f432f8f7760bd51899e16` 已由项目负责人绑定 challenge/corpus/review
+SHA 确认全部 12 条人工 decisions。confirmation SHA `bdb56738768b7b5ca01a413a8a58d45d0f1252818ad2138399c76f3bc7ebdf37`，
+human seal SHA `85391e4573911f8e0147eb2ff2dda4908e79afe8029190d1c97fa2b73a96e4e3`。
+第五套 dispatch 已冻结为 9×1 calls/3 controls zero-call：model input `e1516fb0…`、
+call set `365e1722…`、dispatch `31e9d718…`、derived receipt `6e9f6955…`。全新
+Codex blind opinion 已按严格 v2 schema 封存为 `95ecd582…`。唯一正式 DeepSeek
+9×1 执行全部 strict schema accepted，无自动重试；claim SHA `f9086db1…`、opinion SHA
+`0e4f96fc…`。双意见先验验证后解盲，Codex 为全部维度 100%，DeepSeek schema 与可靠
+anchor 为 100%，但 role/candidate/anchor/abstention 均为 55.56%（4 个 CONFLICTED
+packet mismatch）。终态 seal `520d7b38…` 为 `SEALED_NO_GO_MODEL_MISMATCH`，Provider
+admission 固定 `NOT_ESTABLISHED`，同一 claim 不得重试。项目负责人已澄清此前
+“Provider BLOCKED”是询问而非终止指令，并批准 ADR-026 / TASK-EVAL-006 的有限恢复：
+建立不含 runtime routing/diagnostic label 的 model-facing EvidencePacket projection v3，
+先执行旧 4 个 CONFLICTED packet 的 4-call non-admission diagnostic；4/4 后才允许第六套
+独立 12-packet corpus、人工先封印与唯一 9×1 admission。该恢复 admission 现已全维
+100% 的模型评测结果；当前真实状态为
+`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R6_REPAIR_ACTIVE`，A0/A1/A2 在本
+recovery integration unit 完整验证、冻结、三方全零 GO 与 CI 内容一致性前继续阻塞。当前基线为
+`origin/master@115be530480e2ff9b92a7076b2668c066a44ae5c`。
+
+TASK-EVAL-006 R1/R2 已完成：model-facing projection/prompt/schema/request builder v3
+已冻结，runtime routing/diagnostic/identity/admission label 不进入 Provider payload；定向
+契约与 runner 回归通过。4 个旧 CONFLICTED packet 的 non-admission diagnostic 使用
+精确 4 calls、零自动重试，全部 strict schema accepted；与既有人工 decisions 本地比较后，
+schema、可靠 anchor、role、candidate、anchor、abstention 均为 4/4。input `809c244e…`、
+call-set `892e6b4f…`、dispatch `338d1168…`、receipt `6893767f…`、claim `14715db0…`、
+opinion `eef82a45…`、report `a1472689…`、seal `fedc4e21…`。seal 状态为
+`SEALED_GO_RECOVERY_DIAGNOSTIC`，只放行第六套 corpus 创建；Provider admission 仍未建立。
+
+R3 第六套 preseal 已冻结：source `47cf4a04…`、proposal `2cb18d75…`、corpus
+`3a988a9a…`、review draft `8edd0ea4…`、review document `7ff431cc…`、manifest
+`937d6500…`。相对前五套及两份 diagnostic input 的 identity/value/evidence overlap 全为
+0；5 MEDIUM + 4 CONFLICTED eligible、3 zero-call controls。challenge
+`TB61-8e5e524790c9457a80d8e2fe2433b63d` / SHA `328f4349…` 已生成，2026-08-05
+09:37:54.991Z 到期。项目负责人已绑定 challenge/corpus/review SHA 接受 12 条 decisions；
+confirmation `814e8146…`、human seal `0f23b9eb…`，人工封印早于 model input 和 evaluator access。
+
+R4 唯一正式 admission 已完成：v3 model input `bb8984ed…`、call set `1121a345…`、
+dispatch `a427e052…`、derived receipt `aa716878…`；全新 `gpt-5.6-sol/xhigh` Codex blind
+opinion `cccf0a4d…`，DeepSeek 9×1 claim `600a821a…`、opinion `e863596a…`，3 controls
+zero-call、无自动重试、无 raw response/reasoning/Secret 持久化。解盲后 Codex 与 DeepSeek
+的 schema、可靠 anchor、role、candidate、anchor、abstention 均为 9/9，controls 3/3；
+report `395c0d38…`、seal `2d879b13…`，状态 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。
+模型未生成或改变 Finding/verdict。R5 bounded verification 已通过：phase-appropriate Node
+`70/70`、verification builder unit `1/1`、Java runtime seam `1/1`、admission seal 重建一致、
+61 个 hash-bound 文本文件 CR=0、实际 KEY/禁止 Provider payload=0、`git diff --check=0`。
+最终 verification result 与 console manifest 已重建并复验 PASS，将随 clean commit 冻结；
+freeze/三审尚未完成，A0/A1/A2 尚未解锁。
+
+先行 Core integration unit 已通过 PR #37 合并，包含：
 
 - M1：execution 任务清单、精确结果查询、parser-backed preview、原始 DOCX 下载和
   左右审核工作台；
@@ -17,9 +152,12 @@
   R7 zero-call 与旧 18 packet run-v3 `NO_GO_MODEL_MISMATCH` 证据；
 - TASK-034 v29/R7 与 TASK-036 B1/B2/C1/C2/D1/D2 seam。
 
-Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assist A3 均不
-进入 Core source diff。PUBLIC profile 保持 `EVALUATION / disabled / unbound`，
-普通 Demo 继续使用 `MVP_DEMO_MOCK`；模型不得直接改变 Finding/verdict。
+新 holdout 的人工 ground truth 已先封印；正式 DeepSeek 执行在第二个 eligible
+packet 因 opinion schema invalid fail closed，同一一次性 claim 已消费且不得重试。
+因此 Provider admission 仍为 `NOT_ESTABLISHED`，Provider A0/A1/A2 尚未开始，
+guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
+`EVALUATION / disabled / unbound`，普通 Demo 继续使用 `MVP_DEMO_MOCK`；模型不得
+直接改变 Finding/verdict。
 
 ## 已确认事实
 
@@ -291,42 +429,172 @@ Provider A0、standing/CC 审计传输、A1 adapter、A2 shadow 和 guarded assi
   signals 补齐新字段。定向绿测为 D2 `22/22`、D2 + 历史 Track B runtime contract
   `23/23`、freeze validator Node `4/4`。当前仍是 tracked working-tree 修复，尚未形成
   新 clean HEAD，也未执行新的完整 verification、freeze 或三审。
+- 上述 D2 seam 最小修复最终形成 HEAD
+  `fe1d61bcf37060f84c8247493dd801774d6bc8b7`。从零 Core verification 通过并冻结为
+  subject `90c4ae9aca0bc06dcdb2ec5af98e93590970653be56fa3dbdcc86eab00451cba`；
+  CC AUDIT 与两个全新 Codex auditor 均为
+  `GO / P0=P1=P2=blocking=0`。GitHub run `30748527866` 全绿，PR #37 于
+  2026-08-02 合并为 `115be530480e2ff9b92a7076b2668c066a44ae5c`。
+- 新 Track B holdout 已在独立分支
+  `codex/task-eval-002-track-b-holdout` 建立 12 个合成最小 packet source signals：
+  5 MEDIUM + 4 CONFLICTED eligible，以及 deterministic HIGH、invalid bundle、
+  no reliable anchor 三个 zero-call control。扩展 pre-seal 定向为 Node `51/51`、
+  JUnit 新旧 Track B + D2 联合 `24/24` 通过。
+- 已按项目负责人既有确认建立 `ADR-022` 和精确 standing-grant 机器门禁；新
+  holdout request contract 固定为 9 个 runtime-isomorphic 单 packet 调用，禁止沿用
+  旧 run-v3 的 6 个 family 分组。离线 dispatch test 证明未封印时不创建任何输出，
+  封印后才可派生绑定 actual input、dispatch、call set 与 9 个 outbound request hash
+  的 receipt。
+- holdout DeepSeek runner 已复用现有 one-time execution claim 与 secure transport：
+  preflight 不读取 KEY/不触网，正式路径固定 9 calls、strict stop/schema、零自动重试，
+  UNKNOWN_SIDE_EFFECT 写终态 BLOCKED receipt；注入式假 Provider 成功/失败回归 `2/2`。
+  Codex seal 只接受 `fork_turns="none"` 的严格结构化 agent output，回归 `1/1`。
+- holdout unblind/evaluator 已建立有限轮次门禁：先验证两份 blind opinion、Codex
+  receipt、DeepSeek claim/9 个 request receipts，再读取 human seal；schema、可靠
+  anchor、role、candidate、anchor、abstention 任一非 100% 即
+  `NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED`，且 `sameHoldoutRetryAllowed=false`。
+  GO、结构合法但答案错误的 NO_GO 与完整先验时间顺序回归合计 `3/3`。
+- 项目负责人已确认 challenge
+  `TBH2-fac56106204c4b93a11befc577369360`，corpus SHA
+  `15d1f845d65c5018363bba324d0527f36ff07ddf0703f188f1d557711a9e2b24`，
+  challenge SHA
+  `37a05c4b0d2ed4b21282f0fa09dd00938da60857a2d53e187490a28f6cf5d23a`，
+  review SHA `f07b4b1ceb193531089af6b37b964577b9655f4173f92abb40ea6523a4ed4b1d`；
+  12 条 decisions 原样封印，decisions SHA
+  `f8557a880a201376f00598eb6b7cc30e54e9a8a42df3d3c7070ade52376fdb5b`，
+  human seal SHA
+  `11fbcc06458e5c24c9c3080f1b126c9b9c1358ad90b2532096b0ab5b90f3601b`。
+- 离线 dispatch/preflight 绑定 model input
+  `bd402b4019f5a8cddcd6c433a4d9981d8e39300df8ad488e09a6ccd92fdb3dcc`、
+  dispatch `8fe2a996c011f190bfbfada4446645a6d5e693b2c98d845dfd4e3995d211647b`、
+  provider call set
+  `8c63e3777fbc36a7f05821e9f3ccf2d81f64c1ccfdb9c4d2acd29d7467c8e5e6`
+  与派生 receipt
+  `76d1b171cda3ca55d4d9b92e3a4d3d446e08034ed4ebb9d607e64347b887ffda`；
+  计划调用为 9×1，3 个 controls 未进入调用集合。
+- 全新 `fork_turns="none"` Codex blind evaluator 已返回 9 条严格 schema opinion，
+  封存 opinion SHA
+  `6f091ae123268b0675e0debd1b09568d5ba7ec01df72220f124b228424dc78e8`、
+  receipt SHA
+  `8a9ea6c8fa339e4d4dc0067c4060270fc1b897eb61e06b2c2b1f6e40b9b54201`；
+  尚未解盲，不得把该意见描述为与人工答案一致。
+- DeepSeek `deepseek-v4-pro` 正式执行已消费 claim
+  `da3f1eb1770a1eeb25d62527db58a663834549ec6cdd7be41e2e244143f329c9`。
+  第 1 个 call 完成，第 2 个 call 以
+  `SCHEMA_INVALID_OR_EMPTY / OPINION_SCHEMA_INVALID` fail closed；终态 blocked
+  receipt SHA
+  `f79060feb0577caec735cd12ffbfdb7a8edd8d36b42c2dd8ec2cf3aa4c49c6d2`，
+  `networkAttempted=true / automaticRetryPerformed=false / completedCallCount=1`。
+  runner 未持久化 raw response、reasoning 或 Secret；无 DeepSeek accepted opinion，
+  未执行 unblind、freeze 或三方审计。
+- TASK-EVAL-003 successor 已建立 12 个全新 synthetic packet：5 MEDIUM + 4
+  CONFLICTED eligible、3 zero-call controls。相对旧 18-packet 与失败 holdout，
+  identity、23 个 candidate values、19 个 evidence texts 的 overlap 均为 0；pre-seal
+  Node 回归连同旧 holdout contract 为 `6/6 PASS`。
+- successor source SHA 为
+  `84f04dbfe35b11a0945124a5546412abd3f98f9a95081691e2963c2b7c0a486d`，
+  corpus SHA 为
+  `a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3`，
+  review SHA 为
+  `f8c4c6a00d65bf3d4ae1c9628cb7bf99cee07575682755427520f18b9ddd099f`，
+  preseal manifest SHA 为
+  `1a22f5992bdc9e2bcdc9c06a3d01ee683a85a57b58288904385cec43e9820c8c`。
+- 人工 challenge `TBS1-5bfbe8b667944e7182df3ec537d45725`，challenge SHA
+  `0bd06f76212b902d090ec16db77a404af733f8a83da5eb42e3fba78570bfbb4f`，
+  已由项目负责人在到期前确认 12 条 decisions；confirmation SHA
+  `38b7d53451e6b1ea074298e515ec47d3ad447fc0391afe526809b0fe5e50642e`，
+  human seal SHA
+  `6ad4a1e4098ace3d572b496772c40f9458105e5bb7be4bffcfccfec37527dcad`。
+- successor 的 post-seal 工具链已在临时 fixture 中完成：独立 schema/track、人工 seal
+  create/verify、9×1 dispatch、Codex opinion seal、DeepSeek strict runner、双意见先验
+  验证和解盲均可达；正式目录仍保持 model-dark。successor 只允许 DNS/pre-send 的
+  一次安全重试，HTTP 已开始后的 schema/content/timeout/UNKNOWN_SIDE_EFFECT 均保持
+  零重试；成功证据不保存 Secret、raw response 或 reasoning。Java runtime seam
+  定向为 `1/1 PASS`，`git diff --check` 通过。随后补强时间序门禁，机器强制
+  `human confirmedAt <= dispatch.createdAt <= evaluator startedAt`，并为
+  unblind seal 增加 verify-only 重建；successor verification/freeze 工具可在临时
+  Git subject 上绑定 clean HEAD、tree、full diff、console、全部 evidence hash 和
+  三个指定审计角色。扩大后的当前精确回归为 `45/45 PASS`；正式 freeze 尚未生成。
+- 一次非正式的全 `*track-b*` 历史 sweep 为 `63/79 PASS`；16 项失败来自当前 worktree
+  未包含的旧 v1/v2 archive/opinion 输出，以及另一套旧 admission prompt 的冻结 hash
+  与当前字节不一致。该 sweep 不作为 successor 当前门禁，也不得被描述为全量绿；
+  正式 freeze 前须按 TASK-EVAL-003 精确验证清单保留原始 console 并明确排除的历史
+  fixture 边界。
+- successor postseal 正式身份为 model input
+  `654168c6b0a671f3f8d0e44222be51d6c97edd8cc5f67e2c41b1a1248032fe6e`、
+  provider call set
+  `79a3ab0b100dfddce64b506840abb2346e2b77aaf83abf07ea44ef9d53a9550a`、
+  dispatch `f9d6cd05340cbc82fbaada00462ac4570fb008a9c19dc0203b7155090ec94807`、
+  derived receipt
+  `1788387d85e8d21c365d4f16e4a5123dad78730b9d66d1b67e75c43643159138`。
+  Codex 盲评 9/9 严格 schema accepted，opinion SHA `eb0face7…`、receipt SHA
+  `594f503f…`；未解盲。
+- DeepSeek claim SHA
+  `45f1d5ead1d34e41f015efb08d951039f5ee16f9be54998595e30069704bdc83`
+  已消费。第 1 个 call 返回稳定类别 `AUTHENTICATION_FAILED`，terminal blocked
+  receipt SHA
+  `03f46cb8b4af330dd12afb4640e7942e5a38c81e4d7189a78988f3f7daa99674`，
+  `networkAttempted=true / completedCallCount=0 / automaticRetryPerformed=false`。
+  未保存或回显 raw response、reasoning 或 Secret；同一 successor 不得重试、调 prompt、
+  换 KEY/模型补跑或解盲。
+- TASK-EVAL-004 final source SHA `1a91aebb4d03e83a94ef5784d9e762dd293eb6b9632d90c056aabdd32cdf8117`，
+  corpus SHA `ed216d435b82af250c39e0ba927f75ceaa233f70ae9aa516fa4adad42aa3ca95`，
+  review SHA `65c775b2a5018997ac9bcc7f5c66979608970e520037897698ed93c7430a1971`，
+  preseal manifest SHA
+  `b03fdca495145d5c824bb3e35334b474c099182310d7a479869d26df2e645e1c`。
+  相对前三套共 42 prior packets 的 identity、23 candidate values、19 evidence texts
+  overlap 均为 0；精确定向 Node 为 `22/22 PASS`。
+- final challenge `TBF1-0fc18b77754248c28d472b0245a57b81`，challenge SHA
+  `74f051c179865afb97efb8709fe903e76689c76b19c86acc12b09fae68813692`，
+  2026-08-05T02:46:07.009Z 到期。项目负责人已在到期前绑定 challenge/corpus/review
+  SHA 确认全部 12 条 decisions；confirmation SHA `b225f36a…`、decisions SHA
+  `4fb8dd89…`、human seal SHA `8716d66d…`。
+- final 正式离线身份为 model input `bd648dd1…`、call set `9881d520…`、dispatch
+  `141d5344…`、derived receipt `f17018cf…`；9 calls / 9 eligible / 3 excluded
+  controls，preflight `networkAttempted=false`。全新 Codex blind opinion 已封存为
+  `8abc4063…`、receipt `70acc344…`，未解盲。
+- DeepSeek final claim SHA `62a7451e…` 已消费。第 8 个 call
+  (`failedCallIndex=7`) 以 `SCHEMA_INVALID_OR_EMPTY / OPINION_SCHEMA_INVALID`
+  fail closed；terminal receipt SHA `8b113c74…`，
+  `networkAttempted=true / completedCallCount=7 / automaticRetryPerformed=false`。
+  未保存 raw response、reasoning 或 Secret；同一 corpus/claim 不得重试、换模型/KEY、
+  调 prompt 或解盲。
+- 终态只读核验：phase-appropriate Node suite `44/44 PASS`，actual KEY 与 forbidden
+  Provider field 泄漏文件数均为 0，claim/model-input/Codex opinion contract 重建通过，
+  DeepSeek accepted opinion、unblind 与 audit 目录均不存在。若把仅适用于 model-dark
+  preseal 阶段的 `track-b-final-preseal.test` 继续纳入 post-seal suite，则为
+  `44/45`：唯一失败是该测试仍断言 confirmation/seal/run-v1 必须不存在，属于纯证据
+  测试未区分阶段；依正式执行后的硬停止规则当前不自动修复。
 
 ## 当前活跃任务
 
 - `tasks/active/TASK-MVP-002-review-workbench.md`
 - `tasks/active/TASK-MODEL-001-model-profile-secret-readiness.md`
 - `tasks/active/TASK-EVAL-002-blind-semantic-evaluation.md`
+- `tasks/active/TASK-EVAL-003-track-b-successor-admission.md`
+- `tasks/active/TASK-EVAL-004-track-b-final-independent-admission.md`
+- `tasks/active/TASK-EVAL-005-track-b-schema-stability-and-fifth-admission.md`
+- `tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md`
 - `tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`
 - `tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`
 
 ## 当前阻塞项
 
-1. `ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`c156b4a7…`、
-   `3bc24a84…`、`8d01dd9a…`、`75d86031…`、`72b934c2…` 及 `3e4e8d00…`
-   对应的审计轮均已失效，永远不能用于后续收口；其中任一旧 `GO`
-   也不得单独复用。
-2. 收口只接受从当前 clean candidate HEAD 从零重建的 R7、Compose/browser、
-   四轮不可覆盖 JUnit、完整验证和 immutable freeze，并且必须使用全新
-   CC AUDIT 与两个全新 `fork_turns="none"` Codex auditor。动态 freeze/audit
-   结果以 hash-bound outputs 和 Git 事实为真源，本文不复制运行中状态。
-3. PR #37 已存在但 run `30729941151` backend CI 失败、merge 未完成；PR body
-   授权区块已补齐且该 check 已通过。没有新 subject 三审和全绿 CI 就不能 merge，
-   也不能声明 TASK-036 seam 已集成。
-4. 新 Track B admission holdout 尚未创建：固定 12 packet（9 eligible + 3
-   controls），人工 ground truth 必须在模型访问前封印，正式运行只允许一次。
+1. TASK-EVAL-006 R10 subject `d73e15e5…` 已三方全零 GO；正式 admission 仍等待 CI 内容
+   一致性，A0/A1/A2 在 CI 前仍无资格。
+2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…`、`47d84299…`、`a85e96f5…`、`e566c8d2…` 的失败/中断/NO_GO freeze 与报告
+   必须只读保留，不得与后续报告组合通过。
+3. TASK-EVAL-002~005 的历史 BLOCKED/NO-GO claim、opinion、report、seal 均不可重试或
+   改写；本次修复没有重跑 DeepSeek、创建第七套 corpus 或改变这些历史终态。
+4. PUBLIC profile 继续 `EVALUATION / disabled / unbound`；模型不得直接生成或改变
+   Finding/verdict。未完成新三审、CI、PR/merge 门禁前不得进入 Provider runtime。
 
 ## 下一步
 
-1. 完成当前 D2 required-block identity 修复的 diff/格式自检，并在既有授权下形成新的 clean
-   candidate；JSON 历史 CRLF seal、历史 451/20 运行记录不得改写。
-2. 在该新 clean HEAD 上从零执行 R7、两轮 backend、D1=`452`、D2=`22`、admin-web、Core Node、
-   OpenAPI、Track A/B、bootJar，以及每轮随机凭据的 Compose + Chrome/CDP 浏览器
-   验收；所有原始 console/JUnit/事件/access-log/截图均绑定实际字节。
-3. 验证全部通过后生成并验证新 freeze，再从零执行 CC AUDIT 与两个全新 Codex
-   独立审计；旧审计会话和结论不复用。
-4. 三审全零 GO 后补齐 PR #37 授权区块、push 精确受审 HEAD 并等待 CI；满足既有
-   授权条件后 merge。
-5. Core merge 后建立并执行一次新的 Track B holdout；失败即停止并重新收敛。
+1. 提交 R10 审计 evidence/status，并证明 post-audit commit 相对 `fa64271…` 只含审计材料和
+   项目记忆，不改变受审产品/评测内容。
+2. 按既有授权 push、创建或更新 PR并等待 CI；任一 CI 失败立即停止，不自动扩大修复。
+3. CI 全绿且 subject 内容一致后建立 Track B Provider admission，完成该 integration unit 的
+   merge；随后才允许在新分支进入 Provider A0/A1。
 
 不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

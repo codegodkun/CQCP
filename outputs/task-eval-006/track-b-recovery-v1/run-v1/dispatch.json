@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-dispatch-v1",
+  "status": "FROZEN_READY_FOR_FORMAL_ADMISSION",
+  "createdAt": "2026-08-03T10:04:50.332Z",
+  "milestoneId": "MILESTONE-MVP-002",
+  "taskId": "TASK-EVAL-006",
+  "purpose": "TRACK_B_EVALUATION",
+  "dataClass": "SYNTHETIC_CORPUS",
+  "formalAdmissionAffected": true,
+  "priorFailedClaimReused": false,
+  "corpusPath": "outputs/task-eval-006/track-b-recovery-v1/corpus.json",
+  "corpusSha256": "3a988a9ab09008645dd812b47c1ad3f4c6a9aac699a590a66bd6a17cf1010554",
+  "humanGroundTruthSealPath": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
+  "humanGroundTruthSealSha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315",
+  "modelInputPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/model-input.json",
+  "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
+  "providerCallSetPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/provider-call-set.json",
+  "providerCallSetSha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3",
+  "standingGrantPath": "scripts/blind-evaluation/mvp002-standing-egress-grant.json",
+  "standingGrantSha256": "f04c3ad0a6522b90f21d1efb32be12b0c883d03b2b286f9c2c8639ecd501239a",
+  "promptPath": "scripts/blind-evaluation/track-b-provider-recovery-prompt-v3.txt",
+  "promptSha256": "5cb29a5ddc9644e15afba8afc67079d805ff41ae4472cf93997a1d89ac302601",
+  "derivedEgressReceiptPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/derived-egress-receipt.json",
+  "endpointOrigin": "https://api.deepseek.com:443",
+  "endpointHost": "api.deepseek.com",
+  "model": "deepseek-v4-pro",
+  "providerCallCount": 9,
+  "inputCount": 9,
+  "zeroCallControlCount": 3,
+  "zeroCallControls": [
+    {
+      "packetId": "EP-ea71919261bfccb64c0e90ec428c4ac33fdcb44a45fcfb397657bcf9f1285b14",
+      "caseId": "TB6-CTL-HIGH-001",
+      "status": "ZERO_CALL_REQUIRED",
+      "modelCallAllowed": false,
+      "reasonCodes": [
+        "DETERMINISTIC_HIGH_ZERO_CALL"
+      ]
+    },
+    {
+      "packetId": "EP-d0a3abf4188f8cf3eda476a2dd159f7641e00e1eca0c07f5eb88e45e0a71a3df",
+      "caseId": "TB6-CTL-INVALID-001",
+      "status": "ZERO_CALL_REQUIRED",
+      "modelCallAllowed": false,
+      "reasonCodes": [
+        "BUNDLE_INVALID"
+      ]
+    },
+    {
+      "packetId": "EP-7242020b6d991cfd5bc5e24b4d823436f79524bafee89a666ca818e26ad2f22b",
+      "caseId": "TB6-CTL-NOANCHOR-001",
+      "status": "ZERO_CALL_REQUIRED",
+      "modelCallAllowed": false,
+      "reasonCodes": [
+        "RELIABLE_ANCHOR_MISSING"
+      ]
+    }
+  ],
+  "humanGroundTruthExcludedFromPayload": true,
+  "cqcpActualOrExpectedExcludedFromPayload": true,
+  "findingOrVerdictExcludedFromPayload": true,
+  "secretOrRawKeyIncluded": false,
+  "networkCallPerformed": false
+}
