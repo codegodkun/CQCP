@@ -483,6 +483,10 @@ R8 限定修复移除 full content diff，仅发送 status/path/base+HEAD Git bl
 CC 与两个全新 Codex auditor 全零 GO及 CI 内容一致性。R8 正式 verification 已达到 Node
 `56/56`、Java `1/1` 且 `5 executed`、Secret/raw Provider/CR/diff/builder 全绿；result
 `3297f5c3…`、console `50288e22…`、evidence `42`，当前只放行 clean commit 和新 freeze。
+正式 R8 subject `a85e96f5…` / manifest `08a0bd23…` 为 325 changed paths、65 evidence；
+CC 包实际为 77 total files、sums `16097ea7…`，独立扫描 24 forbidden representations 为 0。
+CC 对隔离和产品证据无 finding，但因上述正式事实未在冻结前同步到任务/项目记忆，返回
+`NO_GO / P2=1 / blocking=1`；两个 Codex auditor 中断。本轮不能复用，admission 仍 pending。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R8_VERIFICATION_PASS` / `FREEZE_PENDING`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R8_CC_AUDIT_NO_GO` / `P2_GOVERNANCE_FRESHNESS`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -278,10 +278,19 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   `1/1` 且 `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；console manifest
   `50288e22…`、result `3297f5c3…`、evidence `42`、runs `7`。新 clean candidate/freeze
   尚未形成，未启动新审计。
+- clean HEAD `d08484cc…` 的正式 freeze subject `a85e96f5…` / manifest `08a0bd23…`
+  自校验通过，实际为 325 changed paths、65 evidence。正式 CC 包为 62 included + 3 hash-only
+  excluded、5 context、77 total files（sums 覆盖 76 content files），package sums
+  `16097ea7…`；独立 verifier 扫描全部 77 files、24 forbidden representations 为 leak 0。
+- CC AUDIT 确认隔离、产品证据和前序 findings 均关闭，但因本 TASK、CURRENT_CONTEXT、任务地图
+  与 changelog 仍写 pre-freeze diagnostic 的 320 paths / 72 files / `798c551c…` /
+  `FREEZE_PENDING`，返回 `NO_GO / P2=1 / blocking=1`。两个 Codex auditor 依门禁中断无 verdict；
+  本轮不能复用。该问题只属于 governance-document freshness，不是产品或评测正确性失败。
 
 ## Next Task Handoff
 
-- R8 最小修复的离线 diagnostic、verification-builder RED→GREEN 与完整 verification 已完成。
-  下一步形成 clean commit 后生成唯一新 freeze 和新安全 CC 包。
-- 对新 subject 从头运行 CC 与两个全新 `fork_turns=none / gpt-5.6-sol / xhigh` auditor；
-  不复用 R7 verdict。任一 finding 仍立即停止；全零 GO 后才允许 push/PR/CI/merge。
+- R8 subject `a85e96f5…` 因 CC `P2=1 / blocking=1` 失效；失败 manifest、CC NO_GO 与两个
+  interrupted status 已保留。当前停止，不自动重审、push/PR/CI 或启动 A0/A1/A2。
+- 下一轮最小修复仅同步正式 subject 的 325 paths / 65 evidence / 77 files / sums `16097ea7…`
+  与 R8 NO_GO 事实，并把该失败轮绑定进 verification；随后必须形成全新 clean subject，重新运行
+  CC 与两个全新 `gpt-5.6-sol/xhigh` auditor，任何旧 verdict 都不得复用。

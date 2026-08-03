@@ -166,6 +166,11 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   verification、freeze、三方全零 GO 或 CI。R8 正式 verification 随后为 Node `56/56`、
   Java `1/1` 且 `5 executed`、Secret/raw Provider/CR/diff/builder 全绿；result `3297f5c3…`、
   console `50288e22…`、evidence `42`，admission 仍 pending。
+- R8 clean HEAD `d08484cc…` 的 subject `a85e96f5…` / manifest `08a0bd23…` 自校验通过；
+  正式安全包为 325 changed paths、65 evidence、77 total files、sums `16097ea7…`，全包
+  24 forbidden representations leak 0。CC 对隔离与产品证据无 finding，但冻结治理文档仍为
+  pre-freeze 320/72/`798c…`/pending 叙事，因此返回 `NO_GO / P2=1 / blocking=1`；两份
+  Codex audit 中断。该结果只影响三审门禁，不改变模型评测 GO或 Provider 边界。
 
 ## 关联
 
