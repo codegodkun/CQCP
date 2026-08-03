@@ -251,8 +251,10 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   `33ef2fae…`；JSON 值与 raw CC report `244ae3f8…` 均未改变。
 - R7 完整 elevated verification 已通过：Node `56/56`、verification builder `1/1`、
   Java runtime seam `1/1` 且 Gradle `5 executed`，seal 原字节、Secret/raw Provider、CR=0、
-  diff 全绿；console manifest `e8ec9322…`、verification result `628fcd68…`、evidence `37`、
-  runs `7`，并绑定 R5/R6 两轮失败审计。
+  diff 全绿。首次 freeze 前置校验发现 verification 脚本工作区 CRLF 与 Git blob LF 不一致，
+  因而未创建 subject；现以精确 `.gitattributes` LF 规则消除该字节漂移，并强制重跑全套门禁。
+  最终 console manifest `8aba6687…`、verification result `1805feb1…`、evidence `37`、runs `7`，
+  并绑定 R5/R6 两轮失败审计和本次 freeze-precondition 失败记录。
 - 本轮不修改 corpus、human decisions、model input、Codex/DeepSeek opinion、report/seal
   结论、Java runtime seam 或 Provider 边界；不重跑 DeepSeek、不启动 A0/A1/A2。
 

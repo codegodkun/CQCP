@@ -1,10 +1,1 @@
 gitDiffCheckExitCode=0
-warning: in the working copy of 'CURRENT_CONTEXT.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'changelog/2026-08.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'decisions/ADR-026-track-b-provider-conversation-recovery.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'docs/ai-review.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/verify-track-b-provider-recovery-r5-repair-subject.mjs', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/verify-track-b-provider-recovery-r5-repair-subject.test.mjs', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'tasks/MVP_TASK_MAP.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md', LF will be replaced by CRLF the next time Git touches it

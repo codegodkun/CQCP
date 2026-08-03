@@ -1,7 +1,7 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-verification-result-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T17:22:46.200Z",
+  "completedAt": "2026-08-03T17:32:43.844Z",
   "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
   "providerAdmission": "PENDING_THREE_PARTY_AUDIT_AND_CI",
   "networkCallPerformedByRepair": false,
@@ -15,7 +15,7 @@
     "codexEvaluationCompletedAt": "2026-08-03T15:12:08.8699951Z",
     "codexCompletionReceivedAt": "2026-08-03T15:13:24.771Z",
     "admissionResealedAt": "2026-08-03T15:15:20.723Z",
-    "verificationCompletedAt": "2026-08-03T17:22:46.200Z"
+    "verificationCompletedAt": "2026-08-03T17:32:43.844Z"
   },
   "metrics": {
     "node": "56/56",
@@ -29,7 +29,7 @@
     "gitDiffCheckExitCode": 0
   },
   "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/console-manifest.json",
-  "consoleManifestSha256": "e8ec9322ffed488d2a7fac732cb502d0d6620cc4ba15d2df7a97dbfe2341c1f0",
+  "consoleManifestSha256": "8aba66870b77a9242b2943d2cad28922285fce100b5f9dfec96f2a06b0694513",
   "evidence": [
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
@@ -153,8 +153,8 @@
     },
     {
       "path": "scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1",
-      "size": 7048,
-      "sha256": "b60e285db073804ff81d1a51d91d2517de0f1a835aa93307e6f36dd8b4cb48de"
+      "size": 6916,
+      "sha256": "ab6e0615a7117887e3d7389c7fc3a6c3070361bc7806044aaee9a3f8d8e41757"
     },
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification/audit/freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json",

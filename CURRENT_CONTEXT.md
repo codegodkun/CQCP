@@ -30,9 +30,11 @@
 > `ceab8aa2…`，全部可发送 bytes 与 Git blob 一致。R7 随后把唯一 CR hit 精确定位到
 > R6 `cc-audit-status.json`，保留原 CRLF SHA `bf1c4b5c…` 后仅按既有 eol 规则规范为 LF；
 > raw CC report `244ae3f8…` 未改写。完整 elevated verification 已通过：Node `56/56`、
-> Java seam `1/1` 且 `5 executed`、seal/Secret/CR=0/diff/builder 全绿；verification result
-> `628fcd68…`、console manifest `e8ec9322…`、evidence `37`，并保留 R5/R6 两轮失败审计。
-> 当前等待 clean commit、新 freeze 和三方重审，A0/A1/A2 仍禁止。
+> Java seam `1/1` 且 `5 executed`、seal/Secret/CR=0/diff/builder 全绿。首次 R7 freeze 前置校验
+> 发现 verification 使用的脚本工作区字节为 CRLF、Git blob 为 LF，因此未创建 subject；现已用精确
+> `.gitattributes` 规则固定该脚本为 LF，并在相同语义下重跑全套门禁。最终 verification result
+> `1805feb1…`、console manifest `8aba6687…`、evidence `37`，并保留 R5/R6 两轮失败审计和本次
+> freeze-precondition 失败记录。当前等待 clean commit、新 freeze 和三方重审，A0/A1/A2 仍禁止。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以

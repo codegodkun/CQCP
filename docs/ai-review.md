@@ -471,8 +471,10 @@ worktree 复制出 9 个 CRLF/mixed bytes、且 evidence/hash-only exclusion/sou
 修复不重跑 DeepSeek、不改变 model evaluation 或最终 Finding/verdict 边界。
 R7 完整 verification 已通过：Node `56/56`、Java runtime seam `1/1` 且 `5 executed`、
 verification builder `1/1`、Secret/raw Provider、CR=0 与 diff 门禁全绿。唯一历史 CR hit
-为 R6 CC status 元数据，原 SHA 已在 NO_GO 摘要保留；raw CC report 未改写。verification
-result `628fcd68…`、console manifest `e8ec9322…`，仍只放行新 freeze 与三方重审。
+为 R6 CC status 元数据，原 SHA 已在 NO_GO 摘要保留；raw CC report 未改写。首次 freeze
+前置校验因 verification 脚本工作区 CRLF/Git blob LF 不一致而在创建 subject 前停止；精确
+LF 属性修复并强制全量重跑后的 verification result `1805feb1…`、console manifest
+`8aba6687…`，仍只放行新 freeze 与三方重审。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

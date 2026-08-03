@@ -1,27 +1,27 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-console-manifest-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T17:22:46.200Z",
+  "completedAt": "2026-08-03T17:32:43.844Z",
   "runs": [
     {
       "name": "node-phase-appropriate",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/node-tests-phase-appropriate.console.log",
-      "size": 4781,
-      "sha256": "028367f7d0fec954ae37f9b98f3d56492acf5e31e97f42dbff7b089e6fe59b0b",
+      "size": 4783,
+      "sha256": "869aa73589dfa77110d703154f9705afb35f65a97b96a81967a7ea380f41be2a",
       "exitCode": 0
     },
     {
       "name": "java-recovery-runtime",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.console.log",
       "size": 1135,
-      "sha256": "787c709bdd189eea4aad319acb89f1dac35cd8a1ddb80920838791ee7d3fc5dd",
+      "sha256": "5e12672a3f7a2874002d16266b0833ccbcd11dfdfed67269343c46c188184cf2",
       "exitCode": 0
     },
     {
       "name": "java-recovery-junit",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.junit.xml",
       "size": 543,
-      "sha256": "a730591da491b5b619e526e98d56157bf0ef4bbfa6ab2953b86b266f85e882d5",
+      "sha256": "4cb85fb91a3304e3848ee92be5d9de50954a582e7df6bb3eb012ed6e8721ef28",
       "exitCode": 0
     },
     {
@@ -48,8 +48,8 @@
     {
       "name": "git-diff-check",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/git-diff-check.console.log",
-      "size": 1316,
-      "sha256": "bbbfa5a5e4a0ab423c4952798a67c4f715b1c01cddc33925e3f114d2c3d73e35",
+      "size": 23,
+      "sha256": "67280e73e0b350d40df912c8fe5a8a4854310e0471eeede304b4f01759a85681",
       "exitCode": 0
     }
   ],

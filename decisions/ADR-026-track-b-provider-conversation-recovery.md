@@ -154,8 +154,10 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   excluded = 54 evidence`、`5 source context` 与 package sums `ceab8aa2…`。唯一 CR hit
   `cc-audit-status.json` 保留原 CRLF SHA `bf1c4b5c…` 后按既有 JSON eol 规则规范为 LF；
   raw CC report `244ae3f8…` 未改写。完整 verification 为 Node `56/56`、Java `1/1`
-  且 `5 executed`、builder `1/1`、Secret/raw Provider/CR/diff 全绿；结果 `628fcd68…`、
-  console `e8ec9322…`。新 freeze/三审/CI 前 admission 仍 pending，A0/A1/A2 仍禁止。
+  且 `5 executed`、builder `1/1`、Secret/raw Provider/CR/diff 全绿。首次 freeze 前置校验
+  因 verification 脚本工作区 CRLF/Git blob LF 不一致而未创建 subject；精确 LF 属性修复并
+  强制全量重跑后的结果为 `1805feb1…`、console `8aba6687…`。新 freeze/三审/CI 前
+  admission 仍 pending，A0/A1/A2 仍禁止。
 
 ## 关联
 
