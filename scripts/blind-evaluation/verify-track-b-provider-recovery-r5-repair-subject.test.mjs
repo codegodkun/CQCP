@@ -15,10 +15,19 @@ test("builds PASS only from fresh chronology, executed recovery seam, and reused
     completedAt: "2026-08-03T16:00:00.000Z"
   });
   assert.equal(result.verification.status, "PASS");
-  assert.equal(result.verification.metrics.node, "54/54");
+  assert.equal(result.verification.metrics.node, "56/56");
   assert.equal(result.verification.metrics.javaRecoveryRuntimeSeam, "1/1");
   assert.equal(result.verification.deepSeekNetworkCallRepeated, false);
+  assert.equal(
+    result.verification.providerAdmission,
+    "PENDING_THREE_PARTY_AUDIT_AND_CI"
+  );
   assert.equal(result.verification.previousFailedFreezePreserved, true);
+  assert.equal(result.verification.failedAuditRoundsPreserved.length, 1);
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[0].codeArchitectureVerdict,
+    "NO_GO"
+  );
   assert.equal(result.verification.a0A1A2ImplementationAllowed, false);
   assert.equal(result.consoleManifest.failedHarnessEvidence.length, 3);
 });

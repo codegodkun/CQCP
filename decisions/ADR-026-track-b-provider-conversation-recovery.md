@@ -118,18 +118,29 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
 ## 执行证据（2026-08-03）
 
 - 4-call non-admission diagnostic 六维 4/4，seal `fedc4e21…`。
-- 第六套人工 seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维均 9/9，controls 3/3，
-  admission seal `2d879b13…`，状态 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。
-- 该 GO 尚未满足本 ADR 第 4、5 项恢复条件：R5 immutable freeze、三方全零 GO 与 CI
-  仍待完成，因此 A0/A1/A2 尚未解锁。
+- 第六套人工 seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维均 9/9，controls 3/3。
+  首次派生 seal `2d879b13…` 的 `providerAdmissionEstablished=true` 早于本 ADR 第 4、5
+  项完成，属于未生效的历史派生标志，不构成架构层准入或 A0/A1/A2 解锁证据；该 seal、
+  DeepSeek claim/opinion 与失败审计均只读保留。
 - 首次 R5 subject `9dddbe43…` 因 Codex evaluator 时序证据不足和 Java seam 未直接覆盖
   recovery-v1 被独立审计拒绝。项目负责人批准的有限修复不改变本 ADR 的 Provider、
   payload、模型职责或网络预算：新 `fork_turns=none / gpt-5.6-sol/xhigh` evaluator 由
   human seal 之后创建的 execution claim、零文件 readiness、launch/completion receipt
   绑定，只读隔离目录；DeepSeek claim/opinion 原字节复用且不重跑。
-- revalidated admission seal `927eb673…` 与 `verification-v2/verification-result.json` 已 PASS；
-  Java recovery seam JUnit 1/1 且 Gradle 5 tasks executed。仍须新 immutable freeze 与
-  三份全新全零 GO 审计，A0/A1/A2 继续禁止。
+- revalidated R5 seal `927eb673…` 与 subject `e77a8635…` 未通过三审：全新代码/架构
+  auditor 返回 `NO_GO / P1=1 / P2=3 / blocking=4`，因此该 freeze 与全部同轮审计结果
+  失效并保留。findings 为 opinion 顶层字段未完全 fail closed、DeepSeek reuse 未从旧
+  seal 验证、架构/准入状态冲突及任务地图事实滞后。
+- R6 仅修复上述四项：Codex v4 envelope 使用顶层 exact-field-set；DeepSeek claim/opinion
+  必须与旧 seal hash 一致；更正后的 revalidation report/seal 分别为
+  `efba63ff… / 70339354…`，状态
+  `SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`，明确
+  `modelEvaluationPassed=true / providerAdmissionEstablished=false /
+  admissionDecisionPendingAudit=true`。DeepSeek claim/opinion 未重跑、未改写。
+- R6 完整 verification 已通过：Node `56/56`、verification builder `1/1`、Java seam
+  `1/1` 且 Gradle `5 executed`，更正后 seal、Secret/raw Provider/CR/diff 门禁均通过。
+  新 immutable freeze、三份全新全零 GO 与 CI 内容一致性仍是 `ESTABLISHED` 的必要
+  条件；完成前 A0/A1/A2 继续禁止。
 
 ## 关联
 

@@ -17,6 +17,35 @@ const validIso = (value) =>
   new Date(value).toISOString() === value;
 const validTimestamp = (value) =>
   typeof value === "string" && Number.isFinite(Date.parse(value));
+const CODEX_REVALIDATION_OPINION_KEYS = [
+  "schemaVersion",
+  "status",
+  "evaluator",
+  "agentId",
+  "canonicalTaskName",
+  "executionClaimSha256",
+  "launchReceiptSha256",
+  "evaluationInstructionSha256",
+  "modelInputSha256",
+  "freshContext",
+  "forkTurns",
+  "allowedInputOnly",
+  "humanGroundTruthRead",
+  "priorModelOpinionRead",
+  "projectMemoryOrChatHistoryRead",
+  "findingOrVerdictProduced",
+  "startedAt",
+  "completedAt",
+  "opinions"
+].sort();
+
+function assertExactKeys(value, expected, label) {
+  assert.deepEqual(
+    Object.keys(value).sort(),
+    expected,
+    `${label} must contain the exact field set`
+  );
+}
 
 export function buildCodexRevalidationClaim({
   claimId,
@@ -172,11 +201,17 @@ export function validateCodexRevalidationEvidence({
   assert.equal(launch.model, "gpt-5.6-sol");
   assert.equal(launch.reasoningEffort, "xhigh");
   assert.equal(launch.forkTurns, "none");
+  assertExactKeys(
+    opinion,
+    CODEX_REVALIDATION_OPINION_KEYS,
+    "Codex revalidation opinion"
+  );
   assert.equal(
     opinion.schemaVersion,
     "task-eval-006-track-b-recovery-codex-opinion-v4"
   );
   assert.equal(opinion.status, "ACCEPTED_FRESH_BLIND_REVALIDATION_OPINION");
+  assert.equal(opinion.evaluator, "codex-subagent-gpt-5.6-sol-xhigh");
   assert.equal(opinion.executionClaimSha256, sha256(claimBytes));
   assert.equal(opinion.launchReceiptSha256, sha256(launchReceiptBytes));
   assert.equal(

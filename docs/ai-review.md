@@ -445,9 +445,11 @@ TASK-EVAL-006 实际恢复结果为：旧 4 个 CONFLICTED packet 的 non-admiss
 六维 4/4；第六套 disjoint corpus 在人工先封印后，由全新 Codex evaluator 与
 `deepseek-v4-pro` 分别完成 9 条 blind opinion。两者的 schema、可靠 anchor、role、
 candidate、anchor、abstention 均为 9/9，3 个 controls 全部 zero-call；admission seal
-`2d879b13…` 为 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。该结论只建立 EVALUATION shadow
-资格：模型仍不得生成或改变 Finding/verdict，PUBLIC profile 仍 disabled/unbound；完整
-verification、immutable freeze 与三方全零 GO 前不得启动 A0/A1/A2。
+`2d879b13…` 为历史模型评测派生结果。全维 9/9 只建立
+`modelEvaluationPassed=true`，不建立 EVALUATION shadow 运行资格；模型仍不得生成或改变
+Finding/verdict，PUBLIC profile 仍 disabled/unbound。完整 verification、immutable
+freeze、三方全零 GO 与 CI 内容一致性前，`providerAdmissionEstablished=false` 且不得启动
+A0/A1/A2。
 
 TASK-EVAL-006 首次 R5 freeze 后，独立审计指出原 Codex opinion 只有“未读人工答案”的
 自述，缺少 evaluator 启动/访问时序证据；同时旧 Java 测试只覆盖 holdout-v1。有限修复
@@ -455,7 +457,13 @@ TASK-EVAL-006 首次 R5 freeze 后，独立审计指出原 Codex opinion 只有�
 零文件 readiness、隔离四文件 allowlist、launch/completion receipt 形成可重建时间链；
 DeepSeek 正式 claim/opinion 不重跑。新增 recovery-v1 Java test 通过真实
 `RuntimeEvidencePacketBuilder` 逐字核对 12 个 packet、identity、admission 与 anchor。
-该修复 verification 已通过，但新三方全零 GO 前仍不启动 A0/A1/A2。
+该修复的 subject `e77a8635…` 又因 opinion 顶层字段、DeepSeek reuse、架构状态与任务地图
+四项 blocking finding 被拒绝。R6 使用 exact-field-set、旧 seal hash 复用校验，并将更正
+后的 seal 状态固定为
+`SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`；新三方全零 GO 与
+CI 内容一致性前仍不启动 A0/A1/A2。R6 完整 verification 已达到 Node `56/56`、Java
+runtime seam `1/1` 且 `5 executed`、verification builder `1/1`；该结果只放行新 freeze
+与三审。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

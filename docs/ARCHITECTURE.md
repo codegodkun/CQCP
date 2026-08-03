@@ -1391,7 +1391,9 @@ raw response、content 或 reasoning。评测 prompt/schema 的任何变化产�
 hash，不覆盖历史版本；严格字段、enum、可靠 anchor、coverage 和全维 100% admission
 门禁不得降低。只有独立诊断版本通过预先冻结的有限稳定性门禁，才能生成新的独立
 holdout 并在人工 ground truth 先封印后执行。正式 admission 失败时不得以继续生成新
-corpus 的方式追逐通过；TASK-EVAL-005 失败后不创建第六套。
+corpus 的方式追逐通过。TASK-EVAL-005 失败后的默认边界原为不创建第六套；项目负责人
+随后以 ADR-026 明确批准的 model-facing projection v3 根因恢复是唯一例外，只允许该
+第六套且禁止第七套，不改写 TASK-EVAL-005 的历史终态或已消费 claim。
 
 职责：
 
@@ -3334,3 +3336,10 @@ packet 的 review point、requested role、候选 occurrence、证据、可靠 a
 RuntimeEvidencePacket、EvidenceSlot、CandidateResolver、SourceAnchor 或后端最终裁判。
 会话投影、prompt、schema、request builder 与 model version 必须一起版本化。具体有限
 恢复与准入边界见 ADR-026。
+
+Track B 全维 100% 只构成 `modelEvaluationPassed=true` 的候选准入事实，不等于 Provider
+admission 已建立。完整 verification、immutable freeze、CC AUDIT、两个全新 Codex
+auditor 与 CI 内容一致性全部通过前，`providerAdmissionEstablished` 必须保持 `false`，
+状态只能是 `PENDING_THREE_PARTY_AUDIT_AND_CI`，A0/A1/A2 不得启动。审计通过事实由后续
+Provider integration unit 组合冻结 subject 与三份报告判定，不回写或改写既有模型执行
+claim/opinion。

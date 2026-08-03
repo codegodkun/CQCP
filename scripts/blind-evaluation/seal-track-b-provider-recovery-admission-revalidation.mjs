@@ -56,7 +56,41 @@ export function buildTrackBProviderRecoveryRevalidatedAdmission({
   const previousSeal = parseJsonBytesRejectDuplicateKeys(
     previousAdmissionSealBytes
   );
+  assert.equal(
+    previousSeal.schemaVersion,
+    "task-eval-006-track-b-recovery-admission-seal-v1"
+  );
   assert.equal(previousSeal.status, "SEALED_GO_TRACK_B_RECOVERY_ADMISSION");
+  assert.equal(
+    previousSeal.modelInputSha256,
+    sha256(modelInputBytes),
+    "previous seal model input SHA must match"
+  );
+  assert.equal(
+    previousSeal.providerCallSetSha256,
+    sha256(callSetBytes),
+    "previous seal provider call set SHA must match"
+  );
+  assert.equal(
+    previousSeal.dispatchSha256,
+    sha256(dispatchBytes),
+    "previous seal dispatch SHA must match"
+  );
+  assert.equal(
+    previousSeal.derivedReceiptSha256,
+    sha256(receiptBytes),
+    "previous seal derived receipt SHA must match"
+  );
+  assert.equal(
+    previousSeal.deepSeekExecutionClaimSha256,
+    sha256(deepSeekClaimBytes),
+    "previous seal DeepSeek claim SHA must match"
+  );
+  assert.equal(
+    previousSeal.deepSeekOpinionSha256,
+    sha256(deepSeekOpinionBytes),
+    "previous seal DeepSeek opinion SHA must match"
+  );
   const base = buildTrackBProviderRecoveryAdmissionEvaluation({
     modelInputBytes,
     callSetBytes,
@@ -73,6 +107,7 @@ export function buildTrackBProviderRecoveryRevalidatedAdmission({
     ...base.report,
     schemaVersion:
       "task-eval-006-track-b-recovery-admission-report-v2",
+    status: "GO_9_OF_9_PLUS_3_ZERO_CALL_PENDING_AUDIT",
     evaluatorPolicy:
       "FRESH_ISOLATED_CODEX_REVALIDATION_AND_REUSED_SEALED_DEEPSEEK_ALL_DIMENSIONS_100_PERCENT",
     previousAdmissionSealPath: PREVIOUS_SEAL_PATH,
@@ -103,13 +138,19 @@ export function buildTrackBProviderRecoveryRevalidatedAdmission({
     },
     deepSeekEvidenceReused: true,
     deepSeekNetworkCallRepeated: false,
-    deepSeekClaimRepeated: false
+    deepSeekClaimRepeated: false,
+    modelEvaluationPassed: true,
+    providerAdmissionEstablished: false,
+    admissionDecisionPendingAudit: true,
+    verificationAndAuditAllowed: true,
+    a0A1A2ImplementationAllowed: false
   };
   const reportBytes = jsonBytes(report);
   const seal = {
     ...base.seal,
     schemaVersion: "task-eval-006-track-b-recovery-admission-seal-v2",
-    status: "SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED",
+    status:
+      "SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT",
     reportPath: REPORT_PATH,
     reportSha256: sha256(reportBytes),
     previousAdmissionSealPath: PREVIOUS_SEAL_PATH,
@@ -119,6 +160,10 @@ export function buildTrackBProviderRecoveryRevalidatedAdmission({
     codexCompletionReceiptSha256: sha256(codexCompletionReceiptBytes),
     deepSeekEvidenceReused: true,
     deepSeekNetworkCallRepeated: false,
+    modelEvaluationPassed: true,
+    providerAdmissionEstablished: false,
+    admissionDecisionPendingAudit: true,
+    verificationAndAuditAllowed: true,
     a0A1A2ImplementationAllowed: false
   };
   return {

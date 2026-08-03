@@ -1,9 +1,9 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-verification-result-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T15:42:40.286Z",
+  "completedAt": "2026-08-03T16:19:30.531Z",
   "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
-  "providerAdmission": "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE",
+  "providerAdmission": "PENDING_THREE_PARTY_AUDIT_AND_CI",
   "networkCallPerformedByRepair": false,
   "deepSeekNetworkCallRepeated": false,
   "chronology": {
@@ -15,10 +15,10 @@
     "codexEvaluationCompletedAt": "2026-08-03T15:12:08.8699951Z",
     "codexCompletionReceivedAt": "2026-08-03T15:13:24.771Z",
     "admissionResealedAt": "2026-08-03T15:15:20.723Z",
-    "verificationCompletedAt": "2026-08-03T15:42:40.286Z"
+    "verificationCompletedAt": "2026-08-03T16:19:30.531Z"
   },
   "metrics": {
-    "node": "54/54",
+    "node": "56/56",
     "javaRecoveryRuntimeSeam": "1/1",
     "codexAdmission": "9/9",
     "deepSeekAdmission": "9/9",
@@ -29,7 +29,7 @@
     "gitDiffCheckExitCode": 0
   },
   "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/console-manifest.json",
-  "consoleManifestSha256": "c263561623455710901d933e83c4e1f929cf32013dda08da9c74095ae01dbaea",
+  "consoleManifestSha256": "4b303778f42f5083b668ad85b66db28e5244e691087e413dd84e4b045e9950e2",
   "evidence": [
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
@@ -113,13 +113,13 @@
     },
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-report-v2.json",
-      "size": 9962,
-      "sha256": "659e423ae8cfd0b29817a9aceca7b82237a0d75f2fc45bf170bdce94ac1d0bc5"
+      "size": 10051,
+      "sha256": "efba63ffd51147548c000c55691152e487e3290511c974aa5e6b9aedb1fdff6d"
     },
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-seal-v2.json",
-      "size": 1900,
-      "sha256": "927eb6737e5a568739afc3df786afd054926aa5fc1e642c5b0629fb0c573154c"
+      "size": 1990,
+      "sha256": "7033935450db9cee1eb56a735940cd45131e8678c55fdc49fb534e95d8c27b93"
     },
     {
       "path": "apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TrackBProviderRecoveryRuntimeContractTest.java",
@@ -128,13 +128,13 @@
     },
     {
       "path": "scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.mjs",
-      "size": 9953,
-      "sha256": "a7857f92c303ce54caa70629e9b9ae8d088d6e9bd3f401509ca553a508c016ec"
+      "size": 10762,
+      "sha256": "914636b24b47366888335c88340199729f6af8192e934ef738279cf472013f09"
     },
     {
       "path": "scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.test.mjs",
-      "size": 5672,
-      "sha256": "14df8fcd08dfbc2f082c3c13735e373a01c65a3e7aea95e9967586999f97f477"
+      "size": 6336,
+      "sha256": "faab51b3ee6c32fdd5aa704612435b4b6a90b3dad7dc28aad3d12cd47592fa04"
     },
     {
       "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-codex-revalidation.mjs",
@@ -143,13 +143,13 @@
     },
     {
       "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs",
-      "size": 7444,
-      "sha256": "3eed26d75a6810380d95c5c78b53e51cfc963bfdbd4b46590daaaf625da5838e"
+      "size": 8808,
+      "sha256": "109432cf3abc04f03a40a8d81a277a9ca0c4bbb7192c72d95ac6ebd2d204c52e"
     },
     {
       "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.test.mjs",
-      "size": 2320,
-      "sha256": "9eb53d56bd0f8808fb7515089c2c74dc33386ee298a3d1baf661043c1a05bd44"
+      "size": 3308,
+      "sha256": "db746de666956b2843526c01864cb1d0c0c891c51c6fee185d786d142deea11e"
     },
     {
       "path": "scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1",
@@ -162,6 +162,26 @@
       "sha256": "083855b60c16407649e439c3f5e61d48841408c7c7a284bdd8d6d79d0c797f9b"
     },
     {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/manifest.json",
+      "size": 53551,
+      "sha256": "a713467b0358fb4ec1d8bcc09a84a26e72e325a224a57e7c36c47330b6471cf3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/codex-code-architecture-audit-no-go.md",
+      "size": 2749,
+      "sha256": "a8960288c336c83098a54dfe0bcc05dae85e6532d3b538fe2dea3e543d32ba44"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/cc-audit-transport-incomplete.md",
+      "size": 820,
+      "sha256": "aacf6cd8c03c57262e310441e84e32ece95dc5382d161adfb56ff3befe2245fe"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/codex-test-security-audit-interrupted.md",
+      "size": 470,
+      "sha256": "6e1f790fda54864b160c112cb3c19c2fd760cb7121c586e9ed0f76f7357dbf7b"
+    },
+    {
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
       "size": 72,
       "sha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
@@ -169,6 +189,15 @@
   ],
   "previousFailedFreezePreserved": true,
   "previousFailedFreezePath": "outputs/task-eval-006/track-b-recovery-v1/verification/audit/freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json",
+  "failedAuditRoundsPreserved": [
+    {
+      "subjectIdentity": "e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db/manifest.json",
+      "codeArchitectureVerdict": "NO_GO",
+      "ccAuditStatus": "TRANSPORT_INCOMPLETE_NO_VERDICT",
+      "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT"
+    }
+  ],
   "publicProfileDisabledUnbound": true,
   "modelProducedOrChangedFindingVerdict": false,
   "a0A1A2ImplementationAllowed": false,

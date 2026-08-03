@@ -16,6 +16,16 @@ const VERIFY_ROOT = `${OUTPUT_ROOT}/verification-v2`;
 const OLD_FREEZE =
   `${OUTPUT_ROOT}/verification/audit/` +
   "freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json";
+const R5_FAILED_AUDIT_ROOT =
+  `${VERIFY_ROOT}/audit/` +
+  "freeze-e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db";
+const R5_FAILED_MANIFEST = `${R5_FAILED_AUDIT_ROOT}/manifest.json`;
+const R5_FAILED_CODE_AUDIT =
+  `${R5_FAILED_AUDIT_ROOT}/codex-code-architecture-audit-no-go.md`;
+const R5_FAILED_CC_STATUS =
+  `${R5_FAILED_AUDIT_ROOT}/cc-audit-transport-incomplete.md`;
+const R5_FAILED_TEST_AUDIT =
+  `${R5_FAILED_AUDIT_ROOT}/codex-test-security-audit-interrupted.md`;
 const PASS_LOGS = Object.freeze([
   ["node-phase-appropriate", `${VERIFY_ROOT}/node-tests-phase-appropriate.console.log`],
   ["java-recovery-runtime", `${VERIFY_ROOT}/java-track-b-recovery-runtime.console.log`],
@@ -66,6 +76,10 @@ const EVIDENCE_PATHS = Object.freeze([
   "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.test.mjs",
   "scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1",
   OLD_FREEZE,
+  R5_FAILED_MANIFEST,
+  R5_FAILED_CODE_AUDIT,
+  R5_FAILED_CC_STATUS,
+  R5_FAILED_TEST_AUDIT,
   `${OUTPUT_ROOT}/verification/secret-and-provider-leak-scan.console.log`
 ]);
 
@@ -94,8 +108,8 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
     passRuns.push({ name, ...record(path, bytes), exitCode: 0 });
     passTexts.set(name, bytes.toString("utf8"));
   }
-  assert.match(passTexts.get("node-phase-appropriate"), /ℹ tests 54/);
-  assert.match(passTexts.get("node-phase-appropriate"), /ℹ pass 54/);
+  assert.match(passTexts.get("node-phase-appropriate"), /ℹ tests 56/);
+  assert.match(passTexts.get("node-phase-appropriate"), /ℹ pass 56/);
   assert.match(passTexts.get("node-phase-appropriate"), /ℹ fail 0/);
   assert.match(passTexts.get("java-recovery-runtime"), /BUILD SUCCESSFUL/);
   assert.match(
@@ -110,7 +124,7 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
   );
   assert.match(
     passTexts.get("admission-revalidation-seal"),
-    /SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED/
+    /SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT/
   );
   assert.match(
     passTexts.get("admission-revalidation-seal"),
@@ -157,12 +171,18 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
   const sealBytes = await read(`${CODEX_REVALIDATION_ROOT}/admission-seal-v2.json`);
   const report = parseJsonBytesRejectDuplicateKeys(reportBytes);
   const seal = parseJsonBytesRejectDuplicateKeys(sealBytes);
-  assert.equal(report.status, "GO_9_OF_9_PLUS_3_ZERO_CALL");
+  assert.equal(report.status, "GO_9_OF_9_PLUS_3_ZERO_CALL_PENDING_AUDIT");
   assert.equal(
     seal.status,
-    "SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED"
+    "SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT"
   );
   assert.equal(seal.reportSha256, sha256(reportBytes));
+  assert.equal(report.modelEvaluationPassed, true);
+  assert.equal(seal.modelEvaluationPassed, true);
+  assert.equal(report.providerAdmissionEstablished, false);
+  assert.equal(seal.providerAdmissionEstablished, false);
+  assert.equal(report.admissionDecisionPendingAudit, true);
+  assert.equal(seal.admissionDecisionPendingAudit, true);
   assert.equal(seal.deepSeekNetworkCallRepeated, false);
   assert.equal(report.deepSeekNetworkCallRepeated, false);
   assert.equal(report.deepSeekClaimRepeated, false);
@@ -178,6 +198,25 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
     sha256(await read(`${RUN_ROOT}/admission-seal.json`)),
     "2d879b139715ca7646a95e035747891a14b38ab545302a899ef2ca6376651b04"
   );
+  const r5FailedManifestBytes = await read(R5_FAILED_MANIFEST);
+  const r5FailedManifest = parseJsonBytesRejectDuplicateKeys(
+    r5FailedManifestBytes
+  );
+  assert.equal(
+    r5FailedManifest.subjectIdentity,
+    "e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db"
+  );
+  assert.equal(
+    r5FailedManifest.subject.headCommit,
+    "53766271736d71bedf4b8539d224bd951a2d4bbf"
+  );
+  assert.equal(
+    sha256(r5FailedManifestBytes),
+    "a713467b0358fb4ec1d8bcc09a84a26e72e325a224a57e7c36c47330b6471cf3"
+  );
+  assert.match((await read(R5_FAILED_CODE_AUDIT)).toString("utf8"), /Verdict: `NO_GO`/);
+  assert.match((await read(R5_FAILED_CC_STATUS)).toString("utf8"), /NO AUDIT VERDICT/);
+  assert.match((await read(R5_FAILED_TEST_AUDIT)).toString("utf8"), /NO AUDIT VERDICT/);
 
   const consoleManifest = {
     schemaVersion:
@@ -194,7 +233,7 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
     status: "PASS",
     completedAt,
     integrationUnit: "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
-    providerAdmission: "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE",
+    providerAdmission: "PENDING_THREE_PARTY_AUDIT_AND_CI",
     networkCallPerformedByRepair: false,
     deepSeekNetworkCallRepeated: false,
     chronology: {
@@ -209,7 +248,7 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
       verificationCompletedAt: completedAt
     },
     metrics: {
-      node: "54/54",
+      node: "56/56",
       javaRecoveryRuntimeSeam: "1/1",
       codexAdmission: "9/9",
       deepSeekAdmission: "9/9",
@@ -224,6 +263,16 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
     evidence,
     previousFailedFreezePreserved: true,
     previousFailedFreezePath: OLD_FREEZE,
+    failedAuditRoundsPreserved: [
+      {
+        subjectIdentity:
+          "e77a86358d56d98e77c08cd5b20fc7dfe1a65c9a67a509cee2c35ac0350b54db",
+        manifestPath: R5_FAILED_MANIFEST,
+        codeArchitectureVerdict: "NO_GO",
+        ccAuditStatus: "TRANSPORT_INCOMPLETE_NO_VERDICT",
+        testSecurityAuditStatus: "INTERRUPTED_NO_VERDICT"
+      }
+    ],
     publicProfileDisabledUnbound: true,
     modelProducedOrChangedFindingVerdict: false,
     a0A1A2ImplementationAllowed: false,

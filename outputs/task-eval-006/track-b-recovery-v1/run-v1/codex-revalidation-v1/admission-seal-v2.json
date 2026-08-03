@@ -1,9 +1,9 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-admission-seal-v2",
-  "status": "SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED",
+  "status": "SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT",
   "sealedAt": "2026-08-03T15:15:20.723Z",
   "reportPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-report-v2.json",
-  "reportSha256": "659e423ae8cfd0b29817a9aceca7b82237a0d75f2fc45bf170bdce94ac1d0bc5",
+  "reportSha256": "efba63ffd51147548c000c55691152e487e3290511c974aa5e6b9aedb1fdff6d",
   "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
   "providerCallSetSha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3",
   "dispatchSha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175",
@@ -14,7 +14,7 @@
   "deepSeekOpinionSha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100",
   "sameAdmissionRetryAllowed": false,
   "seventhCorpusAllowed": false,
-  "providerAdmissionEstablished": true,
+  "providerAdmissionEstablished": false,
   "verificationAndAuditAllowed": true,
   "a0A1A2ImplementationAllowed": false,
   "previousAdmissionSealPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json",
@@ -23,5 +23,7 @@
   "codexLaunchReceiptSha256": "aa7330fb99cd2e97f3a6ef69be809512bfb67ef7ab256145793cc53ae0d5e0f6",
   "codexCompletionReceiptSha256": "2b2edaf406aa8e8a7ad5f62737f5ff45860dff586a0008cf08e3a60ddb2f8779",
   "deepSeekEvidenceReused": true,
-  "deepSeekNetworkCallRepeated": false
+  "deepSeekNetworkCallRepeated": false,
+  "modelEvaluationPassed": true,
+  "admissionDecisionPendingAudit": true
 }

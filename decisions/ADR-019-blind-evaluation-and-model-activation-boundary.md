@@ -258,9 +258,14 @@ guarded assist 仍遵守：
 * 2026-08-03：项目负责人澄清此前 BLOCKED 表述只是询问，并接受 ADR-026 的一次有限
   会话投影恢复。当前为 `RECOVERY_ACTIVE / ADMISSION_NOT_ESTABLISHED`；只有新 admission
   与三方全零 GO 后才可恢复 A0/A1/A2。
-* 2026-08-03：TASK-EVAL-006 recovery admission 六维 9/9 后，首次 R5 审计因 Codex
+* 2026-08-03：TASK-EVAL-006 recovery evaluation 六维 9/9 后，首次 R5 审计因 Codex
   evaluator 时序证据不足和 Java seam 未直接覆盖 recovery-v1 返回 NO-GO。项目负责人
   批准的有限修复以 human seal 之后的 execution claim、零文件 readiness、隔离四文件
   allowlist 和 launch/completion receipt 重跑全新 Codex evaluator；DeepSeek 正式
-  claim/opinion 未重跑。新 admission seal `927eb673…` 与 R5 repair verification 已
-  PASS，仍须新 immutable freeze 和三份全新全零 GO 审计。
+  claim/opinion 未重跑。R5 repair seal `927eb673…` 随后的 subject `e77a8635…` 被全新
+  代码/架构 auditor 以四项 blocking finding 拒绝，不能建立 Provider admission。
+* 2026-08-04：R6 将模型全维 9/9 与 Provider admission 分离：更正后的 seal
+  `70339354…` 只声明 `modelEvaluationPassed=true / providerAdmissionEstablished=false /
+  admissionDecisionPendingAudit=true`。Codex opinion 顶层 exact-field-set 与旧 seal 对
+  DeepSeek claim/opinion hash 的复用验证均 fail closed；完整 R6 verification 已通过，仍须
+  新 freeze、三份全新全零 GO 与 CI 内容一致性后才可恢复 A0/A1/A2。

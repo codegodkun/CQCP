@@ -1,6 +1,6 @@
 # MVP 任务地图
 
-更新日期：2026-08-03
+更新日期：2026-08-04
 
 ## MILESTONE-MVP-002：审核工作台、模型安全与盲态评测
 
@@ -12,9 +12,10 @@
 唯一正式 DeepSeek claim 因第 1 个 call 认证失败 fail closed；TASK-EVAL-004 随后也
 在第 8 个 call schema invalid 并终态 BLOCKED。`TASK-EVAL-005` schema 稳定性诊断
 已 GO，但第五套 admission 为 `SEALED_NO_GO_MODEL_MISMATCH`。项目负责人已澄清此前
-BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套 recovery admission 已
-全维 100% 封印为 GO，bounded verification 已 PASS，Milestone 当前为
-`ADMISSION_ESTABLISHED / R5_FREEZE_PENDING`：
+BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套模型评测已全维 100%，
+但 R5 subject `e77a8635…` 的代码/架构审计为 NO_GO。R6 只修四项 blocking finding并
+通过完整 verification，Milestone 当前为
+`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R6_FREEZE_PENDING`：
 
 | 任务 | Task Level | 当前状态 | 当前边界 |
 |---|---|---|---|
@@ -24,7 +25,7 @@ BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套 recovery
 | `TASK-EVAL-003` | L3 | 12 条人工 decisions/seal 已冻结；Codex 9/9 accepted；DeepSeek 第 1 个 call `AUTHENTICATION_FAILED` 并终态 BLOCKED | claim 已消费、未解盲且不得重试；Provider admission `NOT_ESTABLISHED`，A0/A1/A2 保持阻塞 |
 | `TASK-EVAL-004` | L3 | human seal 已冻结；唯一 DeepSeek claim 在第 8 个 call schema invalid 终态 BLOCKED；未解盲、不得重试 | call set 9×1/controls=3；claim `62a7451e…`、blocked receipt `8b113c74…`；Provider admission NOT_ESTABLISHED，A0/A1/A2 阻塞 |
 | `TASK-EVAL-005` | L3 | 唯一 9×1 DeepSeek 执行 schema 9/9 accepted；解盲后 DeepSeek 4 个 CONFLICTED packet mismatch，历史终态 `SEALED_NO_GO_MODEL_MISMATCH` | 旧 claim 不重试；未来恢复边界由 ADR-026 部分替代 |
-| `TASK-EVAL-006` | L3 | R1-R4 GO；R5 bounded verification PASS，clean commit/freeze/三审待执行 | human seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维 9/9、controls 3/3；Node 70/70 + verifier 1/1 + Java 1/1；admission seal `2d879b13…`；A0/A1/A2 在 R5 三审前仍阻塞 |
+| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5 subject `e77a8635…` 因 `P1=1 / P2=3 / blocking=4` 失效；R6 verification PASS，freeze pending | human seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维 9/9、controls 3/3；Node 56/56 + verifier 1/1 + Java 1/1（5 executed）；seal `70339354…` 为 evaluation pass pending audit，`providerAdmissionEstablished=false`；A0/A1/A2 继续阻塞 |
 | `TASK-034` | L3 | Formal R7 与 Core subject 已通过并进入主线；父任务保持 active 等待 Milestone 最终跨 TASK 审计 | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED 的限定样本门禁不变 |
 | `TASK-036` | L3 | B1/B2/C1/C2/D1/D2 随 PR #37 进入主线；D2 required-block identity 已通过最终 Core 三审 | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket seam 可供 holdout 使用 |
 
@@ -44,9 +45,10 @@ Core source diff 排除了 Provider A0、standing/CC 审计传输、A1/A2/A3 与
   100%，DeepSeek 在 4 个 CONFLICTED packet 上语义不一致，四个语义维度均为 55.56%。
   seal `520d7b38…` 已终态验证；同一 claim 不得重试或改写。
 - ADR-026 / TASK-EVAL-006 已获明确批准：去除 model-facing input 中的 runtime routing/
-  diagnostic label，先执行 4-call 受控诊断；4/4 后才允许新的独立 12-packet admission。
-  第六套现已完成 Codex/DeepSeek 六维 9/9 与 controls 3/3，seal `2d879b13…` 建立
-  Provider admission；R5 verification/freeze/三方全零 GO 前 A0/A1/A2 仍保持阻塞。
+  diagnostic label，先执行 4-call 受控诊断；4/4 后才允许新的独立 12-packet evaluation。
+  第六套已完成 Codex/DeepSeek 六维 9/9 与 controls 3/3，但这只证明
+  `modelEvaluationPassed=true`；完整 verification、新 freeze、三方全零 GO 与 CI 内容
+  一致性完成前 `providerAdmissionEstablished=false`，A0/A1/A2 仍保持阻塞。
 
 失败 holdout challenge `TBH2-fac56106204c4b93a11befc577369360` 的 12 条人工 decisions 已封印；
 model input `bd402b40…` 与 9×1 call set `8c63e377…` 已按 standing grant 派生。

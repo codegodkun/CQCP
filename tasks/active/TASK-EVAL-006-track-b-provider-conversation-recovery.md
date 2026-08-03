@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `ADMISSION_REVALIDATED` / `R5_REPAIR_VERIFICATION_PASS` / `FREEZE_PENDING`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R6_VERIFICATION_PASS` / `FREEZE_PENDING`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -133,8 +133,9 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
 
 ## 当前待确认
 
-- 无人工门禁待确认。R0-R4 已完成；standing grant 覆盖 R5 的合规审计调用。
-- A0/A1/A2 仍等待 R5 完整验证、immutable freeze 与三方全零 GO，不因 admission 单独解锁。
+- 无人工门禁待确认。R0-R4 已完成；standing grant 覆盖后续合规审计调用。
+- A0/A1/A2 仍等待 R6 immutable freeze、三方全零 GO 与 CI 内容一致性；当前
+  `providerAdmissionEstablished=false`，不因模型评测 9/9 单独解锁。
 
 ## 阶段完成记录
 
@@ -170,7 +171,7 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   12 条 proposedExpected。confirmation `814e8146…`、human seal `0f23b9eb…`，封印早于
   model input/evaluator/network access。
 
-### R4：唯一正式 admission GO
+### R4：唯一正式模型评测 9/9（Provider admission 尚未建立）
 
 - 冻结 model input `bb8984ed…`、call set `1121a345…`、dispatch `a427e052…`、derived
   receipt `aa716878…`；精确 9×1 calls，3 controls zero-call。
@@ -178,11 +179,13 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   `600a821a…`、opinion `e863596a…`，9 calls 全部 strict schema accepted、零自动重试，
   未持久化 raw response/reasoning/Secret。
 - 本地解盲后两位 evaluator 的 schema、可靠 anchor、role、candidate、anchor、abstention
-  全部 9/9，controls 3/3；report `395c0d38…`、seal `2d879b13…`，状态
-  `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`，`providerAdmissionEstablished=true`。
-- 该 GO 只允许进入 R5；A0/A1/A2 在 verification/freeze/三方全零 GO 前仍禁止。
+  全部 9/9，controls 3/3；report `395c0d38…`、seal `2d879b13…` 原样保留。该历史 seal
+  提前写入的 `providerAdmissionEstablished=true` 未满足 ADR-026 第 4、5 项，因此不构成
+  生效准入事实。
+- 该评测 GO 只允许进入 R5；A0/A1/A2 在 verification/freeze/三方全零 GO 与 CI 内容
+  一致性前仍禁止。
 
-### R5：首次审计 NO-GO 与有限修复 verification PASS / freeze pending
+### R5：两次审计 NO-GO 与失效 subject 保留
 
 - 首次 freeze subject `9dddbe43…` 的 CC AUDIT 为全零 GO；测试/安全 Codex auditor 为
   `NO_GO / P1=1 / P2=1 / blocking=1`，代码/架构 auditor 中止。旧报告不得组合通过，
@@ -191,20 +194,37 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   seam。新 evaluator 以 claim `0c0ea838…` 在零文件 readiness 后启动，launch receipt
   `aa7330fb…`、opinion `84215a87…`、completion receipt `2b2edaf4…`；其隔离目录只有
   claim/launch/model-input/prompt 四文件。DeepSeek claim/opinion 未重跑、未改写。
-- revalidated report `659e423a…`、seal `927eb673…` 为
+- revalidated report `659e423a…`、seal `927eb673…` 曾记录
   `SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED`；Codex/DeepSeek 六维仍为 9/9，
   controls 3/3，`deepSeekNetworkCallRepeated=false`。
 - 新 Java test 逐字比较 source 经 `RuntimeEvidencePacketBuilder` 构建的 12 个 packet 与
   corpus，并核对 identity/admission/anchor；`--rerun-tasks` 为 `5 executed`，JUnit 1/1。
-- 最终 R5 修复验证：Node `54/54`、verification builder `1/1`、Java `1/1`、新 seal verify、Secret-like/raw Provider/
+- R5 修复验证：Node `54/54`、verification builder `1/1`、Java `1/1`、新 seal verify、Secret-like/raw Provider/
   CR/diff 均为 0；console manifest 与 verification result 已保存于
   `outputs/task-eval-006/track-b-recovery-v1/verification-v2/`。
   三个纯 harness 失败原始日志按分类保留，不作为通过证据。
-- 下一步仅创建 clean commit、新 immutable freeze 和三份全新同 hash 审计；A0/A1/A2
-  仍禁止。
+- 新 freeze subject `e77a8635…` 的首个代码/架构 auditor 返回
+  `NO_GO / P1=1 / P2=3 / blocking=4`；测试/安全 auditor 依硬门禁中止，CC transport
+  未形成报告。该 subject、manifest 与三份失败/中断状态证据原样保留，不得组合通过。
+
+### R6：四项审计 finding 限定修复
+
+- Codex v4 opinion 顶层使用 exact-field-set，额外 `finding` 或 `verdict` 必须 fail closed；
+  新负向回归覆盖两种字段。
+- revalidation 从旧 admission seal 重算 model input、call set、dispatch、receipt 与 DeepSeek
+  claim/opinion hash；任一不一致 fail closed，新负向回归覆盖两个 DeepSeek identity。
+- 更正后的 report `efba63ff…`、seal `70339354…` 状态为
+  `SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`，明确
+  `modelEvaluationPassed=true / providerAdmissionEstablished=false /
+  admissionDecisionPendingAudit=true`；旧 DeepSeek bytes 未重跑、未改写。
+- ARCHITECTURE 已把 ADR-026 记录为 TASK-EVAL-005 后唯一第六套例外并禁止第七套；任务
+  地图改用当前 R6 事实。
+- 完整 R6 verification 为 Node `56/56`、verification builder `1/1`、Java seam `1/1`
+  且 Gradle `5 executed`；更正后的 seal 原字节 verify、Secret-like/raw Provider/CR/diff
+  门禁均通过。新 freeze 与三审尚未完成。
 
 ## Next Task Handoff
 
-- 当前在 R5 freeze 前：创建 clean commit 并冻结 immutable subject；再派发一个全新
+- 当前在 R6 freeze 前：创建 clean commit 和全新 immutable subject；再派发一个全新
   CC AUDIT 与两个全新 `fork_turns="none"`、
   `gpt-5.6-sol/xhigh` Codex auditors。任一失败立即停止，不组合旧 GO。

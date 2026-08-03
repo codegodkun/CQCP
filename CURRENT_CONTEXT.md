@@ -1,24 +1,24 @@
 # CURRENT_CONTEXT.md
 
-更新时间：2026-08-03
+更新时间：2026-08-04
 
 ## 当前阶段
 
-> 2026-08-03 最新事实（替代本节后续较早的 R5 pending 叙事）：TASK-EVAL-006 首次
-> freeze subject `9dddbe43…` 的 CC AUDIT 为全零 GO，但测试/安全 Codex auditor 因
-> “Codex 盲评访问时序不可独立证明”和“Java seam 未直接覆盖 recovery-v1”给出
-> `NO_GO / P1=1 / P2=1 / blocking=1`；代码/架构 auditor 随即中止，旧三审不能组合通过。
-> 项目负责人批准最小修复后，全新 `fork_turns=none`、`gpt-5.6-sol/xhigh` evaluator
-> 先完成零文件读取 readiness，再只读四文件隔离目录；claim `0c0ea838…`、launch receipt
-> `aa7330fb…`、opinion `84215a87…`、completion receipt `2b2edaf4…` 已封存。DeepSeek
-> claim/opinion `600a821a… / e863596a…` 原字节复用且未重跑；新 admission seal
-> `927eb673…` 为 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED`。新增 Java
-> `TrackBProviderRecoveryRuntimeContractTest` 逐字比较 12 个 recovery runtime packet，
-> `--rerun-tasks` 与 JUnit XML 均为 1/1。R5 修复验证现为 Node `54/54`、verification
-> builder `1/1`、Java `1/1`、
-> Secret-like/raw Provider/CR/diff 均为 0；verification result 已保存于
-> `outputs/task-eval-006/track-b-recovery-v1/verification-v2/verification-result.json`。当前等待
-> clean commit、新 immutable freeze 与三份全新全零 GO 审计；A0/A1/A2 仍禁止。
+> 2026-08-04 最新事实（替代本节后续较早的 R5 叙事）：TASK-EVAL-006 R5 repair 的
+> freeze subject `e77a8635…` 已被全新代码/架构 auditor 判定
+> `NO_GO / P1=1 / P2=3 / blocking=4`；测试/安全 auditor 依门禁中止，CC transport 未形成
+> 报告，该轮不能组合通过。四项 finding 为：Codex v4 opinion 顶层未 exact-field-set、
+> DeepSeek reuse 未从旧 seal 验证 claim/opinion hash、ARCHITECTURE/ADR/admission 状态冲突、
+> MVP task map 使用旧测试/seal 事实。失败 freeze、NO_GO 与中断记录已保留。
+> R6 限定修复现已落地：额外 `finding/verdict` 顶层字段 fail closed；旧 seal 与实际
+> DeepSeek claim/opinion hash 不一致 fail closed；ARCHITECTURE 明确 ADR-026 是第五套失败
+> 后唯一第六套例外且禁止第七套；更正后的 report/seal 为 `efba63ff… / 70339354…`，状态
+> `SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`，明确
+> `modelEvaluationPassed=true / providerAdmissionEstablished=false /
+> admissionDecisionPendingAudit=true`。DeepSeek claim/opinion `600a821a… / e863596a…` 未重跑、
+> 未改写。R6 完整 verification 已通过：Node `56/56`、verification builder `1/1`、
+> Java seam `1/1` 且 Gradle `5 executed`，更正后 seal verify 与 Secret/raw Provider/CR/diff
+> 门禁均通过；当前等待 clean commit、新 freeze 和三方审计，A0/A1/A2 仍禁止。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -54,8 +54,9 @@ admission 固定 `NOT_ESTABLISHED`，同一 claim 不得重试。项目负责人
 建立不含 runtime routing/diagnostic label 的 model-facing EvidencePacket projection v3，
 先执行旧 4 个 CONFLICTED packet 的 4-call non-admission diagnostic；4/4 后才允许第六套
 独立 12-packet corpus、人工先封印与唯一 9×1 admission。该恢复 admission 现已全维
-100% 封印为 GO；当前真实状态为 `ADMISSION_ESTABLISHED / R5_VERIFICATION_PENDING`，
-A0/A1/A2 在本 recovery integration unit 完整验证、冻结和三方全零 GO 前继续阻塞。当前基线为
+100% 的模型评测结果；当前真实状态为
+`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R6_REPAIR_ACTIVE`，A0/A1/A2 在本
+recovery integration unit 完整验证、冻结、三方全零 GO 与 CI 内容一致性前继续阻塞。当前基线为
 `origin/master@115be530480e2ff9b92a7076b2668c066a44ae5c`。
 
 TASK-EVAL-006 R1/R2 已完成：model-facing projection/prompt/schema/request builder v3

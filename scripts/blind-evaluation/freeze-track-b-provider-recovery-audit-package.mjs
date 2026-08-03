@@ -149,7 +149,7 @@ export async function freezeTrackBProviderRecoveryAuditPackage({
   assert.equal(verification.value.status, "PASS");
   assert.equal(
     verification.value.providerAdmission,
-    "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE"
+    "PENDING_THREE_PARTY_AUDIT_AND_CI"
   );
   assert.equal(
     verification.value.networkCallPerformedByRepair,

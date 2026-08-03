@@ -1,6 +1,6 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-admission-report-v2",
-  "status": "GO_9_OF_9_PLUS_3_ZERO_CALL",
+  "status": "GO_9_OF_9_PLUS_3_ZERO_CALL_PENDING_AUDIT",
   "completedAt": "2026-08-03T15:15:20.723Z",
   "purpose": "TRACK_B_EVALUATION",
   "evaluatorPolicy": "FRESH_ISOLATED_CODEX_REVALIDATION_AND_REUSED_SEALED_DEEPSEEK_ALL_DIMENSIONS_100_PERCENT",
@@ -248,7 +248,7 @@
     }
   ],
   "modelProducedFindingOrVerdict": false,
-  "providerAdmissionEstablished": true,
+  "providerAdmissionEstablished": false,
   "verificationAndAuditAllowed": true,
   "a0A1A2ImplementationAllowed": false,
   "previousAdmissionSealPath": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json",
@@ -277,5 +277,7 @@
   },
   "deepSeekEvidenceReused": true,
   "deepSeekNetworkCallRepeated": false,
-  "deepSeekClaimRepeated": false
+  "deepSeekClaimRepeated": false,
+  "modelEvaluationPassed": true,
+  "admissionDecisionPendingAudit": true
 }

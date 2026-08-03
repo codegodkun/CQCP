@@ -175,3 +175,23 @@ test("fails closed when evaluation starts before the launch receipt", () => {
     /opinion\.startedAt/
   );
 });
+
+test("fails closed on any top-level Finding or verdict field", () => {
+  for (const forbiddenField of ["finding", "verdict"]) {
+    const value = fixture();
+    const opinion = JSON.parse(value.opinionBytes);
+    opinion[forbiddenField] = "forbidden";
+    assert.throws(
+      () =>
+        buildCodexRevalidationCompletionReceipt({
+          modelInputBytes: value.modelInputBytes,
+          humanGroundTruthBytes: value.humanBytes,
+          claimBytes: value.claimBytes,
+          launchReceiptBytes: value.launchBytes,
+          opinionBytes: bytes(opinion),
+          receivedAt: "2026-08-03T10:06:00.000Z"
+        }),
+      /exact field set/
+    );
+  }
+});
