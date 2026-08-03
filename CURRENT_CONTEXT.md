@@ -34,7 +34,11 @@
 > 发现 verification 使用的脚本工作区字节为 CRLF、Git blob 为 LF，因此未创建 subject；现已用精确
 > `.gitattributes` 规则固定该脚本为 LF，并在相同语义下重跑全套门禁。最终 verification result
 > `1805feb1…`、console manifest `8aba6687…`、evidence `37`，并保留 R5/R6 两轮失败审计和本次
-> freeze-precondition 失败记录。当前等待 clean commit、新 freeze 和三方重审，A0/A1/A2 仍禁止。
+> freeze-precondition 失败记录。随后生成的新 freeze subject `47d84299…`、manifest `e83c7be5…`
+> 自校验通过，但三审中测试/安全 Codex auditor 发现 `P0=1 / blocking=1`：仓库外 CC package
+> 把完整 diff 作为 `allowed-subject.diff` 发送，重新暴露了声明为 hash-only exclusion 的人工
+> ground truth/comparison 内容。CC 的全零 GO 因隔离失效而作废，代码/架构 auditor 已中断无 verdict。
+> 当前按硬门禁停止，不自动修复或重审；A0/A1/A2 仍禁止。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以

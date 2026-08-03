@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R6_CC_AUDIT_NO_GO` / `R7_VERIFICATION_PASS` / `FREEZE_PENDING`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R7_THREE_PARTY_AUDIT_NO_GO` / `P0_CC_PACKAGE_ISOLATION`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -260,6 +260,10 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
 
 ## Next Task Handoff
 
-- 当前在 R7 freeze 前：形成 clean commit 和全新 immutable subject；再派发一个全新
-  CC AUDIT 与两个全新 `fork_turns="none"`、
-  `gpt-5.6-sol/xhigh` Codex auditors。任一失败立即停止，不组合旧 GO。
+- R7 新 freeze subject `47d84299…`、manifest `e83c7be5…` 已验证；测试/安全 Codex auditor
+  返回 `NO_GO / P0=1 / blocking=1`。仓库外 CC builder 把完整 diff 放进隔离包，导致三个
+  hash-only exclusion 和其他历史 ground-truth/review 内容通过 `allowed-subject.diff` 再暴露；
+  `excludedEvidenceContentAbsent=true` 不成立。CC GO 已失效，代码/架构 auditor 被中断且无 verdict。
+- 当前强制停止：不修复、不重新 freeze、不重审、不 push/PR/CI，不启动 A0/A1/A2。若用户批准
+  下一轮，最小范围仅为移除完整 content diff、建立 allowlist-only diff/inventory 与全包 fail-closed
+  forbidden-content 扫描，然后生成新 package 并从头三审；不得复用本轮任何 verdict。
