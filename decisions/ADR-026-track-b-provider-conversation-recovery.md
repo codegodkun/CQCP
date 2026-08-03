@@ -181,6 +181,10 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   auditor 因 TASK 实时门禁仍指向已失败 R6 而返回 `NO_GO / P2=1 / blocking=1`，测试/安全
   auditor 中断。本轮只影响三审门禁，不改变本 ADR 的模型职责、PUBLIC disabled/unbound、
   admission pending 或 A0/A1/A2 禁止边界；旧 verdict 不得复用。
+- R10 只纠正 R9 指出的 TASK 实时门禁，并把 R9 五项失败 evidence 加入 verifier；定向测试按
+  `4 != 5` RED→GREEN。该修复没有新增架构决策，也不改变模型输入、意见、seal、Provider、
+  PUBLIC binding 或 runtime；完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、
+  evidence `53`，最终 identity 由 freeze manifest 外部绑定。新 freeze 与三份全新审计仍是下一门禁。
 
 ## 关联
 

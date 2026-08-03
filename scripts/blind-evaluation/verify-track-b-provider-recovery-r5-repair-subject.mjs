@@ -57,6 +57,18 @@ const R8_CODE_AUDIT =
   `${R8_FAILED_AUDIT_ROOT}/codex-code-architecture-audit-interrupted.md`;
 const R8_TEST_AUDIT =
   `${R8_FAILED_AUDIT_ROOT}/codex-test-security-audit-interrupted.md`;
+const R9_FAILED_AUDIT_ROOT =
+  `${VERIFY_ROOT}/audit/` +
+  "freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2";
+const R9_FAILED_MANIFEST = `${R9_FAILED_AUDIT_ROOT}/manifest.json`;
+const R9_AUDIT_STATUS = `${R9_FAILED_AUDIT_ROOT}/audit-round-status.json`;
+const R9_CC_AUDIT = `${R9_FAILED_AUDIT_ROOT}/cc-audit-go.md`;
+const R9_CODE_AUDIT =
+  `${R9_FAILED_AUDIT_ROOT}/codex-code-architecture-audit-no-go.md`;
+const R9_TEST_AUDIT =
+  `${R9_FAILED_AUDIT_ROOT}/codex-test-security-audit-interrupted.md`;
+const TASK_EVAL_006 =
+  "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md";
 const PASS_LOGS = Object.freeze([
   ["node-phase-appropriate", `${VERIFY_ROOT}/node-tests-phase-appropriate.console.log`],
   ["java-recovery-runtime", `${VERIFY_ROOT}/java-track-b-recovery-runtime.console.log`],
@@ -127,6 +139,12 @@ const EVIDENCE_PATHS = Object.freeze([
   R8_CC_STATUS,
   R8_CODE_AUDIT,
   R8_TEST_AUDIT,
+  R9_FAILED_MANIFEST,
+  R9_AUDIT_STATUS,
+  R9_CC_AUDIT,
+  R9_CODE_AUDIT,
+  R9_TEST_AUDIT,
+  TASK_EVAL_006,
   `${OUTPUT_ROOT}/verification/secret-and-provider-leak-scan.console.log`
 ]);
 
@@ -385,6 +403,74 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
     (await read(R8_TEST_AUDIT)).toString("utf8"),
     /INTERRUPTED_NO_VERDICT/
   );
+  const r9FailedManifestBytes = await read(R9_FAILED_MANIFEST);
+  const r9FailedManifest = parseJsonBytesRejectDuplicateKeys(
+    r9FailedManifestBytes
+  );
+  assert.equal(
+    sha256(r9FailedManifestBytes),
+    "d791a0539e9b1bc16d9ab073a55c91e869faddae6aa699b5e9c181e363ee4b45"
+  );
+  assert.equal(
+    r9FailedManifest.subjectIdentity,
+    "e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2"
+  );
+  assert.equal(
+    r9FailedManifest.subject.headCommit,
+    "140b9a3a288e3d48e3e3d635a9d02b7b7e53945c"
+  );
+  assert.equal(
+    r9FailedManifest.subject.tree,
+    "224feded66d46cbd816d4c82f0098a6f7826e4b9"
+  );
+  assert.equal(r9FailedManifest.subject.changedPathCount, 330);
+  assert.equal(r9FailedManifest.subject.evidenceCount, 70);
+  assert.equal(
+    r9FailedManifest.subject.fullDiffSha256,
+    "81d48f4e4d0ab7e387fb23bd3b4b01549719cf95285b1d03047eff5e96df44cf"
+  );
+  const r9AuditStatus = parseJsonBytesRejectDuplicateKeys(
+    await read(R9_AUDIT_STATUS)
+  );
+  assert.equal(r9AuditStatus.overallStatus, "NO_GO");
+  assert.equal(r9AuditStatus.p0, 0);
+  assert.equal(r9AuditStatus.p1, 0);
+  assert.equal(r9AuditStatus.p2, 1);
+  assert.equal(r9AuditStatus.blocking, 1);
+  assert.equal(
+    r9AuditStatus.ccAudit,
+    "GO_INVALIDATED_BY_CODE_ARCHITECTURE_P2"
+  );
+  assert.equal(r9AuditStatus.codexCodeArchitectureAudit, "NO_GO");
+  assert.equal(
+    r9AuditStatus.codexTestSecurityAudit,
+    "INTERRUPTED_NO_VERDICT"
+  );
+  assert.equal(
+    r9AuditStatus.failureClassification,
+    "GOVERNANCE_TASK_STATE_CONTRADICTION"
+  );
+  assert.match(
+    (await read(R9_CC_AUDIT)).toString("utf8"),
+    /INVALIDATED_BY_CODE_ARCHITECTURE_P2/
+  );
+  assert.match(
+    (await read(R9_CODE_AUDIT)).toString("utf8"),
+    /Verdict: `NO_GO`/
+  );
+  assert.match(
+    (await read(R9_TEST_AUDIT)).toString("utf8"),
+    /INTERRUPTED_NO_VERDICT/
+  );
+  const taskEval006 = (await read(TASK_EVAL_006)).toString("utf8");
+  assert.doesNotMatch(
+    taskEval006,
+    /A0\/A1\/A2 仍等待 R6 immutable freeze/
+  );
+  assert.match(
+    taskEval006,
+    /A0\/A1\/A2 仍等待修复后唯一新 immutable subject 的三方全零 GO 与 CI 内容一致性/
+  );
 
   const consoleManifest = {
     schemaVersion:
@@ -478,6 +564,19 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
         ccAuditBlocking: 1,
         testSecurityAuditStatus: "INTERRUPTED_NO_VERDICT",
         failureClassification: "GOVERNANCE_DOCUMENT_FRESHNESS"
+      },
+      {
+        subjectIdentity:
+          "e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2",
+        manifestPath: R9_FAILED_MANIFEST,
+        codeArchitectureAuditVerdict: "NO_GO",
+        codeArchitectureAuditP0: 0,
+        codeArchitectureAuditP1: 0,
+        codeArchitectureAuditP2: 1,
+        codeArchitectureAuditBlocking: 1,
+        ccAuditVerdict: "GO_INVALIDATED_BY_CODE_ARCHITECTURE_P2",
+        testSecurityAuditStatus: "INTERRUPTED_NO_VERDICT",
+        failureClassification: "GOVERNANCE_TASK_STATE_CONTRADICTION"
       }
     ],
     publicProfileDisabledUnbound: true,

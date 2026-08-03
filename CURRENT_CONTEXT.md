@@ -62,6 +62,12 @@
 > `NO_GO / P2=1 / blocking=1`；测试/安全 auditor 随即中断。因此 R9 整轮失效，CC GO
 > 不得复用。该 finding 属于治理任务状态正确性，不是评测、Provider、runtime seam 或 Secret
 > 安全问题；当前按硬门禁停止，未 push/PR/CI，未启动 A0/A1/A2。
+> 持续目标下一轮 R10 只纠正该 R6 实时门禁，并把 R9 manifest、round status、CC invalidated
+> GO、代码/架构 NO_GO 与测试/安全中断原字节加入 verifier。定向测试先以失败轮数 `4 != 5`
+> RED，加入第五轮断言并禁止旧 R6 文本后 GREEN。完整 verification 为 Node `56/56`、Java
+> seam `1/1` 且 `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；evidence `53`、
+> runs `7`，最终 result/console identity 由随后 freeze manifest 外部绑定。未修改 corpus、seal、模型意见、
+> Java seam、Provider、PUBLIC binding 或产品 runtime；clean commit 与新 freeze 待执行。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -580,10 +586,9 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 下一步
 
-1. 下一轮仅纠正 TASK-EVAL-006 第 137 行的实时门禁，并把 R9 manifest、CC invalidated GO、
-   代码/架构 NO_GO、测试/安全中断及 round status 机器绑定进 verification；不得改模型输入、
-   意见、人工 seal、Provider 边界或产品 runtime。
-2. 强制完整 verification 后形成新 clean HEAD，再生成并验证唯一新 immutable freeze 与安全
+1. R10 单点修复、定向 RED→GREEN 与完整 verification 已完成；形成新 clean HEAD，不得改
+   模型输入、意见、人工 seal、Provider 边界或产品 runtime。
+2. 生成并验证唯一新 immutable freeze 与安全
    CC 包；发生验证失败、身份漂移或 forbidden-content hit 立即停止。
 3. 对该新 subject 从头派发 CC AUDIT 与两个全新
    `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO

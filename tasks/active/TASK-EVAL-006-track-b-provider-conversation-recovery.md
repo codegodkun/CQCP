@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R9_AUDIT_NO_GO_P2_1`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R10_VERIFICATION_PASS` / `FREEZE_PENDING`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -134,7 +134,7 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
 ## 当前待确认
 
 - 无人工门禁待确认。R0-R4 已完成；standing grant 覆盖后续合规审计调用。
-- A0/A1/A2 仍等待 R6 immutable freeze、三方全零 GO 与 CI 内容一致性；当前
+- A0/A1/A2 仍等待修复后唯一新 immutable subject 的三方全零 GO 与 CI 内容一致性；当前
   `providerAdmissionEstablished=false`，不因模型评测 9/9 单独解锁。
 
 ## 阶段完成记录
@@ -309,9 +309,21 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   不可复用的 R6 freeze。测试/安全 auditor 随即中断无 verdict；CC GO 作废且不得跨轮复用。
   本轮按硬门禁停止，未修该 finding、未 push/PR/CI、未启动 A0/A1/A2。
 
+### R10：R9 单一治理状态 finding 限定修复
+
+- 唯一直接修复是把“等待 R6 immutable freeze”纠正为“等待修复后唯一新 immutable subject”；
+  不改变三方全零 GO、CI 内容一致性、admission pending 或 A0/A1/A2 禁止门禁。
+- verification builder 新增 R9 manifest、round status、CC invalidated GO、代码/架构 NO_GO、
+  测试/安全中断五项原字节与身份断言，并把失败轮次从 4 增至 5；同时断言旧 R6 实时门禁文本
+  不得再次出现。
+- 定向测试按 `4 != 5` RED 后 GREEN。完整 verification 为 Node `56/56`、Java seam `1/1`
+  且 Gradle `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；evidence `53`、runs
+  `7`，最终 result/console identity 由随后生成的 freeze manifest 外部绑定。未修改 corpus、人工 seal、
+  Codex/DeepSeek opinion、Java seam、Provider、PUBLIC binding 或产品 runtime；新 freeze 待执行。
+
 ## Next Task Handoff
 
 - R9 subject `e566c8d2…` 已因任务状态矛盾 `P2=1 / blocking=1` 失效并完整保留。
-- 下一轮仅允许纠正第 137 行的实时门禁并机器绑定 R9 失败证据；之后强制完整 verification、
-  新 clean subject 与三份全新审计。任何旧 verdict 都不得复用；全零 GO 前不 push/PR/CI，
+- R10 单点修复、定向 RED→GREEN 与完整 verification 已完成；下一步形成新 clean
+  subject 与三份全新审计。任何旧 verdict 都不得复用；全零 GO 前不 push/PR/CI，
   不启动 A0/A1/A2。

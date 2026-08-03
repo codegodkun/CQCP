@@ -497,6 +497,10 @@ paths、70 evidence；安全 CC 包 82 files、sums `9a769043…`、forbidden-co
 返回全零 GO，但代码/架构 auditor 因 TASK 实时门禁仍指向已失败 R6 而返回
 `NO_GO / P2=1 / blocking=1`，测试/安全 auditor 中断。整轮失效，正式 admission 仍 pending；
 该治理状态 finding 不改变模型评测 GO、PUBLIC disabled/unbound 或后端最终裁判边界。
+R10 只将 TASK 实时门禁从已失败 R6 改为等待修复后唯一新 immutable subject，并让 verifier
+原字节绑定 R9 manifest、round status 与三份审计状态；失败轮数 `4 != 5` RED 后 GREEN。
+完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、evidence `53`，最终 identity
+由 freeze manifest 外部绑定；新 freeze 与三方重审前，admission 仍 pending，A0/A1/A2 仍禁止。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

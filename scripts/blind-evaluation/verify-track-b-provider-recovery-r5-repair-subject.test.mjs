@@ -23,7 +23,7 @@ test("builds PASS only from fresh chronology, executed recovery seam, and reused
     "PENDING_THREE_PARTY_AUDIT_AND_CI"
   );
   assert.equal(result.verification.previousFailedFreezePreserved, true);
-  assert.equal(result.verification.failedAuditRoundsPreserved.length, 4);
+  assert.equal(result.verification.failedAuditRoundsPreserved.length, 5);
   assert.equal(
     result.verification.failedAuditRoundsPreserved[0].codeArchitectureVerdict,
     "NO_GO"
@@ -71,6 +71,26 @@ test("builds PASS only from fresh chronology, executed recovery seam, and reused
   assert.equal(
     result.verification.failedAuditRoundsPreserved[3].failureClassification,
     "GOVERNANCE_DOCUMENT_FRESHNESS"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[4].subjectIdentity,
+    "e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[4].ccAuditVerdict,
+    "GO_INVALIDATED_BY_CODE_ARCHITECTURE_P2"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[4].codeArchitectureAuditVerdict,
+    "NO_GO"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[4].codeArchitectureAuditP2,
+    1
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[4].failureClassification,
+    "GOVERNANCE_TASK_STATE_CONTRADICTION"
   );
   assert.equal(result.verification.a0A1A2ImplementationAllowed, false);
   assert.equal(result.consoleManifest.failedHarnessEvidence.length, 3);

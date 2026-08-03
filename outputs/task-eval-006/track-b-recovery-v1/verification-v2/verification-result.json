@@ -1,7 +1,7 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-verification-result-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T18:23:26.699Z",
+  "completedAt": "2026-08-03T18:56:24.947Z",
   "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
   "providerAdmission": "PENDING_THREE_PARTY_AUDIT_AND_CI",
   "networkCallPerformedByRepair": false,
@@ -15,7 +15,7 @@
     "codexEvaluationCompletedAt": "2026-08-03T15:12:08.8699951Z",
     "codexCompletionReceivedAt": "2026-08-03T15:13:24.771Z",
     "admissionResealedAt": "2026-08-03T15:15:20.723Z",
-    "verificationCompletedAt": "2026-08-03T18:23:26.699Z"
+    "verificationCompletedAt": "2026-08-03T18:56:24.947Z"
   },
   "metrics": {
     "node": "56/56",
@@ -29,7 +29,7 @@
     "gitDiffCheckExitCode": 0
   },
   "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/console-manifest.json",
-  "consoleManifestSha256": "cd563436d580302b9e8f4dacfc1d22b91d78bae6fdc3b9bdd6f828b346dd5d65",
+  "consoleManifestSha256": "234c156f24f86c8a456f91f058283415d3ed3244379787c8b49f940b406f38ae",
   "evidence": [
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
@@ -262,6 +262,36 @@
       "sha256": "56735d5cb57b641913becc55b9ad5595cba474158015c0a69707aaa8eddf091f"
     },
     {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/manifest.json",
+      "size": 64100,
+      "sha256": "d791a0539e9b1bc16d9ab073a55c91e869faddae6aa699b5e9c181e363ee4b45"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/audit-round-status.json",
+      "size": 902,
+      "sha256": "6feb8f820c739cf6b727bd61f7ae8f045289720aba2628cccaa26460c648f8ab"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/cc-audit-go.md",
+      "size": 1463,
+      "sha256": "8a18e6dd58c535cb6d436635e6d745ca142b71a5c013813ac80a128c0e103d9c"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/codex-code-architecture-audit-no-go.md",
+      "size": 2339,
+      "sha256": "429597b1392b7f4d3589af4504ddfc26c7ef9ed1adf65eea04607659804ea9ba"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/codex-test-security-audit-interrupted.md",
+      "size": 456,
+      "sha256": "d706babfc8739944c36bef4114007bb21d95c6a470352468a67f3c270d90a7ea"
+    },
+    {
+      "path": "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md",
+      "size": 20707,
+      "sha256": "df589b40784c1200a54d533f65e0d01dad59e46dc66112f155af98916e1fd18b"
+    },
+    {
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
       "size": 72,
       "sha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
@@ -312,6 +342,18 @@
       "ccAuditBlocking": 1,
       "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT",
       "failureClassification": "GOVERNANCE_DOCUMENT_FRESHNESS"
+    },
+    {
+      "subjectIdentity": "e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-e566c8d2e987b2508c24083f1307765c3150722e9a39f66cdb5c7c08f14433a2/manifest.json",
+      "codeArchitectureAuditVerdict": "NO_GO",
+      "codeArchitectureAuditP0": 0,
+      "codeArchitectureAuditP1": 0,
+      "codeArchitectureAuditP2": 1,
+      "codeArchitectureAuditBlocking": 1,
+      "ccAuditVerdict": "GO_INVALIDATED_BY_CODE_ARCHITECTURE_P2",
+      "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "failureClassification": "GOVERNANCE_TASK_STATE_CONTRADICTION"
     }
   ],
   "publicProfileDisabledUnbound": true,

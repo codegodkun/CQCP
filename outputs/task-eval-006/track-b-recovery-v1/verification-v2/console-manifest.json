@@ -1,13 +1,13 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-console-manifest-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T18:23:26.699Z",
+  "completedAt": "2026-08-03T18:56:24.947Z",
   "runs": [
     {
       "name": "node-phase-appropriate",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/node-tests-phase-appropriate.console.log",
-      "size": 4783,
-      "sha256": "ebcba4003416f71b9764e95a72afdb7a18f0fee03b55f497fc25435554589cbe",
+      "size": 4774,
+      "sha256": "47fafd4afc89ed31f1f5de12fabe0c41b8da3138eafeb7f3a83c035824a11c06",
       "exitCode": 0
     },
     {
@@ -21,7 +21,7 @@
       "name": "java-recovery-junit",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.junit.xml",
       "size": 543,
-      "sha256": "6f52aac94a978c978e23c38bae68730903111b21b13a9ee1346fca93617b5bfb",
+      "sha256": "a192bfee7acccf385736ac2c7687d97d3e0c139992fb045c1725382ce8e24dad",
       "exitCode": 0
     },
     {
@@ -42,7 +42,7 @@
       "name": "line-endings",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/line-endings.console.log",
       "size": 36,
-      "sha256": "8c9beb044b0dbcfc36ee8f3f50a56407c4faf57021364108c1229219f4007ee8",
+      "sha256": "e1c0010d6a1eba1ea018c27dcafb1443501604c3bd076811fb00c2187d2ede7d",
       "exitCode": 0
     },
     {

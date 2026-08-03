@@ -20,8 +20,9 @@ BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套模型评
 治理文档仍引用 pre-freeze diagnostic 而由 CC 返回 `P2=1 / blocking=1`。R9 同步 R8
 正式事实并绑定第四轮失败 evidence，完整 verification 通过；其新 subject 又因 TASK 实时
 门禁仍指向已失败 R6 而由代码/架构 auditor 返回 `P2=1 / blocking=1`，CC GO 作废。
-Milestone 当前为
-`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R9_AUDIT_NO_GO_P2_1`：
+R10 已对该单一治理 finding 完成定向 RED→GREEN，并机器绑定 R9 五项失败证据；完整
+verification 已通过，新 freeze 待执行。Milestone 当前为
+`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R10_VERIFICATION_PASS / FREEZE_PENDING`：
 
 | 任务 | Task Level | 当前状态 | 当前边界 |
 |---|---|---|---|
@@ -31,7 +32,7 @@ Milestone 当前为
 | `TASK-EVAL-003` | L3 | 12 条人工 decisions/seal 已冻结；Codex 9/9 accepted；DeepSeek 第 1 个 call `AUTHENTICATION_FAILED` 并终态 BLOCKED | claim 已消费、未解盲且不得重试；Provider admission `NOT_ESTABLISHED`，A0/A1/A2 保持阻塞 |
 | `TASK-EVAL-004` | L3 | human seal 已冻结；唯一 DeepSeek claim 在第 8 个 call schema invalid 终态 BLOCKED；未解盲、不得重试 | call set 9×1/controls=3；claim `62a7451e…`、blocked receipt `8b113c74…`；Provider admission NOT_ESTABLISHED，A0/A1/A2 阻塞 |
 | `TASK-EVAL-005` | L3 | 唯一 9×1 DeepSeek 执行 schema 9/9 accepted；解盲后 DeepSeek 4 个 CONFLICTED packet mismatch，历史终态 `SEALED_NO_GO_MODEL_MISMATCH` | 旧 claim 不重试；未来恢复边界由 ADR-026 部分替代 |
-| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5-R9 失效；R9 verification PASS 后正式 subject 因任务实时门禁矛盾 `P2=1 / blocking=1` | R9 subject `e566c8d2…` / manifest `d791a053…` 为 330 paths / 70 evidence，CC 包 82 files / sums `9a769043…` / leak 0；CC 全零 GO 被代码/架构 NO_GO 作废，测试/安全中断。下一轮仅纠正 TASK 第 137 行并绑定 R9 失败证据；`providerAdmissionEstablished=false`，A0/A1/A2 继续阻塞 |
+| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5-R9 失效；R10 单一任务状态修复与完整 verification PASS / freeze pending | R10 将实时门禁改为等待修复后唯一新 subject，verifier 绑定第五轮失败证据且 `4 != 5` RED→GREEN；Node 56/56 + Java 1/1（5 executed）/ evidence 53，最终 verification identity 由 freeze manifest 外部绑定。未改模型/Provider；`providerAdmissionEstablished=false`，A0/A1/A2 继续阻塞 |
 | `TASK-034` | L3 | Formal R7 与 Core subject 已通过并进入主线；父任务保持 active 等待 Milestone 最终跨 TASK 审计 | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED 的限定样本门禁不变 |
 | `TASK-036` | L3 | B1/B2/C1/C2/D1/D2 随 PR #37 进入主线；D2 required-block identity 已通过最终 Core 三审 | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket seam 可供 holdout 使用 |
 
