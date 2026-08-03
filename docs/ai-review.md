@@ -475,6 +475,14 @@ verification builder `1/1`、Secret/raw Provider、CR=0 与 diff 门禁全绿。
 前置校验因 verification 脚本工作区 CRLF/Git blob LF 不一致而在创建 subject 前停止；精确
 LF 属性修复并强制全量重跑后的 verification result `1805feb1…`、console manifest
 `8aba6687…`，仍只放行新 freeze 与三方重审。
+R7 subject `47d84299…` 的三审随后发现新的 package isolation P0：完整 full diff 绕过
+hash-only exclusion，将 ground truth/comparison text patch 放入 CC 包，因此 CC GO 失效。
+R8 限定修复移除 full content diff，仅发送 status/path/base+HEAD Git blob OID/size inventory；
+仓库外 fail-closed verifier 对 72 个包文件扫描 12 个禁止路径的 HEAD blob 与逐 path diff 表示，
+共 24 项均无命中。该 diagnostic 不构成审计 GO；正式 admission 仍等待新 verification、freeze、
+CC 与两个全新 Codex auditor 全零 GO及 CI 内容一致性。R8 正式 verification 已达到 Node
+`56/56`、Java `1/1` 且 `5 executed`、Secret/raw Provider/CR/diff/builder 全绿；result
+`3297f5c3…`、console `50288e22…`、evidence `42`，当前只放行 clean commit 和新 freeze。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

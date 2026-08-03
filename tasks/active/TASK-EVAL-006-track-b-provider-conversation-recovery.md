@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R7_THREE_PARTY_AUDIT_NO_GO` / `P0_CC_PACKAGE_ISOLATION`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R8_VERIFICATION_PASS` / `FREEZE_PENDING`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -258,12 +258,30 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
 - 本轮不修改 corpus、human decisions、model input、Codex/DeepSeek opinion、report/seal
   结论、Java runtime seam 或 Provider 边界；不重跑 DeepSeek、不启动 A0/A1/A2。
 
+### R8：CC package content isolation 限定修复
+
+- R7 subject `47d84299…` / manifest `e83c7be5…` 的测试/安全 Codex auditor 返回
+  `NO_GO / P0=1 / blocking=1`：仓库外 builder 又把完整 full diff 写入
+  `allowed-subject.diff`，使 hash-only excluded ground truth/comparison 及历史人工答案以
+  text patch 重新进入 CC 包。CC GO 因此失效，代码/架构 auditor 中断无 verdict；失败轮次
+  已写入 `audit-round-status.json` 并只读保留。
+- R8 只修仓库外一次性 builder：删除完整 content diff，改为 320 项
+  status/path/base+HEAD Git blob OID/size inventory；full diff 只保留 SHA identity。新增仓库外
+  fail-closed verifier，扫描包内每个文件，禁止 12 个 ground-truth/review/comparison path 的
+  HEAD blob 与逐 path full diff 表示出现。
+- 旧错误包定向 RED；修复后两次离线 diagnostic GREEN。最终诊断包 72 files、57 included、
+  3 hash-only excluded、5 source context，package sums `798c551c…`；12 个禁止路径 × 2 种
+  表示、全包 72 files 扫描为 `leakCount=0`。builder/verifier SHA 分别为
+  `76dcd3fa… / a28d2e0e…`。
+- 正式 verification 增加对 R7 manifest、NO_GO、失效 CC GO、中断状态与 audit status 的
+  原字节绑定；定向测试按 RED→GREEN 通过。完整 R8 verification 为 Node `56/56`、Java
+  `1/1` 且 `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；console manifest
+  `50288e22…`、result `3297f5c3…`、evidence `42`、runs `7`。新 clean candidate/freeze
+  尚未形成，未启动新审计。
+
 ## Next Task Handoff
 
-- R7 新 freeze subject `47d84299…`、manifest `e83c7be5…` 已验证；测试/安全 Codex auditor
-  返回 `NO_GO / P0=1 / blocking=1`。仓库外 CC builder 把完整 diff 放进隔离包，导致三个
-  hash-only exclusion 和其他历史 ground-truth/review 内容通过 `allowed-subject.diff` 再暴露；
-  `excludedEvidenceContentAbsent=true` 不成立。CC GO 已失效，代码/架构 auditor 被中断且无 verdict。
-- 当前强制停止：不修复、不重新 freeze、不重审、不 push/PR/CI，不启动 A0/A1/A2。若用户批准
-  下一轮，最小范围仅为移除完整 content diff、建立 allowlist-only diff/inventory 与全包 fail-closed
-  forbidden-content 扫描，然后生成新 package 并从头三审；不得复用本轮任何 verdict。
+- R8 最小修复的离线 diagnostic、verification-builder RED→GREEN 与完整 verification 已完成。
+  下一步形成 clean commit 后生成唯一新 freeze 和新安全 CC 包。
+- 对新 subject 从头运行 CC 与两个全新 `fork_turns=none / gpt-5.6-sol / xhigh` auditor；
+  不复用 R7 verdict。任一 finding 仍立即停止；全零 GO 后才允许 push/PR/CI/merge。

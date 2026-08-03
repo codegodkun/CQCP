@@ -39,6 +39,12 @@
 > 把完整 diff 作为 `allowed-subject.diff` 发送，重新暴露了声明为 hash-only exclusion 的人工
 > ground truth/comparison 内容。CC 的全零 GO 因隔离失效而作废，代码/架构 auditor 已中断无 verdict。
 > 当前按硬门禁停止，不自动修复或重审；A0/A1/A2 仍禁止。
+> 项目负责人持续目标授权随后放行 R8 最小恢复：旧错误包定向 RED；仓库外一次性 builder 已删除
+> full content diff，改为 320 项 hash-only changed-path inventory，并由独立仓库外 verifier 扫描
+> 72 个包文件、12 个禁止路径的 HEAD blob/逐 path diff 共 24 种表示，`leakCount=0`。诊断包
+> sums `798c551c…`，builder/verifier `76dcd3fa… / a28d2e0e…`。正式 verification 现绑定 R7
+> 全部失败证据并全绿：Node `56/56`、Java `1/1` 且 `5 executed`，console `50288e22…`、
+> result `3297f5c3…`、evidence `42`。clean candidate、freeze 与三审待执行。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -546,10 +552,10 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 当前阻塞项
 
-1. TASK-EVAL-006 的模型评测已重验证为 GO，但 R6 subject `a9daf62f…` 因 CC audit
-   projection transport 的 `P0=1 / P2=1` 失败；因此正式 admission 仍未建立，A0/A1/A2
-   仍无资格。
-2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…` 的失败/中断/NO_GO freeze 与报告
+1. TASK-EVAL-006 的模型评测已重验证为 GO，但 R7 subject `47d84299…` 因 CC package
+   content isolation `P0=1 / blocking=1` 失败；R8 修复尚未完成正式 verification/三审，
+   因此正式 admission 仍未建立，A0/A1/A2 仍无资格。
+2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…`、`47d84299…` 的失败/中断/NO_GO freeze 与报告
    必须只读保留，不得与后续报告组合通过。
 3. TASK-EVAL-002~005 的历史 BLOCKED/NO-GO claim、opinion、report、seal 均不可重试或
    改写；本次修复没有重跑 DeepSeek、创建第七套 corpus 或改变这些历史终态。
@@ -558,9 +564,10 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 下一步
 
-1. 将 R7 transport/CR diagnostic、`a9daf62f…` 失败 freeze 与三份审计终态、完整 PASS
-   verification evidence 形成 clean commit；不修改模型输入、意见、人工 seal 或 Provider 边界。
-2. 对 clean HEAD 生成并验证唯一新 immutable freeze；发生身份漂移立即停止。
+1. 将已完成的 R8 verification 与 R7 失败轮次 evidence 形成 clean candidate；不修改模型输入、
+   意见、人工 seal 或 Provider 边界。
+2. 对 clean HEAD 生成并验证唯一新 immutable freeze，并用 R8 builder/verifier 生成安全 CC 包；
+   发生身份漂移或任何 forbidden-content hit 立即停止。
 3. 对同一新 subject 从头派发 CC AUDIT 与两个全新
    `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO
    不得组合。

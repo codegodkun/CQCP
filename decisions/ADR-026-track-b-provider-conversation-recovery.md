@@ -158,6 +158,14 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   因 verification 脚本工作区 CRLF/Git blob LF 不一致而未创建 subject；精确 LF 属性修复并
   强制全量重跑后的结果为 `1805feb1…`、console `8aba6687…`。新 freeze/三审/CI 前
   admission 仍 pending，A0/A1/A2 仍禁止。
+- R7 subject `47d84299…` 的正式三审发现 `P0=1 / blocking=1`：隔离包完整 full diff
+  绕过 hash-only exclusion，重新包含人工 ground truth/comparison text patch；CC GO 失效，
+  另一 Codex audit 中断。R8 仍在本 ADR 的一次性仓库外 builder 边界内修复：删除 content
+  diff，仅保留 changed-path Git identity inventory，并 fail closed 扫描全部包文件中 12 个
+  禁止路径的 blob/逐 path diff 表示。两次离线 diagnostic 为 leak 0；这不替代新正式
+  verification、freeze、三方全零 GO 或 CI。R8 正式 verification 随后为 Node `56/56`、
+  Java `1/1` 且 `5 executed`、Secret/raw Provider/CR/diff/builder 全绿；result `3297f5c3…`、
+  console `50288e22…`、evidence `42`，admission 仍 pending。
 
 ## 关联
 
