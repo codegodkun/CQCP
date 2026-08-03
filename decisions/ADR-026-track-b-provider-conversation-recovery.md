@@ -122,6 +122,14 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   admission seal `2d879b13…`，状态 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。
 - 该 GO 尚未满足本 ADR 第 4、5 项恢复条件：R5 immutable freeze、三方全零 GO 与 CI
   仍待完成，因此 A0/A1/A2 尚未解锁。
+- 首次 R5 subject `9dddbe43…` 因 Codex evaluator 时序证据不足和 Java seam 未直接覆盖
+  recovery-v1 被独立审计拒绝。项目负责人批准的有限修复不改变本 ADR 的 Provider、
+  payload、模型职责或网络预算：新 `fork_turns=none / gpt-5.6-sol/xhigh` evaluator 由
+  human seal 之后创建的 execution claim、零文件 readiness、launch/completion receipt
+  绑定，只读隔离目录；DeepSeek claim/opinion 原字节复用且不重跑。
+- revalidated admission seal `927eb673…` 与 `verification-v2/verification-result.json` 已 PASS；
+  Java recovery seam JUnit 1/1 且 Gradle 5 tasks executed。仍须新 immutable freeze 与
+  三份全新全零 GO 审计，A0/A1/A2 继续禁止。
 
 ## 关联
 

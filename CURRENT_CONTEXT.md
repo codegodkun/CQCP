@@ -4,6 +4,22 @@
 
 ## 当前阶段
 
+> 2026-08-03 最新事实（替代本节后续较早的 R5 pending 叙事）：TASK-EVAL-006 首次
+> freeze subject `9dddbe43…` 的 CC AUDIT 为全零 GO，但测试/安全 Codex auditor 因
+> “Codex 盲评访问时序不可独立证明”和“Java seam 未直接覆盖 recovery-v1”给出
+> `NO_GO / P1=1 / P2=1 / blocking=1`；代码/架构 auditor 随即中止，旧三审不能组合通过。
+> 项目负责人批准最小修复后，全新 `fork_turns=none`、`gpt-5.6-sol/xhigh` evaluator
+> 先完成零文件读取 readiness，再只读四文件隔离目录；claim `0c0ea838…`、launch receipt
+> `aa7330fb…`、opinion `84215a87…`、completion receipt `2b2edaf4…` 已封存。DeepSeek
+> claim/opinion `600a821a… / e863596a…` 原字节复用且未重跑；新 admission seal
+> `927eb673…` 为 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED`。新增 Java
+> `TrackBProviderRecoveryRuntimeContractTest` 逐字比较 12 个 recovery runtime packet，
+> `--rerun-tasks` 与 JUnit XML 均为 1/1。R5 修复验证现为 Node `54/54`、verification
+> builder `1/1`、Java `1/1`、
+> Secret-like/raw Provider/CR/diff 均为 0；verification result 已保存于
+> `outputs/task-eval-006/track-b-recovery-v1/verification-v2/verification-result.json`。当前等待
+> clean commit、新 immutable freeze 与三份全新全零 GO 审计；A0/A1/A2 仍禁止。
+
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
 显式仓库外 Secret 证明官方 endpoint、`deepseek-v4-flash` 与
@@ -503,43 +519,30 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 - `tasks/active/TASK-EVAL-003-track-b-successor-admission.md`
 - `tasks/active/TASK-EVAL-004-track-b-final-independent-admission.md`
 - `tasks/active/TASK-EVAL-005-track-b-schema-stability-and-fifth-admission.md`
+- `tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md`
 - `tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`
 - `tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`
 
 ## 当前阻塞项
 
-1. 旧 18-packet run-v3 已解盲为 `NO_GO_MODEL_MISMATCH`，只能作为历史回归，不能
-   再用于独立 admission。
-2. 新 12-packet holdout 的一次性 DeepSeek claim 已因第二个 call schema invalid
-   进入终态 `BLOCKED`；同一 holdout 不得重试、调 prompt、换模型或补跑剩余 calls。
-3. Provider admission 仍为 `NOT_ESTABLISHED`；A0/A1/A2 不得以 Core 合并、Track A
-   表现或 connectivity 成功替代 Track B admission。
-4. successor 人工封印已经完成，但唯一正式 DeepSeek claim 因认证失败终态 BLOCKED；
-   同一 successor 不得重试或解盲。ADR-024 只批准 TASK-EVAL-004 的全新独立机会，
-   不恢复或改写该 claim。
-5. TASK-EVAL-004 的最终独立 claim 也已因第 8 个 call schema invalid 终态 BLOCKED；
-   Provider admission 固定为 `NOT_ESTABLISHED`，同一 claim 不得重试。ADR-025 新批准
-   仅覆盖独立 schema 诊断和一次第五套 admission，不改写该终态；A0/A1/A2 不得启动。
-6. TASK-EVAL-005 已终态 `SEALED_NO_GO_MODEL_MISMATCH`：diagnosis 24/24 只证明 schema
-   稳定性，正式 DeepSeek 在 4 个 CONFLICTED packet 的语义维度不满足 100%；Provider
-   admission `NOT_ESTABLISHED`。同一 claim 不得重试，历史证据不得改写。
-7. ADR-022 standing grant 未撤销；ADR-026 / TASK-EVAL-006 已给出新的有限调用资格，
-   上限为 4 个恢复诊断 calls + 9 个正式 admission calls。当前仍未 admission GO，
-   因此 A0/A1/A2 继续无资格。
+1. TASK-EVAL-006 的 recovery admission 已重验证为 GO，但尚未形成新的 clean immutable
+   subject，也尚未取得 CC AUDIT 与两个全新 Codex auditor 的同一 hash 全零 GO；因此
+   A0/A1/A2 仍无资格。
+2. 首次 subject `9dddbe43…` 的测试/安全审计 NO_GO 与旧 freeze manifest 必须只读保留，
+   不得与后续报告组合通过。
+3. TASK-EVAL-002~005 的历史 BLOCKED/NO-GO claim、opinion、report、seal 均不可重试或
+   改写；本次修复没有重跑 DeepSeek、创建第七套 corpus 或改变这些历史终态。
+4. PUBLIC profile 继续 `EVALUATION / disabled / unbound`；模型不得直接生成或改变
+   Finding/verdict。未完成新三审、CI、PR/merge 门禁前不得进入 Provider runtime。
 
 ## 下一步
 
-1. 只读保留 TASK-EVAL-004 的 human seal、dispatch、Codex opinion、DeepSeek claim 与
-   terminal blocked receipt；不得重试或解盲。
-2. 只读保留第五套 human seal、dispatch、两份 blind opinion、claim、unblind report/seal；
-   不得重试或改写。其语义内容只可经 v3 投影用于 ADR-026 明确的 4-call non-admission
-   diagnostic，不恢复旧 claim。
-3. 第六套 corpus/challenge 已冻结；等待项目负责人绑定 challenge `328f4349…`、corpus
-   `3a988a9a…`、review draft `8edd0ea4…` 确认或修改 12 条 proposedExpected。
-4. 项目负责人绑定实际 hash 确认 12 条人工 decisions 前，不得创建正式 evaluator/model
-   input、dispatch、claim 或执行 Provider admission；正式 admission 与三方全零 GO 前
-   不启动 A0/A1/A2。
-5. 旧终态证据保存 subject `d08d1508f7349d6747e07e239001254396a20d9f` 及其审计仅作
-   历史证据；受审范围已因 ADR-026 改变，后续不得复用其 GO/NO-GO 组合收口。
+1. 将当前 R5 修复内容形成 clean commit，并把首次失败 freeze manifest 一并只读保存。
+2. 对新 HEAD 生成并验证唯一新 immutable freeze；发生身份漂移立即停止。
+3. 对同一新 subject 从头派发 CC AUDIT 与两个全新
+   `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO
+   不得组合。
+4. 只有三份均 `GO / P0=P1=P2=blocking=0` 后才按既有授权 push、PR、CI/merge；
+   A0/A1/A2 仍须等待该门禁完成。
 
 不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

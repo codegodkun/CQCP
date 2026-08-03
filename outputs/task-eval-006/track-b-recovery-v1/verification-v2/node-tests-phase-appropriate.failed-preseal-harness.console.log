@@ -1,0 +1,79 @@
+✔ rejects private, mapped, NAT64, 6to4 and documentation addresses (6.1158ms)
+✔ rejects a mixed public and private DNS answer set (2.3523ms)
+✔ accepts one validated address family when the other DNS query times out (0.952ms)
+✔ fails closed when both DNS address-family queries fail (0.3288ms)
+✔ absolute DNS deadline rejects a hung resolver and invokes cancellation (39.261ms)
+✔ uses the OS resolver only when c-ares returns no address (0.6635ms)
+✔ OS resolver fallback still rejects a mixed public and private set (0.5692ms)
+✔ pinned lookup never performs a second DNS lookup or accepts host drift (0.6119ms)
+✔ HTTPS transport pins address while retaining hostname and TLS SNI (1.3532ms)
+✔ models transport is a pinned GET without request body or redirects (0.5359ms)
+✔ validated DNS answers are deduplicated and canonically sorted (0.6968ms)
+✔ TLS verification bypass environment fails before request creation (1.261ms)
+✔ HTTPS transport aborts responses above one MiB (0.774ms)
+✔ absolute transport deadline aborts a connection that never responds (36.9631ms)
+✔ absolute transport deadline is not extended by a slow-drip response (30.7765ms)
+✔ expired stage deadline fails before request creation (1.6233ms)
+✔ freeze manifest binds one immutable subject and three fresh zero-finding audits (3.4065ms)
+✔ accepts only the exact user standing grant boundary (6.824ms)
+✔ rejects standing-grant weakening: revocation (2.1335ms)
+✔ rejects standing-grant weakening: redirect (2.0907ms)
+✔ rejects standing-grant weakening: proxy (1.1312ms)
+✔ rejects standing-grant weakening: raw response (0.7951ms)
+✔ rejects standing-grant weakening: unknown side effect retry (0.8451ms)
+✔ rejects standing-grant weakening: missing receipt binding (1.2171ms)
+✔ rejects standing-grant weakening: extra model (1.2394ms)
+✔ revalidates admission with fresh Codex chronology and no DeepSeek rerun (19.6117ms)
+✔ seals GO only when both blind evaluators are 9/9 on all dimensions and controls are 3/3 zero-call (16.1983ms)
+✔ one semantic mismatch deterministically seals NO_GO (7.2716ms)
+✔ seals 4/4 recovery only when every semantic dimension matches the prior human decisions (12.7922ms)
+✔ freezes nine eligible calls and three explicit zero-call controls (14.0143ms)
+✔ formal model payload is v3-only and excludes labels, ground truth, and verdicts (5.0909ms)
+✔ human seal predates dispatch and every hash binding is exact (4.7484ms)
+✔ formal admission preflight validates all frozen bytes without network (17.2235ms)
+✔ formal runner performs exactly nine calls and never persists raw reasoning (56.6418ms)
+✔ unknown side effect writes terminal evidence and retries zero times (48.9468ms)
+✔ binds human seal before claim, fresh readiness, launch, opinion, and completion (8.2428ms)
+✔ fails closed when evaluation starts before the launch receipt (6.9074ms)
+✔ builds a sixth 5 MEDIUM + 4 CONFLICTED + 3 zero-call corpus with new identities (11.8605ms)
+✔ is disjoint from all five prior corpora and both diagnostic input sets (11.5451ms)
+✔ freezes exactly four projected diagnostic calls and a standing-grant receipt before network (13.5474ms)
+✔ recovery human seal uses the frozen TASK-EVAL-006 profile (0.7256ms)
+✔ confirmation remains hash-bound and model-dark (0.1836ms)
+✔ accepts one strict positive role/candidate/anchor opinion for the projected packet (6.4779ms)
+✔ accepts the exact opinion field set regardless of JSON property order (2.1502ms)
+✔ fails closed on duplicate JSON keys, non-stop completion, or untrusted anchor selection (1.6515ms)
+✖ recovery corpus is disjoint, human-pending, and model-dark (14.0233ms)
+✔ projects an eligible runtime packet to the exact model-facing semantic contract (6.5476ms)
+✔ fails closed before projection when runtime eligibility or reliable evidence is incomplete (2.3223ms)
+✔ rejects any model-facing field drift instead of forwarding routing metadata (2.2413ms)
+✔ builds one strict v3 request whose user content is only the semantic projection (5.7326ms)
+✔ rejects prompt drift before constructing a provider request (2.0025ms)
+✔ preflight recomputes every frozen diagnostic artifact without network (13.2065ms)
+✔ runs four calls once and persists only strict accepted opinions plus hashes (35.9109ms)
+✔ writes a terminal receipt and performs no retry after an unknown HTTP side effect (31.2858ms)
+✔ builds PASS only from the sealed admission and all successful bounded consoles (20.4659ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 54
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 483.4564
+
+✖ failing tests:
+
+test at scripts\blind-evaluation\track-b-provider-recovery-preseal.test.mjs:19:1
+✖ recovery corpus is disjoint, human-pending, and model-dark (14.0233ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-recovery-preseal.test.mjs:68:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

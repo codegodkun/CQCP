@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-verification-result-v1",
+  "status": "PASS",
+  "completedAt": "2026-08-03T15:42:40.286Z",
+  "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
+  "providerAdmission": "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE",
+  "networkCallPerformedByRepair": false,
+  "deepSeekNetworkCallRepeated": false,
+  "chronology": {
+    "humanGroundTruthConfirmedAt": "2026-08-03T10:01:58.500Z",
+    "codexExecutionClaimedAt": "2026-08-03T15:07:25.275Z",
+    "freshAgentReadyAt": "2026-08-03T15:08:26.528Z",
+    "launchReceiptRecordedAt": "2026-08-03T15:10:21.240Z",
+    "codexEvaluationStartedAt": "2026-08-03T15:11:03.1150072Z",
+    "codexEvaluationCompletedAt": "2026-08-03T15:12:08.8699951Z",
+    "codexCompletionReceivedAt": "2026-08-03T15:13:24.771Z",
+    "admissionResealedAt": "2026-08-03T15:15:20.723Z",
+    "verificationCompletedAt": "2026-08-03T15:42:40.286Z"
+  },
+  "metrics": {
+    "node": "54/54",
+    "javaRecoveryRuntimeSeam": "1/1",
+    "codexAdmission": "9/9",
+    "deepSeekAdmission": "9/9",
+    "zeroCallControls": "3/3",
+    "secretLikeMatches": 0,
+    "forbiddenProviderPayloadMatches": 0,
+    "filesContainingCR": 0,
+    "gitDiffCheckExitCode": 0
+  },
+  "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/console-manifest.json",
+  "consoleManifestSha256": "c263561623455710901d933e83c4e1f929cf32013dda08da9c74095ae01dbaea",
+  "evidence": [
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
+      "size": 6343,
+      "sha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/model-input.json",
+      "size": 20945,
+      "sha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/provider-call-set.json",
+      "size": 3923,
+      "sha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/dispatch.json",
+      "size": 2817,
+      "sha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/derived-egress-receipt.json",
+      "size": 2086,
+      "sha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-execution-claim.json",
+      "size": 898,
+      "sha256": "600a821a25641b8d875e696d79191b986f77d39571a778c9670a5af9cde5929d"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-opinion.json",
+      "size": 8752,
+      "sha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-report.json",
+      "size": 8511,
+      "sha256": "395c0d3871d4f4aed637ad61174381c248bb42bf03fd0839c85778f12a6f71f5"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json",
+      "size": 1286,
+      "sha256": "2d879b139715ca7646a95e035747891a14b38ab545302a899ef2ca6376651b04"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/readiness-instruction.txt",
+      "size": 338,
+      "sha256": "35fb33a6f3ab25ba72294786db0bebc347e67998f0e00fce2080de647b270c7f"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/readiness-response.json",
+      "size": 88,
+      "sha256": "23ed003e9641ec88b2696b9898c1fdb18387ca49f43030203cfc83afa8fef319"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/evaluation-instruction.txt",
+      "size": 1461,
+      "sha256": "16de5bc3200099df19756e2195a0a572cff137603cbf7c5dc9aef145c51140d3"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/execution-claim.json",
+      "size": 1999,
+      "sha256": "0c0ea8381d0fd01d4ed5491d6020912c299337373f5eb193bd40ef8c1a90b4be"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/launch-receipt.json",
+      "size": 922,
+      "sha256": "aa7330fb99cd2e97f3a6ef69be809512bfb67ef7ab256145793cc53ae0d5e0f6"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/codex-opinion.json",
+      "size": 3082,
+      "sha256": "84215a87f469cd3c1b17222a8ba910de6543944ec775ba9f9b0367d3e50fb31e"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/completion-receipt.json",
+      "size": 853,
+      "sha256": "2b2edaf406aa8e8a7ad5f62737f5ff45860dff586a0008cf08e3a60ddb2f8779"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-report-v2.json",
+      "size": 9962,
+      "sha256": "659e423ae8cfd0b29817a9aceca7b82237a0d75f2fc45bf170bdce94ac1d0bc5"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-revalidation-v1/admission-seal-v2.json",
+      "size": 1900,
+      "sha256": "927eb6737e5a568739afc3df786afd054926aa5fc1e642c5b0629fb0c573154c"
+    },
+    {
+      "path": "apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TrackBProviderRecoveryRuntimeContractTest.java",
+      "size": 11062,
+      "sha256": "fa13c494d3ec6c128d5dfce69715c222f5d59fa7e433664b7ac54ead212b5ce9"
+    },
+    {
+      "path": "scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.mjs",
+      "size": 9953,
+      "sha256": "a7857f92c303ce54caa70629e9b9ae8d088d6e9bd3f401509ca553a508c016ec"
+    },
+    {
+      "path": "scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.test.mjs",
+      "size": 5672,
+      "sha256": "14df8fcd08dfbc2f082c3c13735e373a01c65a3e7aea95e9967586999f97f477"
+    },
+    {
+      "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-codex-revalidation.mjs",
+      "size": 8557,
+      "sha256": "97d916cd562cf434a4327d6374a0a8d7bf192410f0c0576484a1eeed1b43cf71"
+    },
+    {
+      "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs",
+      "size": 7444,
+      "sha256": "3eed26d75a6810380d95c5c78b53e51cfc963bfdbd4b46590daaaf625da5838e"
+    },
+    {
+      "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.test.mjs",
+      "size": 2320,
+      "sha256": "9eb53d56bd0f8808fb7515089c2c74dc33386ee298a3d1baf661043c1a05bd44"
+    },
+    {
+      "path": "scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1",
+      "size": 6472,
+      "sha256": "4528b8d49ca9d77176e53df861c8fe540ae6aa9df4d03711bd3d0dd35bc6f0f1"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification/audit/freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json",
+      "size": 45307,
+      "sha256": "083855b60c16407649e439c3f5e61d48841408c7c7a284bdd8d6d79d0c797f9b"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
+      "size": 72,
+      "sha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
+    }
+  ],
+  "previousFailedFreezePreserved": true,
+  "previousFailedFreezePath": "outputs/task-eval-006/track-b-recovery-v1/verification/audit/freeze-9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d/manifest.json",
+  "publicProfileDisabledUnbound": true,
+  "modelProducedOrChangedFindingVerdict": false,
+  "a0A1A2ImplementationAllowed": false,
+  "productionReadyClaimed": false,
+  "task028Unlocked": false,
+  "task031Unlocked": false,
+  "task032Unlocked": false
+}

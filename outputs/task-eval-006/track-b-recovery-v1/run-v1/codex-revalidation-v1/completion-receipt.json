@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "task-eval-006-fresh-codex-blind-revalidation-completion-receipt-v1",
+  "status": "SEALED_FRESH_BLIND_REVALIDATION_OUTPUT",
+  "receivedAt": "2026-08-03T15:13:24.771Z",
+  "executionClaimSha256": "0c0ea8381d0fd01d4ed5491d6020912c299337373f5eb193bd40ef8c1a90b4be",
+  "launchReceiptSha256": "aa7330fb99cd2e97f3a6ef69be809512bfb67ef7ab256145793cc53ae0d5e0f6",
+  "opinionSha256": "84215a87f469cd3c1b17222a8ba910de6543944ec775ba9f9b0367d3e50fb31e",
+  "agentId": "/root/recovery_blind_revalidation",
+  "canonicalTaskName": "/root/recovery_blind_revalidation",
+  "modelInputSha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81",
+  "humanGroundTruthSealSha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315",
+  "opinionCount": 9,
+  "networkCallPerformed": false,
+  "deepSeekRerunPerformed": false
+}

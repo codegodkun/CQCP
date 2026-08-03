@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `ADMISSION_ESTABLISHED` / `R5_FREEZE_PENDING`
+状态：ACTIVE / `ADMISSION_REVALIDATED` / `R5_REPAIR_VERIFICATION_PASS` / `FREEZE_PENDING`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -182,15 +182,26 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`，`providerAdmissionEstablished=true`。
 - 该 GO 只允许进入 R5；A0/A1/A2 在 verification/freeze/三方全零 GO 前仍禁止。
 
-### R5：bounded verification PASS / freeze pending
+### R5：首次审计 NO-GO 与有限修复 verification PASS / freeze pending
 
-- phase-appropriate Node `70/70`、verification builder unit `1/1`、Java Track B runtime
-  seam `1/1`；admission seal 原字节重建一致。
-- 61 个 hash-bound 文本文件 CR=0，实际 KEY 泄漏文件=0、禁止 Provider payload 文件=0，
-  `git diff --check=0`。全历史 Node glob 不是 fresh worktree 独立入口，失败日志只作为
-  non-gating harness 诊断保留，不替代明确列出的 phase-appropriate suite。
-- 最终 verification result/console manifest 已重建并复验 PASS；下一步创建 clean commit
-  并冻结 immutable subject。尚未派发三审，A0/A1/A2 仍禁止。
+- 首次 freeze subject `9dddbe43…` 的 CC AUDIT 为全零 GO；测试/安全 Codex auditor 为
+  `NO_GO / P1=1 / P2=1 / blocking=1`，代码/架构 auditor 中止。旧报告不得组合通过，
+  旧 freeze manifest 原样保留。
+- 项目负责人批准只修复两项原因：Codex evaluator 独立可验证时序和 recovery-v1 Java
+  seam。新 evaluator 以 claim `0c0ea838…` 在零文件 readiness 后启动，launch receipt
+  `aa7330fb…`、opinion `84215a87…`、completion receipt `2b2edaf4…`；其隔离目录只有
+  claim/launch/model-input/prompt 四文件。DeepSeek claim/opinion 未重跑、未改写。
+- revalidated report `659e423a…`、seal `927eb673…` 为
+  `SEALED_GO_TRACK_B_RECOVERY_ADMISSION_REVALIDATED`；Codex/DeepSeek 六维仍为 9/9，
+  controls 3/3，`deepSeekNetworkCallRepeated=false`。
+- 新 Java test 逐字比较 source 经 `RuntimeEvidencePacketBuilder` 构建的 12 个 packet 与
+  corpus，并核对 identity/admission/anchor；`--rerun-tasks` 为 `5 executed`，JUnit 1/1。
+- 最终 R5 修复验证：Node `54/54`、verification builder `1/1`、Java `1/1`、新 seal verify、Secret-like/raw Provider/
+  CR/diff 均为 0；console manifest 与 verification result 已保存于
+  `outputs/task-eval-006/track-b-recovery-v1/verification-v2/`。
+  三个纯 harness 失败原始日志按分类保留，不作为通过证据。
+- 下一步仅创建 clean commit、新 immutable freeze 和三份全新同 hash 审计；A0/A1/A2
+  仍禁止。
 
 ## Next Task Handoff
 

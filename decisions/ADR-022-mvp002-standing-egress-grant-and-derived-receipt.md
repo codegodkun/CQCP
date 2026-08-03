@@ -135,3 +135,6 @@ Track B 或 Provider 失败时不得放宽本 ADR，应按阶段停止规则记�
   TASK-EVAL-006 有限恢复。standing grant 继续有效；新范围至多 4 个恢复诊断 calls 与
   9 个正式 admission calls，均须派生实际 hash-bound receipt。A0/A1/A2 在 admission
   GO 前仍无调用资格。
+- 2026-08-03：TASK-EVAL-006 R5 审计修复只重跑隔离 Codex evaluator，不产生新的
+  Provider 网络调用；既有 DeepSeek claim `600a821a…` 与 opinion `e863596a…` 原字节
+  复用。standing grant 未被扩张，也未授权重试一次性 DeepSeek claim。

@@ -448,6 +448,14 @@ candidate、anchor、abstention 均为 9/9，3 个 controls 全部 zero-call；a
 `2d879b13…` 为 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。该结论只建立 EVALUATION shadow
 资格：模型仍不得生成或改变 Finding/verdict，PUBLIC profile 仍 disabled/unbound；完整
 verification、immutable freeze 与三方全零 GO 前不得启动 A0/A1/A2。
+
+TASK-EVAL-006 首次 R5 freeze 后，独立审计指出原 Codex opinion 只有“未读人工答案”的
+自述，缺少 evaluator 启动/访问时序证据；同时旧 Java 测试只覆盖 holdout-v1。有限修复
+使用 human seal 之后预创建的 execution claim、全新 `fork_turns=none` evaluator 的
+零文件 readiness、隔离四文件 allowlist、launch/completion receipt 形成可重建时间链；
+DeepSeek 正式 claim/opinion 不重跑。新增 recovery-v1 Java test 通过真实
+`RuntimeEvidencePacketBuilder` 逐字核对 12 个 packet、identity、admission 与 anchor。
+该修复 verification 已通过，但新三方全零 GO 前仍不启动 A0/A1/A2。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

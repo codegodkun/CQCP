@@ -1,0 +1,1359 @@
+{
+  "schemaVersion": "task-eval-006-track-b-provider-recovery-audit-freeze-v1",
+  "status": "FROZEN_READY_FOR_THREE_PARTY_READ_ONLY_AUDIT",
+  "createdAt": "2026-08-03T10:40:30.839Z",
+  "subjectIdentity": "9dddbe43748c4fe8ff957f2a97f91ab27466432110ed9f3ef6cc8374c748258d",
+  "subject": {
+    "schemaVersion": "task-eval-006-track-b-provider-recovery-audit-subject-v1",
+    "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
+    "baseCommit": "115be530480e2ff9b92a7076b2668c066a44ae5c",
+    "headCommit": "54e4784896d83cc373e285ee139cd5d634163427",
+    "tree": "87bfa42b66a8c6db9cf43754e3478825a8b1d9dc",
+    "statusBeforeFreezeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "changedPathCount": 278,
+    "changedPathRecords": [
+      {
+        "status": "M",
+        "path": ".gitattributes"
+      },
+      {
+        "status": "M",
+        "path": ".gitignore"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/java/com/cqcp/apiserver/reviewengine/TrackBHoldoutRuntimeContractTest.java"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-fifth-v1/proposed-decisions.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-fifth-v1/source-signals.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-final-v1/proposed-decisions.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-final-v1/source-signals.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-holdout-v1/proposed-decisions.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-holdout-v1/source-signals.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-recovery-v1/proposed-decisions.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-recovery-v1/source-signals.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-successor-v1/proposed-decisions.json"
+      },
+      {
+        "status": "A",
+        "path": "apps/api-server/src/test/resources/track-b-successor-v1/source-signals.json"
+      },
+      {
+        "status": "M",
+        "path": "changelog/2026-08.md"
+      },
+      {
+        "status": "M",
+        "path": "CURRENT_CONTEXT.md"
+      },
+      {
+        "status": "M",
+        "path": "decisions/ADR-019-blind-evaluation-and-model-activation-boundary.md"
+      },
+      {
+        "status": "A",
+        "path": "decisions/ADR-022-mvp002-standing-egress-grant-and-derived-receipt.md"
+      },
+      {
+        "status": "A",
+        "path": "decisions/ADR-023-track-b-successor-independent-admission.md"
+      },
+      {
+        "status": "A",
+        "path": "decisions/ADR-024-track-b-connectivity-gate-and-final-independent-admission.md"
+      },
+      {
+        "status": "A",
+        "path": "decisions/ADR-025-track-b-schema-stability-diagnosis-and-fifth-admission.md"
+      },
+      {
+        "status": "A",
+        "path": "decisions/ADR-026-track-b-provider-conversation-recovery.md"
+      },
+      {
+        "status": "M",
+        "path": "decisions/README.md"
+      },
+      {
+        "status": "M",
+        "path": "docs/ai-review.md"
+      },
+      {
+        "status": "M",
+        "path": "docs/ARCHITECTURE.md"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/corpus.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/human-confirmation-challenge.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/human-confirmation.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/human-ground-truth-review.md"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/human-ground-truth.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/human-review-draft.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/preseal-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/blocked/deepseek-blocked-2026-08-02T14-50-48.468Z-52484.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/codex-agent-raw.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/codex-execution-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/codex-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/deepseek-execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/derived-egress-authorization-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/model-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-002/track-b-holdout-v1/run-v1/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/corpus.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/human-confirmation-challenge.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/human-confirmation.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/human-ground-truth-review.md"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/human-ground-truth.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/human-review-draft.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/preseal-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/blocked/deepseek-blocked-2026-08-03T01-39-49.081Z-33388.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/codex-agent-raw.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/codex-execution-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/codex-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/deepseek-execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/derived-egress-authorization-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/model-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-003/track-b-successor-v1/run-v1/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/connectivity/connectivity-evidence.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/corpus.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/human-confirmation-challenge.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/human-confirmation.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/human-ground-truth-review.md"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/human-ground-truth.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/human-review-draft.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/preseal-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/blocked/deepseek-blocked-2026-08-03T06-12-33.161Z-29404.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/codex-execution-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/codex-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/codex-raw-output.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/deepseek-execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/derived-egress-authorization-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/model-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-004/track-b-final-v1/run-v1/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/derived-egress-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/diagnostic-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/diagnostic-result.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/preflight-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/baseline/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/derived-egress-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/diagnostic-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/diagnostic-result.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/preflight-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/derived-egress-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/diagnostic-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/diagnostic-result.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/preflight-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/schema-diagnostic-v1/stability-freeze.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/corpus.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/human-confirmation-challenge.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/human-confirmation.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/human-ground-truth-review.md"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/human-ground-truth.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/human-review-draft.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/preseal-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/codex-agent-raw.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/codex-execution-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/codex-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/deepseek-execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/deepseek-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/derived-egress-authorization-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/model-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/unblind/admission-evaluation.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/unblind/admission-seal.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/deepseek-execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/deepseek-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/derived-egress-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/diagnostic-report.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/diagnostic-seal.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/model-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/corpus.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation-challenge.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth-review.md"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-review-draft.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/preseal-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-report.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-execution-claim.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-opinion.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/derived-egress-receipt.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/dispatch.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/model-input.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/provider-call-set.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/admission-seal-verify.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/console-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/git-diff-check.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/java-track-b-runtime.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/line-endings.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-all-history.failed.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-phase-appropriate.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/verification-result.json"
+      },
+      {
+        "status": "A",
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/verification-subject-unit.console.log"
+      },
+      {
+        "status": "M",
+        "path": "scripts/blind-evaluation/deepseek-secure-transport.mjs"
+      },
+      {
+        "status": "M",
+        "path": "scripts/blind-evaluation/deepseek-secure-transport.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/freeze-track-b-provider-recovery-audit-package.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/freeze-track-b-provider-recovery-audit-package.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/freeze-track-b-schema-stability.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/freeze-track-b-schema-stability.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/freeze-track-b-successor-audit-package.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/freeze-track-b-successor-audit-package.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/mvp002-standing-egress-grant.json"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/mvp002-standing-egress-grant.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/mvp002-standing-egress-grant.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-fifth-corpus.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-fifth-dispatch.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-fifth-human-challenge.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-fifth-human-confirmation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-fifth-source.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-final-corpus.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-final-dispatch.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-final-human-challenge.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-final-human-confirmation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-final-source.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-holdout-corpus.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-holdout-dispatch.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-holdout-dispatch.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-holdout-human-challenge.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-holdout-human-confirmation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-admission.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-corpus.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-diagnostic.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-human-challenge.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-human-confirmation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-provider-recovery-source.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-schema-diagnostic.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-successor-corpus.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-successor-dispatch.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-successor-dispatch.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-successor-human-challenge.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-successor-human-confirmation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/prepare-track-b-successor-source.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/run-track-b-schema-diagnostic.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/run-track-b-schema-diagnostic.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-and-evaluate-track-b-fifth.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-and-evaluate-track-b-final.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-and-evaluate-track-b-holdout.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-and-evaluate-track-b-holdout.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-and-evaluate-track-b-successor.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-and-evaluate-track-b-successor.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-fifth-codex-opinion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-fifth-human-ground-truth.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-final-codex-opinion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-final-human-ground-truth.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-holdout-codex-opinion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-holdout-codex-opinion.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-holdout-human-ground-truth.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-admission.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-diagnostic.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-diagnostic.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-provider-recovery-human-ground-truth.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-successor-codex-opinion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/seal-track-b-successor-human-ground-truth.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/task-eval-004-connectivity-gate.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/task-eval-004-connectivity-gate.test.mjs"
+      },
+      {
+        "status": "M",
+        "path": "scripts/blind-evaluation/track-b-deepseek-execution-claim-contract.mjs"
+      },
+      {
+        "status": "M",
+        "path": "scripts/blind-evaluation/track-b-deepseek-execution-claim-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-fifth-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-fifth-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-fifth-deepseek-runner.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-fifth-opinion-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-fifth-preseal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-final-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-final-deepseek-runner.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-final-postseal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-final-preseal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-admission-evaluator.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-admission-evaluator.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-constants.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-deepseek-runner.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-deepseek-runner.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-human-seal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-opinion-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-opinion-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-opinion-prompt.txt"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-provider-request-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-holdout-provider-request-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-admission-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-admission-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-admission-runner.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-admission-runner.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-corpus-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-corpus.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-diagnostic-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-diagnostic-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-human-seal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-opinion-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-opinion-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-preseal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-projection.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-projection.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-prompt-v3.txt"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-request-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-request-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-runner.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-provider-recovery-runner.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-schema-diagnostic-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-schema-diagnostic-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-schema-diagnostic-prompt-v2.txt"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-admission-evaluator.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-contract.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-deepseek-runner.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-deepseek-runner.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-human-seal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-opinion-contract.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/track-b-successor-preseal.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/verify-track-b-provider-recovery-codex-opinion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/verify-track-b-provider-recovery-subject.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/verify-track-b-provider-recovery-subject.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "scripts/blind-evaluation/verify-track-b-successor-admission.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md"
+      },
+      {
+        "status": "M",
+        "path": "tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md"
+      },
+      {
+        "status": "M",
+        "path": "tasks/active/TASK-EVAL-002-blind-semantic-evaluation.md"
+      },
+      {
+        "status": "A",
+        "path": "tasks/active/TASK-EVAL-003-track-b-successor-admission.md"
+      },
+      {
+        "status": "A",
+        "path": "tasks/active/TASK-EVAL-004-track-b-final-independent-admission.md"
+      },
+      {
+        "status": "A",
+        "path": "tasks/active/TASK-EVAL-005-track-b-schema-stability-and-fifth-admission.md"
+      },
+      {
+        "status": "A",
+        "path": "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md"
+      },
+      {
+        "status": "M",
+        "path": "tasks/active/TASK-MODEL-001-model-profile-secret-readiness.md"
+      },
+      {
+        "status": "M",
+        "path": "tasks/active/TASK-MVP-002-review-workbench.md"
+      },
+      {
+        "status": "M",
+        "path": "tasks/MVP_TASK_MAP.md"
+      }
+    ],
+    "fullDiffSha256": "f40efe7d3ec06dea781cb9af285d7b47da421e7dff8368767478892c34f36391",
+    "verificationResultPath": "outputs/task-eval-006/track-b-recovery-v1/verification/verification-result.json",
+    "verificationResultSha256": "a266d383c5431957f19d8cd95c253437d322ef9ed69183e823d0de06f3b9fafe",
+    "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification/console-manifest.json",
+    "consoleManifestSha256": "de81671d8316fd36d2b769839acf1e24fe54161cdd18c28eb06aa1da37950999",
+    "evidenceCount": 37,
+    "evidence": [
+      {
+        "path": ".gitattributes",
+        "size": 2372,
+        "sha256": "ad6a0cc97fc3ce689d8d18606230e1b69fa39322c925bcf1006b7bfc55c952e2"
+      },
+      {
+        "path": ".gitignore",
+        "size": 331,
+        "sha256": "3f11efd4f11fb6230f2f2363eb13506f68be9edf03357b8a8953af2b452f6ecb"
+      },
+      {
+        "path": "changelog/2026-08.md",
+        "size": 33490,
+        "sha256": "b7f93f34afe84ded51f3c2de1de0fb45803cf0d4e3cdaa5258f8318053e028e2"
+      },
+      {
+        "path": "CURRENT_CONTEXT.md",
+        "size": 42001,
+        "sha256": "f36cb096647e92948cff9d1eba1b007033dc228e8ade25bc7f70dc82c01aac37"
+      },
+      {
+        "path": "decisions/ADR-019-blind-evaluation-and-model-activation-boundary.md",
+        "size": 12047,
+        "sha256": "e2fab6d3c633bb71690af0d3a9536592a735a75e68c1e00877c7d761bff3893d"
+      },
+      {
+        "path": "decisions/ADR-022-mvp002-standing-egress-grant-and-derived-receipt.md",
+        "size": 6560,
+        "sha256": "8ebb5e3884e7d0e08e30360b594279c17acd2053fdd81a8d7afe8e02d8142c6b"
+      },
+      {
+        "path": "decisions/ADR-025-track-b-schema-stability-diagnosis-and-fifth-admission.md",
+        "size": 11187,
+        "sha256": "43244194c60c83202f26075f5326309cf47200b332665fa8b4c792ce67626ee1"
+      },
+      {
+        "path": "decisions/ADR-026-track-b-provider-conversation-recovery.md",
+        "size": 6670,
+        "sha256": "44f418f93ef32eeebb04d55a52872b8bec8225e4dd42d977ee2a6eef74b3639c"
+      },
+      {
+        "path": "docs/ai-review.md",
+        "size": 25929,
+        "sha256": "d88e962dadf3ec0b0910be6d5c402a67a15944979ab251347966353e274bb533"
+      },
+      {
+        "path": "docs/ARCHITECTURE.md",
+        "size": 142839,
+        "sha256": "58d929aeff1f3d42b8e905765e53b912efb2f1ab07a58e5bd0b8f8a02aac5698"
+      },
+      {
+        "path": "outputs/task-eval-005/track-b-fifth-v1/run-v1/unblind/admission-seal.json",
+        "size": 2559,
+        "sha256": "520d7b38c46b0fc69bf2afb2726f01cadb1991b3b386d481c70b145274d451be"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/diagnostic-seal.json",
+        "size": 1152,
+        "sha256": "fedc4e21801f1e5c38f5fc97c0da6db16546fb775ee060991f54e5f41d9404ff"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/corpus.json",
+        "size": 34986,
+        "sha256": "3a988a9ab09008645dd812b47c1ad3f4c6a9aac699a590a66bd6a17cf1010554"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation-challenge.json",
+        "size": 1979,
+        "sha256": "328f4349840330419b21fe874485447070ad065efff52c06459f8cd5550b90dc"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-confirmation.json",
+        "size": 6012,
+        "sha256": "814e81461ff0880eedd114992357f5730a48249f50a10d8eed4e4ce7b1fa7040"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
+        "size": 6343,
+        "sha256": "0f23b9ebea8a625fbb1de6829a55d4cf3656cc01d7cc31aebd0a86771cc0f315"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-report.json",
+        "size": 8511,
+        "sha256": "395c0d3871d4f4aed637ad61174381c248bb42bf03fd0839c85778f12a6f71f5"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/admission-seal.json",
+        "size": 1286,
+        "sha256": "2d879b139715ca7646a95e035747891a14b38ab545302a899ef2ca6376651b04"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/codex-opinion.json",
+        "size": 3325,
+        "sha256": "cccf0a4de81187079e09bcc0a422da72af72b4e6635c4a75053fa021ed6f126a"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-execution-claim.json",
+        "size": 898,
+        "sha256": "600a821a25641b8d875e696d79191b986f77d39571a778c9670a5af9cde5929d"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/deepseek-opinion.json",
+        "size": 8752,
+        "sha256": "e863596aab1be943bc04c63414bfcb65f825deaf9bf35c5d117c5c58d3437100"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/derived-egress-receipt.json",
+        "size": 2086,
+        "sha256": "aa716878326ddc0fea218d7213606ff77fba1b02699aae0857343f25e8f613c2"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/dispatch.json",
+        "size": 2817,
+        "sha256": "a427e0522d3d7b7a88230d8fb4a6869dac257efdb941e502a4bd6815ee00b175"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/model-input.json",
+        "size": 20945,
+        "sha256": "bb8984ed682653aa08b44530f7a6a5f8b47935768be51256c8d8264cf0096f81"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/run-v1/provider-call-set.json",
+        "size": 3923,
+        "sha256": "1121a34572bc4e00ceb871e2a30eb43a37136d209e7decc5b1b726a0b2cae5f3"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/admission-seal-verify.console.log",
+        "size": 980,
+        "sha256": "f364cc0e59529477234a8df5d668994b870acc9603b44619d637171b416a4e6f"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/console-manifest.json",
+        "size": 2612,
+        "sha256": "de81671d8316fd36d2b769839acf1e24fe54161cdd18c28eb06aa1da37950999"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/git-diff-check.console.log",
+        "size": 193,
+        "sha256": "4aaac39ebda6f969aa7057d9ddd42edab5543c65d94a4dd44140a5a18d743b9c"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/java-track-b-runtime.console.log",
+        "size": 291,
+        "sha256": "b61f42c05f3ddafac4be12325fa0aa8e33e25b688df0756c69dfb678bccaba25"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/line-endings.console.log",
+        "size": 40,
+        "sha256": "1331dec98c43cbf9f89c9d506ecd3c811e220066b04e5e1852fd0b43f5571100"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-phase-appropriate.console.log",
+        "size": 5885,
+        "sha256": "c7c8e186458dc39e5216dc424a5dbc9894e4ad36c09badca78343418d06de96d"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
+        "size": 72,
+        "sha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
+      },
+      {
+        "path": "outputs/task-eval-006/track-b-recovery-v1/verification/verification-result.json",
+        "size": 4893,
+        "sha256": "a266d383c5431957f19d8cd95c253437d322ef9ed69183e823d0de06f3b9fafe"
+      },
+      {
+        "path": "tasks/active/TASK-EVAL-002-blind-semantic-evaluation.md",
+        "size": 12064,
+        "sha256": "bb8127673d8000226d5252b3656cb80fe07304b0a3985e794e1253ad263cba1d"
+      },
+      {
+        "path": "tasks/active/TASK-EVAL-005-track-b-schema-stability-and-fifth-admission.md",
+        "size": 13365,
+        "sha256": "d4b8f9e5dc103a24aa4c24d07502763c8c7e2149c9b5848953ed0400b5f19759"
+      },
+      {
+        "path": "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md",
+        "size": 10106,
+        "sha256": "ab97b58598132cd68b4f7a4d4d3792f05b4b1d1627aa49127aac8d4f7abbd429"
+      },
+      {
+        "path": "tasks/MVP_TASK_MAP.md",
+        "size": 55303,
+        "sha256": "0ff1cb6ef5d0e44923e721ebb6977af875c9722dec2c1c235a5a132a452aed7c"
+      }
+    ]
+  },
+  "requiredAudits": [
+    {
+      "auditor": "CC_AUDIT",
+      "model": "CC_CURRENT_DEEPSEEK_V4_FLASH",
+      "readOnly": true,
+      "fresh": true
+    },
+    {
+      "auditor": "CODEX_CODE_API_ARCHITECTURE",
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "xhigh",
+      "forkTurns": "none",
+      "readOnly": true,
+      "fresh": true
+    },
+    {
+      "auditor": "CODEX_TEST_SECURITY_EVIDENCE",
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "xhigh",
+      "forkTurns": "none",
+      "readOnly": true,
+      "fresh": true
+    }
+  ],
+  "passCondition": {
+    "decision": "GO",
+    "p0": 0,
+    "p1": 0,
+    "p2": 0,
+    "blocking": 0,
+    "allReportsMustBindSameSubjectIdentity": true
+  },
+  "a0A1A2ImplementationAllowedBeforeAllAuditsGo": false,
+  "productionReadyClaimed": false,
+  "task028Unlocked": false,
+  "task031Unlocked": false,
+  "task032Unlocked": false
+}

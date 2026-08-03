@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "task-eval-006-fresh-codex-blind-revalidation-launch-receipt-v1",
+  "status": "FRESH_AGENT_READY_NO_FILES_READ",
+  "claimId": "TBCX-2c4178f21cb44c468ef2e7f05c63d2fd",
+  "executionClaimSha256": "0c0ea8381d0fd01d4ed5491d6020912c299337373f5eb193bd40ef8c1a90b4be",
+  "agentId": "/root/recovery_blind_revalidation",
+  "canonicalTaskName": "/root/recovery_blind_revalidation",
+  "evaluator": "codex-subagent-gpt-5.6-sol-xhigh",
+  "model": "gpt-5.6-sol",
+  "reasoningEffort": "xhigh",
+  "forkTurns": "none",
+  "readinessInstructionSha256": "35fb33a6f3ab25ba72294786db0bebc347e67998f0e00fce2080de647b270c7f",
+  "readinessResponseSha256": "23ed003e9641ec88b2696b9898c1fdb18387ca49f43030203cfc83afa8fef319",
+  "readyAtReported": "2026-08-03T15:08:26.5285778Z",
+  "readyAt": "2026-08-03T15:08:26.528Z",
+  "recordedAt": "2026-08-03T15:10:21.240Z",
+  "filesReadBeforeReady": 0,
+  "inheritedConversationTurns": 0
+}

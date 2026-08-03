@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.cqcp.apiserver.reviewengine.TrackBProviderRecoveryRuntimeContractTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-08-03T15:42:31" hostname="DESKTOP-6VPD7RV" time="0.251">
+  <properties/>
+  <testcase name="recoveryCorpusBuildsExactlyThroughTheRuntimePacketSeam()" classname="com.cqcp.apiserver.reviewengine.TrackBProviderRecoveryRuntimeContractTest" time="0.251"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

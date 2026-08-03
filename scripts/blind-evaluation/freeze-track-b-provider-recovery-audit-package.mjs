@@ -26,7 +26,7 @@ const GOVERNANCE_PATHS = Object.freeze([
   "tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md"
 ]);
 const VERIFY_ROOT =
-  "outputs/task-eval-006/track-b-recovery-v1/verification";
+  "outputs/task-eval-006/track-b-recovery-v1/verification-v2";
 const sha256 = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
 const jsonBytes = (value) =>
@@ -56,7 +56,7 @@ export function buildTrackBProviderRecoveryFreezeManifest({
 
   const subject = {
     schemaVersion:
-      "task-eval-006-track-b-provider-recovery-audit-subject-v1",
+      "task-eval-006-track-b-provider-recovery-r5-repair-audit-subject-v1",
     integrationUnit: "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
     baseCommit,
     headCommit,
@@ -75,7 +75,7 @@ export function buildTrackBProviderRecoveryFreezeManifest({
   const subjectIdentity = sha256(jsonBytes(subject));
   const manifest = {
     schemaVersion:
-      "task-eval-006-track-b-provider-recovery-audit-freeze-v1",
+      "task-eval-006-track-b-provider-recovery-r5-repair-audit-freeze-v1",
     status: "FROZEN_READY_FOR_THREE_PARTY_READ_ONLY_AUDIT",
     createdAt,
     subjectIdentity,
@@ -144,7 +144,7 @@ export async function freezeTrackBProviderRecoveryAuditPackage({
   const consoleManifest = await readJsonRecord(fromRepo, consolePath);
   assert.equal(
     verification.value.schemaVersion,
-    "task-eval-006-track-b-recovery-verification-result-v1"
+    "task-eval-006-track-b-recovery-r5-repair-verification-result-v1"
   );
   assert.equal(verification.value.status, "PASS");
   assert.equal(
@@ -152,12 +152,12 @@ export async function freezeTrackBProviderRecoveryAuditPackage({
     "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE"
   );
   assert.equal(
-    verification.value.networkCallPerformedByVerification,
+    verification.value.networkCallPerformedByRepair,
     false
   );
   assert.equal(
     consoleManifest.value.schemaVersion,
-    "task-eval-006-track-b-recovery-console-manifest-v1"
+    "task-eval-006-track-b-recovery-r5-repair-console-manifest-v1"
   );
   assert.equal(consoleManifest.value.status, "PASS");
 
@@ -166,9 +166,9 @@ export async function freezeTrackBProviderRecoveryAuditPackage({
     consoleManifest.record,
     ...verification.value.evidence,
     ...consoleManifest.value.runs.map((run) => ({
-      path: run.logPath,
-      size: run.logSize,
-      sha256: run.logSha256
+      path: run.path,
+      size: run.size,
+      sha256: run.sha256
     }))
   ];
   const referencedPaths = new Set(referenced.map((record) => record.path));

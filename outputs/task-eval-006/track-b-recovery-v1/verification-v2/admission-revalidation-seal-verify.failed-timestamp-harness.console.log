@@ -1,0 +1,22 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ '2026-08-03T07:15:20.000Z'
+- '08/03/2026 15:15:20'
+
+    at buildTrackBProviderRecoveryRevalidatedAdmission (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs:44:10)
+    at sealTrackBProviderRecoveryRevalidatedAdmission (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs:144:18)
+    at async file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs:196:5 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '2026-08-03T07:15:20.000Z',
+  expected: '08/03/2026 15:15:20',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.16.0

@@ -513,7 +513,7 @@ grant 仅覆盖其合成诊断和后续 hash-bound 调用，不替代第五套�
 6. `TASK-DATA-001` 已完成规则冻结、63 条 `ACCEPTED_HUMAN_GROUND_TRUTH`、转换实现和父任务归档审计，已通过 PR #30 归档。
 7. `TASK-034` v1 Phase 1 与 C2/R6B 历史运行均为 `FAIL`；v29/R7 当前限定三样本工件为 `PASS`，父任务保持 active 并等待 Milestone 最终审计。
 8. `TASK_SPEC-035-A` 已实现并接纳，提交 `52d73b3`；v1 正式失败证据保持不变，v29/R7 是独立新运行。
-9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并，B1/B2/C1/C2/D1/D2 已随 PR #37 合并。Track B 第五套 admission 已历史终态 `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED` 且不得重试；ADR-026 / TASK-EVAL-006 的独立有限恢复现为 ACTIVE。新 admission 与三方全零 GO 前不进入 Provider A0/A1/A2，也不得复用旧 18-packet run-v3 声明 admission。
+9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并，B1/B2/C1/C2/D1/D2 已随 PR #37 合并。Track B 第五套 admission 已历史终态 `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED` 且不得重试；ADR-026 / TASK-EVAL-006 的 recovery admission 已经有限时序/Java seam 修复并通过 R5 verification，当前等待新 immutable freeze 与三方全零 GO。完成该门禁前不进入 Provider A0/A1/A2，也不得复用旧 18-packet run-v3 或首次失败 subject 的报告组合通过。
 10. `TASK-GOV-007` 已通过 PR #33 合并，merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`。
 11. `TASK-037 / ADR-017 / TASK_SPEC-037-A` 已通过 PR #34 合并，merge commit `401fd05b7a6c23014adb4f5511533467016c37ba`。该任务采用 `MVP_DEMO_MOCK` 与三类 budget profile seed，不激活 TASK-036-C2。
 12. `FEATURE-MVP-001` 基于 `401fd05`；A~F/F1/F2、真实 Demo 与 F3 已完成，F3 与归档提交 `332d365` 已 push。backend CI 暴露的 3 个 Linux fixture 构造失败已由 F3 修复；host 定向 11/11、backend 313/313、Linux 11/11。v6/v7/v8 的原始证据与状态真源 findings 已补正；v9 的 CC AUDIT 与两个 Codex subagent 均为 GO。PR #35 最终三项 CI 全绿并合并为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`，父 TASK 与 F3 已归档，Feature 无剩余开发或集成门禁。

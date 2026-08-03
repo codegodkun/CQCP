@@ -91,9 +91,14 @@ export function buildTrackBProviderRecoveryAdmissionEvaluation({
     hashes.humanGroundTruthSha256
   );
   assert.equal(codex.modelInputSha256, hashes.modelInputSha256);
-  assert.equal(codex.providerCallSetSha256, hashes.callSetSha256);
-  assert.equal(codex.dispatchSha256, hashes.dispatchSha256);
-  assert.equal(codex.blindInputOnly, true);
+  if (codex.schemaVersion === "task-eval-006-track-b-recovery-codex-opinion-v4") {
+    assert.equal(codex.executionClaimSha256?.length, 64);
+    assert.equal(codex.launchReceiptSha256?.length, 64);
+  } else {
+    assert.equal(codex.providerCallSetSha256, hashes.callSetSha256);
+    assert.equal(codex.dispatchSha256, hashes.dispatchSha256);
+  }
+  assert.equal(codex.blindInputOnly ?? codex.allowedInputOnly, true);
   assert.equal(codex.humanGroundTruthRead, false);
   assert.equal(codex.findingOrVerdictProduced, false);
   assert.equal(deepSeek.providerCallCount, 9);
