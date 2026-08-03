@@ -8,6 +8,7 @@ import {
   validateTrackBFifthCorpus,
   validateTrackBFinalCorpus,
   validateTrackBHoldoutCorpus,
+  validateTrackBRecoveryCorpus,
   validateTrackBSuccessorCorpus
 } from "./track-b-holdout-contract.mjs";
 
@@ -62,6 +63,16 @@ const profiles = Object.freeze({
     sealSchema:
       "task-eval-005-track-b-fifth-human-ground-truth-v1",
     validateCorpus: validateTrackBFifthCorpus
+  }),
+  recovery: Object.freeze({
+    outputRoot: "outputs/task-eval-006/track-b-recovery-v1",
+    challengeSchema:
+      "task-eval-006-track-b-recovery-human-challenge-v1",
+    confirmationSchema:
+      "task-eval-006-track-b-recovery-human-confirmation-v1",
+    sealSchema:
+      "task-eval-006-track-b-recovery-human-ground-truth-v1",
+    validateCorpus: validateTrackBRecoveryCorpus
   })
 });
 const profile = profiles[profileArg];

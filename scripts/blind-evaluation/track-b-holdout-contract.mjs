@@ -96,6 +96,24 @@ const FIFTH_PROFILE = Object.freeze({
   reviewTitle:
     "TASK-EVAL-005 Track B fifth 12-packet 人工确认表"
 });
+const RECOVERY_PROFILE = Object.freeze({
+  sourceSchema:
+    "task-eval-006-track-b-recovery-source-signals-v1",
+  proposalSchema:
+    "task-eval-006-track-b-recovery-proposed-decisions-v1",
+  corpusSchema: "task-eval-006-track-b-recovery-corpus-v1",
+  draftSchema:
+    "task-eval-006-track-b-recovery-human-review-draft-v1",
+  outputRoot: "outputs/task-eval-006/track-b-recovery-v1",
+  taskPattern: /^task-eval-006-track-b-recovery-/,
+  executionPattern: /^execution-track-b-recovery-/,
+  casePattern: /^TB6-(MED|CON|CTL)-/,
+  seamCaseId: "TB6-CON-003",
+  seamRequiredBlockIds: ["tb6-con-003-b01", "tb6-con-003-b02"],
+  seamExcludedBlockId: "tb6-con-003-b03",
+  reviewTitle:
+    "TASK-EVAL-006 Track B recovery 12-packet 人工确认表"
+});
 const PACKET_SCHEMA = "task036-runtime-evidence-packet-v1";
 const FORBIDDEN_CONTEXTS = new Set([
   "DELETED",
@@ -242,6 +260,17 @@ export function buildTrackBFifthArtifacts(args) {
 
 export function validateTrackBFifthCorpus(corpus) {
   return validateTrackBCorpus(corpus, FIFTH_PROFILE);
+}
+
+export function buildTrackBRecoveryArtifacts(args) {
+  return buildTrackBHoldoutArtifacts({
+    ...args,
+    profile: RECOVERY_PROFILE
+  });
+}
+
+export function validateTrackBRecoveryCorpus(corpus) {
+  return validateTrackBCorpus(corpus, RECOVERY_PROFILE);
 }
 
 function validateTrackBCorpus(corpus, profile) {

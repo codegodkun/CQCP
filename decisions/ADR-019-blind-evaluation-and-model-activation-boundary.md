@@ -2,8 +2,8 @@
 
 状态：Accepted / Track A Codex + DeepSeek 与 Track B seam 已实施 /
 旧 eligible corpus 已解盲为 NO_GO / Core 已合并 /
-三个独立 holdout 均终态失败 / TASK-EVAL-004 final claim schema invalid BLOCKED /
-Provider admission 未建立
+四次独立 12-packet admission 均终态失败 / TASK-EVAL-005 第五套
+`SEALED_NO_GO_MODEL_MISMATCH` / Provider admission 未建立 / ADR-026 有限恢复 ACTIVE
 
 日期：2026-07-28
 
@@ -242,7 +242,8 @@ guarded assist 仍遵守：
   `OPINION_SCHEMA_INVALID` fail closed，one-time claim 已消费且无 accepted opinion。
   项目负责人明确授权 TASK-EVAL-003 successor，并要求正式 Codex auditors 固定使用
   `gpt-5.6-sol / xhigh`；失败 holdout 只读保留且不得重试。
-* 最终 L3 冻结包仍须通过 CC AUDIT 与两个全新 Codex 独立审计；审计不通过则本实现不得收口。
+* 终态 NO-GO 证据保存 subject 仍须通过 CC AUDIT 与两个全新 Codex 独立审计；审计
+  不通过则不得 push/PR/merge，也不得把终态保存描述为 Provider admission 成功。
 * 2026-08-03：ADR-024 最终独立 admission 已完成人工先封印和 9×1 dispatch；
   DeepSeek 在第 8 个 call 返回 schema invalid，claim 已消费且无自动重试。该执行不
   解盲、不重试，`providerAdmission=NOT_ESTABLISHED`，A0/A1/A2 继续阻塞。
@@ -250,3 +251,10 @@ guarded assist 仍遵守：
   合成诊断集上有限诊断、版本化并冻结 prompt/schema，再创建一次第五套独立
   admission。该范围不恢复 TASK-EVAL-004；正式门禁仍为 9×1、3 controls、全维
   100%，失败后不建第六套且不启动 A0/A1/A2。
+* 2026-08-03：TASK-EVAL-005 第五套 9×1 全部通过 strict schema，但解盲后 DeepSeek
+  在 4 个 CONFLICTED packet 上不满足 role/candidate/anchor/abstention 门禁，终态
+  `SEALED_NO_GO_MODEL_MISMATCH / providerAdmission=NOT_ESTABLISHED`。该历史终态不可变，
+  Track B admission 门禁未解除，A0/A1/A2 不启动。
+* 2026-08-03：项目负责人澄清此前 BLOCKED 表述只是询问，并接受 ADR-026 的一次有限
+  会话投影恢复。当前为 `RECOVERY_ACTIVE / ADMISSION_NOT_ESTABLISHED`；只有新 admission
+  与三方全零 GO 后才可恢复 A0/A1/A2。

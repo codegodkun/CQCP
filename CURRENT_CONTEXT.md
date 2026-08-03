@@ -33,8 +33,43 @@ Codex blind opinion 已按严格 v2 schema 封存为 `95ecd582…`。唯一正�
 `0e4f96fc…`。双意见先验验证后解盲，Codex 为全部维度 100%，DeepSeek schema 与可靠
 anchor 为 100%，但 role/candidate/anchor/abstention 均为 55.56%（4 个 CONFLICTED
 packet mismatch）。终态 seal `520d7b38…` 为 `SEALED_NO_GO_MODEL_MISMATCH`，Provider
-admission 固定 `NOT_ESTABLISHED`；不得重试、不得建第六套，A0/A1/A2 继续阻塞。当前基线为
+admission 固定 `NOT_ESTABLISHED`，同一 claim 不得重试。项目负责人已澄清此前
+“Provider BLOCKED”是询问而非终止指令，并批准 ADR-026 / TASK-EVAL-006 的有限恢复：
+建立不含 runtime routing/diagnostic label 的 model-facing EvidencePacket projection v3，
+先执行旧 4 个 CONFLICTED packet 的 4-call non-admission diagnostic；4/4 后才允许第六套
+独立 12-packet corpus、人工先封印与唯一 9×1 admission。该恢复 admission 现已全维
+100% 封印为 GO；当前真实状态为 `ADMISSION_ESTABLISHED / R5_VERIFICATION_PENDING`，
+A0/A1/A2 在本 recovery integration unit 完整验证、冻结和三方全零 GO 前继续阻塞。当前基线为
 `origin/master@115be530480e2ff9b92a7076b2668c066a44ae5c`。
+
+TASK-EVAL-006 R1/R2 已完成：model-facing projection/prompt/schema/request builder v3
+已冻结，runtime routing/diagnostic/identity/admission label 不进入 Provider payload；定向
+契约与 runner 回归通过。4 个旧 CONFLICTED packet 的 non-admission diagnostic 使用
+精确 4 calls、零自动重试，全部 strict schema accepted；与既有人工 decisions 本地比较后，
+schema、可靠 anchor、role、candidate、anchor、abstention 均为 4/4。input `809c244e…`、
+call-set `892e6b4f…`、dispatch `338d1168…`、receipt `6893767f…`、claim `14715db0…`、
+opinion `eef82a45…`、report `a1472689…`、seal `fedc4e21…`。seal 状态为
+`SEALED_GO_RECOVERY_DIAGNOSTIC`，只放行第六套 corpus 创建；Provider admission 仍未建立。
+
+R3 第六套 preseal 已冻结：source `47cf4a04…`、proposal `2cb18d75…`、corpus
+`3a988a9a…`、review draft `8edd0ea4…`、review document `7ff431cc…`、manifest
+`937d6500…`。相对前五套及两份 diagnostic input 的 identity/value/evidence overlap 全为
+0；5 MEDIUM + 4 CONFLICTED eligible、3 zero-call controls。challenge
+`TB61-8e5e524790c9457a80d8e2fe2433b63d` / SHA `328f4349…` 已生成，2026-08-05
+09:37:54.991Z 到期。项目负责人已绑定 challenge/corpus/review SHA 接受 12 条 decisions；
+confirmation `814e8146…`、human seal `0f23b9eb…`，人工封印早于 model input 和 evaluator access。
+
+R4 唯一正式 admission 已完成：v3 model input `bb8984ed…`、call set `1121a345…`、
+dispatch `a427e052…`、derived receipt `aa716878…`；全新 `gpt-5.6-sol/xhigh` Codex blind
+opinion `cccf0a4d…`，DeepSeek 9×1 claim `600a821a…`、opinion `e863596a…`，3 controls
+zero-call、无自动重试、无 raw response/reasoning/Secret 持久化。解盲后 Codex 与 DeepSeek
+的 schema、可靠 anchor、role、candidate、anchor、abstention 均为 9/9，controls 3/3；
+report `395c0d38…`、seal `2d879b13…`，状态 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。
+模型未生成或改变 Finding/verdict。R5 bounded verification 已通过：phase-appropriate Node
+`70/70`、verification builder unit `1/1`、Java runtime seam `1/1`、admission seal 重建一致、
+61 个 hash-bound 文本文件 CR=0、实际 KEY/禁止 Provider payload=0、`git diff --check=0`。
+最终 verification result 与 console manifest 已重建并复验 PASS，将随 clean commit 冻结；
+freeze/三审尚未完成，A0/A1/A2 尚未解锁。
 
 先行 Core integration unit 已通过 PR #37 合并，包含：
 
@@ -487,20 +522,24 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
    仅覆盖独立 schema 诊断和一次第五套 admission，不改写该终态；A0/A1/A2 不得启动。
 6. TASK-EVAL-005 已终态 `SEALED_NO_GO_MODEL_MISMATCH`：diagnosis 24/24 只证明 schema
    稳定性，正式 DeepSeek 在 4 个 CONFLICTED packet 的语义维度不满足 100%；Provider
-   admission `NOT_ESTABLISHED`。同一 claim 不得重试，不建第六套，不启动 A0/A1/A2。
-7. ADR-022 standing grant 尚未由项目负责人撤销；它仅是授权上限，不构成调用资格。
-   ADR-025 终态已使第六套、A0/A1/A2 与新的 Provider evaluation call 全部无资格；
-   Milestone 阻塞收口仍需决定 grant 的不可变终止/撤销方式。
+   admission `NOT_ESTABLISHED`。同一 claim 不得重试，历史证据不得改写。
+7. ADR-022 standing grant 未撤销；ADR-026 / TASK-EVAL-006 已给出新的有限调用资格，
+   上限为 4 个恢复诊断 calls + 9 个正式 admission calls。当前仍未 admission GO，
+   因此 A0/A1/A2 继续无资格。
 
 ## 下一步
 
 1. 只读保留 TASK-EVAL-004 的 human seal、dispatch、Codex opinion、DeepSeek claim 与
    terminal blocked receipt；不得重试或解盲。
 2. 只读保留第五套 human seal、dispatch、两份 blind opinion、claim、unblind report/seal；
-   不得重试、改 prompt、换模型/KEY、创建第六套或派发成功路径三审。
-3. MILESTONE-MVP-002 的 Provider 路径维持 BLOCKED；后续范围必须由项目负责人重新决策，
-   当前不启动 A0/A1/A2。
-4. 在形成终态证据保存 subject 前，补齐跨平台 LF 门禁并完成 fresh-checkout hash/seal
-   重建；standing grant 的最终处置仍等待项目负责人决定。
+   不得重试或改写。其语义内容只可经 v3 投影用于 ADR-026 明确的 4-call non-admission
+   diagnostic，不恢复旧 claim。
+3. 第六套 corpus/challenge 已冻结；等待项目负责人绑定 challenge `328f4349…`、corpus
+   `3a988a9a…`、review draft `8edd0ea4…` 确认或修改 12 条 proposedExpected。
+4. 项目负责人绑定实际 hash 确认 12 条人工 decisions 前，不得创建正式 evaluator/model
+   input、dispatch、claim 或执行 Provider admission；正式 admission 与三方全零 GO 前
+   不启动 A0/A1/A2。
+5. 旧终态证据保存 subject `d08d1508f7349d6747e07e239001254396a20d9f` 及其审计仅作
+   历史证据；受审范围已因 ADR-026 改变，后续不得复用其 GO/NO-GO 组合收口。
 
 不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

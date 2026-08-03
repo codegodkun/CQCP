@@ -1,6 +1,6 @@
 # TASK-EVAL-005：Track B schema 稳定性诊断与第五套独立 admission
 
-状态：终态 BLOCKED / `SEALED_NO_GO_MODEL_MISMATCH` / Provider admission `NOT_ESTABLISHED` / 禁止第六套与 A0/A1/A2
+状态：历史终态 BLOCKED / `SEALED_NO_GO_MODEL_MISMATCH` / Provider admission `NOT_ESTABLISHED` / 未来恢复边界由 ADR-026 部分替代
 
 类型：Evaluation / Model Governance / Prompt-Schema Stability
 
@@ -144,7 +144,8 @@ opinion且未解盲。项目负责人批准最后一次有限路径：先在全�
 
 ## 当前待确认
 
-- 无。本次唯一 admission 已终态 NO-GO；任何后续范围均不得恢复本 claim 或创建第六套。
+- 无。本次唯一 admission 已终态 NO-GO；不得恢复本 claim。项目负责人已另行批准
+  TASK-EVAL-006 / ADR-026 的独立有限恢复，该恢复不修改本任务证据。
 
 ## 阶段完成记录
 
@@ -243,5 +244,6 @@ opinion且未解盲。项目负责人批准最后一次有限路径：先在全�
 
 ## Next Task Handoff
 
-- 当前无可执行 handoff。TASK-EVAL-005 已终态 BLOCKED，等待项目负责人决定是否仅做
-  Milestone 阻塞收口；该决定不得恢复本次 admission 或创建第六套。
+- 本任务保持历史终态；下一执行任务为
+  `tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md`。不得恢复或重试
+  本任务 claim；A0/A1/A2 仍须等待新 admission 与三方全零 GO。

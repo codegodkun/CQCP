@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-console-manifest-v1",
+  "status": "PASS",
+  "completedAt": "2026-08-03T10:35:16.287Z",
+  "phaseAppropriateScope": true,
+  "allHistorySuiteIsIndependentEntrypoint": false,
+  "allHistoryFailureLogPath": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-all-history.failed.console.log",
+  "runs": [
+    {
+      "name": "node-phase-appropriate",
+      "command": "node --test <25 explicitly listed phase-appropriate files>",
+      "exitCode": 0,
+      "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-phase-appropriate.console.log",
+      "logSize": 5880,
+      "logSha256": "c66df5f72e8e4810c821b644b467563eb51851f947f11320628a59e9cec8230b"
+    },
+    {
+      "name": "java-track-b-runtime-seam",
+      "command": "gradle test --tests com.cqcp.apiserver.reviewengine.TrackBHoldoutRuntimeContractTest --console=plain",
+      "exitCode": 0,
+      "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/java-track-b-runtime.console.log",
+      "logSize": 291,
+      "logSha256": "b61f42c05f3ddafac4be12325fa0aa8e33e25b688df0756c69dfb678bccaba25"
+    },
+    {
+      "name": "admission-seal-verify",
+      "command": "node scripts/blind-evaluation/seal-track-b-provider-recovery-admission.mjs . <sealedAt> verify",
+      "exitCode": 0,
+      "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/admission-seal-verify.console.log",
+      "logSize": 980,
+      "logSha256": "f364cc0e59529477234a8df5d668994b870acc9603b44619d637171b416a4e6f"
+    },
+    {
+      "name": "secret-provider-leak-scan",
+      "command": "PowerShell in-memory exact Secret and forbidden payload scan",
+      "exitCode": 0,
+      "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
+      "logSize": 72,
+      "logSha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
+    },
+    {
+      "name": "line-endings",
+      "command": "PowerShell LF byte scan for TASK-EVAL-006 hash-bound text",
+      "exitCode": 0,
+      "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/line-endings.console.log",
+      "logSize": 40,
+      "logSha256": "1331dec98c43cbf9f89c9d506ecd3c811e220066b04e5e1852fd0b43f5571100"
+    },
+    {
+      "name": "git-diff-check",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/git-diff-check.console.log",
+      "logSize": 1689,
+      "logSha256": "8fcfe83d11266ee1b5c772de3ce89eb60e9d4348229a9c428b51c9583768f372"
+    }
+  ]
+}

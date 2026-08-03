@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "mvp002-derived-egress-authorization-receipt-v1",
+  "status": "DERIVED_FROM_ACTIVE_STANDING_GRANT_BEFORE_NETWORK",
+  "createdAt": "2026-08-03T09:21:31.462Z",
+  "milestoneId": "MILESTONE-MVP-002",
+  "taskId": "TASK-EVAL-006",
+  "purpose": "PROVIDER_VALIDATION",
+  "standingGrantPath": "scripts/blind-evaluation/mvp002-standing-egress-grant.json",
+  "standingGrantSha256": "f04c3ad0a6522b90f21d1efb32be12b0c883d03b2b286f9c2c8639ecd501239a",
+  "dispatchPath": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/dispatch.json",
+  "dispatchSha256": "338d11686229ae06700ae3f136a5df6b65fa36c5435d16bc07e17350eb5a40c9",
+  "actualInputPath": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/model-input.json",
+  "actualInputSha256": "809c244e8526b7935caa7777e2c5fb13c9403450ddf0a9049e63645d78289fee",
+  "providerCallSetPath": "outputs/task-eval-006/track-b-provider-recovery-v1/diagnostic-v1/provider-call-set.json",
+  "providerCallSetSha256": "892e6b4fd86f04de10a0b9561dba1246b163e02354e4794b1e6284043f16e3f9",
+  "outboundRequestSha256s": [
+    "ec137084cb8548f23e0c75a1471494b75c7160b6ba8bdd2d14d7b46cff93f0f0",
+    "52df101b7c2406e3e9078e6f52dcb58eb648bb9c81e1dc3dd6cde1d8557fd902",
+    "64eb73e93d6c71f1464c4d145386e30395b9dbdecf82548b6ea8afb439d39f10",
+    "6cd2cae60c1519552770110d593dc6da759b6f805a694baeb3470e0747e929a7"
+  ],
+  "endpointOrigin": "https://api.deepseek.com:443",
+  "model": "deepseek-v4-pro",
+  "callCount": 4,
+  "inputCount": 4,
+  "formalAdmissionAffected": false,
+  "humanGroundTruthExcludedFromPayload": true,
+  "cqcpActualOrExpectedExcludedFromPayload": true,
+  "findingOrVerdictExcludedFromPayload": true,
+  "secretOrRawKeyIncluded": false,
+  "networkCallPerformed": false
+}

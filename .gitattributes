@@ -24,3 +24,8 @@ outputs/task-eval-004/**/*.json text eol=lf
 outputs/task-eval-004/**/*.md text eol=lf
 outputs/task-eval-005/**/*.json text eol=lf
 outputs/task-eval-005/**/*.md text eol=lf
+apps/api-server/src/test/resources/track-b-recovery-v1/*.json text eol=lf
+scripts/blind-evaluation/track-b-provider-recovery-prompt-v3.txt text eol=lf
+outputs/task-eval-006/**/*.json text eol=lf
+outputs/task-eval-006/**/*.md text eol=lf
+outputs/task-eval-006/**/*.log -text -whitespace

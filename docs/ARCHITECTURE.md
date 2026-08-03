@@ -3320,3 +3320,17 @@ new blocks required -> second pass or NOT_CONCLUDED
 family primary artifact 只有在其 `inputBlockIds` 已包含当前点需要的 secondary anchors 时，才能供跨族审核点复用。仅覆盖 primary family blocks 的 artifact 不能被视为覆盖 secondary evidence；此时需要 supplement，或在预算不足时 `NOT_CONCLUDED`。
 
 这会牺牲一部分复用率，但换来稳定、可解释和可审计。一期只做同 task、同 execution 语义下的 artifact 复用，不做跨任务复用。
+
+### 22.13 Model-facing EvidencePacket 投影
+
+Runtime `EvidencePacket` 同时承载后端 admission/routing 诊断和模型所需语义。进入公网
+模型前必须派生最小 model-facing projection，不得把 `coverageStatus`、
+`diagnosticCode`、`reasonCodes`、`modelCallAllowed`、admission 状态、identity class
+或 `MEDIUM` / `CONFLICTED` / `SYS_ROLE_CONFLICT` 标签发送给模型。模型只接收已获资格
+packet 的 review point、requested role、候选 occurrence、证据、可靠 anchor、预算和
+输出契约。
+
+该投影不得包含人工 ground truth、CQCP actual/expected、Finding 或 verdict；不得改变
+RuntimeEvidencePacket、EvidenceSlot、CandidateResolver、SourceAnchor 或后端最终裁判。
+会话投影、prompt、schema、request builder 与 model version 必须一起版本化。具体有限
+恢复与准入边界见 ADR-026。

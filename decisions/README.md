@@ -20,3 +20,4 @@
 - [ADR-023 Track B 后续独立准入评测边界](ADR-023-track-b-successor-independent-admission.md)
 - [ADR-024 Track B 连通门禁与最终独立准入评测](ADR-024-track-b-connectivity-gate-and-final-independent-admission.md)
 - [ADR-025 Track B schema 稳定性诊断与第五套独立 admission](ADR-025-track-b-schema-stability-diagnosis-and-fifth-admission.md)
+- [ADR-026 Track B Provider 会话投影有限恢复](ADR-026-track-b-provider-conversation-recovery.md)

@@ -1,0 +1,132 @@
+# ADR-026：Track B Provider 会话投影有限恢复
+
+状态：Accepted
+
+日期：2026-08-03
+
+## 背景
+
+TASK-EVAL-005 的第五套正式 admission 已不可变终态为
+`SEALED_NO_GO_MODEL_MISMATCH`。其 9 个 eligible call 均通过 strict schema，
+但 `deepseek-v4-pro` 在 4 个 `CONFLICTED` packet 上全部选择 abstain，导致
+role/candidate/anchor/abstention 各为 5/9。相同结构的 5 个 `MEDIUM` packet 全部正确。
+
+只读根因诊断发现，旧 Provider request 将 runtime admission/routing 元数据一并发送给
+模型，包括 `coverageStatus=AMBIGUOUS`、`diagnosticCode=SYS_ROLE_CONFLICT`、
+`reasonCodes=ELIGIBLE_CONFLICT_LOCAL_CONTEXT` 和 `conflicted` identity；prompt 同时允许
+abstention，却没有说明这些字段只是调用资格信号。这构成可证伪的模型会话投影偏置，
+不能由模型能力不足或合同复杂度直接推出。
+
+项目负责人已澄清此前“Provider BLOCKED”是询问而非终止指令，并明确批准一次新的、
+有限恢复范围。TASK-EVAL-005 的历史 claim、opinion、report、seal 与 NO-GO 结论仍不可变。
+
+## 决策
+
+### 1. 状态与替代边界
+
+- Provider 路径改记为 `RECOVERY_ACTIVE / ADMISSION_NOT_ESTABLISHED`。
+- 本 ADR 仅替代 ADR-025 的“不得创建第六套、不得再做 Provider recovery”未来边界；
+  不替代或改写 TASK-EVAL-005 的历史终态。
+- PUBLIC profile 继续 `EVALUATION / disabled / unbound`；A0/A1/A2 在新 admission GO 前
+  不得启动，A3 仍不属于本范围。
+
+### 2. Model-facing EvidencePacket projection v3
+
+Provider 只能收到从 runtime `EvidencePacket` 派生的最小语义投影：
+
+- `packetId`、`family`、`reviewPointCode`、`requestedRole`；
+- `candidateOccurrences` 中的 `occurrenceId`、`value`、证据原文和可靠 anchor；
+- `budget` 与 `requiredOutput`。
+
+下列字段不得进入模型输入：
+
+- `taskId`、`executionId`、`sampleId`、identity class；
+- `coverageStatus`、`diagnosticCode`、`reasonCodes`；
+- `modelCallAllowed`、admission 状态及 `MEDIUM` / `CONFLICTED` /
+  `SYS_ROLE_CONFLICT` 等 routing label；
+- 人工 ground truth、CQCP actual/expected、Finding、verdict。
+
+该投影只改变 Provider 会话边界，不改变 runtime `EvidencePacket`、EvidenceSlot、
+CandidateResolver、SourceAnchor、SYS/Finding 或后端裁判。
+
+### 3. Prompt/schema/request v3
+
+- prompt 明示 packet 已由后端判定 eligible；不能仅因多个候选而 abstain。
+- 选择原则为：直接约定当前 operative target 的条款优先于明确的引用、历史、示例或
+  非目标记录。
+- 只有真正同等候选、证据不足或 requested role 未覆盖时才 abstain。
+- 模型只输出 role/candidate/anchor/abstention，不生成 Finding/verdict。
+- projection、prompt、schema、request builder 与 opinion 均使用新的 v3 标识和 hash；
+  v2 文件与历史 evidence 不得覆盖。
+
+### 4. 受控恢复诊断
+
+- 只使用第五套中 4 个旧 `CONFLICTED` packet 的语义内容，经 v3 projection 生成新输入。
+- 恰好 4 个 `deepseek-v4-pro` 单包 calls；strict JSON、non-streaming、thinking disabled、
+  1500 tokens、HTTP-started 零重试。
+- 该步骤是 non-admission diagnostic，不恢复旧 claim，不改变旧 opinion/report/seal。
+- 4/4 必须通过 schema、可靠 anchor、role、candidate、anchor、abstention，并匹配已封印的
+  既有人工 decisions；否则恢复终止，不创建新 corpus。
+
+### 5. 第六套独立 admission
+
+只有恢复诊断 4/4 后才允许：
+
+- 建立一套与前五套和恢复诊断均独立的 12-packet corpus：5 MEDIUM、4 CONFLICTED、
+  3 zero-call controls；
+- 模型访问前，由项目负责人绑定实际 challenge/corpus/review hash 确认 12 条人工答案；
+- 使用全新 Codex blind evaluator 与 `deepseek-v4-pro` 执行唯一 9×1 admission；
+- schema、可靠 anchor、role、candidate、anchor、abstention、controls 必须全部 100%；
+- 任一失败即终止，不建第七套。
+
+新公网预算上限为 13 calls（4 diagnostic + 9 formal）。正常安全重试仍受冻结契约约束；
+HTTP-started、schema/content/finish/timeout 或 `UNKNOWN_SIDE_EFFECT` 均不得自动重发。
+
+### 6. 授权与证据
+
+ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用资格，无需逐 call 聊天
+确认。每次外发仍必须生成绑定实际 input、dispatch、provider-call-set、模型、调用数与
+时间的 hash-bound receipt。Secret 仅在进程内使用；不得保存 raw response、
+`reasoning_content`、raw KEY、人工 ground truth 或最终 Finding/verdict。
+
+## 验收与恢复条件
+
+只有以下全部满足，Provider admission 才可改为 `ESTABLISHED` 并恢复 A0/A1/A2：
+
+1. v3 projection 的禁止字段/允许字段机器测试通过；
+2. 4-packet 受控诊断 4/4；
+3. 新 12-packet corpus 的人工先封印与唯一 admission 全维 100%；
+4. 完整 verification、immutable freeze、CC AUDIT 与两个全新
+   `fork_turns="none"`、`gpt-5.6-sol/xhigh` Codex auditors 全部
+   `GO / P0=0 / P1=0 / P2=0 / blocking=0`；
+5. 受审 subject 与 CI 内容未漂移。
+
+## 回滚边界
+
+- 网络前可删除未执行的 v3 tooling；已执行 receipt/evidence 只读保留。
+- 诊断或正式 admission 失败均保持 `ADMISSION_NOT_ESTABLISHED`，不启动 A0/A1/A2。
+- 不修改数据库、公共 API、PUBLIC binding、普通 Demo 或最终裁判。
+
+## 影响
+
+- 正向：消除 runtime routing/诊断元数据对模型语义选择的提示偏置，同时保留后端资格
+  判断和 fail-closed 边界。
+- 风险：projection 过窄可能丢失必要语义；通过旧 4-packet 诊断和全新独立 admission
+  分别验证恢复假设与泛化能力。
+- 不声明 Production Ready，不解锁 TASK-028/031/032。
+
+## 执行证据（2026-08-03）
+
+- 4-call non-admission diagnostic 六维 4/4，seal `fedc4e21…`。
+- 第六套人工 seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维均 9/9，controls 3/3，
+  admission seal `2d879b13…`，状态 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。
+- 该 GO 尚未满足本 ADR 第 4、5 项恢复条件：R5 immutable freeze、三方全零 GO 与 CI
+  仍待完成，因此 A0/A1/A2 尚未解锁。
+
+## 关联
+
+- `decisions/ADR-019-blind-evaluation-and-model-activation-boundary.md`
+- `decisions/ADR-022-mvp002-standing-egress-grant-and-derived-receipt.md`
+- `decisions/ADR-025-track-b-schema-stability-diagnosis-and-fifth-admission.md`
+- `tasks/active/TASK-EVAL-005-track-b-schema-stability-and-fifth-admission.md`
+- `tasks/active/TASK-EVAL-006-track-b-provider-conversation-recovery.md`

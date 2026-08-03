@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "task-eval-006-provider-recovery-execution-claim-v1",
+  "status": "CLAIMED_ONE_TIME_NON_ADMISSION_DIAGNOSTIC",
+  "claimedAt": "2026-08-03T09:28:33.697Z",
+  "modelInputSha256": "809c244e8526b7935caa7777e2c5fb13c9403450ddf0a9049e63645d78289fee",
+  "providerCallSetSha256": "892e6b4fd86f04de10a0b9561dba1246b163e02354e4794b1e6284043f16e3f9",
+  "dispatchSha256": "338d11686229ae06700ae3f136a5df6b65fa36c5435d16bc07e17350eb5a40c9",
+  "derivedReceiptSha256": "6893767f68e6ba9966599af7241ae96340b91bb249198aceff7f0dd8fcd9306c",
+  "model": "deepseek-v4-pro",
+  "providerCallCount": 4,
+  "formalAdmissionAffected": false,
+  "automaticRetryAllowedAfterHttpStart": false,
+  "pinnedAddressSetSha256": "7debef4763880193e11cbae93f69bbd7806085ba040978b9e5752f57adfd21d2"
+}

@@ -1,6 +1,6 @@
 # ADR-022：MVP-002 持续公网外发授权与派生绑定
 
-状态：Accepted / Machine Gate Implemented / Exercised / Track B Terminal NO-GO / Grant Not Revoked
+状态：Accepted / Machine Gate Implemented / Exercised / Grant Active / ADR-026 Recovery Eligible
 
 日期：2026-08-02
 
@@ -129,7 +129,9 @@ Track B 或 Provider 失败时不得放宽本 ADR，应按阶段停止规则记�
   改写或重跑该 claim。
 - 2026-08-03：TASK-EVAL-005 第五套唯一正式 admission 完成 9×1 strict schema calls，
   解盲后因 4 个 CONFLICTED packet 语义不一致终态
-  `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED`。ADR-025 已使第六套、A0/A1/A2 和
-  新的 Provider evaluation call 均不具备任务资格。standing grant 仍是尚未由项目
-  负责人撤销的授权上限，不等于调用资格，也不得被用来绕过该终态 deny；其撤销/终止
-  方式作为 Milestone 阻塞收口待决事项保留。
+  `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED`。该 claim 不得重试，standing grant
+  不能绕过其终态。
+- 2026-08-03：项目负责人澄清此前 BLOCKED 表述是询问，并明确批准 ADR-026 /
+  TASK-EVAL-006 有限恢复。standing grant 继续有效；新范围至多 4 个恢复诊断 calls 与
+  9 个正式 admission calls，均须派生实际 hash-bound receipt。A0/A1/A2 在 admission
+  GO 前仍无调用资格。

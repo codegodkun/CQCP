@@ -1,6 +1,6 @@
 # ADR-025：Track B schema 稳定性诊断与第五套独立 admission
 
-状态：Accepted / Schema Stability GO 24/24 / Fifth Admission `SEALED_NO_GO_MODEL_MISMATCH` / Provider `NOT_ESTABLISHED` / Terminal
+状态：Accepted / Schema Stability GO 24/24 / Fifth Admission `SEALED_NO_GO_MODEL_MISMATCH` / Historical Terminal / Future Recovery Boundary Partially Superseded by ADR-026
 
 日期：2026-08-03
 
@@ -210,3 +210,6 @@ profile 保持 `EVALUATION / disabled / unbound`，普通 Demo 和后端最终�
   DeepSeek 在 4 个 CONFLICTED packet 上 mismatch，role/candidate/anchor/abstention 各
   55.56%。终态 seal `520d7b38…` 为 `SEALED_NO_GO_MODEL_MISMATCH`，Provider admission
   `NOT_ESTABLISHED`。本 ADR 的失败边界已触发：不重试、不建第六套、不启动 A0/A1/A2。
+- 2026-08-03：项目负责人随后澄清“Provider BLOCKED”是询问而非终止指令，并明确批准
+  ADR-026 的有限会话投影恢复。TASK-EVAL-005 的历史 claim/opinion/report/seal 与 NO-GO
+  继续不可变；仅“未来不得进行任何第六套/恢复”的边界由 ADR-026 部分替代。

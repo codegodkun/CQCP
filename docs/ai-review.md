@@ -424,13 +424,30 @@ TASK-EVAL-005 的单包 prompt/schema v2 在合成诊断上达到 24/24 strict a
 正式 9×1 DeepSeek 调用也达到 schema 9/9 accepted，证明 schema 稳定性门禁通过。但
 解盲后 DeepSeek 对 4 个 CONFLICTED packet 的 role/candidate/anchor/abstention 与人工
 答案不一致，四项均为 55.56%；Codex 同批意见全维 100%。因此 admission seal 为
-`SEALED_NO_GO_MODEL_MISMATCH`，Provider admission `NOT_ESTABLISHED`。按 ADR-025 不得
-重试或创建第六套，A0/A1/A2 继续禁止。
+`SEALED_NO_GO_MODEL_MISMATCH`，Provider admission `NOT_ESTABLISHED`。该 claim 不得
+重试或改写，A0/A1/A2 继续禁止。
 
 稳定性 GO 后才生成第五套独立 12-packet corpus，并在任何 evaluator/model 访问前由
 项目负责人绑定实际 hash 确认 12 条人工答案。正式 admission 仍固定
 `deepseek-v4-pro`、9×1 calls、3 个 zero-call controls、全维 100%；失败即终止，不建
-第六套。A0/A1/A2 继续等待 admission、verification/freeze 和三方全零 GO。
+第六套。该历史规则已完成并终态封存。
+
+项目负责人随后澄清此前 BLOCKED 表述只是询问，并接受 ADR-026 / TASK-EVAL-006 的
+一次有限 Provider 会话投影恢复。v3 model-facing projection 只保留 review point、
+requested role、候选 occurrence、证据、可靠 anchor、预算和输出契约；runtime routing、
+diagnostic、identity/admission label、人工 ground truth、actual/expected、Finding/verdict
+均不得进入模型输入。先以旧第五套 4 个 CONFLICTED packet 做 4-call non-admission
+diagnostic；只有 4/4 才创建第六套独立 12-packet corpus并等待新的人工先封印。正式
+admission 仍为 9×1、3 controls zero-call、全维 100%；失败不建第七套。A0/A1/A2 继续
+等待 admission、verification/freeze 和三方全零 GO。
+
+TASK-EVAL-006 实际恢复结果为：旧 4 个 CONFLICTED packet 的 non-admission diagnostic
+六维 4/4；第六套 disjoint corpus 在人工先封印后，由全新 Codex evaluator 与
+`deepseek-v4-pro` 分别完成 9 条 blind opinion。两者的 schema、可靠 anchor、role、
+candidate、anchor、abstention 均为 9/9，3 个 controls 全部 zero-call；admission seal
+`2d879b13…` 为 `SEALED_GO_TRACK_B_RECOVERY_ADMISSION`。该结论只建立 EVALUATION shadow
+资格：模型仍不得生成或改变 Finding/verdict，PUBLIC profile 仍 disabled/unbound；完整
+verification、immutable freeze 与三方全零 GO 前不得启动 A0/A1/A2。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

@@ -1,0 +1,566 @@
+{
+  "schemaVersion": "task-eval-006-track-b-recovery-model-input-v1",
+  "status": "FROZEN_BLIND_FORMAL_ADMISSION_INPUT",
+  "purpose": "TRACK_B_EVALUATION",
+  "dataClass": "SYNTHETIC_CORPUS",
+  "groundTruthIncluded": false,
+  "cqcpActualOrExpectedIncluded": false,
+  "findingOrVerdictIncluded": false,
+  "packetCount": 9,
+  "packets": [
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-8bc0ead85e0b2a0e930aba68448fc1c0fbf589ec29727b013f316df787e9bad6",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "requestedRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-MED-001-01-PARTY_A",
+          "evidence": "过往示例台账记录「澄曜-TB6-MED-001-01-PARTY_A」，并注明不适用于本合同当前合同甲方。",
+          "anchor": {
+            "blockId": "tb6-med-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-MED-001-02-PARTY_A",
+          "evidence": "双方在当前生效条款中明确：本合同合同甲方确定为「澄曜-TB6-MED-001-02-PARTY_A」。",
+          "anchor": {
+            "blockId": "tb6-med-001-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 104,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-ec38279e30374c954f83ba210378f131afb7eda1a088b5b6558386f84236829a",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "requestedRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-MED-002-01-PARTY_B",
+          "evidence": "双方在当前生效条款中明确：本合同合同乙方确定为「澄曜-TB6-MED-002-01-PARTY_B」。",
+          "anchor": {
+            "blockId": "tb6-med-002-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-MED-002-02-PARTY_B",
+          "evidence": "过往示例台账记录「澄曜-TB6-MED-002-02-PARTY_B」，并注明不适用于本合同当前合同乙方。",
+          "anchor": {
+            "blockId": "tb6-med-002-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 104,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-30c729f876f03831a713f44ccff193cc657acfdeec48bb94100600537a2f6617",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "requestedRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-MED-003-01-CONTRACT_TOTAL_AMOUNT",
+          "evidence": "过往示例台账记录「澄曜-TB6-MED-003-01-CONTRACT_TOTAL_AMOUNT」，并注明不适用于本合同当前合同含税总金额。",
+          "anchor": {
+            "blockId": "tb6-med-003-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb6_med_003/row:1/cell:2",
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-MED-003-02-CONTRACT_TOTAL_AMOUNT",
+          "evidence": "双方在当前生效条款中明确：本合同合同含税总金额确定为「澄曜-TB6-MED-003-02-CONTRACT_TOTAL_AMOUNT」。",
+          "anchor": {
+            "blockId": "tb6-med-003-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb6_med_003/row:2/cell:2",
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 138,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-fd05eaaebdf34d96005d1a1c14f26ae2d173545e34450a48a2ebc6d108aea243",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "requestedRole": "PREPAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-MED-004-01-PREPAYMENT_RATIO",
+          "evidence": "双方在当前生效条款中明确：本合同预付款比例确定为「澄曜-TB6-MED-004-01-PREPAYMENT_RATIO」。",
+          "anchor": {
+            "blockId": "tb6-med-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-MED-004-02-PREPAYMENT_RATIO",
+          "evidence": "过往示例台账记录「澄曜-TB6-MED-004-02-PREPAYMENT_RATIO」，并注明不适用于本合同当前预付款比例。",
+          "anchor": {
+            "blockId": "tb6-med-004-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 124,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-ef6e602b815b1ee427fb3024ca1676970d274ac5aae9c198173336c2be09a2a7",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "requestedRole": "WARRANTY_RETENTION_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-MED-005-01-WARRANTY_RETENTION_RATIO",
+          "evidence": "过往示例台账记录「澄曜-TB6-MED-005-01-WARRANTY_RETENTION_RATIO」，并注明不适用于本合同当前质保金比例。",
+          "anchor": {
+            "blockId": "tb6-med-005-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-005"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-MED-005-02-WARRANTY_RETENTION_RATIO",
+          "evidence": "双方在当前生效条款中明确：本合同质保金比例确定为「澄曜-TB6-MED-005-02-WARRANTY_RETENTION_RATIO」。",
+          "anchor": {
+            "blockId": "tb6-med-005-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-MED-005"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 140,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-bb8a60c0e9b6baacf090f02dd90b0231bb4c6346f2759799fad29ddf6b32f29c",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "requestedRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-CON-001-01-PARTY_A",
+          "evidence": "双方在当前生效条款中明确：本合同合同甲方确定为「澄曜-TB6-CON-001-01-PARTY_A」。",
+          "anchor": {
+            "blockId": "tb6-con-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-CON-001-02-PARTY_A",
+          "evidence": "过往示例台账记录「澄曜-TB6-CON-001-02-PARTY_A」，并注明不适用于本合同当前合同甲方。",
+          "anchor": {
+            "blockId": "tb6-con-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 104,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-8a95c7861aa5edff14afcf91cf7d7c1bf35c1d3d4a419122f1d37dce3a4f8fa1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "requestedRole": "TAX_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-CON-002-01-TAX_AMOUNT",
+          "evidence": "过往示例台账记录「澄曜-TB6-CON-002-01-TAX_AMOUNT」，并注明不适用于本合同当前合同税额。",
+          "anchor": {
+            "blockId": "tb6-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb6_con_002/row:1/cell:1",
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-CON-002-02-TAX_AMOUNT",
+          "evidence": "双方在当前生效条款中明确：本合同合同税额确定为「澄曜-TB6-CON-002-02-TAX_AMOUNT」。",
+          "anchor": {
+            "blockId": "tb6-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb6_con_002/row:1/cell:2",
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "value": "澄曜-TB6-CON-002-03-TAX_AMOUNT",
+          "evidence": "过往示例台账记录「澄曜-TB6-CON-002-03-TAX_AMOUNT」，并注明不适用于本合同当前合同税额。",
+          "anchor": {
+            "blockId": "tb6-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb6_con_002/row:1/cell:3",
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 166,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-80517b20dd53dd86e69afafa55788f05c6c07d10c9072a857a697f4729190ac1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "requestedRole": "PROGRESS_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-CON-003-01-PROGRESS_PAYMENT_RATIO",
+          "evidence": "过往示例台账记录「澄曜-TB6-CON-003-01-PROGRESS_PAYMENT_RATIO」，并注明不适用于本合同当前进度款比例。",
+          "anchor": {
+            "blockId": "tb6-con-003-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-CON-003-02-PROGRESS_PAYMENT_RATIO",
+          "evidence": "双方在当前生效条款中明确：本合同进度款比例确定为「澄曜-TB6-CON-003-02-PROGRESS_PAYMENT_RATIO」。",
+          "anchor": {
+            "blockId": "tb6-con-003-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "value": "澄曜-TB6-CON-003-03-PROGRESS_PAYMENT_RATIO",
+          "evidence": "旧流程附件只记录审批序号，不表达本合同当前进度款比例。",
+          "anchor": {
+            "blockId": "tb6-con-003-b03",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-003"
+            ],
+            "regionType": "APPENDIX",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 163,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task-eval-006-model-facing-evidence-packet-v3",
+      "packetId": "EP-338b3fd03abe4f58d1dfb9a38e3f56cac71ba77396417f9fe64da9f47efee89b",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "requestedRole": "SETTLEMENT_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "value": "澄曜-TB6-CON-004-01-SETTLEMENT_PAYMENT_RATIO",
+          "evidence": "过往示例台账记录「澄曜-TB6-CON-004-01-SETTLEMENT_PAYMENT_RATIO」，并注明不适用于本合同当前结算款比例。",
+          "anchor": {
+            "blockId": "tb6-con-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "value": "澄曜-TB6-CON-004-02-SETTLEMENT_PAYMENT_RATIO",
+          "evidence": "双方在当前生效条款中明确：本合同结算款比例确定为「澄曜-TB6-CON-004-02-SETTLEMENT_PAYMENT_RATIO」。",
+          "anchor": {
+            "blockId": "tb6-con-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第六套独立合成条款-TB6-CON-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 140,
+        "complete": true,
+        "truncated": false
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V3",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    }
+  ]
+}

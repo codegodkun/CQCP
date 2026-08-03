@@ -4,9 +4,10 @@
 NO_GO_MODEL_MISMATCH / Core 已随 PR #37 合并到 `master@115be530…` /
 新 12 packet holdout 已完成人工封印与一次正式执行 /
 DeepSeek 第 2 个 call schema invalid，claim 已消费且不得重试 /
-Provider admission `NOT_ESTABLISHED` / `MILESTONE-MVP-002 BLOCKED` /
+Provider admission `NOT_ESTABLISHED` / `MILESTONE-MVP-002 RECOVERY_ACTIVE` /
 失败 holdout 永久不可重试 / TASK-EVAL-003、004 已分别终态 BLOCKED /
-TASK-EVAL-005 第五套已终态 `SEALED_NO_GO_MODEL_MISMATCH`，不得创建第六套
+TASK-EVAL-005 第五套已历史终态 `SEALED_NO_GO_MODEL_MISMATCH` /
+ADR-026、TASK-EVAL-006 有限会话投影恢复已获批准，A0/A1/A2 仍阻塞
 
 类型：Evaluation / Data Governance / Model Governance
 
