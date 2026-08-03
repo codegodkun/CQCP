@@ -141,6 +141,21 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   `1/1` 且 Gradle `5 executed`，更正后 seal、Secret/raw Provider/CR/diff 门禁均通过。
   新 immutable freeze、三份全新全零 GO 与 CI 内容一致性仍是 `ESTABLISHED` 的必要
   条件；完成前 A0/A1/A2 继续禁止。
+- R6 subject `a9daf62f…` 的两个全新 Codex auditor 均全零 GO，但 CC AUDIT 因隔离包
+  使用 Windows worktree CRLF bytes、且 evidence/hash-only exclusion/source context 未
+  显式分区而返回 `NO_GO / P0=1 / P2=1 / blocking=2`。该轮整体失效并保留；findings
+  不改变 model evaluation、Provider payload、模型职责或准入门槛。
+- R7 仅允许以仓库外一次性 builder 修复本轮 audit projection：内容从 frozen HEAD 的 Git blob 精确导出，
+  subject evidence 完整划分为 content-included 或敏感 hash-only excluded，额外源码明确
+  标记为非 evidence context，并由 package sums/verify mode 从头复算。不得借此发送人工
+  ground truth 或 comparison report、重跑 DeepSeek、改变 seal 结论或启动 A0/A1/A2；不得
+  将该 builder 演变为产品能力、通用审计平台或新的 repository evidence schema。
+- R7 一次性 projection diagnostic 在旧失败 subject 上验证 `51 included + 3 hash-only
+  excluded = 54 evidence`、`5 source context` 与 package sums `ceab8aa2…`。唯一 CR hit
+  `cc-audit-status.json` 保留原 CRLF SHA `bf1c4b5c…` 后按既有 JSON eol 规则规范为 LF；
+  raw CC report `244ae3f8…` 未改写。完整 verification 为 Node `56/56`、Java `1/1`
+  且 `5 executed`、builder `1/1`、Secret/raw Provider/CR/diff 全绿；结果 `628fcd68…`、
+  console `e8ec9322…`。新 freeze/三审/CI 前 admission 仍 pending，A0/A1/A2 仍禁止。
 
 ## 关联
 

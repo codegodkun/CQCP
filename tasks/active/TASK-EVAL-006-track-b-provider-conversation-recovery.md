@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R6_VERIFICATION_PASS` / `FREEZE_PENDING`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R6_CC_AUDIT_NO_GO` / `R7_VERIFICATION_PASS` / `FREEZE_PENDING`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -221,10 +221,43 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   地图改用当前 R6 事实。
 - 完整 R6 verification 为 Node `56/56`、verification builder `1/1`、Java seam `1/1`
   且 Gradle `5 executed`；更正后的 seal 原字节 verify、Secret-like/raw Provider/CR/diff
-  门禁均通过。新 freeze 与三审尚未完成。
+  门禁均通过。
+- clean HEAD `dfc24de…` 的 immutable subject `a9daf62f…` 已完成一次三审：两个全新
+  `gpt-5.6-sol/xhigh` Codex auditor 均全零 GO；隔离 CC AUDIT 为
+  `NO_GO / P0=1 / P2=1 / blocking=2`。三审整体 fail closed，两个 GO 不得复用。
+- CC 两项 finding 均属于 audit projection transport：9 个治理文件从 Windows worktree
+  复制后变成 CRLF/mixed bytes，与 manifest 的 Git/LF hash 不符；同时 54 evidence 中
+  4 项敏感内容被排除、4 个源码文件作为额外 context，却未显式分区。失败 manifest、
+  CC raw/status/NO_GO 与两份 Codex GO 均已保留。
+
+### R7：CC audit projection transport 限定修复
+
+- 使用本轮一次性、仓库外 isolation builder：所有可发送 evidence/source context 从
+  frozen HEAD 的 Git blob 导出并逐字验 hash；不再复制 Windows worktree bytes，不把
+  builder 演化为产品能力、通用审计平台或新的 repository evidence schema。
+- frozen subject 的每条 evidence 必须恰好归入 `included` 或
+  `EVIDENCE_EXCLUDED_HASH_ONLY`。人工 ground truth 与包含 ground-truth comparison 的两个
+  admission report 只保留 path/size/SHA/reason，不发送内容；额外审计源码单列为
+  `SOURCE_CONTEXT_NOT_SUBJECT_EVIDENCE`，不得伪计入 evidence。
+- builder 生成 LF inventory、boundary、prompt、full diff、package sums 和 projection
+  verification；独立 verify 从头重算 Git blob、完整 evidence partition、敏感内容缺席、
+  full diff 与整包 sums。该脚本及 receipt 只属于本轮隔离投递材料，不进入产品仓库。
+- 旧失败 subject `a9daf62f…` 上的非审计 diagnostic 已验证
+  `51 included + 3 hash-only excluded = 54 evidence`、`5 source context`，整包 66 files，
+  package sums `ceab8aa2…`；没有重跑 CC 或改变旧 NO_GO。
+- 原 aggregate-only CR 门禁增强为失败时输出稳定排序的 relative path、CR count 与 SHA；
+  唯一命中是 R6 `cc-audit-status.json`。该状态元数据保留原 CRLF SHA `bf1c4b5c…` 于
+  NO_GO 摘要后，仅按现有 `outputs/task-eval-006/**/*.json text eol=lf` 规范为 LF SHA
+  `33ef2fae…`；JSON 值与 raw CC report `244ae3f8…` 均未改变。
+- R7 完整 elevated verification 已通过：Node `56/56`、verification builder `1/1`、
+  Java runtime seam `1/1` 且 Gradle `5 executed`，seal 原字节、Secret/raw Provider、CR=0、
+  diff 全绿；console manifest `e8ec9322…`、verification result `628fcd68…`、evidence `37`、
+  runs `7`，并绑定 R5/R6 两轮失败审计。
+- 本轮不修改 corpus、human decisions、model input、Codex/DeepSeek opinion、report/seal
+  结论、Java runtime seam 或 Provider 边界；不重跑 DeepSeek、不启动 A0/A1/A2。
 
 ## Next Task Handoff
 
-- 当前在 R6 freeze 前：创建 clean commit 和全新 immutable subject；再派发一个全新
+- 当前在 R7 freeze 前：形成 clean commit 和全新 immutable subject；再派发一个全新
   CC AUDIT 与两个全新 `fork_turns="none"`、
   `gpt-5.6-sol/xhigh` Codex auditors。任一失败立即停止，不组合旧 GO。

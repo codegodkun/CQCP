@@ -23,10 +23,22 @@ test("builds PASS only from fresh chronology, executed recovery seam, and reused
     "PENDING_THREE_PARTY_AUDIT_AND_CI"
   );
   assert.equal(result.verification.previousFailedFreezePreserved, true);
-  assert.equal(result.verification.failedAuditRoundsPreserved.length, 1);
+  assert.equal(result.verification.failedAuditRoundsPreserved.length, 2);
   assert.equal(
     result.verification.failedAuditRoundsPreserved[0].codeArchitectureVerdict,
     "NO_GO"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[1].subjectIdentity,
+    "a9daf62f4644dadd3834a3ef1e92408bc96c4d974009e1f6020b3f3f24e397ad"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[1].ccAuditVerdict,
+    "NO_GO"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[1].failureClassification,
+    "AUDIT_PROJECTION_TRANSPORT"
   );
   assert.equal(result.verification.a0A1A2ImplementationAllowed, false);
   assert.equal(result.consoleManifest.failedHarnessEvidence.length, 3);

@@ -13,9 +13,12 @@
 在第 8 个 call schema invalid 并终态 BLOCKED。`TASK-EVAL-005` schema 稳定性诊断
 已 GO，但第五套 admission 为 `SEALED_NO_GO_MODEL_MISMATCH`。项目负责人已澄清此前
 BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套模型评测已全维 100%，
-但 R5 subject `e77a8635…` 的代码/架构审计为 NO_GO。R6 只修四项 blocking finding并
-通过完整 verification，Milestone 当前为
-`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R6_FREEZE_PENDING`：
+但 R5 subject `e77a8635…` 的代码/架构审计为 NO_GO。R6 四项修复和完整 verification
+均通过；其 subject `a9daf62f…` 的两个 Codex auditor 全零 GO，但 CC 因隔离 projection
+的 CRLF/Git-blob 与 evidence/context 分区问题返回 `P0=1 / P2=1`。R7 仅修该 transport
+并已通过完整 verification，
+Milestone 当前为
+`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R7_VERIFICATION_PASS / FREEZE_PENDING`：
 
 | 任务 | Task Level | 当前状态 | 当前边界 |
 |---|---|---|---|
@@ -25,7 +28,7 @@ BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套模型评
 | `TASK-EVAL-003` | L3 | 12 条人工 decisions/seal 已冻结；Codex 9/9 accepted；DeepSeek 第 1 个 call `AUTHENTICATION_FAILED` 并终态 BLOCKED | claim 已消费、未解盲且不得重试；Provider admission `NOT_ESTABLISHED`，A0/A1/A2 保持阻塞 |
 | `TASK-EVAL-004` | L3 | human seal 已冻结；唯一 DeepSeek claim 在第 8 个 call schema invalid 终态 BLOCKED；未解盲、不得重试 | call set 9×1/controls=3；claim `62a7451e…`、blocked receipt `8b113c74…`；Provider admission NOT_ESTABLISHED，A0/A1/A2 阻塞 |
 | `TASK-EVAL-005` | L3 | 唯一 9×1 DeepSeek 执行 schema 9/9 accepted；解盲后 DeepSeek 4 个 CONFLICTED packet mismatch，历史终态 `SEALED_NO_GO_MODEL_MISMATCH` | 旧 claim 不重试；未来恢复边界由 ADR-026 部分替代 |
-| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5 subject `e77a8635…` 因 `P1=1 / P2=3 / blocking=4` 失效；R6 verification PASS，freeze pending | human seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维 9/9、controls 3/3；Node 56/56 + verifier 1/1 + Java 1/1（5 executed）；seal `70339354…` 为 evaluation pass pending audit，`providerAdmissionEstablished=false`；A0/A1/A2 继续阻塞 |
+| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5 subject `e77a8635…` 失效；R6 subject `a9daf62f…` 两份 Codex GO、CC `NO_GO / P0=1 / P2=1`，整体失效；R7 verification PASS，freeze pending | human seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维 9/9、controls 3/3；R7 Node 56/56 + verifier 1/1 + Java 1/1（5 executed），verification `628fcd68…` / console `e8ec9322…` / evidence 37；seal `70339354…` 仍只代表 evaluation pass pending audit；one-off Git-blob projection diagnostic `51+3=54` / context 5 / sums `ceab8aa2…`；`providerAdmissionEstablished=false`，A0/A1/A2 继续阻塞 |
 | `TASK-034` | L3 | Formal R7 与 Core subject 已通过并进入主线；父任务保持 active 等待 Milestone 最终跨 TASK 审计 | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED 的限定样本门禁不变 |
 | `TASK-036` | L3 | B1/B2/C1/C2/D1/D2 随 PR #37 进入主线；D2 required-block identity 已通过最终 Core 三审 | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket seam 可供 holdout 使用 |
 
@@ -515,7 +518,7 @@ grant 仅覆盖其合成诊断和后续 hash-bound 调用，不替代第五套�
 6. `TASK-DATA-001` 已完成规则冻结、63 条 `ACCEPTED_HUMAN_GROUND_TRUTH`、转换实现和父任务归档审计，已通过 PR #30 归档。
 7. `TASK-034` v1 Phase 1 与 C2/R6B 历史运行均为 `FAIL`；v29/R7 当前限定三样本工件为 `PASS`，父任务保持 active 并等待 Milestone 最终审计。
 8. `TASK_SPEC-035-A` 已实现并接纳，提交 `52d73b3`；v1 正式失败证据保持不变，v29/R7 是独立新运行。
-9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并，B1/B2/C1/C2/D1/D2 已随 PR #37 合并。Track B 第五套 admission 已历史终态 `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED` 且不得重试；ADR-026 / TASK-EVAL-006 的 recovery admission 已经有限时序/Java seam 修复并通过 R5 verification，当前等待新 immutable freeze 与三方全零 GO。完成该门禁前不进入 Provider A0/A1/A2，也不得复用旧 18-packet run-v3 或首次失败 subject 的报告组合通过。
+9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并，B1/B2/C1/C2/D1/D2 已随 PR #37 合并。Track B 第五套 admission 已历史终态 `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED` 且不得重试；ADR-026 / TASK-EVAL-006 的 model evaluation 已通过，但 R6 subject `a9daf62f…` 因 CC projection transport finding 失效。R7 只用仓库外一次性 builder 修 Git-blob 字节和 evidence/source/excluded 分区，不建设新的审计协议；完成新 verification/freeze/三方全零 GO/CI 前不进入 Provider A0/A1/A2，也不得组合任何旧 subject 报告通过。
 10. `TASK-GOV-007` 已通过 PR #33 合并，merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`。
 11. `TASK-037 / ADR-017 / TASK_SPEC-037-A` 已通过 PR #34 合并，merge commit `401fd05b7a6c23014adb4f5511533467016c37ba`。该任务采用 `MVP_DEMO_MOCK` 与三类 budget profile seed，不激活 TASK-036-C2。
 12. `FEATURE-MVP-001` 基于 `401fd05`；A~F/F1/F2、真实 Demo 与 F3 已完成，F3 与归档提交 `332d365` 已 push。backend CI 暴露的 3 个 Linux fixture 构造失败已由 F3 修复；host 定向 11/11、backend 313/313、Linux 11/11。v6/v7/v8 的原始证据与状态真源 findings 已补正；v9 的 CC AUDIT 与两个 Codex subagent 均为 GO。PR #35 最终三项 CI 全绿并合并为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`，父 TASK 与 F3 已归档，Feature 无剩余开发或集成门禁。

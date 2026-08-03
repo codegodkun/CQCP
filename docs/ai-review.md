@@ -463,7 +463,16 @@ DeepSeek 正式 claim/opinion 不重跑。新增 recovery-v1 Java test 通过真
 `SEALED_GO_TRACK_B_RECOVERY_EVALUATION_REVALIDATED_PENDING_AUDIT`；新三方全零 GO 与
 CI 内容一致性前仍不启动 A0/A1/A2。R6 完整 verification 已达到 Node `56/56`、Java
 runtime seam `1/1` 且 `5 executed`、verification builder `1/1`；该结果只放行新 freeze
-与三审。
+与三审。R6 subject `a9daf62f…` 的两个 Codex auditor 全零 GO，但 CC 因隔离包从 Windows
+worktree 复制出 9 个 CRLF/mixed bytes、且 evidence/hash-only exclusion/source context
+未显式分区而返回 `NO_GO / P0=1 / P2=1`，所以正式 admission 仍未建立。R7 只用仓库外
+一次性 builder 修本轮 audit projection：从 frozen Git blob 导出精确字节，三类集合
+完整、互斥、可复算；人工 ground truth 和 comparison report 内容继续禁止进入 CC 包。该 transport
+修复不重跑 DeepSeek、不改变 model evaluation 或最终 Finding/verdict 边界。
+R7 完整 verification 已通过：Node `56/56`、Java runtime seam `1/1` 且 `5 executed`、
+verification builder `1/1`、Secret/raw Provider、CR=0 与 diff 门禁全绿。唯一历史 CR hit
+为 R6 CC status 元数据，原 SHA 已在 NO_GO 摘要保留；raw CC report 未改写。verification
+result `628fcd68…`、console manifest `e8ec9322…`，仍只放行新 freeze 与三方重审。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

@@ -1,27 +1,27 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-console-manifest-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T16:19:30.531Z",
+  "completedAt": "2026-08-03T17:22:46.200Z",
   "runs": [
     {
       "name": "node-phase-appropriate",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/node-tests-phase-appropriate.console.log",
-      "size": 4783,
-      "sha256": "ec634ee6c64d6f1682278f317557a7e2b1d829c54e100f7346950023a9569fb5",
+      "size": 4781,
+      "sha256": "028367f7d0fec954ae37f9b98f3d56492acf5e31e97f42dbff7b089e6fe59b0b",
       "exitCode": 0
     },
     {
       "name": "java-recovery-runtime",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.console.log",
       "size": 1135,
-      "sha256": "41ff63ef940a09b92202162fa21336dd63e9a1f36e0d68cfef9ded5d03f613cf",
+      "sha256": "787c709bdd189eea4aad319acb89f1dac35cd8a1ddb80920838791ee7d3fc5dd",
       "exitCode": 0
     },
     {
       "name": "java-recovery-junit",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/java-track-b-recovery-runtime.junit.xml",
       "size": 543,
-      "sha256": "01af03fc4384033082cfc6b14c24fded573479d9442da75eef3ad83d280519c4",
+      "sha256": "a730591da491b5b619e526e98d56157bf0ef4bbfa6ab2953b86b266f85e882d5",
       "exitCode": 0
     },
     {
@@ -42,14 +42,14 @@
       "name": "line-endings",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/line-endings.console.log",
       "size": 36,
-      "sha256": "b8f19e91d4b9953a5754553568bf213d7461b7a9925bf650ccb113437bbbe8f7",
+      "sha256": "68a554ba107431ea9a5100178c67685af0e7972e70e3ae5a33223ee226347d6d",
       "exitCode": 0
     },
     {
       "name": "git-diff-check",
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/git-diff-check.console.log",
-      "size": 2299,
-      "sha256": "608982dfa0cfc3a8baa3a9abfe00d26684e6342ff1c19166b209370e27a10a3f",
+      "size": 1316,
+      "sha256": "bbbfa5a5e4a0ab423c4952798a67c4f715b1c01cddc33925e3f114d2c3d73e35",
       "exitCode": 0
     }
   ],

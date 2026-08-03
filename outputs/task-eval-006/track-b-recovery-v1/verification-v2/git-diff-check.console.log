@@ -1,15 +1,9 @@
 gitDiffCheckExitCode=0
 warning: in the working copy of 'CURRENT_CONTEXT.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'changelog/2026-08.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'decisions/ADR-019-blind-evaluation-and-model-activation-boundary.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'decisions/ADR-026-track-b-provider-conversation-recovery.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'docs/ARCHITECTURE.md', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'docs/ai-review.md', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/freeze-track-b-provider-recovery-audit-package.mjs', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.mjs', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/seal-track-b-provider-recovery-admission-revalidation.test.mjs', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.mjs', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'scripts/blind-evaluation/track-b-provider-recovery-codex-revalidation-contract.test.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/blind-evaluation/run-track-b-provider-recovery-r5-repair-verification.ps1', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/blind-evaluation/verify-track-b-provider-recovery-r5-repair-subject.mjs', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'scripts/blind-evaluation/verify-track-b-provider-recovery-r5-repair-subject.test.mjs', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'tasks/MVP_TASK_MAP.md', LF will be replaced by CRLF the next time Git touches it

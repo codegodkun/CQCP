@@ -18,7 +18,21 @@
 > admissionDecisionPendingAudit=true`。DeepSeek claim/opinion `600a821a… / e863596a…` 未重跑、
 > 未改写。R6 完整 verification 已通过：Node `56/56`、verification builder `1/1`、
 > Java seam `1/1` 且 Gradle `5 executed`，更正后 seal verify 与 Secret/raw Provider/CR/diff
-> 门禁均通过；当前等待 clean commit、新 freeze 和三方审计，A0/A1/A2 仍禁止。
+> 门禁均通过。clean HEAD `dfc24de…` 的 subject `a9daf62f…` 随后三审：两个全新 Codex
+> auditor 均全零 GO，CC AUDIT 为 `NO_GO / P0=1 / P2=1 / blocking=2`。CC findings 仅指向
+> 隔离 projection 的 9 个 CRLF/Git-blob hash mismatch，以及 subject evidence、敏感
+> hash-only exclusion 与额外 source context 未显式分区；不是产品裁判或评测正确性
+> finding。该失败 freeze、原始 CC 报告和两份 Codex GO 已只读保留，不能组合通过。
+> R7 只修一次性 CC isolation projection 构建流程：从 frozen HEAD 的 Git blob 导出原字节，
+> 将每条 evidence 完整划分为 included 或 hash-only excluded，额外源码单列 context；
+> 定向 Node `2/2` 已通过；一次性 builder 已在旧失败 subject 上完成非审计 diagnostic：
+> `51 included + 3 hash-only excluded = 54 evidence`、`5 source context`，package sums
+> `ceab8aa2…`，全部可发送 bytes 与 Git blob 一致。R7 随后把唯一 CR hit 精确定位到
+> R6 `cc-audit-status.json`，保留原 CRLF SHA `bf1c4b5c…` 后仅按既有 eol 规则规范为 LF；
+> raw CC report `244ae3f8…` 未改写。完整 elevated verification 已通过：Node `56/56`、
+> Java seam `1/1` 且 `5 executed`、seal/Secret/CR=0/diff/builder 全绿；verification result
+> `628fcd68…`、console manifest `e8ec9322…`、evidence `37`，并保留 R5/R6 两轮失败审计。
+> 当前等待 clean commit、新 freeze 和三方重审，A0/A1/A2 仍禁止。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -526,11 +540,11 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 当前阻塞项
 
-1. TASK-EVAL-006 的 recovery admission 已重验证为 GO，但尚未形成新的 clean immutable
-   subject，也尚未取得 CC AUDIT 与两个全新 Codex auditor 的同一 hash 全零 GO；因此
-   A0/A1/A2 仍无资格。
-2. 首次 subject `9dddbe43…` 的测试/安全审计 NO_GO 与旧 freeze manifest 必须只读保留，
-   不得与后续报告组合通过。
+1. TASK-EVAL-006 的模型评测已重验证为 GO，但 R6 subject `a9daf62f…` 因 CC audit
+   projection transport 的 `P0=1 / P2=1` 失败；因此正式 admission 仍未建立，A0/A1/A2
+   仍无资格。
+2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…` 的失败/中断/NO_GO freeze 与报告
+   必须只读保留，不得与后续报告组合通过。
 3. TASK-EVAL-002~005 的历史 BLOCKED/NO-GO claim、opinion、report、seal 均不可重试或
    改写；本次修复没有重跑 DeepSeek、创建第七套 corpus 或改变这些历史终态。
 4. PUBLIC profile 继续 `EVALUATION / disabled / unbound`；模型不得直接生成或改变
@@ -538,8 +552,9 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 下一步
 
-1. 将当前 R5 修复内容形成 clean commit，并把首次失败 freeze manifest 一并只读保存。
-2. 对新 HEAD 生成并验证唯一新 immutable freeze；发生身份漂移立即停止。
+1. 将 R7 transport/CR diagnostic、`a9daf62f…` 失败 freeze 与三份审计终态、完整 PASS
+   verification evidence 形成 clean commit；不修改模型输入、意见、人工 seal 或 Provider 边界。
+2. 对 clean HEAD 生成并验证唯一新 immutable freeze；发生身份漂移立即停止。
 3. 对同一新 subject 从头派发 CC AUDIT 与两个全新
    `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO
    不得组合。

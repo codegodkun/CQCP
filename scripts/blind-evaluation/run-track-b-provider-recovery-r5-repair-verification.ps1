@@ -100,14 +100,23 @@ try {
     }
 
     $hashBoundFiles = Get-ChildItem -LiteralPath (Join-Path $root "outputs/task-eval-006") -Recurse -File |
-        Where-Object { $_.Extension -in @(".json", ".md", ".txt") -and $_.FullName -notlike "*verification\audit*" }
-    $filesContainingCR = 0
+        Where-Object { $_.Extension -in @(".json", ".md", ".txt") -and $_.FullName -notlike "*verification\audit*" } |
+        Sort-Object FullName
+    $crRecords = @()
     foreach ($file in $hashBoundFiles) {
-        if ([IO.File]::ReadAllBytes($file.FullName) -contains 13) {
-            $filesContainingCR += 1
+        $bytes = [IO.File]::ReadAllBytes($file.FullName)
+        $crCount = ($bytes | Where-Object { $_ -eq 13 }).Count
+        if ($crCount -gt 0) {
+            $relativePath = [IO.Path]::GetRelativePath($root, $file.FullName).Replace("\", "/")
+            $crRecords += "$relativePath`tcrCount=$crCount`tsha256=$((Get-FileHash -Algorithm SHA256 -LiteralPath $file.FullName).Hash.ToLowerInvariant())"
         }
     }
-    $lineLog = "filesContainingCR=$filesContainingCR`nscannedFiles=$($hashBoundFiles.Count)`n"
+    $filesContainingCR = $crRecords.Count
+    $lineLog = (@(
+        "filesContainingCR=$filesContainingCR",
+        "scannedFiles=$($hashBoundFiles.Count)"
+    ) + $crRecords) -join "`n"
+    $lineLog = "$lineLog`n"
     [IO.File]::WriteAllText(
         (Join-Path $verifyRoot "line-endings.console.log"),
         $lineLog,
