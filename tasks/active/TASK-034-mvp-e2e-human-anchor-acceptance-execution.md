@@ -1,8 +1,8 @@
 # TASK-034：MVP E2E 人工 anchor 正式验收执行
 
-状态：Active / `91d5e16…` Formal R7 `PASS` and Sealed / Core verification
-stopped at stale D1 451 count gate / D1 452 sync targeted PASS / Fresh Full
-Verification and Milestone Final Audit Pending
+状态：Active / Final Core R7 `PASS` and Sealed / Core subject `90c4ae9a…`
+三审全零 GO / PR #37 merged as `115be530…` / Provider 路径终态 BLOCKED /
+Milestone 仅待终态证据保存与收口，不存在成功路径 Final Audit
 
 类型：Codex 主控正式验收任务
 
@@ -370,12 +370,15 @@ commit、push、PR 或 merge。
 * 已确认：`TASK_SPEC-034-A` test-only harness 能在不修改生产类、不二次执行 parser/review、不宽松匹配的条件下完成同 run 观察与正式输出。
 * 已确认：人工 expected 与 actual candidate 的表示契约存在 18/27 不一致；不得通过修改 expected 或放宽 strip-only 比较消除失败。
 * 已确认：当前 actual anchor 精度不足以建立 57 条纳入 occurrence 的可靠 bridge，结果为 57/57 `NOT_OBSERVABLE`。
-* 已确认：candidate 表示差异由 `TASK-035` 以 test-only、版本化 typed projection 重基线，不修改生产 `CandidateResolver`，不需要 ADR；`TASK_SPEC-035-A` 已冻结并审计 `GO`，当前等待 Claude Code / DeepSeek 编码前计划和 Codex 放行。
+* 已确认：candidate 表示差异由 `TASK-035` 以 test-only、版本化 typed projection
+  重基线，不修改生产 `CandidateResolver`，不需要 ADR；`TASK_SPEC-035-A` 已实现并
+  随 PR #32 合并。
 * 已确认：多出处 evidence 缺口由 `TASK-036` / `ADR-016` Draft 承接；根因是 occurrence-insensitive dedup 与 selected-candidate 投影双重折叠，只补 `cellIndex` 不能解决 27 actual anchors 对 57 纳入 occurrence 的基数缺口；Draft 独立最终审计 `GO`。
 * 已确认：现有 point result / snapshot / OpenAPI / JSONB query 使用列表结构，可承载一点评多 anchors；若实现发现事实不同必须停止并拆兼容任务。
 * 已确认：用户授权创建/派发 `TASK_SPEC-035-A`；用户接受 `ADR-016` 并已完成 ARCHITECTURE 同步。
-* 已确认：TASK-035、TASK-036 C1/C2、D1 已在当前 MVP-002 worktree 集成；
-  v29 R7 工件判定 `PASS`，当前增量仍待最终冻结三审。
+* 已确认：TASK-035、TASK-036 B1/B2/C1/C2/D1/D2 已进入主线；最终 Core
+  v29/R7 工件判定 `PASS` 并完成三方全零 GO，父任务仅等待 Milestone 最终跨 TASK
+  审计。
 * 已确认：R6B 为 18 `MATCH` / 9 `NOT_OBSERVABLE`、18 `PASS` /
   9 `NOT_CONCLUDED`、49 actual anchors / 57 included occurrences；
   occurrence 为 47 `MATCHED` / 10 `NOT_OBSERVABLE` / 6 `EXCLUDED`，最终
@@ -422,3 +425,8 @@ commit、push、PR 或 merge。
   滞后，不是 R7 或产品测试失败。当前仅同步 verification/freeze 计数门禁，Node
   定向 `11/11 PASS`；`91d5e16…` 的 R7 因后续 tracked 脚本变化而 superseded，
   下一 Formal R7 必须从新 clean candidate 生成。
+* 2026-08-02：最终 Core subject `90c4ae9a…` 已从新 clean HEAD 重建 Formal R7、
+  完整 verification 与 freeze，并取得 CC AUDIT、代码/架构 Codex auditor、
+  测试/安全 Codex auditor 三份全零 GO；GitHub run `30748527866` 全绿，PR #37
+  合并为 `115be530…`。限定三样本 R7 能力已进入主线；该证据仍不等于 Track B
+  admission 或 Production Ready，父任务等待 Milestone 最终跨 TASK 审计。

@@ -1,0 +1,984 @@
+{
+  "schemaVersion": "task-eval-005-track-b-fifth-corpus-v1",
+  "status": "DRAFT_PENDING_HUMAN_GROUND_TRUTH_CONFIRMATION",
+  "generatedAt": "2026-08-03T06:59:01.155Z",
+  "source": "INDEPENDENT_DEIDENTIFIED_SYNTHETIC_RUNTIME_SIGNALS",
+  "sourceSignalsPath": "apps/api-server/src/test/resources/track-b-fifth-v1/source-signals.json",
+  "sourceSignalsSha256": "d8dd7df34991c97773fa96ef8efeb2bc11c3d55e36ddf87715fba8d4861cda15",
+  "containsProductionContractText": false,
+  "groundTruthIncluded": false,
+  "packetCount": 12,
+  "eligiblePacketCount": 9,
+  "mediumEligibleCount": 5,
+  "conflictedEligibleCount": 4,
+  "zeroCallControlCount": 3,
+  "packets": [
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-84165b6480d8ea36e838c4b1233892d36755410741cc27c2b40a5ebb419cd6d2",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "sampleId": "TB5-MED-001",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-MED-001-01-PARTY_A",
+          "evidenceText": "经双方确认，本合同合同甲方为「玄穹-TB5-MED-001-01-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-MED-001-02-PARTY_A",
+          "evidenceText": "附属参考记录（非合同甲方）载明代号「玄穹-TB5-MED-001-02-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-001-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_a",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 87,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tb5-med-001-b01",
+          "tb5-med-001-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-5831f3912116f499540c351af939c4a7aebc0579cd59a70f82c24138382bfbad",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "sampleId": "TB5-MED-002",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-MED-002-01-PARTY_B",
+          "evidenceText": "附属参考记录（非合同乙方）载明代号「玄穹-TB5-MED-002-01-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-002-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-MED-002-02-PARTY_B",
+          "evidenceText": "经双方确认，本合同合同乙方为「玄穹-TB5-MED-002-02-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-002-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 87,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tb5-med-002-b01",
+          "tb5-med-002-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-10f7d720318a92b4755111b9ba91e780e42f1232889dd5c21e8aad4357dc4723",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "sampleId": "TB5-MED-003",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-MED-003-01-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "经双方确认，本合同合同含税总金额为「玄穹-TB5-MED-003-01-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-003-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb5_med_003/row:1/cell:2",
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-MED-003-02-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "附属参考记录（非合同含税总金额）载明代号「玄穹-TB5-MED-003-02-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-003-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb5_med_003/row:2/cell:2",
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "contract_total_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 121,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tb5-med-003-table-01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-e43b8433e4485af3f1a6eef4b7c1f743c465adeef98d5034705df9330ceec239",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "sampleId": "TB5-MED-004",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-MED-004-01-PREPAYMENT_RATIO",
+          "evidenceText": "附属参考记录（非预付款比例）载明代号「玄穹-TB5-MED-004-01-PREPAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-MED-004-02-PREPAYMENT_RATIO",
+          "evidenceText": "经双方确认，本合同预付款比例为「玄穹-TB5-MED-004-02-PREPAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-004-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "prepayment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 107,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tb5-med-004-b01",
+          "tb5-med-004-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-5d69a7916c3ea077e12b662b5904e2de77e9e9de467be8b23223558844fda5fd",
+      "taskId": "task-eval-005-track-b-fifth-medium",
+      "executionId": "execution-track-b-fifth-medium-v1",
+      "sampleId": "TB5-MED-005",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-MED-005-01-WARRANTY_RETENTION_RATIO",
+          "evidenceText": "经双方确认，本合同质保金比例为「玄穹-TB5-MED-005-01-WARRANTY_RETENTION_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-005-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-005"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-MED-005-02-WARRANTY_RETENTION_RATIO",
+          "evidenceText": "附属参考记录（非质保金比例）载明代号「玄穹-TB5-MED-005-02-WARRANTY_RETENTION_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-med-005-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-MED-005"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "warranty_retention_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "LOW_CONFIDENCE",
+          "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 123,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_MEDIUM_AMBIGUITY"
+        ],
+        "requiredBlockIds": [
+          "tb5-med-005-b01",
+          "tb5-med-005-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-1c4bd4f0cc79234a8d0938fddaa6652ea36d7c3652b5e1bafaeccf10540b3811",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "sampleId": "TB5-CON-001",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CON-001-01-PARTY_A",
+          "evidenceText": "附属参考记录（非合同甲方）载明代号「玄穹-TB5-CON-001-01-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-CON-001-02-PARTY_A",
+          "evidenceText": "经双方确认，本合同合同甲方为「玄穹-TB5-CON-001-02-PARTY_A」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_a",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 87,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tb5-con-001-b01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-23b06c3d7bd61056f7b5ad6019fcdf8a6291d95cd098f04db917b76023b74a7a",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "sampleId": "TB5-CON-002",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "candidateRole": "TAX_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CON-002-01-TAX_AMOUNT",
+          "evidenceText": "经双方确认，本合同合同税额为「玄穹-TB5-CON-002-01-TAX_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb5_con_002/row:1/cell:1",
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-CON-002-02-TAX_AMOUNT",
+          "evidenceText": "附属参考记录（非合同税额）载明代号「玄穹-TB5-CON-002-02-TAX_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb5_con_002/row:1/cell:2",
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "candidateValue": "玄穹-TB5-CON-002-03-TAX_AMOUNT",
+          "evidenceText": "附属参考记录（非合同税额）载明代号「玄穹-TB5-CON-002-03-TAX_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-002-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb5_con_002/row:1/cell:3",
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-002"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "tax_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 141,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tb5-con-002-table-01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-b0e11f150650818fbd48bf8f48c2312e303de96885343acfcd5ed035ea3b78e1",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "sampleId": "TB5-CON-003",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CON-003-01-PROGRESS_PAYMENT_RATIO",
+          "evidenceText": "附属参考记录（非进度款比例）载明代号「玄穹-TB5-CON-003-01-PROGRESS_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-003-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-CON-003-02-PROGRESS_PAYMENT_RATIO",
+          "evidenceText": "经双方确认，本合同进度款比例为「玄穹-TB5-CON-003-02-PROGRESS_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-003-b02",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-003"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-003",
+          "candidateValue": "玄穹-TB5-CON-003-03-PROGRESS_PAYMENT_RATIO",
+          "evidenceText": "附属参考记录仅载明流程编号，不构成目标比例候选证据。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-003-b03",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-003"
+            ],
+            "regionType": "APPENDIX",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "progress_payment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 145,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tb5-con-003-b01",
+          "tb5-con-003-b02"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-170929d81f5ec1c0f1098331aa74973b7ea563a0dbcffcd8f53c36e4dbae9c51",
+      "taskId": "task-eval-005-track-b-fifth-conflicted",
+      "executionId": "execution-track-b-fifth-conflicted-v1",
+      "sampleId": "TB5-CON-004",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CON-004-01-SETTLEMENT_PAYMENT_RATIO",
+          "evidenceText": "经双方确认，本合同结算款比例为「玄穹-TB5-CON-004-01-SETTLEMENT_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        },
+        {
+          "occurrenceId": "OCC-002",
+          "candidateValue": "玄穹-TB5-CON-004-02-SETTLEMENT_PAYMENT_RATIO",
+          "evidenceText": "附属参考记录（非结算款比例）载明代号「玄穹-TB5-CON-004-02-SETTLEMENT_PAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-con-004-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CON-004"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "settlement_payment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "AMBIGUOUS",
+          "diagnosticCode": "SYS_ROLE_CONFLICT",
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 123,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": true,
+        "status": "ELIGIBLE",
+        "reasonCodes": [
+          "ELIGIBLE_CONFLICT_LOCAL_CONTEXT"
+        ],
+        "requiredBlockIds": [
+          "tb5-con-004-b01"
+        ]
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-9219f6a7a9ba1844be227b844ad60cae589b9e7208d140cfe11e36eec16cde5d",
+      "taskId": "task-eval-005-track-b-fifth-control",
+      "executionId": "execution-track-b-fifth-control-v1",
+      "sampleId": "TB5-CTL-HIGH-001",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CTL-HIGH-001-01-CONTRACT_TOTAL_AMOUNT",
+          "evidenceText": "附属参考记录（非合同含税总金额）载明代号「玄穹-TB5-CTL-HIGH-001-01-CONTRACT_TOTAL_AMOUNT」。",
+          "sourceAnchor": {
+            "blockId": "tb5-ctl-high-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CTL-HIGH-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "contract_total_amount",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "SATISFIED",
+          "diagnosticCode": null,
+          "reliableAnchor": true
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 67,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": false,
+        "status": "ZERO_CALL_REQUIRED",
+        "reasonCodes": [
+          "DETERMINISTIC_HIGH_ZERO_CALL"
+        ],
+        "requiredBlockIds": []
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-882d93f9711a7e27f7a808065181deb3ffe5f071127da7e14921039fbd94454e",
+      "taskId": "task-eval-005-track-b-fifth-control",
+      "executionId": "execution-track-b-fifth-control-v1",
+      "sampleId": "TB5-CTL-INVALID-001",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CTL-INVALID-001-01-PREPAYMENT_RATIO",
+          "evidenceText": "附属参考记录（非预付款比例）载明代号「玄穹-TB5-CTL-INVALID-001-01-PREPAYMENT_RATIO」。",
+          "sourceAnchor": {
+            "blockId": "tb5-ctl-invalid-001-table-01",
+            "locationLevel": "TABLE_CELL",
+            "previewElementRef": "table:tb5_ctl_invalid/row:x/cell:2",
+            "sectionPath": [
+              "第五套合成条款-TB5-CTL-INVALID-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "NORMAL",
+            "reliable": false
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "prepayment_ratio",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "MISSING",
+          "diagnosticCode": "SYS_INDEX_INCOMPLETE",
+          "reliableAnchor": false
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 63,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": false,
+        "status": "ZERO_CALL_REQUIRED",
+        "reasonCodes": [
+          "BUNDLE_INVALID"
+        ],
+        "requiredBlockIds": []
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    },
+    {
+      "schemaVersion": "task036-runtime-evidence-packet-v1",
+      "packetId": "EP-3be226f9ac2a6552218e3ac5cdbc1ddc378422cb673d67edfed249d5efa1d36e",
+      "taskId": "task-eval-005-track-b-fifth-control",
+      "executionId": "execution-track-b-fifth-control-v1",
+      "sampleId": "TB5-CTL-NOANCHOR-001",
+      "ruleSetVersion": "v20260803.fifth.1",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "candidateOccurrences": [
+        {
+          "occurrenceId": "OCC-001",
+          "candidateValue": "玄穹-TB5-CTL-NOANCHOR-001-01-PARTY_B",
+          "evidenceText": "附属参考记录（非合同乙方）载明代号「玄穹-TB5-CTL-NOANCHOR-001-01-PARTY_B」。",
+          "sourceAnchor": {
+            "blockId": "tb5-ctl-noanchor-001-b01",
+            "locationLevel": "BLOCK_LEVEL",
+            "previewElementRef": null,
+            "sectionPath": [
+              "第五套合成条款-TB5-CTL-NOANCHOR-001"
+            ],
+            "regionType": "BODY",
+            "contextType": "TOC",
+            "reliable": true
+          }
+        }
+      ],
+      "coverageSignals": [
+        {
+          "slotKey": "party_b",
+          "required": true,
+          "critical": true,
+          "coverageStatus": "MISSING",
+          "diagnosticCode": "SYS_INDEX_INCOMPLETE",
+          "reliableAnchor": false
+        }
+      ],
+      "budget": {
+        "maxEvidenceChars": 4096,
+        "usedEvidenceChars": 54,
+        "complete": true,
+        "truncated": false
+      },
+      "admission": {
+        "modelCallAllowed": false,
+        "status": "ZERO_CALL_REQUIRED",
+        "reasonCodes": [
+          "RELIABLE_ANCHOR_MISSING"
+        ],
+        "requiredBlockIds": []
+      },
+      "requiredOutput": {
+        "contract": "ROLE_CANDIDATE_ANCHOR_ABSTENTION_V1",
+        "fields": [
+          "suggestedRole",
+          "selectedOccurrenceIds",
+          "selectedAnchorBlockIds",
+          "abstain",
+          "abstentionReason"
+        ],
+        "instruction": "Only assess supplied role/candidate/anchor evidence. Do not produce final business adjudication."
+      }
+    }
+  ]
+}

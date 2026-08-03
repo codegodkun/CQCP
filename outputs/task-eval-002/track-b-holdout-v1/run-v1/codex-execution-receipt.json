@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-codex-execution-receipt-v1",
+  "source": "CODEX_COLLABORATION_TOOL",
+  "forkTurns": "none",
+  "historicalContextIncluded": false,
+  "agentTask": "/root/track_b_holdout_codex_blind_v1",
+  "agentId": "track_b_holdout_codex_blind_v1",
+  "modelInputSha256": "bd402b4019f5a8cddcd6c433a4d9981d8e39300df8ad488e09a6ccd92fdb3dcc",
+  "dispatchSha256": "8fe2a996c011f190bfbfada4446645a6d5e693b2c98d845dfd4e3995d211647b",
+  "providerCallSetSha256": "8c63e3777fbc36a7f05821e9f3ccf2d81f64c1ccfdb9c4d2acd29d7467c8e5e6",
+  "rawAgentOutputPath": "outputs/task-eval-002/track-b-holdout-v1/run-v1/codex-agent-raw.json",
+  "rawAgentOutputSha256": "ff83f8c14a888305d31f067e69b2c9076d17af323d8911fdf2e17353b7988a7a",
+  "startedAt": "2026-08-02T14:46:54.727Z",
+  "completedAt": "2026-08-02T14:53:05.668Z",
+  "transcriptCrossCheckRequired": true
+}

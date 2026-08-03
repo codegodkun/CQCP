@@ -1,0 +1,185 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-human-confirmation-v1",
+  "confirmed": true,
+  "challengeNonce": "TBS1-5bfbe8b667944e7182df3ec537d45725",
+  "challengeSha256": "0bd06f76212b902d090ec16db77a404af733f8a83da5eb42e3fba78570bfbb4f",
+  "corpusSha256": "a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3",
+  "humanReviewDraftSha256": "7df83cf96863693cd16026c207758f382e3da67bebfab767d2f42090b4dadfb3",
+  "humanReviewDocumentSha256": "f8c4c6a00d65bf3d4ae1c9628cb7bf99cee07575682755427520f18b9ddd099f",
+  "presealManifestSha256": "1a22f5992bdc9e2bcdc9c06a3d01ee683a85a57b58288904385cec43e9820c8c",
+  "decisionsSha256": "d7d868299a3f52aab0168a6bd8bc3c7f4f745c1f032a366f793cdffec04842c7",
+  "decisions": [
+    {
+      "caseId": "TBS-MED-001",
+      "packetId": "EP-3cdefb27b04471d321ad206f60c2777181be04912f89408e369cd88aad465abc",
+      "expected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-001-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-002",
+      "packetId": "EP-44b2ff1afc0afb5d0945a1791bd05eb58242aa7947987b2752598d022a08953c",
+      "expected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-002-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-003",
+      "packetId": "EP-7aea36ff77362afb1bd77fcfcc4b6d6bb1445d59565d231ea9f55884591ce15c",
+      "expected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-003-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-004",
+      "packetId": "EP-572aaa4abf8837ec08861c36da48afd4bb39793e9543485087e02141fe4c7e47",
+      "expected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-005",
+      "packetId": "EP-47757b9d55c63c098b08bcd0bc249cbc886b138cae6e77f9e0df4790a2691593",
+      "expected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-005-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-001",
+      "packetId": "EP-69680a99d97685f3402dd0bc0b5d21f4b79d120d8cb2690bea70a1455e11663c",
+      "expected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-002",
+      "packetId": "EP-817c93ed5adc46b221da8aa31b6d515696f96ca30a9da9e23f505e40c5fc0685",
+      "expected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-002-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-003",
+      "packetId": "EP-33a2e677325010e90c1be897f672c694246bbd8676a5fef61581702a2116fed8",
+      "expected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-003-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-004",
+      "packetId": "EP-235e78754e072e666562eafb2c1ba4f74598b099520972d26275f45d1b8e4704",
+      "expected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CTL-HIGH-001",
+      "packetId": "EP-b5c24d5469dbd66dddc67c11c4321d92a21c2476d3f2e585802343abfb49f303",
+      "expected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TBS-CTL-INVALID-001",
+      "packetId": "EP-d701ff3c85a8a25d904b43044f162cacd3773117816062bc489efbd5e23e6e83",
+      "expected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TBS-CTL-NOANCHOR-001",
+      "packetId": "EP-6895a2c73d28e86b7c6d0537cd7a3e685bb35bfb8514832a62459bb78186bade",
+      "expected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ],
+  "confirmedBy": "项目负责人",
+  "confirmedAt": "2026-08-03T01:34:17.706Z",
+  "confirmationSource": "CODEX_THREAD_USER_CONFIRMATION",
+  "confirmationStatement": "我已人工审阅并确认 challenge TBS1-5bfbe8b667944e7182df3ec537d45725，challenge SHA 0bd06f76212b902d090ec16db77a404af733f8a83da5eb42e3fba78570bfbb4f，corpus SHA a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3，review SHA f8c4c6a00d65bf3d4ae1c9628cb7bf99cee07575682755427520f18b9ddd099f，同意12条 proposedExpected全部作为我的人工 decisions，无修改。"
+}

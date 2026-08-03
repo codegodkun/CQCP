@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-human-challenge-v1",
+  "status": "AWAITING_EXPLICIT_HUMAN_DECISIONS",
+  "nonce": "TBS1-5bfbe8b667944e7182df3ec537d45725",
+  "createdAt": "2026-08-02T15:54:39.897Z",
+  "expiresAt": "2026-08-04T15:54:39.897Z",
+  "corpusPath": "outputs/task-eval-003/track-b-successor-v1/corpus.json",
+  "corpusSha256": "a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3",
+  "humanReviewDraftPath": "outputs/task-eval-003/track-b-successor-v1/human-review-draft.json",
+  "humanReviewDraftSha256": "7df83cf96863693cd16026c207758f382e3da67bebfab767d2f42090b4dadfb3",
+  "humanReviewDocumentPath": "outputs/task-eval-003/track-b-successor-v1/human-ground-truth-review.md",
+  "humanReviewDocumentSha256": "f8c4c6a00d65bf3d4ae1c9628cb7bf99cee07575682755427520f18b9ddd099f",
+  "presealManifestPath": "outputs/task-eval-003/track-b-successor-v1/preseal-manifest.json",
+  "presealManifestSha256": "1a22f5992bdc9e2bcdc9c06a3d01ee683a85a57b58288904385cec43e9820c8c",
+  "requiredDecisionCount": 12,
+  "confirmationSourceRequired": "CODEX_THREAD_USER_CONFIRMATION",
+  "proposedAnswersAreNonAuthoritative": true,
+  "priorFailedClaimReused": false,
+  "modelInputCreated": false,
+  "networkCallAllowed": false,
+  "instruction": "人工确认必须逐项提供12条 decisions；可接受、修改或拒答。确认前不得创建 model input 或发起任何模型调用。"
+}

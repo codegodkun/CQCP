@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "task-eval-004-track-b-final-codex-execution-receipt-v1",
+  "source": "CODEX_COLLABORATION_TOOL",
+  "forkTurns": "none",
+  "historicalContextIncluded": false,
+  "agentTask": "/root/track_b_final_codex_blind_v1",
+  "agentId": "track_b_final_codex_blind_v1",
+  "modelInputSha256": "bd648dd1cd9073217b9d493da2c9e4d12d9c6481eb5f34ccb6c9e1725da3fbba",
+  "dispatchSha256": "141d5344a373a90c53c002a8d7e830cbd3fa7a2b853e0fdfb44057faf686d0f2",
+  "providerCallSetSha256": "9881d520121766f3331a0aff6a006511c6fea65f08736b4ba58e1fe59200a57e",
+  "rawAgentOutputPath": "outputs/task-eval-004/track-b-final-v1/run-v1/codex-raw-output.json",
+  "rawAgentOutputSha256": "8067023989d3e3f645c6e610f7a5217cca0149061765c59849b55e2ea775f3dc",
+  "startedAt": "2026-08-03T06:09:57.096Z",
+  "completedAt": "2026-08-03T06:13:55.263Z",
+  "transcriptCrossCheckRequired": true
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "task-eval-005-track-b-fifth-codex-execution-receipt-v2",
+  "source": "CODEX_COLLABORATION_TOOL",
+  "forkTurns": "none",
+  "historicalContextIncluded": false,
+  "agentTask": "/root/track_b_fifth_codex_blind_v1",
+  "agentId": "track_b_fifth_codex_blind_v1",
+  "modelInputSha256": "e1516fb0d395b075b0649be0a5ef7e17334171598f01d832a25109de8601045b",
+  "dispatchSha256": "31e9d71842d31a6d512d78def3a798cd3dbc483b656cebe20bf25fc2acd3ae42",
+  "providerCallSetSha256": "365e17222248e180cb07492ad36d85d0825182dfb6b4d0c9ceb7ab3d0e9e3a04",
+  "rawAgentOutputPath": "outputs/task-eval-005/track-b-fifth-v1/run-v1/codex-agent-raw.json",
+  "rawAgentOutputSha256": "512e75d5f99b102c0a698dbe9f2708e2ae4a202a41dc1889418ce7919dec51dc",
+  "startedAt": "2026-08-03T07:10:00.000Z",
+  "completedAt": "2026-08-03T07:13:30.470Z",
+  "transcriptCrossCheckRequired": true
+}

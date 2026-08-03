@@ -1,0 +1,217 @@
+{
+  "schemaVersion": "task-eval-003-track-b-successor-human-review-draft-v1",
+  "status": "PENDING_HUMAN_CONFIRMATION_NOT_GROUND_TRUTH",
+  "draftedBy": "CODEX",
+  "humanGroundTruthEstablished": false,
+  "corpusPath": "outputs/task-eval-003/track-b-successor-v1/corpus.json",
+  "corpusSha256": "a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3",
+  "proposedDecisionsPath": "apps/api-server/src/test/resources/track-b-successor-v1/proposed-decisions.json",
+  "proposedDecisionsSha256": "4e8130492efd49b6b3822492cfdeceab075a49b38801097403bc528794ac9513",
+  "confirmationInstruction": "人工逐项确认 proposedExpected；确认前不得作为 ground truth，不得提供给任何盲评模型。",
+  "entries": [
+    {
+      "caseId": "TBS-MED-001",
+      "packetId": "EP-3cdefb27b04471d321ad206f60c2777181be04912f89408e369cd88aad465abc",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "发包人标签直接标识合同甲方，联系人不是合同主体。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_A",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-001-b02"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-002",
+      "packetId": "EP-44b2ff1afc0afb5d0945a1791bd05eb58242aa7947987b2752598d022a08953c",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "承揽人（乙方）是合同主体，收款户名不是乙方主体字段。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-002-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-003",
+      "packetId": "EP-7aea36ff77362afb1bd77fcfcc4b6d6bb1445d59565d231ea9f55884591ce15c",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "合同含税总金额对应合同总价，预算控制额不属于合同总价。",
+      "proposedExpected": {
+        "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-003-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-004",
+      "packetId": "EP-572aaa4abf8837ec08861c36da48afd4bb39793e9543485087e02141fe4c7e47",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "预付款条款中的14%对应目标角色，7%属于履约担保。",
+      "proposedExpected": {
+        "suggestedRole": "PREPAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-MED-005",
+      "packetId": "EP-47757b9d55c63c098b08bcd0bc249cbc886b138cae6e77f9e0df4790a2691593",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "质量保证金2%对应质保金比例，9%属于违约金上限。",
+      "proposedExpected": {
+        "suggestedRole": "WARRANTY_RETENTION_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-med-005-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-001",
+      "packetId": "EP-69680a99d97685f3402dd0bc0b5d21f4b79d120d8cb2690bea70a1455e11663c",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "承包人（乙方）标签直接指向青屿设备安装有限公司。",
+      "proposedExpected": {
+        "suggestedRole": "PARTY_B",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-001-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-002",
+      "packetId": "EP-817c93ed5adc46b221da8aa31b6d515696f96ca30a9da9e23f505e40c5fc0685",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "税额标签直接对应42120，而非不含税金额或价税合计。",
+      "proposedExpected": {
+        "suggestedRole": "TAX_AMOUNT",
+        "selectedOccurrenceIds": [
+          "OCC-002"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-002-table-01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-003",
+      "packetId": "EP-33a2e677325010e90c1be897f672c694246bbd8676a5fef61581702a2116fed8",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "月度进度款74%对应目标角色；86%是完工累计比例，附件说明不参与比较。",
+      "proposedExpected": {
+        "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-003-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CON-004",
+      "packetId": "EP-235e78754e072e666562eafb2c1ba4f74598b099520972d26275f45d1b8e4704",
+      "confidenceClass": "CONFLICTED",
+      "humanDecision": null,
+      "proposedRationale": "结算审定后累计支付89%对应结算支付比例，11%是余款。",
+      "proposedExpected": {
+        "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+        "selectedOccurrenceIds": [
+          "OCC-001"
+        ],
+        "selectedAnchorBlockIds": [
+          "tbs-con-004-b01"
+        ],
+        "abstain": false,
+        "abstentionReason": null
+      }
+    },
+    {
+      "caseId": "TBS-CTL-HIGH-001",
+      "packetId": "EP-b5c24d5469dbd66dddc67c11c4321d92a21c2476d3f2e585802343abfb49f303",
+      "confidenceClass": "HIGH",
+      "humanDecision": null,
+      "proposedRationale": "确定性 HIGH 必须零调用。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "DETERMINISTIC_HIGH_ZERO_CALL"
+      }
+    },
+    {
+      "caseId": "TBS-CTL-INVALID-001",
+      "packetId": "EP-d701ff3c85a8a25d904b43044f162cacd3773117816062bc489efbd5e23e6e83",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "TABLE_CELL identity 不合法，bundle 必须 fail closed。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "BUNDLE_INVALID"
+      }
+    },
+    {
+      "caseId": "TBS-CTL-NOANCHOR-001",
+      "packetId": "EP-6895a2c73d28e86b7c6d0537cd7a3e685bb35bfb8514832a62459bb78186bade",
+      "confidenceClass": "MEDIUM",
+      "humanDecision": null,
+      "proposedRationale": "TOC context 不构成可靠业务证据 anchor。",
+      "proposedExpected": {
+        "suggestedRole": null,
+        "selectedOccurrenceIds": [],
+        "selectedAnchorBlockIds": [],
+        "abstain": true,
+        "abstentionReason": "RELIABLE_ANCHOR_MISSING"
+      }
+    }
+  ]
+}

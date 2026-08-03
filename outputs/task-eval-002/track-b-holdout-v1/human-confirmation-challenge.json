@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-human-challenge-v1",
+  "status": "AWAITING_EXPLICIT_HUMAN_DECISIONS",
+  "nonce": "TBH2-fac56106204c4b93a11befc577369360",
+  "createdAt": "2026-08-02T13:15:10.346Z",
+  "expiresAt": "2026-08-04T13:15:10.346Z",
+  "corpusPath": "outputs/task-eval-002/track-b-holdout-v1/corpus.json",
+  "corpusSha256": "15d1f845d65c5018363bba324d0527f36ff07ddf0703f188f1d557711a9e2b24",
+  "humanReviewDraftPath": "outputs/task-eval-002/track-b-holdout-v1/human-review-draft.json",
+  "humanReviewDraftSha256": "788ab2885a2fda82b59ba4d2b8ce189e1665e5c3e506f39f9a38362e6afd51a2",
+  "humanReviewDocumentPath": "outputs/task-eval-002/track-b-holdout-v1/human-ground-truth-review.md",
+  "humanReviewDocumentSha256": "f07b4b1ceb193531089af6b37b964577b9655f4173f92abb40ea6523a4ed4b1d",
+  "presealManifestPath": "outputs/task-eval-002/track-b-holdout-v1/preseal-manifest.json",
+  "presealManifestSha256": "e2c19ba628742c5d3923a3df1ccf7c04d7443f38540e0205eed0a65e4d430b91",
+  "requiredDecisionCount": 12,
+  "confirmationSourceRequired": "CODEX_THREAD_USER_CONFIRMATION",
+  "proposedAnswersAreNonAuthoritative": true,
+  "modelInputCreated": false,
+  "networkCallAllowed": false,
+  "instruction": "人工确认必须逐项提供12条 decisions；可接受、修改或拒答。确认前不得创建 model input 或发起任何模型调用。"
+}

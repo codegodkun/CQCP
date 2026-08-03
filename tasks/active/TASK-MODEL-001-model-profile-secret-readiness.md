@@ -1,7 +1,9 @@
 # TASK-MODEL-001：Model Profile、Secret Reference 与 Readiness
 
-状态：已实现 / `ad14800c…` Core verification 与 `75d86031…` 三审曾全零 GO /
-后续 EOL tracked 修复使 subject 失效 / 最终同 HEAD 证据与三审待重建
+状态：已实现 / Final Core subject `90c4ae9a…` 三审全零 GO /
+PR #37 CI 全绿并合并为 `master@115be530…` /
+PUBLIC profile 继续 EVALUATION disabled/unbound / Provider admission `NOT_ESTABLISHED` /
+Milestone 仅待终态 BLOCKED 证据保存与收口，不存在成功路径 Final Audit
 
 类型：Model Governance / Security / Database / Admin API
 
@@ -191,3 +193,8 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   新 clean HEAD 的完整 verification、freeze 与三审。
 * Integration unit：`MILESTONE-MVP-002`
 * 独立审计触发依据：Secret、数据库、Admin API 和公网 provider readiness。
+* 2026-08-02：最终 Core verification/freeze subject `90c4ae9a…` 覆盖本任务，
+  CC AUDIT 与两个全新 Codex auditor 全零 GO，GitHub run `30748527866` 全绿，
+  PR #37 合并为 `115be530…`。Secret Reference、endpoint allowlist、readiness 与
+  connectivity 已进入主线；这不建立 Provider admission，也不改变
+  `EVALUATION / disabled / unbound` 边界。

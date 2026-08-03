@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "task-eval-004-track-b-final-model-opinion-v1",
+  "status": "ACCEPTED",
+  "track": "TRACK_B_FINAL_RUNTIME_ISOMORPHIC_ROLE_CANDIDATE_ANCHOR_ABSTENTION",
+  "evaluator": "codex-blind-subagent",
+  "forkTurns": "none",
+  "historicalContextIncluded": false,
+  "agentTask": "/root/track_b_final_codex_blind_v1",
+  "agentId": "track_b_final_codex_blind_v1",
+  "modelInputSha256": "bd648dd1cd9073217b9d493da2c9e4d12d9c6481eb5f34ccb6c9e1725da3fbba",
+  "dispatchSha256": "141d5344a373a90c53c002a8d7e830cbd3fa7a2b853e0fdfb44057faf686d0f2",
+  "providerCallSetSha256": "9881d520121766f3331a0aff6a006511c6fea65f08736b4ba58e1fe59200a57e",
+  "executionReceiptPath": "outputs/task-eval-004/track-b-final-v1/run-v1/codex-execution-receipt.json",
+  "executionReceiptSha256": "70acc344e9578a7be06e64eb5ced274f9251bf48cc868eb7f857e0a679ce4897",
+  "startedAt": "2026-08-03T06:09:57.096Z",
+  "completedAt": "2026-08-03T06:13:55.263Z",
+  "opinions": [
+    {
+      "packetId": "EP-e6ae080ccbfac3f0672d642fa9bd366e7d348526c93f3f9790c15babc87f89f8",
+      "suggestedRole": "PARTY_A",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-med-001-b02"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-eb34bfed16412773da7048b37be1d931ef721f27ae6eaedbcba7594489e2344a",
+      "suggestedRole": "PARTY_B",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-med-002-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-7f97ea0079bf69874f833bbf210c752b2a0088d977498ca9e2e2168d8a12fc3d",
+      "suggestedRole": "CONTRACT_TOTAL_AMOUNT",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-med-003-table-01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-72fa22fb6e8edc9eca448805b90e6f867b6960c45fe6149f10b3630125669dc2",
+      "suggestedRole": "PREPAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-med-004-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-71a41c31400c9fea5c6c8463beb1eaaa31aaebf905baf72c8ad14789d64e8578",
+      "suggestedRole": "WARRANTY_RETENTION_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-med-005-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-bde97418954b63a37c24177d9eef75fa64d3ca443b935316e9d58da3737298c4",
+      "suggestedRole": "PARTY_A",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-con-001-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-524f3f513707469dd51a3d53e5c8a80e66d50cbf5911169afc458b8e2febec18",
+      "suggestedRole": "TAX_AMOUNT",
+      "selectedOccurrenceIds": [
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-con-002-table-01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-1f76b7382bc7a5948e3da4212b5feffb32b6b44ce65012a30c2bceee81d2ad5b",
+      "suggestedRole": "PROGRESS_PAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001",
+        "OCC-002"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-con-003-b01",
+        "tbf-con-003-b02"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    },
+    {
+      "packetId": "EP-9ff3339d3ff1a6ede08ab082dd8bfac4541e3d5e613275ceae2ea5e58b27b32f",
+      "suggestedRole": "SETTLEMENT_PAYMENT_RATIO",
+      "selectedOccurrenceIds": [
+        "OCC-001"
+      ],
+      "selectedAnchorBlockIds": [
+        "tbf-con-004-b01"
+      ],
+      "abstain": false,
+      "abstentionReason": null
+    }
+  ]
+}

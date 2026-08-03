@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "task-eval-005-track-b-schema-diagnostic-dispatch-v1",
+  "status": "FROZEN_BEFORE_NETWORK",
+  "phase": "baseline",
+  "createdAt": "2026-08-03T06:43:37.644Z",
+  "taskId": "TASK-EVAL-005",
+  "integrationUnit": "MILESTONE-MVP-002-TRACK-B-SCHEMA-STABILITY",
+  "promptPath": "scripts/blind-evaluation/track-b-holdout-opinion-prompt.txt",
+  "promptSha256": "8a06b5177e7df8ca6097aaa752e2b089a0aa28e4f313ef158438627427aafe10",
+  "inputPath": "outputs/task-eval-005/schema-diagnostic-v1/baseline/diagnostic-input.json",
+  "actualInputSha256": "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+  "callSetPath": "outputs/task-eval-005/schema-diagnostic-v1/baseline/provider-call-set.json",
+  "providerCallSetSha256": "d6b23b358cb5318de2e61b187588e551054047971ea74cb621246619056f07f4",
+  "endpointOrigin": "https://api.deepseek.com:443",
+  "model": "deepseek-v4-pro",
+  "callCount": 12,
+  "rawRequestPersistenceAllowed": false,
+  "rawResponsePersistenceAllowed": false,
+  "reasoningPersistenceAllowed": false,
+  "automaticRetryAllowedAfterHttpStart": false,
+  "formalAdmissionAffected": false
+}

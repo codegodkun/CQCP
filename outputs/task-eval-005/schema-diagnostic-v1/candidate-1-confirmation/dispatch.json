@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "task-eval-005-track-b-schema-diagnostic-dispatch-v1",
+  "status": "FROZEN_BEFORE_NETWORK",
+  "phase": "candidate-1-confirmation",
+  "createdAt": "2026-08-03T06:48:24.672Z",
+  "taskId": "TASK-EVAL-005",
+  "integrationUnit": "MILESTONE-MVP-002-TRACK-B-SCHEMA-STABILITY",
+  "promptPath": "scripts/blind-evaluation/track-b-schema-diagnostic-prompt-v2.txt",
+  "promptSha256": "6a29b74fc890c3492e1658c08144a875325dbf11acd9012883d80e1e9d0f1bcc",
+  "inputPath": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/diagnostic-input.json",
+  "actualInputSha256": "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+  "callSetPath": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-confirmation/provider-call-set.json",
+  "providerCallSetSha256": "4a91f090f73f0983cbd9f91d12b1e2a1287d3e602b85f7dbdaf401bea643de2c",
+  "endpointOrigin": "https://api.deepseek.com:443",
+  "model": "deepseek-v4-pro",
+  "callCount": 12,
+  "rawRequestPersistenceAllowed": false,
+  "rawResponsePersistenceAllowed": false,
+  "reasoningPersistenceAllowed": false,
+  "automaticRetryAllowedAfterHttpStart": false,
+  "formalAdmissionAffected": false
+}

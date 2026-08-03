@@ -1,17 +1,18 @@
 # TASK-EVAL-002：Codex 与 DeepSeek V4 双轨盲态语义评测
 
 状态：Track A Codex + DeepSeek 封存完成 / Track B run-v3 已解盲为
-NO_GO_MODEL_MISMATCH / Provider admission 未建立 /
-12 packet 模型未见 holdout 已确认、尚未构建 /
-Core 不含 standing grant / 45568f… blocking causes 与历史证据路径错配已整改 /
-跨平台历史字节确定性修复已完成 Windows + Linux fresh-clone 定向验证 /
-最终同 HEAD 完整证据与三审待重建
+NO_GO_MODEL_MISMATCH / Core 已随 PR #37 合并到 `master@115be530…` /
+新 12 packet holdout 已完成人工封印与一次正式执行 /
+DeepSeek 第 2 个 call schema invalid，claim 已消费且不得重试 /
+Provider admission `NOT_ESTABLISHED` / `MILESTONE-MVP-002 BLOCKED` /
+失败 holdout 永久不可重试 / TASK-EVAL-003、004 已分别终态 BLOCKED /
+TASK-EVAL-005 第五套已终态 `SEALED_NO_GO_MODEL_MISMATCH`，不得创建第六套
 
 类型：Evaluation / Data Governance / Model Governance
 
 Task Level：`L3 高风险治理`
 
-Integration unit：`MILESTONE-MVP-002-CORE`
+Integration unit：`MILESTONE-MVP-002-TRACK-B-HOLDOUT`
 
 优先级：P0
 
@@ -104,7 +105,9 @@ Integration unit：`MILESTONE-MVP-002-CORE`
 3. 三个 Codex 评测 agent 在 `fork_turns="none"` 下各只收到一份 blind package。
 4. 解盲前修改/读取 expected 的运行被流程门禁拒绝或使 run invalid。
 5. Track A 与 Track B 分开计分，报告不能用 A 的结果填充 B admission。
-6. 未存在外发授权 artifact 时 DeepSeek runner 不发起网络请求并返回 `EXTERNAL_EGRESS_NOT_AUTHORIZED`。
+6. 未存在有效 `ADR-022` standing grant 与绑定实际 input/dispatch/call-set/request
+   hashes 的派生 receipt 时，DeepSeek runner 不发起网络请求并返回
+   `EXTERNAL_EGRESS_NOT_AUTHORIZED`。
 7. schema invalid、空内容、非 stop finish_reason 或 reasoning-only 响应均不进入 accepted opinions。
 
 ## 测试与验证
@@ -138,8 +141,14 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   call 因 `finish_reason != stop` 被严格拒绝；claim 已消费、没有 DeepSeek opinion。
   旧 builder generation 已整体归档。显式关闭 thinking 的 builder v3 generation
   已由项目负责人精确授权并完成 6 calls / 15 inputs；当前无逐次聊天确认阻塞。
-* 新 12 packet holdout 的人工 ground truth 和正式执行均尚未开始；Core
-  integration unit 不执行新的公网模型调用。
+* 新 12 packet holdout 已构建 9 个 eligible 与 3 个 zero-call control；项目负责人
+  已对 challenge `TBH2-fac56106204c4b93a11befc577369360` 原样确认全部 12 条
+  proposedExpected。human seal SHA 为
+  `11fbcc06458e5c24c9c3080f1b126c9b9c1358ad90b2532096b0ab5b90f3601b`。
+* `MILESTONE-MVP-002` standing egress grant：`已确认并落盘`。它只免除范围内的
+  逐次聊天确认；人工 ground truth 仍须独立确认，且每次真实执行仍须自动派生绑定
+  actual input、dispatch、provider call set、9 个 outbound request hash、模型、调用
+  数和时间的 receipt。
 
 ## 完成记录
 
@@ -158,9 +167,10 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   6/15、controls 3/3，结论严格为
   `NO_GO_MODEL_MISMATCH / providerAdmission=NOT_ESTABLISHED`。该 corpus 已解盲，
   只能作回归证据。
-* 下一 admission 必须使用模型未见的 12 packet holdout（9 eligible + 3 controls），
-  人工答案先封印、正式运行一次、任一断言失败即停止。Core 合并前不创建或执行该
-  holdout。
+* 下一 admission 使用模型未见的 12 packet holdout（9 eligible + 3 controls）。
+  Core 已合并；当前 source signals、非权威 proposed decisions、pre-seal manifest、
+  challenge/seal 门禁、standing grant、9×1 单包 request contract、派生 receipt 和
+  runtime seam test 已建立。人工答案必须先封印，正式运行一次，任一断言失败即停止。
 * Core source diff 排除 Provider A0、standing/CC 传输和 `outputs/**`；冻结包仅以
   SHA-256 引用 R7、Track A/B、browser 与 Compose 派生证据。
 * 旧 Track B v2 dispatch 所绑定的 packet manifest 与 R7 manifest 已按原始
@@ -178,5 +188,32 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   27 项结论不变。
   该证据只关闭跨平台字节与历史 seal 兼容根因，不替代新 HEAD 的完整 verification、
   freeze 或三审。
-* Integration unit：`MILESTONE-MVP-002-CORE`。
+* 已完成 integration unit：`MILESTONE-MVP-002-CORE`；
+  `MILESTONE-MVP-002-TRACK-B-HOLDOUT` 已在正式执行门禁终态 `BLOCKED`。
 * 独立审计触发依据：评测正确性、模型职责与公网数据治理。
+* 2026-08-02：Core 最终 subject
+  `90c4ae9aca0bc06dcdb2ec5af98e93590970653be56fa3dbdcc86eab00451cba`
+  三审全零 GO，GitHub run `30748527866` 全绿，PR #37 合并为
+  `115be530480e2ff9b92a7076b2668c066a44ae5c`。
+* 2026-08-02：新 holdout 的扩展 pre-seal 精确定向为 Node `51/51`、JUnit 新旧
+  Track B + D2 `24/24`。challenge
+  `TBH2-fac56106204c4b93a11befc577369360` 绑定 corpus SHA
+  `15d1f845d65c5018363bba324d0527f36ff07ddf0703f188f1d557711a9e2b24`
+  与 challenge SHA
+  `37a05c4b0d2ed4b21282f0fa09dd00938da60857a2d53e187490a28f6cf5d23a`；
+  项目负责人随后确认 12 条 proposedExpected 无修改，decisions SHA 为
+  `f8557a880a201376f00598eb6b7cc30e54e9a8a42df3d3c7070ade52376fdb5b`，
+  human seal verify 通过。
+* 2026-08-02：正式 dispatch 绑定 model input `bd402b40…`、dispatch `8fe2a996…`、
+  call set `8c63e377…` 与派生 receipt `76d1b171…`。Codex blind evaluator 的 9 条
+  opinion 已严格封存但未解盲。DeepSeek `deepseek-v4-pro` 完成第 1 个 call 后，
+  第 2 个 call 因 `SCHEMA_INVALID_OR_EMPTY / OPINION_SCHEMA_INVALID` fail closed；
+  claim `da3f1eb1…` 已消费，终态 blocked receipt `f79060fe…` 证明
+  `automaticRetryPerformed=false`。没有 DeepSeek accepted opinion，未执行 unblind、
+  freeze 或三方审计；同一 holdout 不得重试，Provider admission 保持
+  `NOT_ESTABLISHED`。
+* `node --test scripts/blind-evaluation/*.test.mjs` 不是 fresh worktree 的独立入口：
+  旧 Track A/B 历史测试仍有若干项要求 Core verification 预先重建未检出的
+  `outputs/**`，否则以 `ENOENT` fail closed。该诊断未修改旧 harness；本阶段使用
+  明确列出的 13 个可独立 Node test 文件（51 assertions）与 3 个 Java suite
+  （24 tests）作为 pre-seal 定向门禁。

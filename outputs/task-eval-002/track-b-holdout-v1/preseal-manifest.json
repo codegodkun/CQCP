@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-preseal-manifest-v1",
+  "status": "AWAITING_HUMAN_REVIEW",
+  "generatedAt": "2026-08-02T13:15:10.346Z",
+  "sourceSignalsPath": "apps/api-server/src/test/resources/track-b-holdout-v1/source-signals.json",
+  "sourceSignalsSha256": "e0835711c02f96fcc0637ef4147ac88afdf9f56ffd161b95ba2ebe88166e663b",
+  "proposedDecisionsPath": "apps/api-server/src/test/resources/track-b-holdout-v1/proposed-decisions.json",
+  "proposedDecisionsSha256": "22c85cda5abce17a3d6d2af4777b30c3d5470ab5973c889cfe4705c04cbc892f",
+  "corpusPath": "outputs/task-eval-002/track-b-holdout-v1/corpus.json",
+  "corpusSha256": "15d1f845d65c5018363bba324d0527f36ff07ddf0703f188f1d557711a9e2b24",
+  "humanReviewDraftPath": "outputs/task-eval-002/track-b-holdout-v1/human-review-draft.json",
+  "humanReviewDraftSha256": "788ab2885a2fda82b59ba4d2b8ce189e1665e5c3e506f39f9a38362e6afd51a2",
+  "humanReviewDocumentPath": "outputs/task-eval-002/track-b-holdout-v1/human-ground-truth-review.md",
+  "humanReviewDocumentSha256": "f07b4b1ceb193531089af6b37b964577b9655f4173f92abb40ea6523a4ed4b1d",
+  "packetCount": 12,
+  "eligiblePacketCount": 9,
+  "zeroCallControlCount": 3,
+  "modelInputCreated": false,
+  "networkCallAllowed": false
+}

@@ -5,6 +5,7 @@ import tls from "node:tls";
 
 export const DEEPSEEK_HOST = "api.deepseek.com";
 export const DEEPSEEK_PATH = "/chat/completions";
+export const DEEPSEEK_MODELS_PATH = "/models";
 export const MAX_DEEPSEEK_RESPONSE_BYTES = 1_048_576;
 export const DEEPSEEK_ADDRESS_POLICY_VERSION =
   "iana-special-purpose-frozen-2026-07-29-v1";
@@ -355,7 +356,23 @@ export const createPinnedLookup = (addresses) => {
   };
 };
 
-export const postDeepSeekJson = ({
+export const postDeepSeekJson = (options) =>
+  requestDeepSeekJson({
+    ...options,
+    method: "POST",
+    path: DEEPSEEK_PATH,
+  });
+
+export const getDeepSeekModelsJson = (options) =>
+  requestDeepSeekJson({
+    ...options,
+    method: "GET",
+    path: DEEPSEEK_MODELS_PATH,
+  });
+
+const requestDeepSeekJson = ({
+  method,
+  path,
   body,
   secret,
   addresses,
@@ -371,8 +388,24 @@ export const postDeepSeekJson = ({
       reject(error);
       return;
     }
-    if (!Buffer.isBuffer(body) || body.length === 0) {
+    if (
+      !(
+        (method === "POST" && path === DEEPSEEK_PATH) ||
+        (method === "GET" && path === DEEPSEEK_MODELS_PATH)
+      )
+    ) {
+      reject(new Error("DEEPSEEK_REQUEST_TARGET_INVALID"));
+      return;
+    }
+    if (
+      method === "POST" &&
+      (!Buffer.isBuffer(body) || body.length === 0)
+    ) {
       reject(new Error("DEEPSEEK_REQUEST_BODY_INVALID"));
+      return;
+    }
+    if (method === "GET" && body !== undefined && body !== null) {
+      reject(new Error("DEEPSEEK_GET_BODY_FORBIDDEN"));
       return;
     }
     if (typeof secret !== "string" || !secret.trim()) {
@@ -419,26 +452,29 @@ export const postDeepSeekJson = ({
       fail(error);
     }, remainingMs);
     try {
+      const headers = {
+        Authorization: `Bearer ${secret.trim()}`,
+        Accept: "application/json",
+      };
+      if (method === "POST") {
+        headers["Content-Type"] = "application/json";
+        headers["Content-Length"] = body.length;
+      }
       request = requestFactory(
       {
         protocol: "https:",
         hostname: DEEPSEEK_HOST,
         servername: DEEPSEEK_HOST,
         port: 443,
-        method: "POST",
-        path: DEEPSEEK_PATH,
+        method,
+        path,
         agent: false,
         lookup,
         signal: abortController.signal,
         rejectUnauthorized: true,
         checkServerIdentity: tls.checkServerIdentity,
         ca: tls.rootCertificates,
-        headers: {
-          Authorization: `Bearer ${secret.trim()}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "Content-Length": body.length,
-        },
+        headers,
       },
       (incomingResponse) => {
         response = incomingResponse;
@@ -498,5 +534,5 @@ export const postDeepSeekJson = ({
       request.destroy(error);
     });
     request.on("error", fail);
-    request.end(body);
+    request.end(method === "POST" ? body : undefined);
   });

@@ -368,13 +368,69 @@ DeepSeek 评测固定 non-streaming JSON mode，prompt 明确要求 JSON；只�
 `reasoning_content`。Track B 局部职责不需要 thinking，请求显式
 `thinking={"type":"disabled"}`，模型不得生成或改变最终 Finding/verdict。
 
-新的独立 admission 使用模型未见的 12 packet holdout：9 个
-MEDIUM/CONFLICTED eligible 与 3 个 zero-call control。人工 ground truth 必须在模型
-访问前封印，正式运行只允许一次；任一 schema、anchor、control 或人工答案不匹配即
-停止，不在同一 holdout 上调参重试。该 holdout 在 Core 合并后执行。
+首个模型未见 12-packet holdout 已先完成人工 ground truth 封印并正式执行。Codex
+opinion 已封存但未解盲；DeepSeek 第 2 个 eligible call 因 schema invalid fail closed，
+one-time claim 已消费且无 accepted opinion。该 holdout 永久不可重试，Provider
+admission 仍为 `NOT_ESTABLISHED`。
+
+项目负责人已通过 TASK-EVAL-003 / ADR-023 授权一个新的 successor admission：仍为
+9 个 MEDIUM/CONFLICTED eligible 与 3 个 zero-call control，但 identity、候选文本和值
+必须与旧 18-packet corpus 和失败 holdout 完全 disjoint。用户只负责人工答案、重大
+范围变化和最终 merge；其余 standing-grant 范围内执行由主 Codex 连续推进。正式
+Codex auditors 必须为全新 `fork_turns="none"`，显式使用
+`gpt-5.6-sol / reasoning_effort=xhigh`。
+
+successor pre-seal 已冻结：12 packets / 9 eligible / 3 controls，且与两套 prior
+corpus 的 identity、candidate values、evidence texts overlap 全部为 0。当前 challenge
+为 `TBS1-5bfbe8b667944e7182df3ec537d45725`；在项目负责人确认 12 条人工 decisions
+前，human seal、model input、dispatch、claim 与网络调用均不存在。
+
+该 holdout 不沿用旧 run-v3 的 family 分组：9 个 eligible packet 各形成一个与 runtime
+同构的单 packet request，固定为 `9 calls / 9 inputs / 3 excluded controls`。项目负责人
+已为 `MILESTONE-MVP-002` 授予 standing egress grant；机器门禁见 `ADR-022`。standing
+grant 不替代人工 ground truth 封印，每次真实执行仍须在网络前自动派生绑定 actual
+input、dispatch、provider call set、每个 outbound request、模型、调用数和时间的
+receipt。用户负责输入脱敏把关，本轮不建设程序化脱敏平台；人工 ground truth、CQCP
+actual/expected、最终 Finding/verdict、Secret/raw KEY 仍不得进入 payload。
 
 Provider A0、adapter、PUBLIC binding、`REVIEWING_MODEL` 与 shadow runtime 均不在
-本 Core integration unit；当前保持 disabled/unbound 与 NO-GO/BLOCKED。
+当前 successor integration unit；在 successor admission 与三方审计 GO 前继续保持
+disabled/unbound 与 `NOT_ESTABLISHED`。
+
+TASK-EVAL-003 的唯一正式 claim 随后因错误 Secret 候选在第一个 call 认证失败并终态
+BLOCKED。ADR-024 不允许重跑该 claim；它只批准 TASK-EVAL-004 的最后一个独立机会。
+新任务必须先以显式 `DEEPSEEK_OFFICIAL_EVAL` Secret Reference 完成 hash-bound
+connectivity gate：官方 `/models` 包含 `deepseek-v4-pro`，并由该 exact model 对全合成
+输入完成 thinking-disabled、non-streaming、strict JSON、`finish_reason=stop` 探针。
+connectivity evidence 不保存 KEY、Secret hash、raw request/response 或 reasoning，且
+明确 `formalAdmissionAffected=false`。gate 成功不能替代人工先封印、第四套 corpus
+独立性、9×1 Track B admission 或三方全零审计。
+
+TASK-EVAL-004 随后由项目负责人绑定 challenge/corpus/review SHA 确认 12 条人工
+decisions，并在任何 evaluator 前形成 human seal。9×1 dispatch 与全新 Codex blind
+opinion 均已封存；唯一 DeepSeek `deepseek-v4-pro` claim 在第 8 个单包 call 因
+`OPINION_SCHEMA_INVALID` fail closed，前 7 个 calls 完成且无自动重试。由于没有完整
+accepted DeepSeek opinion，执行不得解盲、不得重试或调 prompt，Provider admission
+保持 `NOT_ESTABLISHED`，A0/A1/A2 不启动。
+
+项目负责人随后批准 ADR-025 / TASK-EVAL-005，作为最后一次、有限的 schema 稳定性
+诊断与独立 admission。TASK-EVAL-004 仍不可重试、补跑或解盲。新任务先在与前四套
+corpus 完全 disjoint 的合成诊断集上运行旧版本 baseline，并最多测试两个版本化候选；
+单一候选只有在两个独立 12-call pass 上累计 24/24 strict accepted、全部失败分类为 0
+时才能冻结。诊断总上限 60 calls，只保存 request/config hash、accepted 与聚合拒绝
+类别，不保存 raw request/response/content/reasoning 或 Secret。
+
+TASK-EVAL-005 的单包 prompt/schema v2 在合成诊断上达到 24/24 strict accepted；第五套
+正式 9×1 DeepSeek 调用也达到 schema 9/9 accepted，证明 schema 稳定性门禁通过。但
+解盲后 DeepSeek 对 4 个 CONFLICTED packet 的 role/candidate/anchor/abstention 与人工
+答案不一致，四项均为 55.56%；Codex 同批意见全维 100%。因此 admission seal 为
+`SEALED_NO_GO_MODEL_MISMATCH`，Provider admission `NOT_ESTABLISHED`。按 ADR-025 不得
+重试或创建第六套，A0/A1/A2 继续禁止。
+
+稳定性 GO 后才生成第五套独立 12-packet corpus，并在任何 evaluator/model 访问前由
+项目负责人绑定实际 hash 确认 12 条人工答案。正式 admission 仍固定
+`deepseek-v4-pro`、9×1 calls、3 个 zero-call controls、全维 100%；失败即终止，不建
+第六套。A0/A1/A2 继续等待 admission、verification/freeze 和三方全零 GO。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

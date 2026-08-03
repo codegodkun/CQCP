@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "task-eval-005-track-b-schema-diagnostic-preflight-v1",
+  "status": "READY_FOR_ONE_DIAGNOSTIC_PASS",
+  "phase": "candidate-1-qualification",
+  "createdAt": "2026-08-03T06:47:04.746Z",
+  "templatePath": "outputs/task-eval-004/track-b-final-v1/run-v1/model-input.json",
+  "templateSha256": "bd648dd1cd9073217b9d493da2c9e4d12d9c6481eb5f34ccb6c9e1725da3fbba",
+  "priorCorpusPaths": [
+    "apps/api-server/src/test/resources/track-b-admission-corpus-v2/corpus.json",
+    "outputs/task-eval-002/track-b-holdout-v1/corpus.json",
+    "outputs/task-eval-003/track-b-successor-v1/corpus.json",
+    "outputs/task-eval-004/track-b-final-v1/corpus.json"
+  ],
+  "disjointness": {
+    "priorCorpusCount": 4,
+    "identityOverlapCount": 0,
+    "candidateValueOverlapCount": 0,
+    "evidenceTextOverlapCount": 0
+  },
+  "promptPath": "scripts/blind-evaluation/track-b-schema-diagnostic-prompt-v2.txt",
+  "promptSha256": "6a29b74fc890c3492e1658c08144a875325dbf11acd9012883d80e1e9d0f1bcc",
+  "inputPath": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/diagnostic-input.json",
+  "actualInputSha256": "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+  "dispatchPath": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/dispatch.json",
+  "dispatchSha256": "eab6d408994490057095cd9318fbd5d244da657296c928f744c1f7664f80953b",
+  "callSetPath": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/provider-call-set.json",
+  "providerCallSetSha256": "6b26f67949c2bf2e57b8afa5dc26d0dad92f36833a0f5db8b17eb81b9362a093",
+  "derivedReceiptPath": "outputs/task-eval-005/schema-diagnostic-v1/candidate-1-qualification/derived-egress-receipt.json",
+  "derivedReceiptSha256": "8f5279b9a24c21c0215ff45e8b8937b695c3e4447f0694dadcc174a7c29194d7",
+  "callCount": 12,
+  "networkAttempted": false,
+  "formalAdmissionAffected": false
+}

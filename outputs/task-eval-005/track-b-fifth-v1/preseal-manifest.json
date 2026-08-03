@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "task-eval-005-track-b-fifth-preseal-manifest-v1",
+  "status": "AWAITING_HUMAN_REVIEW",
+  "generatedAt": "2026-08-03T06:59:01.155Z",
+  "stabilityFreezePath": "outputs/task-eval-005/schema-diagnostic-v1/stability-freeze.json",
+  "stabilityFreezeSha256": "44468d84327f001f50bcbf1f38d2e63d30b750227d7c00b3cde0f1bca1e16bd5",
+  "selectedPromptPath": "scripts/blind-evaluation/track-b-schema-diagnostic-prompt-v2.txt",
+  "selectedPromptSha256": "6a29b74fc890c3492e1658c08144a875325dbf11acd9012883d80e1e9d0f1bcc",
+  "selectedSchemaVersion": "track-b-role-candidate-anchor-abstention-v2",
+  "sourceSignalsPath": "apps/api-server/src/test/resources/track-b-fifth-v1/source-signals.json",
+  "sourceSignalsSha256": "d8dd7df34991c97773fa96ef8efeb2bc11c3d55e36ddf87715fba8d4861cda15",
+  "proposedDecisionsPath": "apps/api-server/src/test/resources/track-b-fifth-v1/proposed-decisions.json",
+  "proposedDecisionsSha256": "a5dd576ecf7c4e6c19d41da3d5dde51985f9fe018db981f0446d0c774aa1d914",
+  "priorCorpusPaths": [
+    "apps/api-server/src/test/resources/track-b-admission-corpus-v2/corpus.json",
+    "outputs/task-eval-002/track-b-holdout-v1/corpus.json",
+    "outputs/task-eval-003/track-b-successor-v1/corpus.json",
+    "outputs/task-eval-004/track-b-final-v1/corpus.json"
+  ],
+  "priorCorpusSha256s": [
+    "cda175943b89f72cbdef3cdfc2fb3dbeff206504d122b75a67ab37b9b5b67efd",
+    "15d1f845d65c5018363bba324d0527f36ff07ddf0703f188f1d557711a9e2b24",
+    "a609005418a970c45f4494cd95c94f64ee7704bec5dcdcf42cb6a11dfd066de3",
+    "ed216d435b82af250c39e0ba927f75ceaa233f70ae9aa516fa4adad42aa3ca95"
+  ],
+  "diagnosticInputPath": "outputs/task-eval-005/schema-diagnostic-v1/baseline/diagnostic-input.json",
+  "diagnosticInputSha256": "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+  "disjointness": {
+    "comparedPriorCorpusCount": 4,
+    "diagnosticInputCompared": true,
+    "identityOverlapCount": 0,
+    "candidateValueOverlapCount": 0,
+    "evidenceTextOverlapCount": 0
+  },
+  "corpusPath": "outputs/task-eval-005/track-b-fifth-v1/corpus.json",
+  "corpusSha256": "17343dd34820c847676ed681a8a4e6ee9f669c60cf3c0257aa2363ba4bba8f5e",
+  "humanReviewDraftPath": "outputs/task-eval-005/track-b-fifth-v1/human-review-draft.json",
+  "humanReviewDraftSha256": "0ab07f6b2c21640b18a9c6570432066499ca9e946548d56290d9e9f2a41a0a93",
+  "humanReviewDocumentPath": "outputs/task-eval-005/track-b-fifth-v1/human-ground-truth-review.md",
+  "humanReviewDocumentSha256": "3c3ff92893757de42c134fa1747b018a67d76f283b52b28c64ef51244d62e2ae",
+  "packetCount": 12,
+  "eligiblePacketCount": 9,
+  "zeroCallControlCount": 3,
+  "modelInputCreated": false,
+  "evaluatorAccessAllowed": false,
+  "admissionNetworkCallAllowed": false,
+  "taskEval004Reused": false,
+  "sixthCorpusAllowed": false,
+  "providerA0A1A2Allowed": false
+}

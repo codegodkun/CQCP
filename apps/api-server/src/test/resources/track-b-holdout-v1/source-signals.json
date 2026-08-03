@@ -1,0 +1,578 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-source-signals-v1",
+  "source": "INDEPENDENT_DEIDENTIFIED_SYNTHETIC_RUNTIME_SIGNALS",
+  "containsProductionContractText": false,
+  "groundTruthIncluded": false,
+  "admissionFieldsIncluded": false,
+  "ruleSetVersion": "v20260802.holdout.1",
+  "identities": {
+    "MEDIUM": {
+      "taskId": "task-eval-002-track-b-holdout-medium",
+      "executionId": "execution-track-b-holdout-medium-v1"
+    },
+    "CONFLICTED": {
+      "taskId": "task-eval-002-track-b-holdout-conflicted",
+      "executionId": "execution-track-b-holdout-conflicted-v1"
+    },
+    "CONTROL": {
+      "taskId": "task-eval-002-track-b-holdout-control",
+      "executionId": "execution-track-b-holdout-control-v1"
+    }
+  },
+  "caseCount": 12,
+  "cases": [
+    {
+      "caseId": "TBH-MED-001",
+      "identityClass": "MEDIUM",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "party_a",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "LOW_CONFIDENCE",
+        "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "宋妍",
+          "blockId": "tbh-med-001-b01",
+          "evidenceText": "甲方授权代表：宋妍，负责现场联络。",
+          "sectionPath": ["合同主体"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "澄海新材有限公司",
+          "blockId": "tbh-med-001-b02",
+          "evidenceText": "采购人（甲方）：澄海新材有限公司。",
+          "sectionPath": ["合同主体"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-MED-002",
+      "identityClass": "MEDIUM",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "party_b",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "LOW_CONFIDENCE",
+        "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "岭峰工程技术有限公司",
+          "blockId": "tbh-med-002-b01",
+          "evidenceText": "承包人（乙方）：岭峰工程技术有限公司。",
+          "sectionPath": ["合同主体"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "岭峰结算中心",
+          "blockId": "tbh-med-002-b02",
+          "evidenceText": "收款账户名称：岭峰结算中心。",
+          "sectionPath": ["收款信息"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-MED-003",
+      "identityClass": "MEDIUM",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "contract_total_amount",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "LOW_CONFIDENCE",
+        "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "486320",
+          "blockId": "tbh-med-003-table-01",
+          "evidenceText": "合同含税总价（元）486320",
+          "sectionPath": ["价款表"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "TABLE_CELL",
+          "previewElementRef": "table:tbh_med_003/row:1/cell:2"
+        },
+        {
+          "candidateValue": "500000",
+          "blockId": "tbh-med-003-table-01",
+          "evidenceText": "预算控制上限（元）500000",
+          "sectionPath": ["价款表"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "TABLE_CELL",
+          "previewElementRef": "table:tbh_med_003/row:2/cell:2"
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-MED-004",
+      "identityClass": "MEDIUM",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "prepayment_ratio",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "LOW_CONFIDENCE",
+        "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "12",
+          "blockId": "tbh-med-004-b01",
+          "evidenceText": "合同生效后支付合同价的12%作为预付款。",
+          "sectionPath": ["付款安排"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "6",
+          "blockId": "tbh-med-004-b02",
+          "evidenceText": "履约保证金为合同价的6%。",
+          "sectionPath": ["履约担保"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-MED-005",
+      "identityClass": "MEDIUM",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "WARRANTY_RETENTION_RATIO_CONSISTENCY",
+      "candidateRole": "WARRANTY_RETENTION_RATIO",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "warranty_retention_ratio",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "LOW_CONFIDENCE",
+        "diagnosticCode": "SYS_EVIDENCE_MEDIUM_CONFIDENCE",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "4",
+          "blockId": "tbh-med-005-b01",
+          "evidenceText": "结算价的4%留作质量保证金。",
+          "sectionPath": ["质量保证"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "8",
+          "blockId": "tbh-med-005-b02",
+          "evidenceText": "逾期违约金累计最高不超过合同价的8%。",
+          "sectionPath": ["违约责任"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CON-001",
+      "identityClass": "CONFLICTED",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_A_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_A",
+      "confidence": "CONFLICTED",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "party_a",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "AMBIGUOUS",
+        "diagnosticCode": "SYS_ROLE_CONFLICT",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "暮云项目管理有限公司",
+          "blockId": "tbh-con-001-b01",
+          "evidenceText": "采购人（甲方）：沧澜机电有限公司；项目管理单位：暮云项目管理有限公司。",
+          "sectionPath": ["合同主体"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "沧澜机电有限公司",
+          "blockId": "tbh-con-001-b01",
+          "evidenceText": "采购人（甲方）：沧澜机电有限公司；项目管理单位：暮云项目管理有限公司。",
+          "sectionPath": ["合同主体"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CON-002",
+      "identityClass": "CONFLICTED",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "TAX_AMOUNT_FORMULA_CONSISTENCY",
+      "candidateRole": "TAX_AMOUNT",
+      "confidence": "CONFLICTED",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "tax_amount",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "AMBIGUOUS",
+        "diagnosticCode": "SYS_ROLE_CONFLICT",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "420000",
+          "blockId": "tbh-con-002-table-01",
+          "evidenceText": "不含税价420000元，税额37800元，价税合计457800元。",
+          "sectionPath": ["价税表"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "TABLE_CELL",
+          "previewElementRef": "table:tbh_con_002/row:1/cell:1"
+        },
+        {
+          "candidateValue": "37800",
+          "blockId": "tbh-con-002-table-01",
+          "evidenceText": "不含税价420000元，税额37800元，价税合计457800元。",
+          "sectionPath": ["价税表"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "TABLE_CELL",
+          "previewElementRef": "table:tbh_con_002/row:1/cell:2"
+        },
+        {
+          "candidateValue": "457800",
+          "blockId": "tbh-con-002-table-01",
+          "evidenceText": "不含税价420000元，税额37800元，价税合计457800元。",
+          "sectionPath": ["价税表"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "TABLE_CELL",
+          "previewElementRef": "table:tbh_con_002/row:1/cell:3"
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CON-003",
+      "identityClass": "CONFLICTED",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PROGRESS_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PROGRESS_PAYMENT_RATIO",
+      "confidence": "CONFLICTED",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "progress_payment_ratio",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "AMBIGUOUS",
+        "diagnosticCode": "SYS_ROLE_CONFLICT",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "72",
+          "blockId": "tbh-con-003-b01",
+          "evidenceText": "月度进度款按已确认产值的72%支付；竣工后累计支付至88%。",
+          "sectionPath": ["付款安排"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "88",
+          "blockId": "tbh-con-003-b02",
+          "evidenceText": "月度进度款按已确认产值的72%支付；竣工后累计支付至88%。",
+          "sectionPath": ["付款安排"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "100",
+          "blockId": "tbh-con-003-b03",
+          "evidenceText": "另附开票说明，不参与本付款条款比较。",
+          "sectionPath": ["附件说明"],
+          "regionType": "APPENDIX",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CON-004",
+      "identityClass": "CONFLICTED",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "SETTLEMENT_PAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "SETTLEMENT_PAYMENT_RATIO",
+      "confidence": "CONFLICTED",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "settlement_payment_ratio",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "AMBIGUOUS",
+        "diagnosticCode": "SYS_ROLE_CONFLICT",
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "96",
+          "blockId": "tbh-con-004-b01",
+          "evidenceText": "结算审定后累计支付至结算价的96%，余款4%作为质保金。",
+          "sectionPath": ["结算与质保"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        },
+        {
+          "candidateValue": "4",
+          "blockId": "tbh-con-004-b01",
+          "evidenceText": "结算审定后累计支付至结算价的96%，余款4%作为质保金。",
+          "sectionPath": ["结算与质保"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "CONFLICTED",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CTL-HIGH-001",
+      "identityClass": "CONTROL",
+      "family": "AMOUNT_TAX",
+      "reviewPointCode": "CONTRACT_TOTAL_AMOUNT_CONSISTENCY",
+      "candidateRole": "CONTRACT_TOTAL_AMOUNT",
+      "confidence": "HIGH",
+      "evidenceStatus": "CONFIRMED",
+      "slotCoverage": {
+        "slotKey": "contract_total_amount",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "SATISFIED",
+        "diagnosticCode": null,
+        "reliableAnchor": true
+      },
+      "assistPolicy": {
+        "resolverPolicy": "DETERMINISTIC_ONLY",
+        "modelAssistMode": "NONE",
+        "executionStrategy": "DETERMINISTIC"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "457800",
+          "blockId": "tbh-ctl-high-001-b01",
+          "evidenceText": "合同含税总价为457800元。",
+          "sectionPath": ["合同价款"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "HIGH",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CTL-INVALID-001",
+      "identityClass": "CONTROL",
+      "family": "PAYMENT_TERMS",
+      "reviewPointCode": "PREPAYMENT_RATIO_CONSISTENCY",
+      "candidateRole": "PREPAYMENT_RATIO",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "prepayment_ratio",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "MISSING",
+        "diagnosticCode": "SYS_INDEX_INCOMPLETE",
+        "reliableAnchor": false
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "15",
+          "blockId": "tbh-ctl-invalid-001-table-01",
+          "evidenceText": "预付款比例15%",
+          "sectionPath": ["付款表"],
+          "regionType": "BODY",
+          "contextType": "NORMAL",
+          "confidence": "MEDIUM",
+          "locationLevel": "TABLE_CELL",
+          "previewElementRef": "table:tbh_ctl_invalid/row:x/cell:2"
+        }
+      ]
+    },
+    {
+      "caseId": "TBH-CTL-NOANCHOR-001",
+      "identityClass": "CONTROL",
+      "family": "PARTY_FIELDS",
+      "reviewPointCode": "PARTY_B_NAME_CONSISTENCY",
+      "candidateRole": "PARTY_B",
+      "confidence": "MEDIUM",
+      "evidenceStatus": "AMBIGUOUS",
+      "slotCoverage": {
+        "slotKey": "party_b",
+        "required": true,
+        "critical": true,
+        "coverageStatus": "MISSING",
+        "diagnosticCode": "SYS_INDEX_INCOMPLETE",
+        "reliableAnchor": false
+      },
+      "assistPolicy": {
+        "resolverPolicy": "GEMMA_IF_AMBIGUOUS",
+        "modelAssistMode": "AMBIGUITY_RESOLUTION",
+        "executionStrategy": "LLM_EXTRACT_THEN_RULE"
+      },
+      "maxEvidenceChars": 4096,
+      "occurrences": [
+        {
+          "candidateValue": "雁栖服务有限公司",
+          "blockId": "tbh-ctl-noanchor-001-b01",
+          "evidenceText": "目录索引：雁栖服务有限公司。",
+          "sectionPath": ["目录"],
+          "regionType": "BODY",
+          "contextType": "TOC",
+          "confidence": "MEDIUM",
+          "locationLevel": "BLOCK_LEVEL",
+          "previewElementRef": null
+        }
+      ]
+    }
+  ]
+}

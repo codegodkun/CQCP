@@ -1,8 +1,10 @@
 # TASK-MVP-002：审核任务清单与左右审核工作台
 
-状态：已实现 / `ad14800c…` Core verification 与 `75d86031…` 三审曾全零 GO /
-PR #37 backend CI EOL finding 已最小修复并双平台 `31/31` PASS /
-当前 clean candidate 的完整 verification、freeze 与三审待重建
+状态：已实现 / Final Core subject `90c4ae9a…` 三审全零 GO /
+PR #37 CI 全绿并合并为 `master@115be530…` /
+父任务保持 active；TASK-EVAL-002/003/004 历史终态只读保留，TASK-EVAL-005 第五套
+终态 `SEALED_NO_GO_MODEL_MISMATCH`；Provider admission `NOT_ESTABLISHED`，Milestone
+Provider 路径 BLOCKED
 
 类型：Feature / API / Frontend / SourceAnchor 消费
 
@@ -228,3 +230,8 @@ Integration unit：`MILESTONE-MVP-002-CORE`
   verification、freeze 与三审仍待从零执行。
 * Integration unit：`MILESTONE-MVP-002-CORE`。
 * 独立审计触发依据：SourceAnchor、API、安全与历史 snapshot 正确性均属于 L3。
+* 2026-08-02：D2 required-block identity 最小修复形成 HEAD `fe1d61b…`；最终
+  Core verification 冻结为 subject `90c4ae9a…`，CC AUDIT 与两个全新 Codex
+  auditor 均为 `GO / P0=P1=P2=blocking=0`。GitHub run `30748527866` 全绿，
+  PR #37 合并为 `115be530…`。本任务能力已进入主线，但父任务仍等待 Milestone
+  最终跨 TASK 审计后统一归档。

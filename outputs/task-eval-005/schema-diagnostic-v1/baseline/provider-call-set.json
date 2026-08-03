@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "task-eval-005-track-b-schema-diagnostic-call-set-v1",
+  "status": "FROZEN_BEFORE_NETWORK",
+  "phase": "baseline",
+  "createdAt": "2026-08-03T06:43:37.644Z",
+  "purpose": "PROVIDER_VALIDATION",
+  "dataClass": "SYNTHETIC_CORPUS",
+  "endpointOrigin": "https://api.deepseek.com:443",
+  "model": "deepseek-v4-pro",
+  "promptPath": "scripts/blind-evaluation/track-b-holdout-opinion-prompt.txt",
+  "promptSha256": "8a06b5177e7df8ca6097aaa752e2b089a0aa28e4f313ef158438627427aafe10",
+  "actualInputSha256": "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+  "callCount": 12,
+  "inputCount": 12,
+  "calls": [
+    {
+      "callIndex": 0,
+      "callId": "TBSD-CALL-1c40d3effa068a90093f4e5ce11bdd40341364a7ae8d91b7675c9978535c2ef4",
+      "packetId": "EP-ab9b6fefc0268a93c7474edae64290ec3381053f6ea4e3c9b1422a2faa3dfc45",
+      "modelInputSha256": "1c40d3effa068a90093f4e5ce11bdd40341364a7ae8d91b7675c9978535c2ef4",
+      "outboundRequestSha256": "f77675559f736f31fd814b705821fdb742e0a11a30fdb2af366dd79febdb8e4e"
+    },
+    {
+      "callIndex": 1,
+      "callId": "TBSD-CALL-7cd7d275052e8c99570163ca63b92e6948d4e8a77f0bc7cde164b80b0593f11b",
+      "packetId": "EP-a6ceb1384a05014df21aec7bd3c989e03fc63ff8d1b9024c46ee8a1e15d43184",
+      "modelInputSha256": "7cd7d275052e8c99570163ca63b92e6948d4e8a77f0bc7cde164b80b0593f11b",
+      "outboundRequestSha256": "82a4f3dee2f4fbf250311709d2bd245031b2c8ce06ea3995bdc72a5b1b7673f2"
+    },
+    {
+      "callIndex": 2,
+      "callId": "TBSD-CALL-73fd507e1e5665839bc10fce60b617871f584c693186319259d93aa34fdf9e5d",
+      "packetId": "EP-493e2e05bf34889d970294b3b54826c9e99c1852f0b3cc0ce2465c9239ab9bee",
+      "modelInputSha256": "73fd507e1e5665839bc10fce60b617871f584c693186319259d93aa34fdf9e5d",
+      "outboundRequestSha256": "b0615a101a6ffc3cac99fc6eab51ddb1f44c617eb826900460b190b665109df6"
+    },
+    {
+      "callIndex": 3,
+      "callId": "TBSD-CALL-1a182c40a096809e28c66792d43e94a9242bac3d066964205f16568d2d724d8c",
+      "packetId": "EP-e0b0213cf6e1a9e9159f0b2c883883112dea4c9a220c4c86e795aae787a8640c",
+      "modelInputSha256": "1a182c40a096809e28c66792d43e94a9242bac3d066964205f16568d2d724d8c",
+      "outboundRequestSha256": "3a0d41f58f6823283d503767b84dece5400fded2eb7a2fbf2d8ba0c90ada7509"
+    },
+    {
+      "callIndex": 4,
+      "callId": "TBSD-CALL-ca7bdebf540faed7074407781261d60213287455a1b0c425f9c417097ebfa80e",
+      "packetId": "EP-30eac23736c082f26903c2c949291ee09f840fcc315fa0a9f09f6b4796b67b4d",
+      "modelInputSha256": "ca7bdebf540faed7074407781261d60213287455a1b0c425f9c417097ebfa80e",
+      "outboundRequestSha256": "41b6b79918849d7bd5fc9d806b5d6879ed0e71deadb471411ce9d93cdb45c8bc"
+    },
+    {
+      "callIndex": 5,
+      "callId": "TBSD-CALL-6329826f6c695a02b434dfb223a53722512f5ee7e92b2c8682442fab093bb18b",
+      "packetId": "EP-4f030a9c082cf1f6d21ea10e3f75877daef3dc6dd554de221e5e31494b97363f",
+      "modelInputSha256": "6329826f6c695a02b434dfb223a53722512f5ee7e92b2c8682442fab093bb18b",
+      "outboundRequestSha256": "85fcdb9aaf69217cd502df9006cb43a11fa92fdc60b4c2f1f57876ac11feeb80"
+    },
+    {
+      "callIndex": 6,
+      "callId": "TBSD-CALL-9fb8d7a959f511f1c49f2f977fd22acd43b0b3e075523e762db1c5a612426e04",
+      "packetId": "EP-71a146e4781686d10072e5250b0eaddea42070bdec318a6a929f1c893ef33ae7",
+      "modelInputSha256": "9fb8d7a959f511f1c49f2f977fd22acd43b0b3e075523e762db1c5a612426e04",
+      "outboundRequestSha256": "b354601839b506d3338c2d797b672edb13cfdf91cb62b37e017e7ba205be294e"
+    },
+    {
+      "callIndex": 7,
+      "callId": "TBSD-CALL-5c80ef93f21fcc6d2454bb8363e6e8b29297f63b3fafc3b93bfe430004907b90",
+      "packetId": "EP-2f8026decc7160c641a961491758fa8daeeb6d77a5c9e54a27408d8f61c0ed6b",
+      "modelInputSha256": "5c80ef93f21fcc6d2454bb8363e6e8b29297f63b3fafc3b93bfe430004907b90",
+      "outboundRequestSha256": "cb313dc7d5b71d0c2dc1c8d186d2283d8653edc87006a52ee26ce17fd474b191"
+    },
+    {
+      "callIndex": 8,
+      "callId": "TBSD-CALL-728657b76e350213bb7044ffdb7a9b8da7d627b1d1872a7199a3106dd1164777",
+      "packetId": "EP-3f07ef281dd205977f2bff3d4a6c928c24151cbe587df390017fed05e850bc51",
+      "modelInputSha256": "728657b76e350213bb7044ffdb7a9b8da7d627b1d1872a7199a3106dd1164777",
+      "outboundRequestSha256": "6a127b686abdca2208fa9e6b6c37d8fe582702c5a0a45cd596e070ffe6f92e32"
+    },
+    {
+      "callIndex": 9,
+      "callId": "TBSD-CALL-3d9bfe56e00bb3b0e0d0021dbabdaf9cefd2a1c821f9264d307bf4ecc2d13add",
+      "packetId": "EP-b4f06a86d4080b3a6cfee5923319afd2ddcbb8e0aafb58f562c4c3cc5eb120f6",
+      "modelInputSha256": "3d9bfe56e00bb3b0e0d0021dbabdaf9cefd2a1c821f9264d307bf4ecc2d13add",
+      "outboundRequestSha256": "ca01c8d9be3b1647884caa394573212b0c2e1c2408809e41eec123714f4eb42c"
+    },
+    {
+      "callIndex": 10,
+      "callId": "TBSD-CALL-ef0f32f884337734eb325c7a59f63f7c564c0131583c68941bda7a1ded4ccfff",
+      "packetId": "EP-3be87c858cc4811afb576b0717cbb2905a7ab9372f177c0d37b3a8fa327ebc5f",
+      "modelInputSha256": "ef0f32f884337734eb325c7a59f63f7c564c0131583c68941bda7a1ded4ccfff",
+      "outboundRequestSha256": "dbda6e59bf1c43b81e877ebaee7913ab5e64a29ecdc6ffedb65ec81bbfb42053"
+    },
+    {
+      "callIndex": 11,
+      "callId": "TBSD-CALL-f5fa2cbd92b82dba85c8a49794f027502b71a549ba60946a0f98888f0935e9b5",
+      "packetId": "EP-345d83fdc69776561cf445a87e089f6c2813add799f56b75bcbf2b824b9d5c6f",
+      "modelInputSha256": "f5fa2cbd92b82dba85c8a49794f027502b71a549ba60946a0f98888f0935e9b5",
+      "outboundRequestSha256": "3ee2a812a3736ca71cd37db9a4fc4219b1142cbd2ff02c897a4bb65d08e8ca57"
+    }
+  ]
+}

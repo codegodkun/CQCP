@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "task-eval-004-track-b-final-deepseek-run-v1",
+  "status": "BLOCKED",
+  "code": "SCHEMA_INVALID_OR_EMPTY",
+  "detailCode": "OPINION_SCHEMA_INVALID",
+  "failedCallId": "TBF-MC-c202a3c0f9c04929fea1d12a9b7e565d1e4be3e3beafcf54ef3a9287de9daa96",
+  "failedCallIndex": 7,
+  "completedCallCount": 7,
+  "evaluator": "deepseek-v4-pro",
+  "modelInputSha256": "bd648dd1cd9073217b9d493da2c9e4d12d9c6481eb5f34ccb6c9e1725da3fbba",
+  "dispatchSha256": "141d5344a373a90c53c002a8d7e830cbd3fa7a2b853e0fdfb44057faf686d0f2",
+  "providerCallSetSha256": "9881d520121766f3331a0aff6a006511c6fea65f08736b4ba58e1fe59200a57e",
+  "derivedReceiptSha256": "f17018cf126ec4bd1696030e84b267dcdffd654e157cfb6113ef33bd9c500573",
+  "networkAttempted": true,
+  "automaticRetryPerformed": false,
+  "startedAt": "2026-08-03T06:12:33.161Z",
+  "completedAt": "2026-08-03T06:13:12.268Z"
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "task-eval-002-track-b-holdout-deepseek-run-v1",
+  "status": "BLOCKED",
+  "code": "SCHEMA_INVALID_OR_EMPTY",
+  "detailCode": "OPINION_SCHEMA_INVALID",
+  "failedCallId": "TBH-MC-70c1a2779406984068cef60362dde620207ea02c2b37395a661f97eef00cc8cc",
+  "failedCallIndex": 1,
+  "completedCallCount": 1,
+  "evaluator": "deepseek-v4-pro",
+  "modelInputSha256": "bd402b4019f5a8cddcd6c433a4d9981d8e39300df8ad488e09a6ccd92fdb3dcc",
+  "dispatchSha256": "8fe2a996c011f190bfbfada4446645a6d5e693b2c98d845dfd4e3995d211647b",
+  "providerCallSetSha256": "8c63e3777fbc36a7f05821e9f3ccf2d81f64c1ccfdb9c4d2acd29d7467c8e5e6",
+  "derivedReceiptSha256": "76d1b171cda3ca55d4d9b92e3a4d3d446e08034ed4ebb9d607e64347b887ffda",
+  "networkAttempted": true,
+  "automaticRetryPerformed": false,
+  "startedAt": "2026-08-02T14:50:48.468Z",
+  "completedAt": "2026-08-02T14:51:21.460Z"
+}

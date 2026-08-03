@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "task-eval-005-track-b-schema-diagnostic-claim-v1",
+  "status": "CLAIMED_ONCE",
+  "phase": "candidate-1-confirmation",
+  "claimedAt": "2026-08-03T06:49:08.688Z",
+  "actualInputSha256": "d67f0444f0dff37e624b5f438028af243ea636c0e1dfa390bff5d038ad9ec7d8",
+  "dispatchSha256": "ba589892253ae033673712959b27db7424255bde85075ccb94de97997b325ba0",
+  "providerCallSetSha256": "4a91f090f73f0983cbd9f91d12b1e2a1287d3e602b85f7dbdaf401bea643de2c",
+  "derivedReceiptSha256": "5272a6224a5b25ed64d34f7b7ba7f4cc8414553384d13adf8bac6749bc0deaba",
+  "model": "deepseek-v4-pro",
+  "callCount": 12,
+  "pinnedAddressSetSha256": "1541344dfadb79ddccfa661093e264f317a7cfe664e5f0868b87a9f8cb042fd9",
+  "automaticRetryAllowed": false,
+  "formalAdmissionAffected": false
+}

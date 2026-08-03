@@ -1,37 +1,53 @@
 # MVP 任务地图
 
-更新日期：2026-08-02
+更新日期：2026-08-03
 
 ## MILESTONE-MVP-002：审核工作台、模型安全与盲态评测
 
-基线：`origin/master@1035739b751386176e47c6871738a62bff86de02`
+当前基线：`origin/master@115be530480e2ff9b92a7076b2668c066a44ae5c`
 
-当前先收口 `MILESTONE-MVP-002-CORE`：
+`MILESTONE-MVP-002-CORE` 已完成；
+`MILESTONE-MVP-002-TRACK-B-HOLDOUT` 正式执行因 schema invalid fail closed，
+项目负责人已授权并完成新的 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 人工封印；
+唯一正式 DeepSeek claim 因第 1 个 call 认证失败 fail closed；TASK-EVAL-004 随后也
+在第 8 个 call schema invalid 并终态 BLOCKED。项目负责人已批准最后一次有限的
+`TASK-EVAL-005` schema 稳定性诊断与第五套独立 admission，Milestone 当前为
+`BLOCKED / TASK-EVAL-005_NO_GO_MODEL_MISMATCH`：
 
-| 任务 | Task Level | 当前状态 | Core 边界 |
+| 任务 | Task Level | 当前状态 | 当前边界 |
 |---|---|---|---|
-| `TASK-MVP-002` | L3 | `ad14800c…` Core verification 与 `75d86031…` 三审曾全零 GO；PR #37 backend CI 因 TASK-036 v2 Markdown/CSV EOL 属性错配失败；最小修复双平台 `31/31` PASS，当前 clean candidate 待全量验证/冻结/三审 | execution 清单、精确结果、受控 preview/下载、左右工作台 |
-| `TASK-MODEL-001` | L3 | 实现与补证保留；`75d86031…` 因后续 tracked EOL 修复失效，待同一新 HEAD 重建 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity |
-| `TASK-EVAL-002` | L3 | Track A 完成且历史 CRLF seal 保留；旧 run-v3 为 `NO_GO_MODEL_MISMATCH`；TASK-036 Markdown/CSV LF 属性修复双平台 31/31；新 holdout 未开始 | Track A、Track B EvidencePacket、严格模型意见与解盲 |
-| `TASK-034` | L3 | `ad14800c…` Formal R7 与 Core verification 通过；因 tracked EOL 修复 superseded，待新 clean-HEAD Formal R7 | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED 的目标门禁不变 |
-| `TASK-036` | L3 | B/C/D seam 进入 Core；D1 452/452；Markdown/CSV LF、JSON 历史 CRLF 的双平台 hash 门禁 31/31 PASS，待新 R7/verification/freeze/三审与主线 merge | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket |
+| `TASK-MVP-002` | L3 | Core subject `90c4ae9a…` 三审全零 GO，PR #37 CI 全绿并合并为 `115be530…` | execution 清单、精确结果、受控 preview/下载、左右工作台已进入主线 |
+| `TASK-MODEL-001` | L3 | Core subject `90c4ae9a…` 三审全零 GO并进入主线 | immutable Model Profile、Secret Reference、allowlist、readiness/connectivity 已进入主线；PUBLIC 仍 disabled/unbound |
+| `TASK-EVAL-002` | L3 | Track A 完成；旧 run-v3 为 `NO_GO_MODEL_MISMATCH`；新 12-packet holdout 已完成人工封印，但正式 DeepSeek 在第 2 个 call schema invalid 并终态 BLOCKED | one-time claim 已消费且不得重试；无 DeepSeek accepted opinion，未解盲，Provider admission `NOT_ESTABLISHED`，Milestone 已标记 `BLOCKED` |
+| `TASK-EVAL-003` | L3 | 12 条人工 decisions/seal 已冻结；Codex 9/9 accepted；DeepSeek 第 1 个 call `AUTHENTICATION_FAILED` 并终态 BLOCKED | claim 已消费、未解盲且不得重试；Provider admission `NOT_ESTABLISHED`，A0/A1/A2 保持阻塞 |
+| `TASK-EVAL-004` | L3 | human seal 已冻结；唯一 DeepSeek claim 在第 8 个 call schema invalid 终态 BLOCKED；未解盲、不得重试 | call set 9×1/controls=3；claim `62a7451e…`、blocked receipt `8b113c74…`；Provider admission NOT_ESTABLISHED，A0/A1/A2 阻塞 |
+| `TASK-EVAL-005` | L3 | 唯一 9×1 DeepSeek 执行 schema 9/9 accepted；解盲后 DeepSeek 4 个 CONFLICTED packet mismatch，终态 `SEALED_NO_GO_MODEL_MISMATCH` | Provider admission `NOT_ESTABLISHED`；不重试、不建第六套、不启动 A0/A1/A2，未进入 freeze/三审 |
+| `TASK-034` | L3 | Formal R7 与 Core subject 已通过并进入主线；父任务保持 active 等待 Milestone 最终跨 TASK 审计 | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED 的限定样本门禁不变 |
+| `TASK-036` | L3 | B1/B2/C1/C2/D1/D2 随 PR #37 进入主线；D2 required-block identity 已通过最终 Core 三审 | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket seam 可供 holdout 使用 |
 
-Core source diff 明确排除 Provider A0、standing/CC 审计传输、A1/A2/A3 与
-`outputs/**`。派生 R7、M3、browser、Compose 证据由冻结清单按 SHA-256 引用。
-`ea19a52a…`、`33890cb…`、`81e47f…`、`5bcfe410…`、`3bc24a84…` 与 `75d86031…` 的旧 freeze/verification
-均已失效；任何新源码变化后只接受重新生成且
-绑定新 HEAD/tree 的证据和三份全新审计报告。
+Core source diff 排除了 Provider A0、standing/CC 审计传输、A1/A2/A3 与
+`outputs/**`。最终 Core subject 为 `90c4ae9a…`；更早的 freeze/verification/audit
+均保持失效，不得组合复用。
 
-完成条件：
+当前 Track B 结论：
 
-- Core-only 完整验证、bootJar、admin-web、OpenAPI、Compose/browser 全部通过；
-- CC AUDIT 与两个全新 Codex auditor 绑定同一 subject，全部
-  `GO / P0=P1=P2=blocking=0`；
-- CI 通过并按用户既有授权完成 merge。
+- TASK-EVAL-004 已满足人工先封印、四语料 disjoint、9×1 dispatch 和三个 controls
+  zero-call；Codex blind opinion 已封存但未解盲。
+- DeepSeek 唯一正式 claim 在第 8 个 call schema invalid 并终态 BLOCKED，因缺少完整
+  accepted opinion 无法执行双意见先验验证、解盲、freeze 或正式三审。
+- `providerAdmission=NOT_ESTABLISHED`；同一 corpus/claim 不得重试。ADR-025 只允许
+  独立 schema 诊断和一次第五套 admission，不恢复任何历史 claim；A0/A1/A2 继续阻塞。
+- TASK-EVAL-005 的 schema 诊断虽为 24/24，正式 admission 解盲仍为 NO-GO：Codex 全维
+  100%，DeepSeek 在 4 个 CONFLICTED packet 上语义不一致，四个语义维度均为 55.56%。
+  seal `520d7b38…` 已终态验证；不得创建第六套，Provider 路径保持阻塞。
 
-Core merge 后才建立模型未见的 12 packet Track B holdout（9 eligible + 3 controls）；
-人工答案先封印、只运行一次、失败即停止。Provider A0/A1/A2 的恢复不属于本 Core
-integration unit；A3 已拆出本 Milestone。
+失败 holdout challenge `TBH2-fac56106204c4b93a11befc577369360` 的 12 条人工 decisions 已封印；
+model input `bd402b40…` 与 9×1 call set `8c63e377…` 已按 standing grant 派生。
+正式 DeepSeek 第 2 个 call schema invalid，claim `da3f1eb1…` 已消费，blocked receipt
+`f79060fe…` 证明未自动重试。当前不得复用同一 corpus/claim，Track B admission 未建立；
+Provider A0/A1/A2 继续阻塞，A3 已拆出本 Milestone。TASK-EVAL-003 与 TASK-EVAL-004
+均只读保留，不得重试或解盲；TASK-EVAL-005 的新范围由项目负责人明确批准，standing
+grant 仅覆盖其合成诊断和后续 hash-bound 调用，不替代第五套人工 ground truth 确认。
 ## 当前结论
 
 - `TASK-024` 已完成并已 push
@@ -64,11 +80,9 @@ integration unit；A3 已拆出本 Milestone。
 - `TASK-035` test-only `mvp-e2e-candidate-comparison-v2` 与
   `TASK_SPEC-035-A` 已实现并随 PR #32 合并；v1 历史失败不变，当前 worktree
   已以 v29/R7 正式复跑形成独立新工件
-- `TASK-036` 的 A 已随 PR #32 合并；B1/B2/C1/C2/D1/D2 已提交并进入
-  PR #37，形成 R7 与 Track B zero-call 证据；PR #37 尚未 merge。subject
-  `75d86031…` 曾完成三审全零 GO，但 GitHub run `30729941151` backend 因
-  TASK-036 v2 Markdown/CSV EOL 属性错配失败；最小属性修复已双平台 `31/31 PASS`，
-  仍需从新 clean HEAD 重建 R7、完整 verification、freeze 与三审
+- `TASK-036` 的 A 已随 PR #32 合并；B1/B2/C1/C2/D1/D2 的最终 Core subject
+  `90c4ae9a…` 已完成 verification、三方全零 GO 和 GitHub run `30748527866`
+  全绿，并随 PR #37 合并为 `115be530…`
 - 2026-07-24 治理规则收敛口径：L0 默认不进入主线；L1 合并式批处理；L2 一个父 TASK 可包含多个 TASK_SPEC，默认一个 Feature PR；L3 按可回滚风险边界独立审计。普通 push 不因传输动作重复完整审计，post-merge 只有改变下一门禁时即时写回，active→done 默认在 Feature/Milestone 收口时批量完成
 - `TASK-030` A/B/C 当前批次已通过 PR #20 合并，PR #21 已合并 post-merge 状态写回，独立审计结论 `GO_WITH_CONDITIONS` 的 B1-B5 条件已满足，Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_CONDITIONS_SATISFIED`，父任务已归档到 `tasks/done/TASK-030-review-assets-versioning-governance.md`；后续只可按单独 `TASK_SPEC` 或任务授权推进，不自动进入 `TASK-028` / `TASK-031` / `TASK-032`
 - `TASK-GOV-004` 已完成并进入归档写回准备：2026-06-27 Phase 3 minimal GitHub Actions CI 已通过 PR #5 合并落地，2026-06-28 Phase 5 第一阶段 GitHub branch protection / required checks 已配置并验证，Phase 5 post-implementation 独立只读审计结论为 `GO`；PR #8 已合并，merge commit 为 `5d73ea22c42971df848dbacb49c86d40e2143e1f`，PR head 为 `e9812bc118aa5a2f33294dcc9507566703da7517`。当前 Governance Mode 可标注为 `PR_REQUIRED_CHECKS`（第一阶段 CI required checks）；`CQCP Code Review` / `CQCP Spec & Docs Review` 尚未机制化发布为 required checks，未进入 `TASK-028` / `TASK-031` / `TASK-032`
@@ -106,10 +120,10 @@ integration unit；A3 已拆出本 Milestone。
 | `TASK-MVP-001` | 合同审核用户闭环 Demo | L2 Feature（风险触发型） | Done / F3 VERIFIED / V9 DUAL AUDIT GO / PR #35 MERGED / CI GREEN | 文件：`tasks/done/TASK-MVP-001-contract-review-user-loop-demo.md`；F3 与归档提交 `332d365` 已 push；PR #35 三项 CI 全绿并合并为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`；F3 host 11/11、backend 313/313、Linux 11/11；v9 的 CC AUDIT 与两个 Codex subagent 均 GO，P0/P1/P2/blocking 全为 0；保持 legacy `v20260705.1` 与 `MVP_DEMO_MOCK`，未运行 TASK-034，不声明 Production Ready |
 | `TASK-033` | MVP 端到端样本验收规格冻结 | A / Governance | 已完成并归档 | 文件：`tasks/done/TASK-033-mvp-e2e-sample-acceptance-spec-freeze.md`；PR #24 merge commit `880893639ada9fa5e2d42b3d2bccb1662e37a5c9`；PR #25 post-merge 状态写回 merge commit `a60fc9f`；Codex 归档 Review Intake Decision 为 `GO_TO_ARCHIVE_WITH_POST_MERGE_SYNC_SATISFIED`；2026-07-09 用户确认独立只读审计已对归档迁移与 Memory Writeback 给出 `GO`。仅冻结 2-3 份 DOCX 样本选择原则、输入字段、验收命令、证据口径和 expected 来源说明；不修改代码、测试、fixture、expected JSON，不把 AI/parser 输出当作人工 anchor 标准答案；不解除 `TASK-EVAL-001` / `TASK-028` 门禁 |
 | `TASK-DATA-001` | MVP E2E 人工 anchor 准备 | Data / Evaluation | 已完成并归档 / 独立审计 GO / Codex GO_TO_ARCHIVE | 文件：`tasks/done/TASK-DATA-001-mvp-e2e-human-anchor-preparation.md`；63 条逐出处明细均已接受；转换规格已归档到 `tasks/done/TASK_SPEC-DATA-001-A-human-anchor-fixture-expected-test-conversion.md`；PR #28 merge commit `23c66aaed34326f242f9fb395d784518421f1575`，PR #29 merge commit `2b30bf303642d10156eec5844ee09718adb595b3`，PR #30 归档 merge commit `01e59f54284bbab5409f0d7fd392acfd96d7ff83`；后续 `TASK-034` 正式 MVP E2E 已执行并判定 `FAIL`，不进入 `TASK-028` / `TASK-031` / `TASK-032` |
-| `TASK-034` | MVP E2E 人工 anchor 正式验收执行 | A / Evaluation | Active / ad14800c Formal R7 PASS / Superseded by EOL Fix / Fresh Formal R7 Pending | 文件：`tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`；`ad14800c…` 已完成 Formal R7 与 Core verification，但后续 EOL tracked 修复使 subject 失效；正式目标仍为 3 份样本 27/27 candidate `MATCH`、27/27 `PointStatus=PASS`、57 `MATCHED` + 6 human `EXCLUDED`、70 production semantic exclusions、0 SYS/Finding；不声明 Production Ready，不进入 `TASK-028` / `TASK-031` / `TASK-032` |
+| `TASK-034` | MVP E2E 人工 anchor 正式验收执行 | A / Evaluation | Active / Final Core R7 PASS / PR #37 Merged / Milestone terminal BLOCKED closeout pending | 文件：`tasks/active/TASK-034-mvp-e2e-human-anchor-acceptance-execution.md`；最终 Core subject `90c4ae9a…` 已完成 Formal R7、verification、三方全零 GO 与 CI，并随 PR #37 合并；Provider admission 未建立，因此不存在成功路径 Final Audit；正式限定样本目标为 3 份样本 27/27 candidate `MATCH`、27/27 `PointStatus=PASS`、57 `MATCHED` + 6 human `EXCLUDED`、70 production semantic exclusions、0 SYS/Finding；不声明 Production Ready，不进入 `TASK-028` / `TASK-031` / `TASK-032` |
 | `TASK_SPEC-034-A` | test-only MVP E2E harness | A / Test-only | Implemented / Codex ACCEPT / Independent Audit ACCEPT | 文件：`tasks/active/TASK_SPEC-034-A-test-only-e2e-harness.md`；实现提交 `99bea3a6a3ce0cbecf337e76692aac3a6c428228`，序列化修复提交 `46a625a5eb5aee8ff5a31f86bb7300fb2d8e703a`；harness 13/13、既有回归 27/27；仅 test-only observer、同 task 查询和 63 occurrence 比较，未修改受保护生产或人工数据路径 |
 | `TASK-035` | MVP E2E candidate comparison 契约重基线 | A / Evaluation / Governance | Active / TASK_SPEC-035-A Merged via PR #32 / v29 Formal R7 Executed | 文件：`tasks/active/TASK-035-mvp-e2e-candidate-comparison-contract-rebaseline.md`；harness 15/15、四类回归 27/27；实现提交 `52d73b3`；PR #32 merge commit `97ef08f`；v1 历史失败不变，当前 worktree 的 v29/R7 为独立新运行 |
-| `TASK-036` | 多出处一致性证据架构冻结与分批实现治理 | A / Architecture | Active / A Merged / B1-B2-C1-C2-D1-D2 In PR #37 / CI EOL Fix Targeted PASS / Fresh Verification Pending | 文件：`tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`；A 随 PR #32 合并；B1/B2/C1/C2/D1/D2 已提交并 push 至 PR #37，但尚未 merge；`ad14800c…` 三审后 backend CI 暴露 Markdown/CSV EOL 属性错配，当前最小修复 Windows/Linux fresh-clone `31/31 PASS`，需从新 clean HEAD 完成 R7、完整 verification、freeze 与三审 |
+| `TASK-036` | 多出处一致性证据架构冻结与分批实现治理 | A / Architecture | Active / A via PR #32 / B1-B2-C1-C2-D1-D2 via PR #37 / Final Core Audit GO | 文件：`tasks/active/TASK-036-multi-occurrence-consistency-evidence-architecture-freeze.md`；A 随 PR #32 合并；B1/B2/C1/C2/D1/D2 最终 subject `90c4ae9a…` 完成 verification、三方全零 GO 与 CI，并随 PR #37 合并为 `115be530…`；父任务保持 active 等待 Milestone 最终跨 TASK 审计 |
 | `TASK_SPEC-036-A` | 同值 occurrence provenance carrier foundation | A / Production Foundation | Implemented / Codex ACCEPT / Independent Implementation Audit GO / Merged via PR #32 | 文件：`tasks/active/TASK_SPEC-036-A-same-value-occurrence-provenance.md`；精确 2 个生产文件和 5 个测试文件；47/47 与 25/25；随 PR #32 合并，不修改现有 preparer，不激活 RuleSetVersion，不运行正式 E2E |
 | `TASK_SPEC-035-A` | test-only candidate comparison v2 | A / Test-only | Implemented / Codex ACCEPT / Independent Implementation Audit GO / Merged via PR #32 | 唯一实现文件为 `Task034MvpE2EAcceptanceHarnessTest.java`；harness 15/15、四类回归 27/27；提交 `52d73b3` 已随 PR #32 合并；未运行 formal E2E，未修改 fixture/expected/production |
 | `TASK-EVAL-001-A` | SourceAnchor row/cell observability | A | 已完成并 push | 提交 `4bac2f4` |
@@ -355,9 +369,9 @@ integration unit；A3 已拆出本 Milestone。
   - comparable 固定为 canonical decimal JSON string 或 null；projection 失败为 `NOT_OBSERVABLE`；禁止 actual 倒填 expected。
 - 审计：父契约最终独立审计 `GO`；`TASK_SPEC-035-A` 规格阻断已整改，编码前计划经 Codex 放行；实现独立只读审计 `GO`、无 findings，Codex Review Intake 为 `ACCEPT_IMPLEMENTATION`。
 - 实现：唯一 harness 文件提交为 `52d73b3`；定向 XML 计数为 harness `15/15`、四类回归 `27/27`，均无失败、错误或跳过。
-- 当前门禁：TASK-035 candidate comparison 路线已接纳；v29/R7 已在当前
-  Milestone worktree 正式复跑并形成独立工件。v1 历史工件保持不变，R7 仍须通过
-  当前 Milestone 新冻结和三审；冻结 45568f… 的统一验证已失效，整改后须从零重建。
+- 当前门禁：TASK-035 candidate comparison 路线已接纳；v29/R7 已随最终 Core
+  subject `90c4ae9a…` 完成三方全零 GO 和主线合并。v1 历史失败工件保持不变；
+  Milestone 最终仍须执行跨 TASK 冻结与三审。
 - ADR：不需要；若触及生产 CandidateResolver / Review Engine 则停止并另行 ADR。
 
 ### `TASK-036`
@@ -372,12 +386,10 @@ integration unit；A3 已拆出本 Milestone。
 - 实现拆分：A 为未激活 carrier foundation；B 承接新 RuleSetVersion、显式 activation、scope/budget/readiness；C 承接真实 point collectors、可靠异值裁判与集成。
 - A 规格审计：第一轮 `NO_GO` 的三项阻断（无 lineage 删除不同 identity、未绑定版本却改变普通任务 anchor 基数、误称 persistence 写入 round-trip）已整改；第二轮 `GO`。
 - A 接纳：Codex 已审查实际 diff 并复验第一组 47/47、第二组 25/25；独立实现审计先指出双 block 精确测试向量缺口，补充后最终 `GO`，Review Intake 为 `ACCEPT_IMPLEMENTATION`。
-- 当前实现与门禁：A 已随 PR #32 合并；B1/B2/C1/C2/D1/D2 已在
-  `codex/task-mvp-002` worktree 按冻结 TASK_SPEC 集成，D1 定向 443
-  assertions、D2 seam 20 assertions、v29/R7 与 Track B Codex zero-call
-  工件已形成并进入 PR #37，但 PR 尚未 merge。旧 subject 已因 tracked 字节修复失效，新的完整
-  verification、freeze 和三审仍待完成；不得据此声明 Production Ready、Provider admission 或解锁
-  `TASK-028` / `TASK-031` / `TASK-032`。
+- 当前实现与门禁：A 已随 PR #32 合并；B1/B2/C1/C2/D1/D2 的最终 Core subject
+  `90c4ae9a…` 已完成完整 verification、三方全零 GO、CI 和 PR #37 合并。
+  当前仅证明 runtime seam 与 R7 zero-call，不证明 Provider admission；仍不得声明
+  Production Ready 或解锁 `TASK-028` / `TASK-031` / `TASK-032`。
 
 ### `TASK-EVAL-001-A`
 
@@ -494,7 +506,7 @@ integration unit；A3 已拆出本 Milestone。
 6. `TASK-DATA-001` 已完成规则冻结、63 条 `ACCEPTED_HUMAN_GROUND_TRUTH`、转换实现和父任务归档审计，已通过 PR #30 归档。
 7. `TASK-034` v1 Phase 1 与 C2/R6B 历史运行均为 `FAIL`；v29/R7 当前限定三样本工件为 `PASS`，父任务保持 active 并等待 Milestone 最终审计。
 8. `TASK_SPEC-035-A` 已实现并接纳，提交 `52d73b3`；v1 正式失败证据保持不变，v29/R7 是独立新运行。
-9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并。B1/B2/C1/C2/D1/D2 已提交并 push 至 PR #37，但尚未 merge；冻结 45568f… 的统一验证已因最终审计 `NO_GO` 失效，后续 subject `3bc24a84…` 又因 tracked 字节修复失效，完整 verification、freeze 和三审须从零重建。
+9. `ADR-016` 已接受，`docs/ARCHITECTURE.md` v0.10 已同步并审计 `GO`；TASK_SPEC-036-A 已随 PR #32 合并，B1/B2/C1/C2/D1/D2 已随 PR #37 合并。Track B 最后一次第五套 admission 已终态 `SEALED_NO_GO_MODEL_MISMATCH / NOT_ESTABLISHED`，因此不进入成功 freeze/三审或 Provider A0/A1/A2；不得重试、创建第六套或复用旧 18-packet run-v3 声明 admission。
 10. `TASK-GOV-007` 已通过 PR #33 合并，merge commit `1f62320f20ec29c52f49c0ed33c4244bb1be669e`。
 11. `TASK-037 / ADR-017 / TASK_SPEC-037-A` 已通过 PR #34 合并，merge commit `401fd05b7a6c23014adb4f5511533467016c37ba`。该任务采用 `MVP_DEMO_MOCK` 与三类 budget profile seed，不激活 TASK-036-C2。
 12. `FEATURE-MVP-001` 基于 `401fd05`；A~F/F1/F2、真实 Demo 与 F3 已完成，F3 与归档提交 `332d365` 已 push。backend CI 暴露的 3 个 Linux fixture 构造失败已由 F3 修复；host 定向 11/11、backend 313/313、Linux 11/11。v6/v7/v8 的原始证据与状态真源 findings 已补正；v9 的 CC AUDIT 与两个 Codex subagent 均为 GO。PR #35 最终三项 CI 全绿并合并为 `ca2798cd4db400f1fe512e2a13c0d40624929b7d`，父 TASK 与 F3 已归档，Feature 无剩余开发或集成门禁。
