@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R10_VERIFICATION_PASS` / `FREEZE_PENDING`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `R10_THREE_PARTY_AUDIT_GO` / `ADMISSION_PENDING_CI`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -320,10 +320,18 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   且 Gradle `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；evidence `53`、runs
   `7`，最终 result/console identity 由随后生成的 freeze manifest 外部绑定。未修改 corpus、人工 seal、
   Codex/DeepSeek opinion、Java seam、Provider、PUBLIC binding 或产品 runtime；新 freeze 待执行。
+- clean HEAD `fa64271…` 的 subject `d73e15e5…` / manifest `845bf692…` 已验证：tree
+  `3a180069…`、full diff `ef21f51e…`、335 changed paths、75 evidence。安全 CC 包为
+  72 included + 3 hash-only excluded、5 context、87 files、sums `e507bd57…`，24 forbidden
+  representations leak 0。
+- CC、代码/架构 Codex、测试/安全 Codex 三份全新报告均为
+  `GO / P0=0 / P1=0 / P2=0 / blocking=0`，绑定同一 subject。正式 admission 仍等待
+  CI 与 subject 内容一致性；在 CI 通过前 `providerAdmissionEstablished=false`，A0/A1/A2 不启动。
 
 ## Next Task Handoff
 
 - R9 subject `e566c8d2…` 已因任务状态矛盾 `P2=1 / blocking=1` 失效并完整保留。
-- R10 单点修复、定向 RED→GREEN 与完整 verification 已完成；下一步形成新 clean
-  subject 与三份全新审计。任何旧 verdict 都不得复用；全零 GO 前不 push/PR/CI，
-  不启动 A0/A1/A2。
+- R10 subject `d73e15e5…` 已完成三方全零 GO；下一步仅提交审计 evidence/status，验证
+  post-audit diff 不改变受审产品内容，再 push/PR/CI。
+- CI 全绿且受审内容一致后才建立 Provider admission 并进入 A0/A1；旧 verdict 不得复用，
+  A0/A1/A2 在 CI 前继续禁止。

@@ -68,6 +68,11 @@
 > seam `1/1` 且 `5 executed`、seal/Secret/raw Provider/CR/diff/builder 全绿；evidence `53`、
 > runs `7`，最终 result/console identity 由随后 freeze manifest 外部绑定。未修改 corpus、seal、模型意见、
 > Java seam、Provider、PUBLIC binding 或产品 runtime；clean commit 与新 freeze 待执行。
+> clean HEAD `fa64271…` 随后形成 subject `d73e15e5…` / manifest `845bf692…`，335 changed
+> paths、75 evidence；安全 CC 包 72 included + 3 excluded、5 context、87 files、sums
+> `e507bd57…`、24 forbidden representations leak 0。CC 与两个全新 Codex auditor 均返回
+> `GO / P0=P1=P2=blocking=0`，绑定同一 subject。当前只剩 CI 内容一致性门禁；在 CI 全绿前
+> `providerAdmissionEstablished=false`，A0/A1/A2 尚未启动。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -575,8 +580,8 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 当前阻塞项
 
-1. TASK-EVAL-006 的模型评测已重验证为 GO，但 R9 subject `e566c8d2…` 因 TASK 实时门禁仍
-   指向已失败 R6 而 `P2=1 / blocking=1`；正式 admission 仍未建立，A0/A1/A2 仍无资格。
+1. TASK-EVAL-006 R10 subject `d73e15e5…` 已三方全零 GO；正式 admission 仍等待 CI 内容
+   一致性，A0/A1/A2 在 CI 前仍无资格。
 2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…`、`47d84299…`、`a85e96f5…`、`e566c8d2…` 的失败/中断/NO_GO freeze 与报告
    必须只读保留，不得与后续报告组合通过。
 3. TASK-EVAL-002~005 的历史 BLOCKED/NO-GO claim、opinion、report、seal 均不可重试或
@@ -586,14 +591,10 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 下一步
 
-1. R10 单点修复、定向 RED→GREEN 与完整 verification 已完成；形成新 clean HEAD，不得改
-   模型输入、意见、人工 seal、Provider 边界或产品 runtime。
-2. 生成并验证唯一新 immutable freeze 与安全
-   CC 包；发生验证失败、身份漂移或 forbidden-content hit 立即停止。
-3. 对该新 subject 从头派发 CC AUDIT 与两个全新
-   `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO
-   不得组合。
-4. 只有三份均 `GO / P0=P1=P2=blocking=0` 后才按既有授权 push、PR、CI/merge；
-   A0/A1/A2 仍须等待该门禁完成。
+1. 提交 R10 审计 evidence/status，并证明 post-audit commit 相对 `fa64271…` 只含审计材料和
+   项目记忆，不改变受审产品/评测内容。
+2. 按既有授权 push、创建或更新 PR并等待 CI；任一 CI 失败立即停止，不自动扩大修复。
+3. CI 全绿且 subject 内容一致后建立 Track B Provider admission，完成该 integration unit 的
+   merge；随后才允许在新分支进入 Provider A0/A1。
 
 不得声明 Production Ready，不得宣称 TASK-028/031/032 已解锁。

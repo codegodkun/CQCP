@@ -185,6 +185,9 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   `4 != 5` RED→GREEN。该修复没有新增架构决策，也不改变模型输入、意见、seal、Provider、
   PUBLIC binding 或 runtime；完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、
   evidence `53`，最终 identity 由 freeze manifest 外部绑定。新 freeze 与三份全新审计仍是下一门禁。
+- R10 subject `d73e15e5…` / manifest `845bf692…` 已由 CC 与两个全新 Codex auditor 全零 GO；
+  安全 CC 包 87 files、sums `e507bd57…`、forbidden leak 0。根据本 ADR，CI 内容一致性仍是
+  `providerAdmissionEstablished=true` 的最后门禁；CI 前 A0/A1/A2 继续禁止。
 
 ## 关联
 

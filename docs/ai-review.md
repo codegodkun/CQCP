@@ -501,6 +501,9 @@ R10 只将 TASK 实时门禁从已失败 R6 改为等待修复后唯一新 immut
 原字节绑定 R9 manifest、round status 与三份审计状态；失败轮数 `4 != 5` RED 后 GREEN。
 完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、evidence `53`，最终 identity
 由 freeze manifest 外部绑定；新 freeze 与三方重审前，admission 仍 pending，A0/A1/A2 仍禁止。
+R10 subject `d73e15e5…` / manifest `845bf692…` 为 335 paths、75 evidence；安全 CC 包
+72 included + 3 excluded、5 context、87 files、sums `e507bd57…`、leak 0。CC 与两个全新
+Codex auditor 均全零 GO；正式 admission 仍等待 CI 内容一致性，在此之前 A0/A1/A2 不启动。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`
