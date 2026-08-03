@@ -55,7 +55,13 @@
 > 机器绑定进 verification。定向测试以 failed round count `3 != 4` RED，加入四轮失败链断言后
 > GREEN。未改模型输入、意见、seal、Java seam、Provider 或产品 runtime；完整 verification、
 > 随后全绿：Node `56/56`、Java `1/1` 且 `5 executed`、console `cd563436…`、result
-> `c2cc2213…`、evidence `47`。clean subject 与新三审待执行。
+> `c2cc2213…`、evidence `47`。clean HEAD `140b9a3…` 随后形成 subject `e566c8d2…` /
+> manifest `d791a053…`，330 changed paths、70 evidence；安全 CC 包 82 files、sums
+> `9a769043…`、forbidden-content leak 0。CC AUDIT 返回全零 GO，但全新代码/架构 auditor
+> 发现 TASK-EVAL-006 第 137 行仍把实时门禁指向已失败且不可复用的 R6，返回
+> `NO_GO / P2=1 / blocking=1`；测试/安全 auditor 随即中断。因此 R9 整轮失效，CC GO
+> 不得复用。该 finding 属于治理任务状态正确性，不是评测、Provider、runtime seam 或 Secret
+> 安全问题；当前按硬门禁停止，未 push/PR/CI，未启动 A0/A1/A2。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -563,9 +569,9 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 当前阻塞项
 
-1. TASK-EVAL-006 的模型评测已重验证为 GO，但 R8 subject `a85e96f5…` 因 governance
-   freshness `P2=1 / blocking=1` 未通过三审；因此正式 admission 仍未建立，A0/A1/A2 仍无资格。
-2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…`、`47d84299…`、`a85e96f5…` 的失败/中断/NO_GO freeze 与报告
+1. TASK-EVAL-006 的模型评测已重验证为 GO，但 R9 subject `e566c8d2…` 因 TASK 实时门禁仍
+   指向已失败 R6 而 `P2=1 / blocking=1`；正式 admission 仍未建立，A0/A1/A2 仍无资格。
+2. subjects `9dddbe43…`、`e77a8635…`、`a9daf62f…`、`47d84299…`、`a85e96f5…`、`e566c8d2…` 的失败/中断/NO_GO freeze 与报告
    必须只读保留，不得与后续报告组合通过。
 3. TASK-EVAL-002~005 的历史 BLOCKED/NO-GO claim、opinion、report、seal 均不可重试或
    改写；本次修复没有重跑 DeepSeek、创建第七套 corpus 或改变这些历史终态。
@@ -574,11 +580,12 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 下一步
 
-1. 将已完成的 R9 verification 形成全新 clean HEAD；不修改模型输入、意见、人工 seal或
-   Provider 边界。
-2. 对 clean HEAD 生成并验证唯一新 immutable freeze 与安全
-   CC 包；发生身份漂移或 forbidden-content hit 立即停止。
-3. 对同一新 subject 从头派发 CC AUDIT 与两个全新
+1. 下一轮仅纠正 TASK-EVAL-006 第 137 行的实时门禁，并把 R9 manifest、CC invalidated GO、
+   代码/架构 NO_GO、测试/安全中断及 round status 机器绑定进 verification；不得改模型输入、
+   意见、人工 seal、Provider 边界或产品 runtime。
+2. 强制完整 verification 后形成新 clean HEAD，再生成并验证唯一新 immutable freeze 与安全
+   CC 包；发生验证失败、身份漂移或 forbidden-content hit 立即停止。
+3. 对该新 subject 从头派发 CC AUDIT 与两个全新
    `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO
    不得组合。
 4. 只有三份均 `GO / P0=P1=P2=blocking=0` 后才按既有授权 push、PR、CI/merge；

@@ -176,6 +176,11 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   clean HEAD 后生成的 freeze manifest 单独证明，避免在被冻 HEAD 中自引用；这不改变架构边界。
   R9 完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、result `c2cc2213…`、
   console `cd563436…`、evidence `47`，仍只放行新 freeze 与三方重审。
+- R9 clean HEAD `140b9a3…` 的 subject `e566c8d2…` / manifest `d791a053…` 已自校验；安全
+  CC 包 82 files、sums `9a769043…`、forbidden-content leak 0。CC 全零 GO，但代码/架构
+  auditor 因 TASK 实时门禁仍指向已失败 R6 而返回 `NO_GO / P2=1 / blocking=1`，测试/安全
+  auditor 中断。本轮只影响三审门禁，不改变本 ADR 的模型职责、PUBLIC disabled/unbound、
+  admission pending 或 A0/A1/A2 禁止边界；旧 verdict 不得复用。
 
 ## 关联
 

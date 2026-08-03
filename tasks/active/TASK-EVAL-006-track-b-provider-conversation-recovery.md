@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R9_VERIFICATION_PASS` / `FREEZE_PENDING`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R9_AUDIT_NO_GO_P2_1`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -300,10 +300,18 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
 - 完整 verification 为 Node `56/56`、Java seam `1/1` 且 `5 executed`、seal、Secret/raw
   Provider、CR/diff/builder 全绿；console manifest `cd563436…`、result `c2cc2213…`、
   evidence `47`、runs `7`。当前仅放行 clean commit 与其后的新 freeze。
+- clean HEAD `140b9a3…` 已形成 subject `e566c8d2…` / manifest `d791a053…`：tree
+  `224feded…`、full diff `81d48f4e…`、330 changed paths、70 evidence。安全 CC 包为
+  67 included + 3 hash-only excluded、5 context、82 total files，sums `9a769043…`，
+  forbidden-content leak 0。
+- CC AUDIT 返回全零 GO，但同一 subject 的全新代码/架构 auditor 返回
+  `NO_GO / P2=1 / blocking=1`：本 TASK 第 137 行仍把 A0/A1/A2 实时门禁写成等待已失败、
+  不可复用的 R6 freeze。测试/安全 auditor 随即中断无 verdict；CC GO 作废且不得跨轮复用。
+  本轮按硬门禁停止，未修该 finding、未 push/PR/CI、未启动 A0/A1/A2。
 
 ## Next Task Handoff
 
-- R9 定向 RED→GREEN 与完整 verification 已完成；下一步形成 clean commit 后生成唯一新
-  freeze 与安全 CC 包。
-- 对新 subject 从头运行 CC 与两个全新 `gpt-5.6-sol/xhigh` auditor，任何旧 verdict 都不得
-  复用；任一 finding 继续立即停止。全零 GO 前不 push/PR/CI，不启动 A0/A1/A2。
+- R9 subject `e566c8d2…` 已因任务状态矛盾 `P2=1 / blocking=1` 失效并完整保留。
+- 下一轮仅允许纠正第 137 行的实时门禁并机器绑定 R9 失败证据；之后强制完整 verification、
+  新 clean subject 与三份全新审计。任何旧 verdict 都不得复用；全零 GO 前不 push/PR/CI，
+  不启动 A0/A1/A2。
