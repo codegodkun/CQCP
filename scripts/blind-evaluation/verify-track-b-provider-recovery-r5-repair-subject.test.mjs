@@ -23,7 +23,7 @@ test("builds PASS only from fresh chronology, executed recovery seam, and reused
     "PENDING_THREE_PARTY_AUDIT_AND_CI"
   );
   assert.equal(result.verification.previousFailedFreezePreserved, true);
-  assert.equal(result.verification.failedAuditRoundsPreserved.length, 3);
+  assert.equal(result.verification.failedAuditRoundsPreserved.length, 4);
   assert.equal(
     result.verification.failedAuditRoundsPreserved[0].codeArchitectureVerdict,
     "NO_GO"
@@ -55,6 +55,22 @@ test("builds PASS only from fresh chronology, executed recovery seam, and reused
   assert.equal(
     result.verification.failedAuditRoundsPreserved[2].ccAuditVerdict,
     "GO_INVALIDATED_BY_PACKAGE_ISOLATION_P0"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[3].subjectIdentity,
+    "a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[3].ccAuditVerdict,
+    "NO_GO"
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[3].ccAuditP2,
+    1
+  );
+  assert.equal(
+    result.verification.failedAuditRoundsPreserved[3].failureClassification,
+    "GOVERNANCE_DOCUMENT_FRESHNESS"
   );
   assert.equal(result.verification.a0A1A2ImplementationAllowed, false);
   assert.equal(result.consoleManifest.failedHarnessEvidence.length, 3);

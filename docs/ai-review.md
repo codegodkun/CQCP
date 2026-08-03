@@ -487,6 +487,11 @@ CC 与两个全新 Codex auditor 全零 GO及 CI 内容一致性。R8 正式 ver
 CC 包实际为 77 total files、sums `16097ea7…`，独立扫描 24 forbidden representations 为 0。
 CC 对隔离和产品证据无 finding，但因上述正式事实未在冻结前同步到任务/项目记忆，返回
 `NO_GO / P2=1 / blocking=1`；两个 Codex auditor 中断。本轮不能复用，admission 仍 pending。
+R9 只把 R8 manifest、CC NO_GO/status 与两份 interrupted evidence 原字节加入 verification，
+并同步 325 paths / 65 evidence / 77 files / sums `16097ea7…` 的正式事实。定向测试按
+`3 != 4` RED→GREEN；完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、
+result `c2cc2213…`、console `cd563436…`、evidence `47`。不改变评测结论、模型意见、
+Provider payload 或 runtime。
 ## 基线冻结文档
 
 - 模型网关、模型调用记录、预算与降级策略的 MVP 冻结结论见 `docs/model-gateway-budget-baseline.md`

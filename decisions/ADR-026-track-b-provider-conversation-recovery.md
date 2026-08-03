@@ -171,6 +171,11 @@ ADR-022 standing grant 继续有效，本任务在该授权内具备明确调用
   24 forbidden representations leak 0。CC 对隔离与产品证据无 finding，但冻结治理文档仍为
   pre-freeze 320/72/`798c…`/pending 叙事，因此返回 `NO_GO / P2=1 / blocking=1`；两份
   Codex audit 中断。该结果只影响三审门禁，不改变模型评测 GO或 Provider 边界。
+- R9 仅把 R8 manifest、CC NO_GO/status 与两份 interrupted evidence 纳入 verification，并
+  同步其 325/65/77/`16097ea7…` 权威事实；定向测试按 RED→GREEN。当前 R9 subject 身份由
+  clean HEAD 后生成的 freeze manifest 单独证明，避免在被冻 HEAD 中自引用；这不改变架构边界。
+  R9 完整 verification 为 Node `56/56`、Java `1/1` 且 `5 executed`、result `c2cc2213…`、
+  console `cd563436…`、evidence `47`，仍只放行新 freeze 与三方重审。
 
 ## 关联
 

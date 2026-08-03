@@ -1,6 +1,6 @@
 # TASK-EVAL-006：Track B Provider 会话投影有限恢复
 
-状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R8_CC_AUDIT_NO_GO` / `P2_GOVERNANCE_FRESHNESS`
+状态：ACTIVE / `MODEL_EVALUATION_PASS` / `ADMISSION_PENDING_AUDIT` / `R9_VERIFICATION_PASS` / `FREEZE_PENDING`
 
 类型：Evaluation / Model Governance / Provider Conversation Recovery
 
@@ -287,10 +287,23 @@ Integration unit：`MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY`
   `FREEZE_PENDING`，返回 `NO_GO / P2=1 / blocking=1`。两个 Codex auditor 依门禁中断无 verdict；
   本轮不能复用。该问题只属于 governance-document freshness，不是产品或评测正确性失败。
 
+### R9：R8 正式事实同步与失败轮绑定
+
+- 只同步并机器绑定已完成的 R8 权威事实：subject `a85e96f5…`、manifest `08a0bd23…`、
+  325 changed paths、65 evidence、正式 CC 包 77 total files / sums `16097ea7…`、CC
+  `NO_GO / P2=1 / blocking=1` 与两个 interrupted status。
+- verification-builder 定向测试先以 failed round count `3 != 4` RED，再在 R8 manifest/CC
+  status/report/两份中断 evidence 的原字节、identity、count 与分类断言加入后 GREEN。
+- 本轮不改变 corpus、human seal、Codex/DeepSeek opinion、Java seam、Provider payload、PUBLIC
+  binding、A0/A1/A2 或任何产品 runtime。当前 clean subject 尚未生成；其身份只能由提交后的
+  immutable freeze manifest 给出，不在被冻 HEAD 内自引用。
+- 完整 verification 为 Node `56/56`、Java seam `1/1` 且 `5 executed`、seal、Secret/raw
+  Provider、CR/diff/builder 全绿；console manifest `cd563436…`、result `c2cc2213…`、
+  evidence `47`、runs `7`。当前仅放行 clean commit 与其后的新 freeze。
+
 ## Next Task Handoff
 
-- R8 subject `a85e96f5…` 因 CC `P2=1 / blocking=1` 失效；失败 manifest、CC NO_GO 与两个
-  interrupted status 已保留。当前停止，不自动重审、push/PR/CI 或启动 A0/A1/A2。
-- 下一轮最小修复仅同步正式 subject 的 325 paths / 65 evidence / 77 files / sums `16097ea7…`
-  与 R8 NO_GO 事实，并把该失败轮绑定进 verification；随后必须形成全新 clean subject，重新运行
-  CC 与两个全新 `gpt-5.6-sol/xhigh` auditor，任何旧 verdict 都不得复用。
+- R9 定向 RED→GREEN 与完整 verification 已完成；下一步形成 clean commit 后生成唯一新
+  freeze 与安全 CC 包。
+- 对新 subject 从头运行 CC 与两个全新 `gpt-5.6-sol/xhigh` auditor，任何旧 verdict 都不得
+  复用；任一 finding 继续立即停止。全零 GO 前不 push/PR/CI，不启动 A0/A1/A2。

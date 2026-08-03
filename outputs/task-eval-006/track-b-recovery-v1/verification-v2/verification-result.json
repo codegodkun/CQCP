@@ -1,7 +1,7 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-r5-repair-verification-result-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T18:04:00.050Z",
+  "completedAt": "2026-08-03T18:23:26.699Z",
   "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
   "providerAdmission": "PENDING_THREE_PARTY_AUDIT_AND_CI",
   "networkCallPerformedByRepair": false,
@@ -15,7 +15,7 @@
     "codexEvaluationCompletedAt": "2026-08-03T15:12:08.8699951Z",
     "codexCompletionReceivedAt": "2026-08-03T15:13:24.771Z",
     "admissionResealedAt": "2026-08-03T15:15:20.723Z",
-    "verificationCompletedAt": "2026-08-03T18:04:00.050Z"
+    "verificationCompletedAt": "2026-08-03T18:23:26.699Z"
   },
   "metrics": {
     "node": "56/56",
@@ -29,7 +29,7 @@
     "gitDiffCheckExitCode": 0
   },
   "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/console-manifest.json",
-  "consoleManifestSha256": "50288e228456f1ca503541cf1848b0e74a1eb325394733b2470fb88c6b61244b",
+  "consoleManifestSha256": "cd563436d580302b9e8f4dacfc1d22b91d78bae6fdc3b9bdd6f828b346dd5d65",
   "evidence": [
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/human-ground-truth.json",
@@ -237,6 +237,31 @@
       "sha256": "35a8a82fe2f0d0ba8fddce1a686f18fce18d0709dd365da4492eca6c8b709a16"
     },
     {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/manifest.json",
+      "size": 61459,
+      "sha256": "08a0bd235b5c0e1cd24d67ea25895f9b7984d424e0a427b9415417d8b5579513"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/cc-audit-no-go.md",
+      "size": 2488,
+      "sha256": "0618fd3f81f4143c72c36e86fd44dde4ba7093e0964179753b446dc7932587e6"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/cc-audit-status.json",
+      "size": 600,
+      "sha256": "9aa052a8d7bdd992c18d40c946d3668728ba3060089a2fd478024faab789aa45"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/codex-code-architecture-audit-interrupted.md",
+      "size": 416,
+      "sha256": "487e86c6f8ebc91effe4640d2a635cbd5b0c20be6c200934fe381e0d9f25c492"
+    },
+    {
+      "path": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/codex-test-security-audit-interrupted.md",
+      "size": 412,
+      "sha256": "56735d5cb57b641913becc55b9ad5595cba474158015c0a69707aaa8eddf091f"
+    },
+    {
       "path": "outputs/task-eval-006/track-b-recovery-v1/verification/secret-and-provider-leak-scan.console.log",
       "size": 72,
       "sha256": "7b8c06860d86b52a3aeb1beac621c5d076ca13da179f155ad09b74998a89a094"
@@ -275,6 +300,18 @@
       "testSecurityAuditP2": 0,
       "testSecurityAuditBlocking": 1,
       "failureClassification": "CC_AUDIT_PACKAGE_CONTENT_ISOLATION"
+    },
+    {
+      "subjectIdentity": "a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d",
+      "manifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification-v2/audit/freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d/manifest.json",
+      "codeArchitectureAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "ccAuditVerdict": "NO_GO",
+      "ccAuditP0": 0,
+      "ccAuditP1": 0,
+      "ccAuditP2": 1,
+      "ccAuditBlocking": 1,
+      "testSecurityAuditStatus": "INTERRUPTED_NO_VERDICT",
+      "failureClassification": "GOVERNANCE_DOCUMENT_FRESHNESS"
     }
   ],
   "publicProfileDisabledUnbound": true,

@@ -51,6 +51,11 @@
 > CC 确认隔离和产品证据均通过，但因项目记忆仍写 pre-freeze diagnostic 的 320/72/`798c…`/
 > `FREEZE_PENDING`，返回 `NO_GO / P2=1 / blocking=1`；两个 Codex auditor 立即中断无 verdict。
 > 本轮失效并保留，当前不自动重审；A0/A1/A2 仍禁止。
+> 持续目标的下一轮 R9 仅同步 R8 权威事实并把其 manifest、CC NO_GO/status 与两份中断记录
+> 机器绑定进 verification。定向测试以 failed round count `3 != 4` RED，加入四轮失败链断言后
+> GREEN。未改模型输入、意见、seal、Java seam、Provider 或产品 runtime；完整 verification、
+> 随后全绿：Node `56/56`、Java `1/1` 且 `5 executed`、console `cd563436…`、result
+> `c2cc2213…`、evidence `47`。clean subject 与新三审待执行。
 
 `MILESTONE-MVP-002` 已保留 `MILESTONE-MVP-002-TRACK-B-SUCCESSOR` 的
 `AUTHENTICATION_FAILED` 终态证据；其一次性 claim 已消费且不得重试。L0 诊断随后以
@@ -569,10 +574,9 @@ guarded assist A3 不属于本 Milestone。PUBLIC profile 保持
 
 ## 下一步
 
-1. 下一轮只同步 R8 正式 subject 的 325 paths / 65 evidence / 77 files / sums `16097ea7…` 与
-   CC NO_GO 事实，并把该失败轮次原字节绑定进 verification；不修改模型输入、意见、人工 seal
-   或 Provider 边界。
-2. 完整 verification 通过后形成全新 clean HEAD，生成并验证唯一新 immutable freeze 与安全
+1. 将已完成的 R9 verification 形成全新 clean HEAD；不修改模型输入、意见、人工 seal或
+   Provider 边界。
+2. 对 clean HEAD 生成并验证唯一新 immutable freeze 与安全
    CC 包；发生身份漂移或 forbidden-content hit 立即停止。
 3. 对同一新 subject 从头派发 CC AUDIT 与两个全新
    `fork_turns=none / gpt-5.6-sol / xhigh` Codex auditors；任一 finding 立即停止，旧 GO

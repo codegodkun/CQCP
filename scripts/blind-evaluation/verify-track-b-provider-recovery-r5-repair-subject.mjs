@@ -47,6 +47,16 @@ const R7_CODE_AUDIT =
 const R7_TEST_AUDIT =
   `${R7_FAILED_AUDIT_ROOT}/codex-test-security-audit-no-go.md`;
 const R7_AUDIT_STATUS = `${R7_FAILED_AUDIT_ROOT}/audit-round-status.json`;
+const R8_FAILED_AUDIT_ROOT =
+  `${VERIFY_ROOT}/audit/` +
+  "freeze-a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d";
+const R8_FAILED_MANIFEST = `${R8_FAILED_AUDIT_ROOT}/manifest.json`;
+const R8_CC_AUDIT = `${R8_FAILED_AUDIT_ROOT}/cc-audit-no-go.md`;
+const R8_CC_STATUS = `${R8_FAILED_AUDIT_ROOT}/cc-audit-status.json`;
+const R8_CODE_AUDIT =
+  `${R8_FAILED_AUDIT_ROOT}/codex-code-architecture-audit-interrupted.md`;
+const R8_TEST_AUDIT =
+  `${R8_FAILED_AUDIT_ROOT}/codex-test-security-audit-interrupted.md`;
 const PASS_LOGS = Object.freeze([
   ["node-phase-appropriate", `${VERIFY_ROOT}/node-tests-phase-appropriate.console.log`],
   ["java-recovery-runtime", `${VERIFY_ROOT}/java-track-b-recovery-runtime.console.log`],
@@ -112,6 +122,11 @@ const EVIDENCE_PATHS = Object.freeze([
   R7_CODE_AUDIT,
   R7_TEST_AUDIT,
   R7_AUDIT_STATUS,
+  R8_FAILED_MANIFEST,
+  R8_CC_AUDIT,
+  R8_CC_STATUS,
+  R8_CODE_AUDIT,
+  R8_TEST_AUDIT,
   `${OUTPUT_ROOT}/verification/secret-and-provider-leak-scan.console.log`
 ]);
 
@@ -324,6 +339,52 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
     (await read(R7_TEST_AUDIT)).toString("utf8"),
     /Verdict: `NO_GO`/
   );
+  const r8FailedManifestBytes = await read(R8_FAILED_MANIFEST);
+  const r8FailedManifest = parseJsonBytesRejectDuplicateKeys(
+    r8FailedManifestBytes
+  );
+  assert.equal(
+    sha256(r8FailedManifestBytes),
+    "08a0bd235b5c0e1cd24d67ea25895f9b7984d424e0a427b9415417d8b5579513"
+  );
+  assert.equal(
+    r8FailedManifest.subjectIdentity,
+    "a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d"
+  );
+  assert.equal(
+    r8FailedManifest.subject.headCommit,
+    "d08484cc693aee643265f7ddecbf29c21e02b506"
+  );
+  assert.equal(r8FailedManifest.subject.changedPathCount, 325);
+  assert.equal(r8FailedManifest.subject.evidenceCount, 65);
+  assert.equal(
+    r8FailedManifest.subject.fullDiffSha256,
+    "b1e3eefe4b10441f46f55f4238ef689d219205fadb5d2dfb56b2a1432ee6eee1"
+  );
+  const r8CcStatus = parseJsonBytesRejectDuplicateKeys(
+    await read(R8_CC_STATUS)
+  );
+  assert.equal(r8CcStatus.verdict, "NO_GO");
+  assert.equal(r8CcStatus.p0, 0);
+  assert.equal(r8CcStatus.p1, 0);
+  assert.equal(r8CcStatus.p2, 1);
+  assert.equal(r8CcStatus.blocking, 1);
+  assert.equal(
+    r8CcStatus.failureClassification,
+    "GOVERNANCE_DOCUMENT_FRESHNESS"
+  );
+  assert.match(
+    (await read(R8_CC_AUDIT)).toString("utf8"),
+    /Verdict: `NO_GO`/
+  );
+  assert.match(
+    (await read(R8_CODE_AUDIT)).toString("utf8"),
+    /INTERRUPTED_NO_VERDICT/
+  );
+  assert.match(
+    (await read(R8_TEST_AUDIT)).toString("utf8"),
+    /INTERRUPTED_NO_VERDICT/
+  );
 
   const consoleManifest = {
     schemaVersion:
@@ -404,6 +465,19 @@ export async function buildTrackBProviderRecoveryR5RepairVerification({
         testSecurityAuditP2: 0,
         testSecurityAuditBlocking: 1,
         failureClassification: "CC_AUDIT_PACKAGE_CONTENT_ISOLATION"
+      },
+      {
+        subjectIdentity:
+          "a85e96f58532a8a9b807e72cb3ca0666e011e72321cf87a6685d28c59db1b50d",
+        manifestPath: R8_FAILED_MANIFEST,
+        codeArchitectureAuditStatus: "INTERRUPTED_NO_VERDICT",
+        ccAuditVerdict: "NO_GO",
+        ccAuditP0: 0,
+        ccAuditP1: 0,
+        ccAuditP2: 1,
+        ccAuditBlocking: 1,
+        testSecurityAuditStatus: "INTERRUPTED_NO_VERDICT",
+        failureClassification: "GOVERNANCE_DOCUMENT_FRESHNESS"
       }
     ],
     publicProfileDisabledUnbound: true,

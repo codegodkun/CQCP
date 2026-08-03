@@ -16,9 +16,11 @@ BLOCKED 表述只是询问并批准 ADR-026 / TASK-EVAL-006；第六套模型评
 但 R5 subject `e77a8635…` 的代码/架构审计为 NO_GO。R6 四项修复和完整 verification
 均通过；其 subject `a9daf62f…` 的两个 Codex auditor 全零 GO，但 CC 因隔离 projection
 的 CRLF/Git-blob 与 evidence/context 分区问题返回 `P0=1 / P2=1`。R7 仅修该 transport
-并已通过完整 verification，
+并已通过完整 verification；R7 因 package isolation P0 失败，R8 已关闭隔离问题但因冻结
+治理文档仍引用 pre-freeze diagnostic 而由 CC 返回 `P2=1 / blocking=1`。R9 只同步 R8
+正式事实并绑定第四轮失败 evidence。
 Milestone 当前为
-`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R7_VERIFICATION_PASS / FREEZE_PENDING`：
+`MODEL_EVALUATION_PASS / ADMISSION_PENDING_AUDIT / R9_VERIFICATION_PASS / FREEZE_PENDING`：
 
 | 任务 | Task Level | 当前状态 | 当前边界 |
 |---|---|---|---|
@@ -28,7 +30,7 @@ Milestone 当前为
 | `TASK-EVAL-003` | L3 | 12 条人工 decisions/seal 已冻结；Codex 9/9 accepted；DeepSeek 第 1 个 call `AUTHENTICATION_FAILED` 并终态 BLOCKED | claim 已消费、未解盲且不得重试；Provider admission `NOT_ESTABLISHED`，A0/A1/A2 保持阻塞 |
 | `TASK-EVAL-004` | L3 | human seal 已冻结；唯一 DeepSeek claim 在第 8 个 call schema invalid 终态 BLOCKED；未解盲、不得重试 | call set 9×1/controls=3；claim `62a7451e…`、blocked receipt `8b113c74…`；Provider admission NOT_ESTABLISHED，A0/A1/A2 阻塞 |
 | `TASK-EVAL-005` | L3 | 唯一 9×1 DeepSeek 执行 schema 9/9 accepted；解盲后 DeepSeek 4 个 CONFLICTED packet mismatch，历史终态 `SEALED_NO_GO_MODEL_MISMATCH` | 旧 claim 不重试；未来恢复边界由 ADR-026 部分替代 |
-| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5-R7 失效；R8 subject `a85e96f5…` 的隔离与验证通过，但 CC 因 governance freshness `P2=1 / blocking=1` 返回 NO_GO | human seal `0f23b9eb…` 早于模型访问；Codex/DeepSeek 六维 9/9、controls 3/3；R8 正式 subject 为 325 paths / 65 evidence，CC 包 62+3 evidence / 5 context / 77 files / sums `16097ea7…`，全包 24 forbidden representations leak 0；Node 56/56 + Java 1/1（5 executed），verification `3297f5c3…` / console `50288e22…` / evidence 42；两个 Codex audit 中断，`providerAdmissionEstablished=false`，A0/A1/A2 继续阻塞 |
+| `TASK-EVAL-006` | L3 | R1-R4 模型评测 GO；R5-R8 失效；R9 同步 R8 正式事实、绑定第四轮失败 evidence，完整 verification PASS / freeze pending | R8 subject `a85e96f5…` 为 325 paths / 65 evidence，CC 包 77 files / sums `16097ea7…`，24 forbidden representations leak 0，但 CC 因 governance freshness `P2=1 / blocking=1` NO_GO；R9 不改变模型/Provider，Node 56/56 + Java 1/1（5 executed），verification `c2cc2213…` / console `cd563436…` / evidence 47；`providerAdmissionEstablished=false`，A0/A1/A2 继续阻塞 |
 | `TASK-034` | L3 | Formal R7 与 Core subject 已通过并进入主线；父任务保持 active 等待 Milestone 最终跨 TASK 审计 | 27/27 point PASS、57 MATCHED + 6 human EXCLUDED 的限定样本门禁不变 |
 | `TASK-036` | L3 | B1/B2/C1/C2/D1/D2 随 PR #37 进入主线；D2 required-block identity 已通过最终 Core 三审 | deterministic eligibility、FamilyModelCallPlan、runtime EvidencePacket seam 可供 holdout 使用 |
 
