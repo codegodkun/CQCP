@@ -11,6 +11,7 @@ export const TRACK_B_PROVIDER_RECOVERY_BASE_COMMIT =
   "115be530480e2ff9b92a7076b2668c066a44ae5c";
 const GOVERNANCE_PATHS = Object.freeze([
   ".gitattributes",
+  ".gitignore",
   "CURRENT_CONTEXT.md",
   "changelog/2026-08.md",
   "decisions/ADR-019-blind-evaluation-and-model-activation-boundary.md",

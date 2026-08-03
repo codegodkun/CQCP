@@ -1,0 +1,624 @@
+✔ sealed chain binds prompt, input, agent, fork mode, timestamps, and opinion bytes (34.5214ms)
+✔ tampering any opinion after sealing fails closed (25.8002ms)
+✔ dispatch and opinion metadata mismatches fail closed (25.9101ms)
+✔ sealing precondition rejects a pre-existing unblind report (22.5679ms)
+✔ blind dispatch rejects references to unblinded evidence (24.4454ms)
+✖ DeepSeek seal binds all accepted opinions and fails after opinion tampering (3.3923ms)
+✔ rejects private, mapped, NAT64, 6to4 and documentation addresses (5.904ms)
+✔ rejects a mixed public and private DNS answer set (0.9417ms)
+✔ accepts one validated address family when the other DNS query times out (0.9214ms)
+✔ fails closed when both DNS address-family queries fail (0.3433ms)
+✔ absolute DNS deadline rejects a hung resolver and invokes cancellation (26.255ms)
+✔ uses the OS resolver only when c-ares returns no address (0.6401ms)
+✔ OS resolver fallback still rejects a mixed public and private set (0.3515ms)
+✔ pinned lookup never performs a second DNS lookup or accepts host drift (0.4431ms)
+✔ HTTPS transport pins address while retaining hostname and TLS SNI (1.07ms)
+✔ models transport is a pinned GET without request body or redirects (0.5271ms)
+✔ validated DNS answers are deduplicated and canonically sorted (0.4453ms)
+✔ TLS verification bypass environment fails before request creation (0.4883ms)
+✔ HTTPS transport aborts responses above one MiB (0.7055ms)
+✔ absolute transport deadline aborts a connection that never responds (25.6096ms)
+✔ absolute transport deadline is not extended by a slow-drip response (30.02ms)
+✔ expired stage deadline fails before request creation (1.2244ms)
+✔ stability freeze binds 24/24 selected version and no candidate 2 (4.2584ms)
+✔ successor freeze binds clean HEAD, full diff, console and immutable evidence (4579.295ms)
+✔ accepts only the exact user standing grant boundary (5.3264ms)
+✔ rejects standing-grant weakening: revocation (1.9058ms)
+✔ rejects standing-grant weakening: redirect (2.1073ms)
+✔ rejects standing-grant weakening: proxy (0.9581ms)
+✔ rejects standing-grant weakening: raw response (0.8808ms)
+✔ rejects standing-grant weakening: unknown side effect retry (0.9498ms)
+✔ rejects standing-grant weakening: missing receipt binding (1.2ms)
+✔ rejects standing-grant weakening: extra model (0.8538ms)
+node:internal/fs/promises:640
+  return new FileHandle(await PromisePrototypeThen(
+                        ^
+
+Error: ENOENT: no such file or directory, open 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\blind-inputs\CQCP-MVP-DOCX-001.track-a.blind.json'
+    at async open (node:internal/fs/promises:640:25)
+    at async readFile (node:internal/fs/promises:1287:14)
+    at async file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/opinion-contract.test.mjs:26:31 {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\blind-inputs\\CQCP-MVP-DOCX-001.track-a.blind.json'
+}
+
+Node.js v24.16.0
+✖ C:\tmp\cqcp-mvp002-track-b-holdout\scripts\blind-evaluation\opinion-contract.test.mjs (139.6672ms)
+✔ admission corpus is blind, runtime-isomorphic, and keeps safety controls zero-call (97.1167ms)
+✖ Track B admission dispatch is impossible before human seal and excludes ground truth afterward (825.3814ms)
+✔ creates no model input before seal, then freezes a 9x1 dispatch (1448.783ms)
+✔ human challenge is hash-bound, time-bounded and immutable (377.3014ms)
+✖ identity migration preserves all 18 semantics and human expected decisions (8.5116ms)
+✔ successor dispatch remains absent before seal and freezes exact 9x1 calls (2310.43ms)
+✔ all provider pre-implementation gates authorize only A1 (1.3122ms)
+✔ any false gate remains fail closed (0.1544ms)
+✔ non-boolean or empty gate input is rejected (0.4505ms)
+✔ runner stores classifications and hashes but never raw response or reasoning (43.6418ms)
+✖ Track B admission requires two sealed exact opinions plus three policy zero-call controls (749.1757ms)
+✔ verifies both blind executions before opening ground truth and seals GO (1205.7249ms)
+✔ successor verifies both blind opinions before unblind and seals exact GO (2308.6778ms)
+✔ seals strict fork-turns-none Codex opinions without reading ground truth (1235.9209ms)
+✔ human confirmation is hash-bound, immutable, and required before ground truth sealing (1243.1203ms)
+✖ accepted identity-only confirmation verifies the immutable v2 human seal (170.0825ms)
+✔ seals GO only when both blind evaluators are 9/9 on all dimensions and controls are 3/3 zero-call (25.7329ms)
+✔ one semantic mismatch deterministically seals NO_GO (10.273ms)
+✔ seals 4/4 recovery only when every semantic dimension matches the prior human decisions (25.9261ms)
+✔ accepts an exact tested seam on the current mainline commit (2.6965ms)
+✔ rejects mere path existence with changed mainline bytes (0.3939ms)
+✔ rejects a release receipt for another mainline commit (0.2792ms)
+✔ rejects a passing claim without an exact console hash (0.2779ms)
+✔ rejects source list drift in the frozen contract (0.4699ms)
+✔ creates a new direct-child directory and immutable files (4294.3354ms)
+✔ writes direct children beneath an existing stable root (2448.9808ms)
+✔ streams payloads larger than the Windows command-line limit (1376.6158ms)
+✔ rejects a reparse or symlink root without writing outside the repo (1430.9502ms)
+✔ rejects unsafe roots, names, duplicate files, and oversized files (2.7979ms)
+✔ reads a strict UTF-8 direct-child JSON capability (2637.1848ms)
+✔ rejects nested paths, BOM and malformed UTF-8 (2822.5989ms)
+✔ rejects duplicate capability keys, including escaped equivalents (2487.2467ms)
+✔ rejects a capability root replaced by a junction or directory symlink (1352.3301ms)
+✔ rejects a final symlink and an oversized direct child (2878.4936ms)
+✔ streams a large capability batch through stdin (2707.0235ms)
+✔ attests the fixed helper runtime before capability access (556.8486ms)
+✔ rejects a helper runtime version that differs from preflight (641.9372ms)
+✔ strict JSON parses nested valid values (2.1634ms)
+✔ strict JSON rejects duplicate keys at every nesting level (0.5229ms)
+✔ strict JSON treats escaped-equivalent keys as duplicates (0.2677ms)
+✔ strict JSON rejects invalid syntax, non-finite numbers and trailing bytes (1.5943ms)
+✔ connectivity gate creates minimal immutable evidence and verifies it (23.0298ms)
+✔ missing or incorrect explicit Secret Reference fails before network (2.0274ms)
+✔ missing target model blocks before synthetic chat and writes no evidence (1.5234ms)
+✔ non-stop or malformed synthetic opinion fails closed without evidence (3.2342ms)
+✔ Track B egress authorization binds exact payload, scope and exclusions (3.393ms)
+✔ Track B egress authorization rejects extra field (1.3367ms)
+✔ Track B egress authorization rejects wrong input hash (0.4235ms)
+✔ Track B egress authorization rejects wrong dispatch hash (0.3187ms)
+✔ Track B egress authorization rejects wrong host (0.3775ms)
+✔ Track B egress authorization rejects wrong model (0.4236ms)
+✔ Track B egress authorization rejects wrong purpose (0.2261ms)
+✔ Track B egress authorization rejects wrong input count (0.9169ms)
+✔ Track B egress authorization rejects controls included (0.2584ms)
+✔ Track B egress authorization rejects wrong control count (0.3195ms)
+✔ Track B egress authorization rejects ground truth included (0.2987ms)
+✔ Track B egress authorization rejects finding allowed (0.1969ms)
+✔ Track B egress authorization rejects replay enabled (0.2222ms)
+✔ Track B egress authorization rejects wrong challenge (0.2133ms)
+✔ Track B egress authorization rejects AI approver (0.2496ms)
+✔ Track B egress authorization rejects wrong source (0.2167ms)
+✔ Track B egress authorization rejects approval before dispatch (0.2385ms)
+✔ Track B egress authorization rejects future approval (0.2002ms)
+✔ Track B egress authorization rejects expiry before approval (0.1984ms)
+✔ Track B egress authorization rejects expired (0.1978ms)
+✔ Track B egress authorization rejects a changed challenge hash (0.1733ms)
+✔ Track B egress authorization rejects an expired challenge (0.3913ms)
+✖ Track B DeepSeek runner gates egress and persists only strict accepted opinion (850.1152ms)
+✔ Track B model input and strict opinion contract accept exact local selections (7.7908ms)
+✔ Track B opinion contract rejects forged anchors, extra fields, and incomplete coverage (2.3284ms)
+✔ Track B abstention is strict and DeepSeek completion fails closed (2.4251ms)
+✔ claim v2 builder and validator share exact identity and time contract (11.5282ms)
+✔ claim v2 rejects field, hash, binding and time drift (7.0514ms)
+✔ successor claim has an independent schema and cannot cross-validate (3.7953ms)
+✔ fifth claim v2 is independently versioned and bound (0.3282ms)
+✔ fifth source builds 5 MEDIUM, 4 CONFLICTED and 3 zero-call controls (14.3266ms)
+✔ fifth corpus is disjoint from four prior corpora and diagnostic input (14.8797ms)
+✔ fifth v2 builds exact 9x1 calls and accepts strict opinion (15.7796ms)
+✖ fifth preseal is disjoint and model-dark (20.6891ms)
+✔ final source builds 12 runtime packets and is disjoint from all prior corpora (23.9728ms)
+✔ final profile seals exact human confirmation and freezes 9x1 dispatch (1448.4242ms)
+✖ final preseal is reproducible, connectivity-bound and model-dark (40.1398ms)
+✔ establishes admission only when both evaluators and controls are all exact (16.8534ms)
+✔ a structurally valid wrong candidate fixes admission at NOT_ESTABLISHED (4.577ms)
+✔ builds a deterministic 9 eligible plus 3 zero-call holdout (28.8806ms)
+✔ keeps the unrelated conflict block out of requiredBlockIds (5.224ms)
+✔ preflights without network, executes 9 calls once, and persists no secret/raw response (913.6613ms)
+✔ unknown side effect stops after one attempt and writes a terminal blocked receipt (554.5535ms)
+✔ requires a hash-bound human confirmation before creating the seal (846.3207ms)
+✔ admits exactly nine blind packets and keeps all controls zero-call (22.3329ms)
+✔ requires one runtime-isomorphic packet per provider call (3.4244ms)
+✔ accepts strict role-candidate-anchor output and rejects unrelated anchors (5.7101ms)
+✔ admits only non-empty stop completions with duplicate-free strict JSON (2.9988ms)
+✔ builds nine strict non-streaming single-packet calls (16.4107ms)
+✔ call-set artifact is deterministic and binds every request hash (6.3398ms)
+✔ rejects prompt drift before constructing any request (5.8366ms)
+✖ Track B v2 seal binds dispatch, prompt, R7, agents, times, and opinions (69.5238ms)
+✖ Track B strict schema rejects a string disguised as an empty array (113.5923ms)
+✖ Track B v2 seal verifies its hash-addressed admission after v3 supersedes the live path (69.5349ms)
+✖ Track B v2 seal verifies hash-equivalent history after live R7 advances (70.8676ms)
+✖ Track B dispatch verifies historical packets after live packet path advances (76.2684ms)
+✖ Track B seal rejects packet, manifest, or prompt changes after dispatch (59.4967ms)
+✖ Track B seal rejects a dispatch changed after its pre-agent hash freeze (24.7784ms)
+✖ Track B seal rejects an opinion completed before dispatch (13.7833ms)
+✔ freezes nine eligible calls and three explicit zero-call controls (31.1163ms)
+✔ formal model payload is v3-only and excludes labels, ground truth, and verdicts (8.0898ms)
+✔ human seal predates dispatch and every hash binding is exact (21.6345ms)
+✔ formal admission preflight validates all frozen bytes without network (31.3124ms)
+✔ formal runner performs exactly nine calls and never persists raw reasoning (175.2243ms)
+✔ unknown side effect writes terminal evidence and retries zero times (66.6977ms)
+✔ builds a sixth 5 MEDIUM + 4 CONFLICTED + 3 zero-call corpus with new identities (23.0944ms)
+✔ is disjoint from all five prior corpora and both diagnostic input sets (15.7675ms)
+✔ freezes exactly four projected diagnostic calls and a standing-grant receipt before network (40.4982ms)
+✔ recovery human seal uses the frozen TASK-EVAL-006 profile (0.863ms)
+✔ confirmation remains hash-bound and model-dark (0.218ms)
+✔ accepts one strict positive role/candidate/anchor opinion for the projected packet (6.4425ms)
+✔ accepts the exact opinion field set regardless of JSON property order (3.548ms)
+✔ fails closed on duplicate JSON keys, non-stop completion, or untrusted anchor selection (3.3101ms)
+✖ recovery corpus is disjoint, human-pending, and model-dark (21.2943ms)
+✔ projects an eligible runtime packet to the exact model-facing semantic contract (13.2003ms)
+✔ fails closed before projection when runtime eligibility or reliable evidence is incomplete (22.9827ms)
+✔ rejects any model-facing field drift instead of forwarding routing metadata (2.132ms)
+✔ builds one strict v3 request whose user content is only the semantic projection (8.4751ms)
+✔ rejects prompt drift before constructing a provider request (7.173ms)
+✔ preflight recomputes every frozen diagnostic artifact without network (21.7245ms)
+✔ runs four calls once and persists only strict accepted opinions plus hashes (130.6088ms)
+✔ writes a terminal receipt and performs no retry after an unknown HTTP side effect (123.2167ms)
+✖ six admission calls use the exact future runtime request shape (5.6198ms)
+✖ request builder rejects prompt drift and duplicate runtime roles (1.8559ms)
+✖ runtime validator accepts non-evaluation task identities (0.9361ms)
+✔ diagnostic input is 12 synthetic packets disjoint from all four corpora (9.2363ms)
+✔ request builder emits 12 one-packet strict JSON calls without ground truth (4.5553ms)
+✔ validator classifies strict output dimensions without returning content (3.2258ms)
+✔ successor admission requires both evaluators and all controls to be exact (6.3511ms)
+✔ one valid but wrong successor selection keeps admission not established (1.911ms)
+✔ successor builds 9 eligible and 3 disjoint controls (21.2312ms)
+✔ successor rejects historical candidate value reuse (8.4492ms)
+✔ successor rejects failed holdout packet identity reuse (7.1864ms)
+✔ successor permits one proven pre-send DNS retry and then executes exact 9x1 calls (732.4288ms)
+✔ successor exhausts only the bounded DNS retry before claim or network (548.3793ms)
+✔ successor never retries an HTTP-started schema failure (493.9216ms)
+✔ successor rejects an evaluator clock that precedes frozen dispatch (543.7445ms)
+✔ successor seal requires its exact challenge-bound human confirmation (868.17ms)
+✔ successor opinion contract admits only the successor identity (5.0257ms)
+✔ successor provider plan is nine immutable single-packet calls (4.5145ms)
+✔ successor DeepSeek envelope remains strict and fail closed (2.0294ms)
+✖ successor preseal is reproducible and remains model-dark (23.4242ms)
+ℹ tests 180
+ℹ suites 0
+ℹ pass 158
+ℹ fail 22
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15556.8271
+
+✖ failing tests:
+
+test at scripts\blind-evaluation\deepseek-evidence-chain.test.mjs:13:1
+✖ DeepSeek seal binds all accepted opinions and fails after opinion tampering (3.3923ms)
+  Error: ENOENT: no such file or directory, open 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\freeze-manifest.json'
+      at async open (node:internal/fs/promises:640:25)
+      at async readFile (node:internal/fs/promises:1287:14)
+      at async validateDeepSeekExecutionRecords (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/deepseek-evidence-chain.mjs:41:5)
+      at async validateDeepSeekSeal (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/deepseek-evidence-chain.mjs:179:20)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/deepseek-evidence-chain.test.mjs:14:21)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\freeze-manifest.json'
+  }
+
+test at scripts\blind-evaluation\opinion-contract.test.mjs:1:1
+✖ C:\tmp\cqcp-mvp002-track-b-holdout\scripts\blind-evaluation\opinion-contract.test.mjs (139.6672ms)
+  'test failed'
+
+test at scripts\blind-evaluation\prepare-track-b-admission-dispatch.test.mjs:44:1
+✖ Track B admission dispatch is impossible before human seal and excludes ground truth afterward (825.3814ms)
+  AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Track B admission prompt is not the trusted reviewed prompt
+  + actual - expected
+  
+  + '4a7eb3088c69533a9ae6f6765e9bd3b221d9544e24cb8686be6cd58fe2197d1d'
+  - 'dcb1d66b7ba32628b63ee33a9d7a9e15237e717eff33d26ca662bc42df5eb5fb'
+  
+      at file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/prepare-track-b-admission-dispatch.mjs:141:8 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '4a7eb3088c69533a9ae6f6765e9bd3b221d9544e24cb8686be6cd58fe2197d1d',
+    expected: 'dcb1d66b7ba32628b63ee33a9d7a9e15237e717eff33d26ca662bc42df5eb5fb',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v24.16.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/prepare-track-b-admission-dispatch.test.mjs:150:12)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\prepare-track-b-identity-migration-challenge.test.mjs:20:1
+✖ identity migration preserves all 18 semantics and human expected decisions (8.5116ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-admission-corpus-v1\corpus.json'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/prepare-track-b-identity-migration-challenge.test.mjs:29:7)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-admission-corpus-v1\\corpus.json'
+  }
+
+test at scripts\blind-evaluation\seal-and-evaluate-track-b-admission.test.mjs:52:1
+✖ Track B admission requires two sealed exact opinions plus three policy zero-call controls (749.1757ms)
+  AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Track B admission prompt is not the trusted reviewed prompt
+  + actual - expected
+  
+  + '4a7eb3088c69533a9ae6f6765e9bd3b221d9544e24cb8686be6cd58fe2197d1d'
+  - 'dcb1d66b7ba32628b63ee33a9d7a9e15237e717eff33d26ca662bc42df5eb5fb'
+  
+      at file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/prepare-track-b-admission-dispatch.mjs:141:8 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '4a7eb3088c69533a9ae6f6765e9bd3b221d9544e24cb8686be6cd58fe2197d1d',
+    expected: 'dcb1d66b7ba32628b63ee33a9d7a9e15237e717eff33d26ca662bc42df5eb5fb',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v24.16.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/seal-and-evaluate-track-b-admission.test.mjs:140:12)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\seal-track-b-identity-migration.test.mjs:11:1
+✖ accepted identity-only confirmation verifies the immutable v2 human seal (170.0825ms)
+  AssertionError [ERR_ASSERTION]: node:internal/fs/promises:640
+    return new FileHandle(await PromisePrototypeThen(
+                          ^
+  
+  Error: ENOENT: no such file or directory, open 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-admission-corpus-v2\identity-migration-confirmation.json'
+      at async open (node:internal/fs/promises:640:25)
+      at async readFile (node:internal/fs/promises:1287:14)
+      at async Promise.all (index 0)
+      at async file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/seal-track-b-identity-migration.mjs:52:5 {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-admission-corpus-v2\\identity-migration-confirmation.json'
+  }
+  
+  Node.js v24.16.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/seal-track-b-identity-migration.test.mjs:25:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1306:25)
+      at Test.start (node:internal/test_runner/test:1177:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\track-b-admission-deepseek-runner.test.mjs:86:1
+✖ Track B DeepSeek runner gates egress and persists only strict accepted opinion (850.1152ms)
+  AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107
+      triggerUncaughtException(
+      ^
+  
+  AssertionError [ERR_ASSERTION]: Track B admission prompt is not the trusted reviewed prompt
+  + actual - expected
+  
+  + '4a7eb3088c69533a9ae6f6765e9bd3b221d9544e24cb8686be6cd58fe2197d1d'
+  - 'dcb1d66b7ba32628b63ee33a9d7a9e15237e717eff33d26ca662bc42df5eb5fb'
+  
+      at file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/prepare-track-b-admission-dispatch.mjs:141:8 {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: '4a7eb3088c69533a9ae6f6765e9bd3b221d9544e24cb8686be6cd58fe2197d1d',
+    expected: 'dcb1d66b7ba32628b63ee33a9d7a9e15237e717eff33d26ca662bc42df5eb5fb',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+  
+  Node.js v24.16.0
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-admission-deepseek-runner.test.mjs:190:12)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\track-b-fifth-preseal.test.mjs:19:1
+✖ fifth preseal is disjoint and model-dark (20.6891ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-fifth-preseal.test.mjs:58:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\track-b-final-preseal.test.mjs:29:1
+✖ final preseal is reproducible, connectivity-bound and model-dark (40.1398ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-final-preseal.test.mjs:121:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:115:1
+✖ Track B v2 seal binds dispatch, prompt, R7, agents, times, and opinions (69.5238ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:116:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:144:1
+✖ Track B strict schema rejects a string disguised as an empty array (113.5923ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:145:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:162:1
+✖ Track B v2 seal verifies its hash-addressed admission after v3 supersedes the live path (69.5349ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:163:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:200:1
+✖ Track B v2 seal verifies hash-equivalent history after live R7 advances (70.8676ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:201:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:263:1
+✖ Track B dispatch verifies historical packets after live packet path advances (76.2684ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:264:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:303:1
+✖ Track B seal rejects packet, manifest, or prompt changes after dispatch (59.4967ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:309:18)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:325:1
+✖ Track B seal rejects a dispatch changed after its pre-agent hash freeze (24.7784ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:326:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-opinion-contract.test.mjs:345:1
+✖ Track B seal rejects an opinion completed before dispatch (13.7833ms)
+  Error: ENOENT: no such file or directory, lstat 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-codex-opinions'
+      at async lstat (node:internal/fs/promises:1029:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async makeFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:33:3)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-opinion-contract.test.mjs:346:16)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-codex-opinions'
+  }
+
+test at scripts\blind-evaluation\track-b-provider-recovery-preseal.test.mjs:19:1
+✖ recovery corpus is disjoint, human-pending, and model-dark (21.2943ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-recovery-preseal.test.mjs:68:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at scripts\blind-evaluation\track-b-provider-request-contract.test.mjs:56:1
+✖ six admission calls use the exact future runtime request shape (5.6198ms)
+  Error: ENOENT: no such file or directory, open 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-admission-corpus-v2\corpus.json'
+      at async open (node:internal/fs/promises:640:25)
+      at async readFile (node:internal/fs/promises:1287:14)
+      at async loadFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-request-contract.test.mjs:24:23)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-request-contract.test.mjs:57:34)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-admission-corpus-v2\\corpus.json'
+  }
+
+test at scripts\blind-evaluation\track-b-provider-request-contract.test.mjs:134:1
+✖ request builder rejects prompt drift and duplicate runtime roles (1.8559ms)
+  Error: ENOENT: no such file or directory, open 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-admission-corpus-v2\corpus.json'
+      at async open (node:internal/fs/promises:640:25)
+      at async readFile (node:internal/fs/promises:1287:14)
+      at async loadFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-request-contract.test.mjs:24:23)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-request-contract.test.mjs:135:34)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-admission-corpus-v2\\corpus.json'
+  }
+
+test at scripts\blind-evaluation\track-b-provider-request-contract.test.mjs:155:1
+✖ runtime validator accepts non-evaluation task identities (0.9361ms)
+  Error: ENOENT: no such file or directory, open 'C:\tmp\cqcp-mvp002-track-b-holdout\outputs\task-eval-002\track-b-admission-corpus-v2\corpus.json'
+      at async open (node:internal/fs/promises:640:25)
+      at async readFile (node:internal/fs/promises:1287:14)
+      at async loadFixture (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-request-contract.test.mjs:24:23)
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-provider-request-contract.test.mjs:156:34)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:897:7) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'C:\\tmp\\cqcp-mvp002-track-b-holdout\\outputs\\task-eval-002\\track-b-admission-corpus-v2\\corpus.json'
+  }
+
+test at scripts\blind-evaluation\track-b-successor-preseal.test.mjs:26:1
+✖ successor preseal is reproducible and remains model-dark (23.4242ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/tmp/cqcp-mvp002-track-b-holdout/scripts/blind-evaluation/track-b-successor-preseal.test.mjs:107:5)
+      at async Test.run (node:internal/test_runner/test:1313:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
