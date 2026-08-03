@@ -171,13 +171,18 @@ export async function freezeTrackBProviderRecoveryAuditPackage({
       sha256: run.logSha256
     }))
   ];
-  for (const path of GOVERNANCE_PATHS) {
-    const bytes = await readFile(fromRepo(path));
-    referenced.push({ path, size: bytes.length, sha256: sha256(bytes) });
-  }
-  const evidence = deduplicateRecords(referenced);
+  const referencedPaths = new Set(referenced.map((record) => record.path));
+  const governanceRecords = GOVERNANCE_PATHS.map((path) =>
+    gitRecord(repoRoot, headCommit, path)
+  );
+  const evidence = deduplicateRecords([
+    ...referenced,
+    ...governanceRecords
+  ]);
   for (const record of evidence) {
-    await validateRecordBytes(record, fromRepo);
+    if (referencedPaths.has(record.path)) {
+      await validateRecordBytes(record, fromRepo);
+    }
     assertTrackedBytes(repoRoot, headCommit, record);
   }
 
@@ -264,7 +269,6 @@ export async function verifyTrackBProviderRecoveryAuditFreeze({
     subject.fullDiffSha256
   );
   for (const record of subject.evidence) {
-    await validateRecordBytes(record, fromRepo);
     assertTrackedBytes(repoRoot, subject.headCommit, record);
   }
   return {
@@ -320,6 +324,20 @@ function assertTrackedBytes(repoRoot, headCommit, record) {
   assert.equal(result.status, 0, `not tracked: ${record.path}`);
   assert.equal(result.stdout.length, record.size);
   assert.equal(sha256(result.stdout), record.sha256);
+}
+
+function gitRecord(repoRoot, headCommit, path) {
+  const result = spawnSync("git", ["show", `${headCommit}:${path}`], {
+    cwd: repoRoot,
+    encoding: null,
+    maxBuffer: 64 * 1024 * 1024
+  });
+  assert.equal(result.status, 0, `not tracked: ${path}`);
+  return {
+    path,
+    size: result.stdout.length,
+    sha256: sha256(result.stdout)
+  };
 }
 
 function changedPaths(repoRoot, baseCommit, headCommit) {

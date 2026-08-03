@@ -1,7 +1,7 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-verification-result-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T10:37:13.684Z",
+  "completedAt": "2026-08-03T10:39:59.078Z",
   "integrationUnit": "MILESTONE-MVP-002-TRACK-B-PROVIDER-RECOVERY",
   "providerAdmission": "ESTABLISHED_FOR_EVALUATION_SHADOW_GATE",
   "networkCallPerformedByVerification": false,
@@ -11,7 +11,7 @@
     "deepSeekClaimedAt": "2026-08-03T10:10:06.064Z",
     "deepSeekCompletedAt": "2026-08-03T10:10:26.393Z",
     "admissionSealedAt": "2026-08-03T10:12:48.538Z",
-    "verificationCompletedAt": "2026-08-03T10:37:13.684Z"
+    "verificationCompletedAt": "2026-08-03T10:39:59.078Z"
   },
   "metrics": {
     "node": "70/70",
@@ -25,7 +25,7 @@
     "gitDiffCheckExitCode": 0
   },
   "consoleManifestPath": "outputs/task-eval-006/track-b-recovery-v1/verification/console-manifest.json",
-  "consoleManifestSha256": "04951aae841cf8eacc3c001f768e88f5698c00ffba738d3518646a3b279f6ff1",
+  "consoleManifestSha256": "de81671d8316fd36d2b769839acf1e24fe54161cdd18c28eb06aa1da37950999",
   "evidence": [
     {
       "path": "outputs/task-eval-006/track-b-recovery-v1/corpus.json",

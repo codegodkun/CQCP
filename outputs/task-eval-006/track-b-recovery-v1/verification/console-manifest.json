@@ -1,7 +1,7 @@
 {
   "schemaVersion": "task-eval-006-track-b-recovery-console-manifest-v1",
   "status": "PASS",
-  "completedAt": "2026-08-03T10:37:13.684Z",
+  "completedAt": "2026-08-03T10:39:59.078Z",
   "phaseAppropriateScope": true,
   "allHistorySuiteIsIndependentEntrypoint": false,
   "allHistoryFailureLogPath": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-all-history.failed.console.log",
@@ -11,8 +11,8 @@
       "command": "node --test <25 explicitly listed phase-appropriate files>",
       "exitCode": 0,
       "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/node-tests-phase-appropriate.console.log",
-      "logSize": 5881,
-      "logSha256": "8033c557aae7890167772549832fc33e7bb49622dd0a3a2650b3c34f98731be1"
+      "logSize": 5885,
+      "logSha256": "c7c8e186458dc39e5216dc424a5dbc9894e4ad36c09badca78343418d06de96d"
     },
     {
       "name": "java-track-b-runtime-seam",
@@ -51,8 +51,8 @@
       "command": "git diff --check",
       "exitCode": 0,
       "logPath": "outputs/task-eval-006/track-b-recovery-v1/verification/git-diff-check.console.log",
-      "logSize": 297,
-      "logSha256": "73d1f3ccc4cf65ca74f727b42233efc3720aefec47822ea745aaf54bbdd62101"
+      "logSize": 193,
+      "logSha256": "4aaac39ebda6f969aa7057d9ddd42edab5543c65d94a4dd44140a5a18d743b9c"
     }
   ]
 }
